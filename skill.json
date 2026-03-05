@@ -1,0 +1,19 @@
+{
+  "name": "blave-quant-skill",
+  "version": "0.1.0",
+  "description": "Fetch data, backtest, trade, and fetch news on Blave",
+  "entry_point": "src/main.py",
+  "skills": [
+    {
+      "name": "fetch_news",
+      "description": "Fetch news articles from Google News",
+      "parameters": {
+        "keyword": "str, required",
+        "max_results": "int, optional, default=10",
+        "lang": "str, optional, default='en'",
+        "period": "str, optional, default='7d'"
+      }
+    }
+  ],
+  "requirements": ["pandas", "numpy", "GoogleNews"]
+}
