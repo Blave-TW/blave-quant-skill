@@ -1,3 +1,8 @@
+---
+name: blave-quant
+description: Fetch data, backtest, trade, and fetch news on Blave.
+---
+
 # blave-quant-skill
 
 Fetch data, backtest, trade, and fetch news on Blave.
