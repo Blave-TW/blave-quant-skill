@@ -1,1 +1,1 @@
-GoogleNews==0.1.6
+GoogleNews==1.6.15
