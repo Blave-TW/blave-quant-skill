@@ -23,24 +23,30 @@ npx skills add https://github.com/Blave-TW/blave-quant-skill --skill blave-quant
 2. Script:
 
 ```bash
-# Clone the repository
+# 1. Clone the repository
 git clone https://github.com/Blave-TW/blave-quant-skill.git
 cd blave-quant-skill
 
-# Create a Python virtual environment
+# 2. Create a Python virtual environment
 python3 -m venv venv
 
-# Activate the virtual environment
-# Mac/Linux
-source venv/bin/activate
-# Windows (PowerShell)
-# venv\Scripts\Activate.ps1
-# Windows (CMD)
-# venv\Scripts\activate.bat
+# 3. Activate the virtual environment
+source venv/bin/activate   # Mac/Linux
+# venv\Scripts\activate.bat  # Windows CMD
+# venv\Scripts\Activate.ps1 # Windows PowerShell
 
-# Install the skill in editable mode
+# 4. Install the skill and dependencies
 pip install -e .
-
-# Install additional dependencies
 pip install -r requirements.txt
+
+# 5. Exit venv
+deactivate
+
+# 6. Set up the blave CLI as a global command
+chmod +x blave_cli.py
+pwd # To get the path
+sudo ln -s /full/path/to/blave_cli.py /usr/local/bin/blave # Replace /full/path/to with the actual path
+
+# 7. Test
+blave check
 ```
