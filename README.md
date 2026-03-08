@@ -50,3 +50,9 @@ sudo ln -s /full/path/to/blave_cli.py /usr/local/bin/blave # Replace /full/path/
 # 7. Test
 blave check
 ```
+
+## Notes
+
+The .env file must be in the project root and contain your blave_api_key and blave_secret_key.
+
+Ensure the virtual environment is activated and .env is loaded before running any CLI or Python commands.

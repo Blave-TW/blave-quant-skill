@@ -1,5 +1,6 @@
 import argparse
 from googlenews_fetch import GoogleNewsFetcher
+from data_fetch import DataFetcher
 
 commands = {}
 
@@ -22,6 +23,13 @@ def fetch_news(
     results = fetcher.search(keyword, max_results=max_results)
 
     return results
+
+
+@command
+def fetch_holder_concentration(symbol, period="5min"):
+    return DataFetcher().get_latest_alpha(
+        indicator="holder_concentration", symbol=symbol, period=period
+    )
 
 
 if __name__ == "__main__":
