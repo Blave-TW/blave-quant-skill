@@ -20,8 +20,8 @@ def fetch_news(
 ):
     fetcher = GoogleNewsFetcher(lang=lang, period=period)
     results = fetcher.search(keyword, max_results=max_results)
-    for i, news in enumerate(results, 1):
-        print(f"{i}. {news['title']} - {news['link']}")
+
+    return results
 
 
 if __name__ == "__main__":
