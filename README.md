@@ -14,9 +14,33 @@ Blave Quant Skill is a tool that allows an agent to learn and perform the follow
 
 ## Installation
 
-1. Clone the repository:
+1. Skills:
 
 ```bash
+npx skills add https://github.com/Blave-TW/blave-quant-skill --skill blave-quant
+```
+
+2. Script:
+
+```bash
+# Clone the repository
 git clone https://github.com/Blave-TW/blave-quant-skill.git
 cd blave-quant-skill
+
+# Create a Python virtual environment
+python3 -m venv venv
+
+# Activate the virtual environment
+# Mac/Linux
+source venv/bin/activate
+# Windows (PowerShell)
+# venv\Scripts\Activate.ps1
+# Windows (CMD)
+# venv\Scripts\activate.bat
+
+# Install the skill in editable mode
+pip install -e .
+
+# Install additional dependencies
+pip install -r requirements.txt
 ```

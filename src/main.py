@@ -1,7 +1,45 @@
+import argparse
 from googlenews_fetch import GoogleNewsFetcher
 
+commands = {}
 
-class BlaveQuantSkill:
-    def fetch_news(self, keyword, max_results=10, lang="en", period="7d"):
-        fetcher = GoogleNewsFetcher(lang=lang, period=period)
-        return fetcher.search(keyword, max_results=max_results)
+
+def command(fn):
+    commands[fn.__name__] = fn
+    return fn
+
+
+@command
+def fetch_news(
+    keyword: str, max_results: int = 10, lang: str = "en", period: str = "7d"
+):
+    fetcher = GoogleNewsFetcher(lang=lang, period=period)
+    results = fetcher.search(keyword, max_results=max_results)
+    for i, news in enumerate(results, 1):
+        print(f"{i}. {news['title']} - {news['link']}")
+
+
+if __name__ == "__main__":
+    import sys, inspect
+
+    parser = argparse.ArgumentParser(prog="blave")
+    if len(sys.argv) < 2:
+        parser.print_help()
+        sys.exit(1)
+
+    cmd = sys.argv[1]
+    if cmd not in commands:
+        print(f"unknown command: {cmd}")
+        sys.exit(1)
+
+    fn = commands[cmd]
+    sig = inspect.signature(fn)
+    for name, param in sig.parameters.items():
+        arg_type = param.annotation if param.annotation != param.empty else str
+        if param.default != param.empty:
+            parser.add_argument(f"--{name}", type=arg_type, default=param.default)
+        else:
+            parser.add_argument(name, type=arg_type)
+
+    args = parser.parse_args(sys.argv[2:])
+    fn(**vars(args))

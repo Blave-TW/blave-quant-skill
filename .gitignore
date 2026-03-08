@@ -1,7 +1,4 @@
-# Python
-__pycache__/
-*.py[cod]
-*.pyo
-*.pyd
 venv/
-.env
+__pycache__/
+*.pyc
+*.egg-info/

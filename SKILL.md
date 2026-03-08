@@ -1,36 +1,24 @@
 ---
 name: blave-quant
-description: Fetch data, backtest, trade, and fetch news on Blave.
+description: Fetch data, backtest and trade with Blave.
 ---
 
-# blave-quant-skill
+# Blave CLI Skill
 
-Fetch data, backtest, trade, and fetch news on Blave.
+This skill provides a comprehensive interface to the `blave` command-line tool. Before executing any commands, ensure that `blave` is installed and the virtual environment is properly set up.
 
-## When to Use
+## 1. Fetch News
 
-Use this skill when the user asks about:
+**Purpose**: Retrieve news articles using keywords with customizable language, period, and result limits.  
+**When to Use**: When you want to gather recent news for analysis or strategy signals.  
+**Parameters**:
 
-- Fetching financial news or market news
-- Searching news by keyword
-- Backtesting strategies
-- Trading operations on Blave
-
-## Skills
-
-### fetch_news
-
-Fetch news articles from Google News.
-
-**Parameters:**
-
-- `keyword` (str, required) — search keyword
-- `max_results` (int, optional, default=10) — max number of articles
-- `lang` (str, optional, default='en') — language code
-- `period` (str, optional, default='7d') — time period (e.g. 1d, 7d, 30d)
-
-**Usage:**
-
-```bash
-python src/main.py fetch_news --keyword "TSMC" --max_results 5 --lang zh-TW
-```
+- `keyword` (str) — The search term to fetch news for. **Required.**
+- `max_results` (int, default=10) — Maximum number of news articles to return.
+- `lang` (str, default="en") — Language of the news articles (e.g., "en" for English, "zh" for Chinese).
+- `period` (str, default="7d") — Time range for news articles (e.g., "1d", "7d", "30d").
+  **Execution Steps**:
+- Run the `fetch_news` command with a keyword:
+  ```bash
+  blave fetch_news "bitcoin" --max_results 10 --lang en --period 7d
+  ```
