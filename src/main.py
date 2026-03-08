@@ -10,6 +10,11 @@ def command(fn):
 
 
 @command
+def check():
+    print("Hello World")
+
+
+@command
 def fetch_news(
     keyword: str, max_results: int = 10, lang: str = "en", period: str = "7d"
 ):
