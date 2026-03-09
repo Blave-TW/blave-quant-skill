@@ -26,9 +26,16 @@ def fetch_news(
 
 
 @command
-def fetch_holder_concentration(symbol, period="5min"):
+def fetch_holder_concentration(symbol):
     return DataFetcher().get_latest_alpha(
-        indicator="holder_concentration", symbol=symbol, period=period
+        indicator="holder_concentration", symbol=symbol, period="5min"
+    )
+
+
+@command
+def fetch_taker_intensity(symbol, timeframe="24h"):
+    return DataFetcher().get_latest_alpha(
+        indicator="taker_intensity", symbol=symbol, period="5min", timeframe=timeframe
     )
 
 

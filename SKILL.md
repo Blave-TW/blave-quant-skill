@@ -32,11 +32,26 @@ This skill provides a comprehensive interface to the `blave` command-line tool. 
 **Parameters**:
 
 - `symbol` (str) — Cryptocurrency symbol (e.g., "BTC", "ETH"). **Required.**
-- `period` (str, default="5min") — MTime interval for the data. Options include "1min", "5min", "1h", etc.
 
 **Execution Steps**:
 
 - Run the fetch_holder_concentration command for a specific coin:
   ```bash
-  blave fetch_holder_concentration BTC --period 5min
+  blave fetch_holder_concentration BTC
+  ```
+
+## 3. Fetch Taker Intensity
+
+**Purpose**: Retrieve the latest taker intensity (alpha) for a given cryptocurrency.
+**When to Use**: Use this command when you want to measure the aggressiveness of market participants (taker buying vs selling pressure) for a specific cryptocurrency. It helps identify short-term trading momentum and market dominance.
+**Parameters**:
+
+- `symbol` (str) — Cryptocurrency symbol (e.g., "BTC", "ETH"). **Required.**
+- `timeframe` (str) — Time range used for the taker intensity calculation (e.g., `1h`, `4h`, `24h`). **Optional.** Default: `24h`.
+
+**Execution Steps**:
+
+- Run the fetch_holder_concentration command for a specific coin:
+  ```bash
+  blave fetch_taker_intensity BTC --timeframe 24h
   ```
