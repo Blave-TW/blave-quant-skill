@@ -25,7 +25,19 @@ This skill provides a comprehensive interface to the `blave` command-line tool. 
   blave fetch_news "bitcoin" --max_results 10 --lang en --period 7d
   ```
 
-## 2. Fetch Holder Concentration
+## 2. Fetch Hyperliquid Account Value
+
+**Purpose**: Retrieve your account value on Hyperliquid (both spot and perp balances).
+**When to Use**: To monitor your assets and margin positions.
+
+**Execution Steps**:
+
+- Run the command:
+  ```bash
+  blave fetch_hyperliquid_account_value
+  ```
+
+## 3. Fetch Holder Concentration
 
 **Purpose**: Retrieve the latest Holder Concentration (籌碼集中度) for a given cryptocurrency.
 **When to Use**: When you want the most recent alpha metric to analyze market concentration and holder distribution.
@@ -40,7 +52,7 @@ This skill provides a comprehensive interface to the `blave` command-line tool. 
   blave fetch_holder_concentration BTC
   ```
 
-## 3. Fetch Taker Intensity
+## 4. Fetch Taker Intensity
 
 **Purpose**: Retrieve the latest Taker Intensity (多空力道) for a given cryptocurrency.
 **When to Use**: Use this command when you want to measure the aggressiveness of market participants (taker buying vs selling pressure) for a specific cryptocurrency. It helps identify short-term trading momentum and market dominance.

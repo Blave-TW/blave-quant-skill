@@ -1,5 +1,6 @@
 import argparse
 from googlenews_fetch import GoogleNewsFetcher
+from hyperliquid_bot.info import get_account_value
 from data_fetch import DataFetcher
 
 commands = {}
@@ -23,6 +24,11 @@ def fetch_news(
     results = fetcher.search(keyword, max_results=max_results)
 
     return results
+
+
+@command
+def fetch_hyperliquid_account_value():
+    return get_account_value()
 
 
 @command
