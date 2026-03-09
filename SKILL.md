@@ -27,7 +27,7 @@ This skill provides a comprehensive interface to the `blave` command-line tool. 
 
 ## 2. Fetch Holder Concentration
 
-**Purpose**: Retrieve the latest holder concentration (alpha) for a given cryptocurrency.
+**Purpose**: Retrieve the latest Holder Concentration (籌碼集中度) for a given cryptocurrency.
 **When to Use**: When you want the most recent alpha metric to analyze market concentration and holder distribution.
 **Parameters**:
 
@@ -42,7 +42,7 @@ This skill provides a comprehensive interface to the `blave` command-line tool. 
 
 ## 3. Fetch Taker Intensity
 
-**Purpose**: Retrieve the latest taker intensity (alpha) for a given cryptocurrency.
+**Purpose**: Retrieve the latest Taker Intensity (多空力道) for a given cryptocurrency.
 **When to Use**: Use this command when you want to measure the aggressiveness of market participants (taker buying vs selling pressure) for a specific cryptocurrency. It helps identify short-term trading momentum and market dominance.
 **Parameters**:
 
