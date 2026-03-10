@@ -2,3 +2,4 @@ GoogleNews==1.6.15
 python-dotenv==1.2.1
 requests==2.32.5
 hyperliquid-python-sdk==0.22.0
+pandas==2.3.3

@@ -89,7 +89,33 @@ This skill provides a comprehensive interface to the `blave` command-line tool. 
   blave fetch_holder_concentration BTC
   ```
 
-## 5. Fetch Taker Intensity
+## 5. Fetch Threads Insight Table
+
+**Purpose**: Retrieve the latest Threads posts along with their engagement insights.
+**When to Use**: When you want to analyze recent Threads activity and metrics for your account.
+**Execution Steps**:
+
+- Run the fetch_threads_insight_table command to get the latest Threads data:
+  ```bash
+  blave fetch_threads_insight_table
+  ```
+
+## 6. Create Text Post
+
+**Purpose**: Publish a new text-only post on Threads.
+**When to Use**: When you want to post updates, announcements, or content directly to your Threads account.
+**Parameters**:
+
+- `text` (str) — The content of the post. **Required.**
+
+**Execution Steps**:
+
+- Run the create_text_post command with your desired text:
+  ```bash
+  blave create_text_post "Hello World from my bot!"
+  ```
+
+## 7. Fetch Taker Intensity
 
 **Purpose**: Retrieve the latest Taker Intensity (多空力道) for a given cryptocurrency.
 **When to Use**: Use this command when you want to measure the aggressiveness of market participants (taker buying vs selling pressure) for a specific cryptocurrency. It helps identify short-term trading momentum and market dominance.
