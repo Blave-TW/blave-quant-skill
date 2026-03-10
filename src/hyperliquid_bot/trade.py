@@ -4,6 +4,17 @@ from .utils import setup
 from .info import get_current_positions
 
 
+def fetch_sz_decimals(token):
+    _, info, _ = setup(base_url=constants.MAINNET_API_URL, skip_ws=True)
+    meta = info.meta()
+
+    for coin in meta["universe"]:
+        if coin["name"] == token:
+            return coin["szDecimals"]
+
+    return 8
+
+
 def market_order(token, is_buy, sz, is_usd_base=True):
     """
     下市價單
@@ -14,13 +25,16 @@ def market_order(token, is_buy, sz, is_usd_base=True):
     """
     _, info, exchange = setup(base_url=constants.MAINNET_API_URL, skip_ws=True)
 
+    sz_decimals = fetch_sz_decimals(token)
+
     if is_usd_base:
         price = float(info.all_mids(_get_dex(token))[token])
-        token_size = round(sz / price, 4)
+        token_size = sz / price
     else:
         token_size = sz
 
-    # 最小單檢查
+    token_size = round(token_size, sz_decimals)
+
     if token_size <= 0:
         return {"error": "token size too small"}
 
