@@ -1,7 +1,7 @@
 from hyperliquid.utils import constants
 from hyperliquid.exchange import _get_dex
-from src.hyperliquid_bot.utils import setup
-from src.hyperliquid_bot.info import get_current_positions
+from .utils import setup
+from .info import get_current_positions
 
 
 def market_order(token, is_buy, sz, is_usd_base=True):
