@@ -1,6 +1,8 @@
+import json
 import argparse
 from googlenews_fetch import GoogleNewsFetcher
 from hyperliquid_bot.info import get_account_value
+from hyperliquid_bot.trade import adjust_portfolio
 from data_fetch import DataFetcher
 
 commands = {}
@@ -29,6 +31,12 @@ def fetch_news(
 @command
 def fetch_hyperliquid_account_value():
     return get_account_value()
+
+
+@command
+def adjust_hyperliquid_portfolio(target_portfolio_json: str):
+    target_portfolio = json.loads(target_portfolio_json)
+    return adjust_portfolio(target_portfolio)
 
 
 @command

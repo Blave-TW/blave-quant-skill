@@ -4,7 +4,6 @@ import eth_account
 from eth_account.signers.local import LocalAccount
 from hyperliquid.exchange import Exchange
 from hyperliquid.info import Info
-from hyperliquid.utils import constants
 
 
 def setup(base_url=None, skip_ws=False, perp_dexs=None):

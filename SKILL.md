@@ -37,7 +37,44 @@ This skill provides a comprehensive interface to the `blave` command-line tool. 
   blave fetch_hyperliquid_account_value
   ```
 
-## 3. Fetch Holder Concentration
+## 3. Adjust Hyperliquid Portfolio
+
+**Purpose**: Automatically adjust your Hyperliquid positions to match a target portfolio. Supports both buying and selling based on current holdings.
+**When to Use**: To align your current positions with a predefined strategy or OpenClaw target portfolio.
+
+**Execution Steps**:
+
+- Define your target portfolio as a JSON string. For example:
+
+  ```bash
+  '{"BTC": 500, "ETH": 300}'
+  ```
+
+- Run the command:
+
+  ```bash
+  blave adjust_hyperliquid_portfolio '{"BTC": 500, "ETH": 300}'
+  ```
+
+- The Skill will:
+
+  1. Fetch your current Hyperliquid positions (perp and/or spot).
+
+  2. Calculate the difference between current positions and target portfolio.
+
+  3. Place market orders to buy or sell tokens as needed.
+
+  4. Return a list of executed orders with details:
+
+**Notes**:
+
+- target_portfolio amounts are in USD by default.
+
+- Small differences below a minimum threshold (min_usd_order) are ignored to prevent frequent tiny trades.
+
+- Make sure market_order function is properly configured for USD-to-token conversion and precision.
+
+## 4. Fetch Holder Concentration
 
 **Purpose**: Retrieve the latest Holder Concentration (籌碼集中度) for a given cryptocurrency.
 **When to Use**: When you want the most recent alpha metric to analyze market concentration and holder distribution.
@@ -52,7 +89,7 @@ This skill provides a comprehensive interface to the `blave` command-line tool. 
   blave fetch_holder_concentration BTC
   ```
 
-## 4. Fetch Taker Intensity
+## 5. Fetch Taker Intensity
 
 **Purpose**: Retrieve the latest Taker Intensity (多空力道) for a given cryptocurrency.
 **When to Use**: Use this command when you want to measure the aggressiveness of market participants (taker buying vs selling pressure) for a specific cryptocurrency. It helps identify short-term trading momentum and market dominance.
