@@ -16,6 +16,18 @@ class ThreadsAPI:
         self.limit = 5
         self.backfill_date_interval = 7
 
+    def get_long_live_access_token(self):
+        resp = requests.get(
+            f"{self.api_url}/access_token",
+            params={
+                "grant_type": "th_exchange_token",
+                "client_secret": self.app_secret,
+                "access_token": self.access_token,
+            },
+        )
+        # Developer needs to change environment ACCESS_TOKEN variable
+        return resp.json()
+
     def get_threads_df(self) -> pd.DataFrame:
         # set up params
         start_date_dt = datetime.now() - timedelta(days=self.backfill_date_interval)
