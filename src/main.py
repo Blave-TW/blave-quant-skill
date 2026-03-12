@@ -50,8 +50,8 @@ def fetch_threads_insight_table():
 
 
 @command
-def create_text_post(text):
-    return ThreadsAPI().create_text_post(text)
+def create_text_post(text, reply_to_id=None):
+    return ThreadsAPI().create_text_post(text, reply_to_id)
 
 
 @command

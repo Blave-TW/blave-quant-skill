@@ -103,17 +103,34 @@ This skill provides a comprehensive interface to the `blave` command-line tool. 
 ## 6. Create Text Post
 
 **Purpose**: Publish a new text-only post on Threads.
-**When to Use**: When you want to post updates, announcements, or content directly to your Threads account.
+**When to Use**: Use this to post updates, announcements, or any content directly to your Threads account.
 **Parameters**:
 
 - `text` (str) — The content of the post. **Required.**
+- `reply_to_id` (str) — Optional. ID of the post you want to reply to for creating a thread.
 
 **Execution Steps**:
 
-- Run the create_text_post command with your desired text:
-  ```bash
-  blave create_text_post "Hello World from my bot!"
-  ```
+1. **Publish the first post**  
+   Create and publish the first container normally to get its post ID.
+
+```bash
+blave create_text_post "Hello World from my bot!"
+```
+
+2. **Publish follow-up replies**
+   When creating the next container, pass reply_to_id with the previous post’s ID.
+
+```bash
+blave create_text_post "This is a reply to the first post" --reply_to_id first_id
+```
+
+3. **Chain multiple posts**  
+   Repeat the process, always using the latest post’s ID as reply_to_id, to build a complete thread.
+
+```bash
+blave create_text_post "Continuing the thread..." --reply_to_id second_id
+```
 
 ## 7. Fetch Taker Intensity
 

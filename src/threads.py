@@ -140,9 +140,9 @@ class ThreadsAPI:
 
         return resp.json()
 
-    def create_text_post(self, text: str):
+    def create_text_post(self, text: str, reply_to_id=None):
 
-        container = self.create_container(text=text)
+        container = self.create_container(text=text, reply_to_id=reply_to_id)
 
         creation_id = container["id"]
 
