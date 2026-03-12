@@ -38,4 +38,4 @@ def get_current_positions():
 
 
 if __name__ == "__main__":
-    print(get_current_positions())
+    print(get_account_value())

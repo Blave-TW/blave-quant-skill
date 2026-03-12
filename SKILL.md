@@ -25,16 +25,16 @@ This skill provides a comprehensive interface to the `blave` command-line tool. 
   blave fetch_news "bitcoin" --max_results 10 --lang en --period 7d
   ```
 
-## 2. Fetch Hyperliquid Account Value
+## 2. Fetch Hyperliquid Account Value And Position
 
-**Purpose**: Retrieve your account value on Hyperliquid (both spot and perp balances).
-**When to Use**: To monitor your assets and margin positions.
+**Purpose**: Retrieve your account value and position on Hyperliquid.
+**When to Use**: To monitor your assets and positions.
 
 **Execution Steps**:
 
 - Run the command:
   ```bash
-  blave fetch_hyperliquid_account_value
+  blave fetch_hyperliquid_account
   ```
 
 ## 3. Adjust Hyperliquid Portfolio
