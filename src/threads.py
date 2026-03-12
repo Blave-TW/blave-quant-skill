@@ -22,7 +22,7 @@ class ThreadsAPI:
             params={
                 "grant_type": "th_exchange_token",
                 "client_secret": self.app_secret,
-                "access_token": self.access_token,
+                "access_token": os.getenv("threads_original_token"),
             },
         )
         # Developer needs to change environment ACCESS_TOKEN variable
@@ -147,3 +147,7 @@ class ThreadsAPI:
         creation_id = container["id"]
 
         return self.publish_container(creation_id)
+
+
+if __name__ == "__main__":
+    print(ThreadsAPI().get_long_live_access_token())
