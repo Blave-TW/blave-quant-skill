@@ -1,12 +1,12 @@
 from setuptools import setup
 
 setup(
-    name="blave",
+    name="blave-quant-skill",
     version="0.1",
-    py_modules=["blave_cli"],
+    py_modules=["hyperliquid_cli"],
     entry_points={
         "console_scripts": [
-            "blave=blave_cli:main_cli",
+            "hyperliquid=hyperliquid_cli:main_cli",
         ],
     },
 )
