@@ -13,14 +13,16 @@ pip install -r requirements.txt
 
 Global CLI install:
 ```bash
-chmod +x blave_cli.py hyperliquid_cli.py
+chmod +x blave_cli.py hyperliquid_cli.py twitter_cli.py
 sudo ln -s /full/path/to/blave_cli.py /usr/local/bin/blave
 sudo ln -s /full/path/to/hyperliquid_cli.py /usr/local/bin/hyperliquid
+sudo ln -s /full/path/to/twitter_cli.py /usr/local/bin/twitter
 ```
 
 Required `.env` variables:
 - `blave_api_key`, `blave_secret_key` — Blave platform auth
 - `arbitrum_address`, `arbitrum_secret_key` — Hyperliquid wallet
+- `twitter_api_key`, `twitter_api_secret`, `twitter_access_token`, `twitter_access_token_secret` — Twitter API
 
 ## Running Commands
 
@@ -39,14 +41,21 @@ hyperliquid fetch_hyperliquid_account
 hyperliquid adjust_hyperliquid_portfolio '{"BTC": 500, "ETH": 300}'
 ```
 
+**Twitter skill:**
+```bash
+twitter check
+twitter post_tweet "Hello from my bot!"
+```
+
 ## Architecture
 
-This repo contains two independent skills sharing the same venv and dependencies.
+This repo contains three independent skills sharing the same venv and dependencies.
 
 | Skill | CLI entry | Main script | Skill doc |
 |---|---|---|---|
 | blave | `blave_cli.py` | `src/blave_main.py` | `blave/SKILL.md` |
 | hyperliquid | `hyperliquid_cli.py` | `src/hyperliquid_main.py` | `hyperliquid/SKILL.md` |
+| twitter | `twitter_cli.py` | `src/twitter_main.py` | `twitter/SKILL.md` |
 
 **Command dispatch** (both main scripts): Uses a `@command` decorator with `inspect` to dynamically parse CLI arguments and route to registered functions.
 
@@ -56,3 +65,4 @@ This repo contains two independent skills sharing the same venv and dependencies
 - `src/hyperliquid_bot/info.py` — Queries account balances and perpetual positions
 - `src/hyperliquid_bot/trade.py` — `adjust_portfolio()` diffs target vs. current positions and fires market orders; skips orders below `min_usd_order` (default 10 USD); handles per-token decimal precision via `fetch_sz_decimals()`
 - `src/hyperliquid_bot/utils.py` — Hyperliquid SDK initialization from `.env` credentials
+- `src/twitter.py` — `create_tweet()` via tweepy OAuth 1.0a
