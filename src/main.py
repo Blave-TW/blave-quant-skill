@@ -3,7 +3,6 @@ import argparse
 from googlenews_fetch import GoogleNewsFetcher
 from hyperliquid_bot.info import get_account_value, get_current_positions
 from hyperliquid_bot.trade import adjust_portfolio
-from threads import ThreadsAPI
 from data_fetch import DataFetcher
 
 commands = {}
@@ -42,16 +41,6 @@ def fetch_hyperliquid_account():
 def adjust_hyperliquid_portfolio(target_portfolio_json: str):
     target_portfolio = json.loads(target_portfolio_json)
     return adjust_portfolio(target_portfolio)
-
-
-@command
-def fetch_threads_insight_table():
-    return ThreadsAPI().arrange_insight_table()
-
-
-@command
-def create_text_post(text, reply_to_id=None):
-    return ThreadsAPI().create_text_post(text, reply_to_id)
 
 
 @command
