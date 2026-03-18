@@ -4,11 +4,9 @@ Blave Quant Skill is a tool that allows an agent to learn and perform the follow
 
 ### Skills the Agent Can Learn
 
-- 📊 **Data Fetching**: Retrieve market data and historical trading information from Blave
-- 📈 **Data Analysis & Backtesting**: Analyze strategy performance and simulate trades
-- 🤖 **Automated Trading**: Execute buy/sell orders based on strategy instructions
+- 📊 **Data Fetching**: Retrieve market alpha data and news from Blave
+- 🤖 **Automated Trading**: Execute buy/sell orders on Hyperliquid based on strategy instructions
 - 📌 **Strategy Management**: Set up, modify, and execute different trading strategies
-- 📝 **Report Generation**: Generate backtest and trading reports for strategy evaluation
 
 ---
 
@@ -17,7 +15,8 @@ Blave Quant Skill is a tool that allows an agent to learn and perform the follow
 1. Skills:
 
 ```bash
-npx skills add https://github.com/Blave-TW/blave-quant-skill --skill blave-quant
+npx skills add https://github.com/Blave-TW/blave-quant-skill --skill blave
+npx skills add https://github.com/Blave-TW/blave-quant-skill --skill hyperliquid
 ```
 
 2. Script:
@@ -42,17 +41,19 @@ pip install -r requirements.txt
 # 5. Exit venv
 deactivate
 
-# 6. Set up the blave CLI as a global command
-chmod +x blave_cli.py
+# 6. Set up CLI as global commands
+chmod +x blave_cli.py hyperliquid_cli.py
 pwd # To get the path
-sudo ln -s /full/path/to/blave_cli.py /usr/local/bin/blave # Replace /full/path/to with the actual path
+sudo ln -s /full/path/to/blave_cli.py /usr/local/bin/blave
+sudo ln -s /full/path/to/hyperliquid_cli.py /usr/local/bin/hyperliquid
 
 # 7. Test
 blave check
+hyperliquid check
 ```
 
 ## Notes
 
-The .env file must be in the project root and contain your blave_api_key and blave_secret_key.
-
-Ensure the virtual environment is activated and .env is loaded before running any CLI or Python commands.
+The `.env` file must be in the project root and contain:
+- `blave_api_key`, `blave_secret_key` — required for the blave skill
+- `arbitrum_address`, `arbitrum_secret_key` — required for the hyperliquid skill
