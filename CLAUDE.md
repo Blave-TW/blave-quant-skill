@@ -32,7 +32,10 @@ This repo contains two independent skills.
 | blave | Direct API calls (no CLI) | `blave/SKILL.md` |
 | hyperliquid | CLI (`hyperliquid_cli.py` → `src/hyperliquid_main.py`) | `hyperliquid/SKILL.md` |
 
-**Blave skill** — Agent calls the Blave REST API directly using credentials from `.env`. No CLI or wrapper involved. See `blave/SKILL.md` for all endpoints.
+**Blave skill** — Agent calls the Blave REST API directly using credentials from `.env`. No CLI or wrapper involved. See `blave/SKILL.md` for all endpoints:
+- `alpha_table` — latest alpha for all symbols across all indicators; use this to screen coins
+- `holder_concentration/get_symbols` / `get_alpha` — holder concentration time series + stat
+- `taker_intensity/get_symbols` / `get_alpha` — taker intensity time series + stat
 
 **Hyperliquid skill** — CLI-based. `hyperliquid_cli.py` launches the venv and runs `src/hyperliquid_main.py`. Uses a `@command` decorator with `inspect` to parse CLI arguments.
 
