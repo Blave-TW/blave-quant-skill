@@ -7,7 +7,6 @@ Blave Quant Skill is a tool that allows an agent to learn and perform the follow
 - 📊 **Data Fetching**: Retrieve market alpha data and news from Blave
 - 🤖 **Automated Trading**: Execute buy/sell orders on Hyperliquid based on strategy instructions
 - 📌 **Strategy Management**: Set up, modify, and execute different trading strategies
-- 🐦 **Social Media**: Post updates on X (Twitter)
 
 ---
 
@@ -18,7 +17,6 @@ Blave Quant Skill is a tool that allows an agent to learn and perform the follow
 ```bash
 npx skills add https://github.com/Blave-TW/blave-quant-skill/blave
 npx skills add https://github.com/Blave-TW/blave-quant-skill/hyperliquid
-npx skills add https://github.com/Blave-TW/blave-quant-skill/twitter
 ```
 
 2. Script:
@@ -44,16 +42,14 @@ pip install -r requirements.txt
 deactivate
 
 # 6. Set up CLI as global commands
-chmod +x blave_cli.py hyperliquid_cli.py twitter_cli.py
+chmod +x blave_cli.py hyperliquid_cli.py
 pwd # To get the path
 sudo ln -s /full/path/to/blave_cli.py /usr/local/bin/blave
 sudo ln -s /full/path/to/hyperliquid_cli.py /usr/local/bin/hyperliquid
-sudo ln -s /full/path/to/twitter_cli.py /usr/local/bin/twitter
 
 # 7. Test
 blave check
 hyperliquid check
-twitter check
 ```
 
 ## Notes
@@ -61,4 +57,3 @@ twitter check
 The `.env` file must be in the project root and contain:
 - `blave_api_key`, `blave_secret_key` — required for the blave skill
 - `arbitrum_address`, `arbitrum_secret_key` — required for the hyperliquid skill
-- `twitter_api_key`, `twitter_api_secret`, `twitter_access_token`, `twitter_access_token_secret` — required for the twitter skill
