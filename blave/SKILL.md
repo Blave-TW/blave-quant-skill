@@ -83,7 +83,15 @@ print(response.json())
 {
   "data": {
     "alpha": [-0.233, -0.234, -0.194, "..."],
-    "timestamp": [1735803900.0, 1735804800.0, 1735805700.0, "..."]
+    "timestamp": [1735803900.0, 1735804800.0, 1735805700.0, "..."],
+    "stat": {
+      "avg_down_return": -0.026,
+      "avg_up_return": 0.028,
+      "exp_value": -0.001,
+      "is_data_sufficient": true,
+      "return_ratio": 1.065,
+      "up_prob": 0.462
+    }
   }
 }
 ```
@@ -91,6 +99,10 @@ print(response.json())
 - `alpha` and `timestamp` arrays are aligned by index.
 - `timestamp` is Unix timestamp in UTC+0.
 - Higher alpha = more concentrated holdings.
+- `stat.up_prob` — 24h probability of upward movement.
+- `stat.exp_value` — 24h expected return value.
+- `stat.avg_up_return` / `stat.avg_down_return` — average 24h return when up/down.
+- `stat.return_ratio` — ratio of avg up return to avg down return (absolute).
 
 ---
 
@@ -158,7 +170,15 @@ print(response.json())
 {
   "data": {
     "alpha": [-0.233, -0.234, -0.194, "..."],
-    "timestamp": [1735803900.0, 1735804800.0, 1735805700.0, "..."]
+    "timestamp": [1735803900.0, 1735804800.0, 1735805700.0, "..."],
+    "stat": {
+      "avg_down_return": -0.026,
+      "avg_up_return": 0.028,
+      "exp_value": -0.001,
+      "is_data_sufficient": true,
+      "return_ratio": 1.065,
+      "up_prob": 0.462
+    }
   }
 }
 ```
@@ -166,3 +186,7 @@ print(response.json())
 - `alpha` and `timestamp` arrays are aligned by index.
 - `timestamp` is Unix timestamp in UTC+0.
 - Positive alpha = taker buying dominance; negative = taker selling dominance.
+- `stat.up_prob` — 24h probability of upward movement.
+- `stat.exp_value` — 24h expected return value.
+- `stat.avg_up_return` / `stat.avg_down_return` — average 24h return when up/down.
+- `stat.return_ratio` — ratio of avg up return to avg down return (absolute).
