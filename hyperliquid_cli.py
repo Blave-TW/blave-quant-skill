@@ -16,7 +16,7 @@ def main_cli():
         print("venv not found, please create it first")
         sys.exit(1)
 
-    main_script = root / "src" / "blave_main.py"
+    main_script = root / "src" / "hyperliquid_main.py"
     subprocess.run([str(venv_python), str(main_script)] + sys.argv[1:], check=True)
 
 

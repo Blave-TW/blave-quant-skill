@@ -1,8 +1,5 @@
-import json
 import argparse
 from googlenews_fetch import GoogleNewsFetcher
-from hyperliquid_bot.info import get_account_value, get_current_positions
-from hyperliquid_bot.trade import adjust_portfolio
 from data_fetch import DataFetcher
 
 commands = {}
@@ -24,23 +21,7 @@ def fetch_news(
 ):
     fetcher = GoogleNewsFetcher(lang=lang, period=period)
     results = fetcher.search(keyword, max_results=max_results)
-
     return results
-
-
-@command
-def fetch_hyperliquid_account():
-    result = {}
-    account_value = get_account_value()
-    result["account_value"] = account_value["spot"]["balances"][0]["total"]
-    result["position"] = get_current_positions()
-    return result
-
-
-@command
-def adjust_hyperliquid_portfolio(target_portfolio_json: str):
-    target_portfolio = json.loads(target_portfolio_json)
-    return adjust_portfolio(target_portfolio)
 
 
 @command
