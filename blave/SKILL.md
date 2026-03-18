@@ -1,55 +1,93 @@
 ---
 name: blave
-description: Fetch market alpha data and news with Blave.
+description: Fetch market alpha data from Blave API.
 ---
 
 # Blave Skill
 
-This skill provides access to the `blave` command-line tool for fetching market alpha data and news. Before executing any commands, ensure that `blave` is installed and the virtual environment is properly set up.
+This skill enables direct access to the Blave Data API for fetching crypto market alpha data.
 
-## 1. Fetch News
+## Authentication
 
-**Purpose**: Retrieve news articles using keywords with customizable language, period, and result limits.
-**When to Use**: When you want to gather recent news for analysis or strategy signals.
-**Parameters**:
+All requests require the following headers (read from environment variables):
 
-- `keyword` (str) — The search term to fetch news for. **Required.**
-- `max_results` (int, default=10) — Maximum number of news articles to return.
-- `lang` (str, default="en") — Language of the news articles (e.g., "en" for English, "zh" for Chinese).
-- `period` (str, default="7d") — Time range for news articles (e.g., "1d", "7d", "30d").
-
-**Execution Steps**:
-
-- Run the `fetch_news` command with a keyword:
-  ```bash
-  blave fetch_news "bitcoin" --max_results 10 --lang en --period 7d
-  ```
-
-## 2. Fetch Holder Concentration
-
-**Purpose**: Retrieve the latest Holder Concentration (籌碼集中度) for a given cryptocurrency.
-**When to Use**: When you want to analyze market concentration and holder distribution.
-**Parameters**:
-
-- `symbol` (str) — Cryptocurrency symbol (e.g., "BTC", "ETH"). **Required.**
-
-**Execution Steps**:
-
-```bash
-blave fetch_holder_concentration BTC
+```
+api-key: $blave_api_key
+secret-key: $blave_secret_key
 ```
 
-## 3. Fetch Taker Intensity
+**Base URL:** `https://api.blave.org`
 
-**Purpose**: Retrieve the latest Taker Intensity (多空力道) for a given cryptocurrency.
-**When to Use**: When you want to measure the aggressiveness of market participants (taker buying vs selling pressure) to identify short-term momentum.
-**Parameters**:
+---
 
-- `symbol` (str) — Cryptocurrency symbol (e.g., "BTC", "ETH"). **Required.**
-- `timeframe` (str, default="24h") — Time range for the calculation (e.g., `1h`, `4h`, `24h`).
+## Holder Concentration（籌碼集中度）
 
-**Execution Steps**:
+### Get Symbols
 
-```bash
-blave fetch_taker_intensity BTC --timeframe 24h
+Retrieve all available symbols for Holder Concentration.
+
+- **Method:** GET
+- **Endpoint:** `https://api.blave.org/holder_concentration/get_symbols`
+
+**Example:**
+
+```python
+import requests, os
+from dotenv import load_dotenv
+load_dotenv()
+
+headers = {"api-key": os.getenv("blave_api_key"), "secret-key": os.getenv("blave_secret_key")}
+response = requests.get("https://api.blave.org/holder_concentration/get_symbols", headers=headers, timeout=60)
+print(response.json())
 ```
+
+**Response:**
+
+```json
+{
+  "data": ["BNBUSDT", "BTCUSDT", "ETHUSDT", "UMAUSDT"]
+}
+```
+
+---
+
+### Get Alpha
+
+Retrieve Holder Concentration alpha values.
+
+- **Method:** GET
+- **Endpoint:** `https://api.blave.org/holder_concentration/get_alpha`
+- **Parameters:**
+  - `symbol` (required) — e.g. `BTCUSDT`
+  - `period` (required) — `"5min"` / `"15min"` / `"1h"` / `"4h"` / `"8h"` / `"1d"`
+  - `start_date` (optional) — `YYYY-MM-DD`, e.g. `2024-01-04`
+  - `end_date` (optional) — `YYYY-MM-DD`, e.g. `2025-01-04`
+  - > The range between start_date and end_date cannot exceed 1 year.
+
+**Example:**
+
+```python
+import requests, os
+from dotenv import load_dotenv
+load_dotenv()
+
+headers = {"api-key": os.getenv("blave_api_key"), "secret-key": os.getenv("blave_secret_key")}
+params = {"symbol": "BTCUSDT", "period": "1h", "start_date": "2025-01-01", "end_date": "2025-03-01"}
+response = requests.get("https://api.blave.org/holder_concentration/get_alpha", headers=headers, params=params, timeout=60)
+print(response.json())
+```
+
+**Response:**
+
+```json
+{
+  "data": {
+    "alpha": [-0.233, -0.234, -0.194, "..."],
+    "timestamp": [1735803900.0, 1735804800.0, 1735805700.0, "..."]
+  }
+}
+```
+
+- `alpha` and `timestamp` arrays are aligned by index.
+- `timestamp` is Unix timestamp in UTC+0.
+- Higher alpha = more concentrated holdings.
