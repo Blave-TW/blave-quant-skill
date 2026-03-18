@@ -1,25 +1,37 @@
 # Blave Quant Skill
 
-Blave Quant Skill is a tool that allows an agent to learn and perform the following skills, designed for the Blave platform:
+Blave Quant Skill is a collection of skills that allows an agent to interact with crypto market data and trading platforms.
 
-### Skills the Agent Can Learn
+### Skills
 
-- 📊 **Data Fetching**: Retrieve market alpha data and news from Blave
-- 🤖 **Automated Trading**: Execute buy/sell orders on Hyperliquid based on strategy instructions
-- 📌 **Strategy Management**: Set up, modify, and execute different trading strategies
+- 📊 **blave** — Fetch market alpha data (Holder Concentration, Taker Intensity) directly from the Blave API
+- 🤖 **hyperliquid** — Fetch account info and execute trades on Hyperliquid
 
 ---
 
 ## Installation
-
-1. Skills:
 
 ```bash
 npx skills add https://github.com/Blave-TW/blave-quant-skill/blave
 npx skills add https://github.com/Blave-TW/blave-quant-skill/hyperliquid
 ```
 
-2. Script:
+---
+
+## Blave Skill Setup
+
+The blave skill calls the Blave API directly. No CLI installation required.
+
+Add the following to your `.env`:
+
+```
+blave_api_key=YOUR_API_KEY
+blave_secret_key=YOUR_SECRET_KEY
+```
+
+---
+
+## Hyperliquid Skill Setup
 
 ```bash
 # 1. Clone the repository
@@ -34,26 +46,25 @@ source venv/bin/activate   # Mac/Linux
 # venv\Scripts\activate.bat  # Windows CMD
 # venv\Scripts\Activate.ps1 # Windows PowerShell
 
-# 4. Install the skill and dependencies
+# 4. Install dependencies
 pip install -e .
 pip install -r requirements.txt
 
 # 5. Exit venv
 deactivate
 
-# 6. Set up CLI as global commands
-chmod +x blave_cli.py hyperliquid_cli.py
+# 6. Set up CLI as a global command
+chmod +x hyperliquid_cli.py
 pwd # To get the path
-sudo ln -s /full/path/to/blave_cli.py /usr/local/bin/blave
 sudo ln -s /full/path/to/hyperliquid_cli.py /usr/local/bin/hyperliquid
 
 # 7. Test
-blave check
 hyperliquid check
 ```
 
-## Notes
+Add the following to your `.env`:
 
-The `.env` file must be in the project root and contain:
-- `blave_api_key`, `blave_secret_key` — required for the blave skill
-- `arbitrum_address`, `arbitrum_secret_key` — required for the hyperliquid skill
+```
+arbitrum_address=YOUR_WALLET_ADDRESS
+arbitrum_secret_key=YOUR_PRIVATE_KEY
+```
