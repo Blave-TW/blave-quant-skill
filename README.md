@@ -15,8 +15,8 @@ Blave Quant Skill is a tool that allows an agent to learn and perform the follow
 1. Skills:
 
 ```bash
-npx skills add https://github.com/Blave-TW/blave-quant-skill --skill blave
-npx skills add https://github.com/Blave-TW/blave-quant-skill --skill hyperliquid
+npx skills add https://github.com/Blave-TW/blave-quant-skill/blave
+npx skills add https://github.com/Blave-TW/blave-quant-skill/hyperliquid
 ```
 
 2. Script:

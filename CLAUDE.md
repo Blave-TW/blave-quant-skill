@@ -45,8 +45,8 @@ This repo contains two independent skills sharing the same venv and dependencies
 
 | Skill | CLI entry | Main script | Skill doc |
 |---|---|---|---|
-| blave | `blave_cli.py` | `src/blave_main.py` | `BLAVE_SKILL.md` |
-| hyperliquid | `hyperliquid_cli.py` | `src/hyperliquid_main.py` | `HYPERLIQUID_SKILL.md` |
+| blave | `blave_cli.py` | `src/blave_main.py` | `blave/SKILL.md` |
+| hyperliquid | `hyperliquid_cli.py` | `src/hyperliquid_main.py` | `hyperliquid/SKILL.md` |
 
 **Command dispatch** (both main scripts): Uses a `@command` decorator with `inspect` to dynamically parse CLI arguments and route to registered functions.
 
