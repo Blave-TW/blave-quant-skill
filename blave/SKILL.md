@@ -20,6 +20,81 @@ secret-key: $blave_secret_key
 
 ---
 
+## Alpha Table
+
+Retrieve the latest alpha values for all symbols across all indicators. Use this to screen and filter coins based on current alpha signals.
+
+- **Method:** GET
+- **Endpoint:** `https://api.blave.org/alpha_table`
+- **Parameters:** none
+
+**Example:**
+
+```python
+import requests, os
+from dotenv import load_dotenv
+load_dotenv()
+
+headers = {"api-key": os.getenv("blave_api_key"), "secret-key": os.getenv("blave_secret_key")}
+response = requests.get("https://api.blave.org/alpha_table", headers=headers, timeout=60)
+print(response.json())
+```
+
+**Response:**
+
+```json
+{
+  "data": {
+    "BTCUSDT": {
+      "funding_rate": {
+        "binance": 0.01,
+        "bybit": 0.01
+      },
+      "holder_concentration": {
+        "-": -2.357
+      },
+      "holder_concentration_chg": {
+        "15min": -0.001,
+        "1h": -0.014,
+        "4h": -0.267,
+        "8h": -0.378,
+        "24h": 0.261,
+        "3d": -0.334,
+        "7d": "",
+        "30d": ""
+      }
+    }
+  },
+  "fields": [
+    {
+      "id": 1,
+      "name": "holder_concentration",
+      "name_en": "Holder Concentration",
+      "name_zh": "籌碼集中度",
+      "param": null
+    }
+  ],
+  "note": {
+    "1": [
+      {
+        "background_color": "#E46B6B",
+        "color": "#591C1C",
+        "max": -3,
+        "min": "-Infinity",
+        "note": { "en": "Overly Bearish", "zh": "過度看跌" }
+      }
+    ]
+  }
+}
+```
+
+- `data` — keyed by symbol; each symbol contains the latest alpha values per indicator.
+- `fields` — metadata for each indicator (`id`, `name`, `name_en`, `name_zh`, `param`).
+- `note` — keyed by indicator ID; defines color-coded interpretation ranges for each alpha value.
+- Empty string `""` in `holder_concentration_chg` means insufficient data for that timeframe.
+
+---
+
 ## Holder Concentration（籌碼集中度）
 
 ### Get Symbols
