@@ -36,6 +36,7 @@ This repo contains two independent skills.
 - `alpha_table` — latest alpha for all symbols across all indicators; use this to screen coins
 - `holder_concentration/get_symbols` / `get_alpha` — holder concentration time series + stat
 - `taker_intensity/get_symbols` / `get_alpha` — taker intensity time series + stat
+- `whale_hunter/get_symbols` / `get_alpha` — whale activity score time series + stat; supports `score_type` (`score_oi` / `score_volume`)
 
 **Hyperliquid skill** — CLI-based. `hyperliquid_cli.py` launches the venv and runs `src/hyperliquid_main.py`. Uses a `@command` decorator with `inspect` to parse CLI arguments.
 
