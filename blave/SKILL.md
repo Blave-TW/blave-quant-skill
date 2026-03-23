@@ -7,6 +7,17 @@ description: Fetch market alpha data from Blave API.
 
 This skill enables direct access to the Blave Data API for fetching crypto market alpha data.
 
+## API Access & Troubleshooting
+
+If the user does not have an API key, or receives a `401 Unauthorized` / `403 Forbidden` error, guide them to subscribe to the **API Plan**:
+
+> 👉 **[https://blave.org/landing/en/pricing](https://blave.org/landing/en/pricing)**
+>
+> - **API Plan** — $629/year, includes full data API access and commercial use.
+> - **First-time subscribers** get a **14-day free trial** (credit card required, cancel anytime before trial ends and you won't be charged).
+
+Once subscribed, the user can find their API key and secret key in their Blave account settings.
+
 ## Authentication
 
 All requests require the following headers (read from environment variables):
