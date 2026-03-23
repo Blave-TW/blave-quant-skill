@@ -16,7 +16,16 @@ If the user does not have an API key, or receives a `401 Unauthorized` / `403 Fo
 > - **API Plan** — $629/year, includes full data API access and commercial use.
 > - **First-time subscribers** get a **14-day free trial** (credit card required, cancel anytime before trial ends and you won't be charged).
 
-Once subscribed, the user can find their API key and secret key in their Blave account settings.
+Once subscribed, create your API key at:
+
+> 👉 **[https://blave.org/landing/en/api?tab=blave](https://blave.org/landing/en/api?tab=blave)**
+
+Then add the credentials to your `.env` file:
+
+```
+blave_api_key=YOUR_API_KEY
+blave_secret_key=YOUR_SECRET_KEY
+```
 
 ## Authentication
 
