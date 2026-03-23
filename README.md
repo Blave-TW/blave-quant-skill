@@ -5,7 +5,7 @@ A skill that allows an agent to fetch crypto market alpha data from the Blave AP
 ## Skill
 
 ```bash
-npx skills add https://github.com/Blave-TW/blave-quant-skill/blave
+npx skills add https://github.com/Blave-TW/blave-quant-skill
 ```
 
 ## Setup

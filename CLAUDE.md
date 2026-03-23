@@ -11,7 +11,7 @@ Required `.env` variables:
 
 ## Blave API Endpoints
 
-See `blave/SKILL.md` for full documentation.
+See `SKILL.md` for full documentation.
 
 - `alpha_table` — latest alpha for all symbols across all indicators; use this to screen coins
 - `kline` — OHLCV candlestick data; params: symbol, period, start_date, end_date
