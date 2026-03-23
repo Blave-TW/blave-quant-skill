@@ -353,3 +353,303 @@ print(response.json())
 - `stat.exp_value` — 24h expected return value.
 - `stat.avg_up_return` / `stat.avg_down_return` — average 24h return when up/down.
 - `stat.return_ratio` — ratio of avg up return to avg down return (absolute).
+
+---
+
+## Kline（K線）
+
+Retrieve OHLCV candlestick data for a symbol.
+
+- **Method:** GET
+- **Endpoint:** `https://api.blave.org/kline`
+- **Parameters:**
+  - `symbol` (required) — e.g. `BTCUSDT`
+  - `period` (required) — `"5min"` / `"15min"` / `"1h"` / `"4h"` / `"8h"` / `"1d"`
+  - `start_date` (optional) — `YYYY-MM-DD`
+  - `end_date` (optional) — `YYYY-MM-DD`
+
+**Example:**
+
+```python
+import requests, os
+from dotenv import load_dotenv
+load_dotenv()
+
+headers = {"api-key": os.getenv("blave_api_key"), "secret-key": os.getenv("blave_secret_key")}
+params = {"symbol": "BTCUSDT", "period": "1h", "start_date": "2025-01-01", "end_date": "2025-03-01"}
+response = requests.get("https://api.blave.org/kline", headers=headers, params=params, timeout=60)
+print(response.json())
+```
+
+**Response:**
+
+```json
+[
+  {"time": 1735803900.0, "open": 94000.0, "high": 94500.0, "low": 93800.0, "close": 94200.0},
+  {"time": 1735807500.0, "open": 94200.0, "high": 94800.0, "low": 94100.0, "close": 94600.0}
+]
+```
+
+- `time` is Unix timestamp in UTC+0.
+
+---
+
+## Market Direction（市場方向）
+
+Retrieve the Market Direction alpha (based on BTCUSDT).
+
+- **Method:** GET
+- **Endpoint:** `https://api.blave.org/market_direction/get_alpha`
+- **Parameters:**
+  - `period` (required) — `"5min"` / `"15min"` / `"1h"` / `"4h"` / `"8h"` / `"1d"`
+  - `start_date` (optional) — `YYYY-MM-DD`
+  - `end_date` (optional) — `YYYY-MM-DD`
+  - > No `symbol` parameter — always uses BTCUSDT.
+
+**Example:**
+
+```python
+import requests, os
+from dotenv import load_dotenv
+load_dotenv()
+
+headers = {"api-key": os.getenv("blave_api_key"), "secret-key": os.getenv("blave_secret_key")}
+params = {"period": "1h", "start_date": "2025-01-01", "end_date": "2025-03-01"}
+response = requests.get("https://api.blave.org/market_direction/get_alpha", headers=headers, params=params, timeout=60)
+print(response.json())
+```
+
+**Response:**
+
+```json
+{
+  "data": {
+    "alpha": [-0.233, -0.234, "..."],
+    "timestamp": [1735803900.0, 1735804800.0, "..."]
+  }
+}
+```
+
+---
+
+## Market Sentiment（市場情緒）
+
+### Get Symbols
+
+- **Method:** GET
+- **Endpoint:** `https://api.blave.org/market_sentiment/get_symbols`
+
+**Response:**
+
+```json
+{ "data": ["BNBUSDT", "BTCUSDT", "ETHUSDT", "..."] }
+```
+
+---
+
+### Get Alpha
+
+- **Method:** GET
+- **Endpoint:** `https://api.blave.org/market_sentiment/get_alpha`
+- **Parameters:**
+  - `symbol` (required) — e.g. `BTCUSDT`
+  - `period` (required) — `"5min"` / `"15min"` / `"1h"` / `"4h"` / `"8h"` / `"1d"`
+  - `start_date` (optional) — `YYYY-MM-DD`
+  - `end_date` (optional) — `YYYY-MM-DD`
+
+**Example:**
+
+```python
+import requests, os
+from dotenv import load_dotenv
+load_dotenv()
+
+headers = {"api-key": os.getenv("blave_api_key"), "secret-key": os.getenv("blave_secret_key")}
+params = {"symbol": "BTCUSDT", "period": "1h", "start_date": "2025-01-01", "end_date": "2025-03-01"}
+response = requests.get("https://api.blave.org/market_sentiment/get_alpha", headers=headers, params=params, timeout=60)
+print(response.json())
+```
+
+**Response:**
+
+```json
+{
+  "data": {
+    "alpha": [-0.233, -0.234, "..."],
+    "timestamp": [1735803900.0, 1735804800.0, "..."],
+    "stat": {
+      "avg_down_return": -0.026, "avg_up_return": 0.028,
+      "exp_value": -0.001, "is_data_sufficient": true,
+      "return_ratio": 1.065, "up_prob": 0.462
+    }
+  }
+}
+```
+
+---
+
+## Capital Shortage（資金稀缺）
+
+Retrieve the Capital Shortage alpha (market-wide, based on BTC).
+
+- **Method:** GET
+- **Endpoint:** `https://api.blave.org/capital_shortage/get_alpha`
+- **Parameters:**
+  - `period` (required) — `"5min"` / `"15min"` / `"1h"` / `"4h"` / `"8h"` / `"1d"`
+  - `start_date` (optional) — `YYYY-MM-DD`
+  - `end_date` (optional) — `YYYY-MM-DD`
+  - > No `symbol` parameter — market-wide indicator.
+
+**Example:**
+
+```python
+import requests, os
+from dotenv import load_dotenv
+load_dotenv()
+
+headers = {"api-key": os.getenv("blave_api_key"), "secret-key": os.getenv("blave_secret_key")}
+params = {"period": "1h", "start_date": "2025-01-01", "end_date": "2025-03-01"}
+response = requests.get("https://api.blave.org/capital_shortage/get_alpha", headers=headers, params=params, timeout=60)
+print(response.json())
+```
+
+**Response:**
+
+```json
+{
+  "data": {
+    "alpha": [-0.233, -0.234, "..."],
+    "timestamp": [1735803900.0, 1735804800.0, "..."],
+    "stat": {
+      "avg_down_return": -0.026, "avg_up_return": 0.028,
+      "exp_value": -0.001, "is_data_sufficient": true,
+      "return_ratio": 1.065, "up_prob": 0.462
+    }
+  }
+}
+```
+
+---
+
+## Sector Rotation（板塊輪動）
+
+Retrieve sector rotation history data.
+
+- **Method:** GET
+- **Endpoint:** `https://api.blave.org/sector_rotation/get_history_data`
+- **Parameters:** none
+
+**Example:**
+
+```python
+import requests, os
+from dotenv import load_dotenv
+load_dotenv()
+
+headers = {"api-key": os.getenv("blave_api_key"), "secret-key": os.getenv("blave_secret_key")}
+response = requests.get("https://api.blave.org/sector_rotation/get_history_data", headers=headers, timeout=60)
+print(response.json())
+```
+
+**Response:**
+
+```json
+{ "data": { "...": "..." } }
+```
+
+---
+
+## Squeeze Momentum（擠壓動能）
+
+### Get Symbols
+
+- **Method:** GET
+- **Endpoint:** `https://api.blave.org/squeeze_momentum/get_symbols`
+
+**Response:**
+
+```json
+{ "data": ["BNBUSDT", "BTCUSDT", "ETHUSDT", "..."] }
+```
+
+---
+
+### Get Alpha
+
+- **Method:** GET
+- **Endpoint:** `https://api.blave.org/squeeze_momentum/get_alpha`
+- **Parameters:**
+  - `symbol` (required) — e.g. `BTCUSDT`
+  - `start_date` (optional) — `YYYY-MM-DD`
+  - `end_date` (optional) — `YYYY-MM-DD`
+  - > Period is fixed to `"1d"` — no `period` parameter needed.
+
+**Example:**
+
+```python
+import requests, os
+from dotenv import load_dotenv
+load_dotenv()
+
+headers = {"api-key": os.getenv("blave_api_key"), "secret-key": os.getenv("blave_secret_key")}
+params = {"symbol": "BTCUSDT", "start_date": "2025-01-01", "end_date": "2025-03-01"}
+response = requests.get("https://api.blave.org/squeeze_momentum/get_alpha", headers=headers, params=params, timeout=60)
+print(response.json())
+```
+
+**Response:**
+
+```json
+{
+  "data": {
+    "alpha": [-0.233, -0.234, "..."],
+    "timestamp": [1735803900.0, 1735804800.0, "..."],
+    "scolor": ["green", "red", "..."],
+    "stat": {
+      "avg_down_return": -0.026, "avg_up_return": 0.028,
+      "exp_value": -0.001, "is_data_sufficient": true,
+      "return_ratio": 1.065, "up_prob": 0.462
+    }
+  }
+}
+```
+
+- `scolor` — color label aligned with alpha/timestamp arrays; indicates momentum direction.
+
+---
+
+## Blave Top Trader Exposure（頂級交易員曝險）
+
+Retrieve Blave Top Trader net exposure (based on BTCUSDT).
+
+- **Method:** GET
+- **Endpoint:** `https://api.blave.org/blave_top_trader/get_exposure`
+- **Parameters:**
+  - `period` (required) — `"5min"` / `"15min"` / `"1h"` / `"4h"` / `"8h"` / `"1d"`
+  - `start_date` (optional) — `YYYY-MM-DD`
+  - `end_date` (optional) — `YYYY-MM-DD`
+  - > No `symbol` parameter — always uses BTCUSDT.
+
+**Example:**
+
+```python
+import requests, os
+from dotenv import load_dotenv
+load_dotenv()
+
+headers = {"api-key": os.getenv("blave_api_key"), "secret-key": os.getenv("blave_secret_key")}
+params = {"period": "1h", "start_date": "2025-01-01", "end_date": "2025-03-01"}
+response = requests.get("https://api.blave.org/blave_top_trader/get_exposure", headers=headers, params=params, timeout=60)
+print(response.json())
+```
+
+**Response:**
+
+```json
+{
+  "data": {
+    "alpha": [-0.233, -0.234, "..."],
+    "timestamp": [1735803900.0, 1735804800.0, "..."]
+  }
+}
+```
