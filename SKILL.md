@@ -27,6 +27,13 @@ blave_api_key=YOUR_API_KEY
 blave_secret_key=YOUR_SECRET_KEY
 ```
 
+## Usage Guidelines
+
+**When to use Alpha Table vs. individual endpoints:**
+
+- If the user asks to **compare multiple coins**, **recommend a coin**, **rank coins**, **find the best/worst performing**, or **screen across the market** — always use `alpha_table` first. It returns the latest alpha for all symbols in a single request, which is far more efficient than calling individual endpoints per coin.
+- Only use `holder_concentration/get_alpha`, `taker_intensity/get_alpha`, etc. when the user asks for the **historical time series** of a specific coin.
+
 ## Authentication
 
 All requests require the following headers (read from environment variables):
