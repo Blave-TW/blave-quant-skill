@@ -1,5 +1,7 @@
 # Open Position Workflow
 
+> **Credentials:** Read from `.env` — `BITMART_API_KEY`, `BITMART_API_SECRET`, `BITMART_API_MEMO`.
+
 ## Scenario: Open a Long Position
 
 **User prompt:** "Open a 10x long BTC position with 100 contracts on BitMart"

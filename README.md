@@ -1,6 +1,9 @@
 # Blave Quant Skill
 
-A skill that allows an agent to fetch crypto market alpha data from the Blave API.
+A skill that gives your agent three capabilities:
+1. **Blave** — Fetch crypto market alpha data (holder concentration, whale hunter, taker intensity, and more)
+2. **BitMart Futures** — Trade perpetual futures contracts on BitMart
+3. **BitMart Spot** — Buy and sell spot assets on BitMart
 
 ## Install
 
@@ -8,23 +11,23 @@ A skill that allows an agent to fetch crypto market alpha data from the Blave AP
 npx skills add https://github.com/Blave-TW/blave-quant-skill
 ```
 
+---
+
 ## Setup
 
-After installing the skill, follow these steps:
+### Blave API
 
-### 1. Get a Blave API Plan
+#### 1. Get a Blave API Plan
 
 Subscribe to the **API Plan** to get API access. First-time subscribers get a **14-day free trial** (credit card required).
 
 👉 [https://blave.org/landing/en/pricing](https://blave.org/landing/en/pricing)
 
-### 2. Create Your API Key
-
-Once subscribed, create your API key here:
+#### 2. Create Your Blave API Key
 
 👉 [https://blave.org/landing/en/api?tab=blave](https://blave.org/landing/en/api?tab=blave)
 
-### 3. Add Your Credentials
+#### 3. Add Blave Credentials
 
 Add the following to your `.env` file:
 
@@ -33,13 +36,41 @@ blave_api_key=YOUR_API_KEY
 blave_secret_key=YOUR_SECRET_KEY
 ```
 
-You're all set! The skill will use these credentials to call the Blave API.
+---
+
+### BitMart API (Futures & Spot)
+
+#### 1. Create Your BitMart API Key
+
+1. Log in to [BitMart](https://www.bitmart.com)
+2. Go to **Account → API Management**:
+   👉 [https://www.bitmart.com/api-config/en](https://www.bitmart.com/api-config/en)
+3. Click **Create API Key**
+4. Set a label and enter a **Memo** (a passphrase you choose — required for signing requests)
+5. Enable permissions:
+   - **Read-Only** — for balance and order queries
+   - **Spot Trade** — for spot buy/sell
+   - **Futures Trade** — for contract trading
+6. Complete 2FA and save your credentials:
+   - **API Key**
+   - **Secret Key** (shown only once — save it immediately)
+   - **Memo** (the passphrase you entered)
+
+#### 2. Add BitMart Credentials
+
+Add the following to your `.env` file:
+
+```
+BITMART_API_KEY=YOUR_API_KEY
+BITMART_API_SECRET=YOUR_SECRET_KEY
+BITMART_API_MEMO=YOUR_MEMO
+```
 
 ---
 
 ## Usage Examples
 
-Once set up, you can ask your agent:
+### Blave Market Data
 
 - "Use Blave to check the Holder Concentration trend for BTCUSDT over the past week"
 - "Use Blave to fetch the alpha table and find the top 5 coins with the highest holder concentration"
@@ -54,3 +85,35 @@ Once set up, you can ask your agent:
 - "用 Blave 查 ETHUSDT 的巨鯨警報，score_type 用 score_oi"
 - "用 Blave 看一下目前市場方向和資金稀缺指標"
 - "用 Blave 抓 BTCUSDT 過去三個月的 K 線（1h）"
+
+---
+
+### BitMart Futures
+
+- "Open a long position on BTCUSDT with 10x leverage, 0.01 BTC, market order"
+- "Check my current futures positions on BitMart"
+- "Set a take profit at 100000 and stop loss at 90000 for my BTCUSDT long"
+- "Cancel all open orders for ETHUSDT futures"
+
+---
+
+- "用 BitMart 開一個 BTCUSDT 10倍槓桿多單，0.01 BTC，市價"
+- "查看我目前的 BitMart 合約倉位"
+- "幫我的 BTCUSDT 多單設定止盈 100000、止損 90000"
+- "取消 ETHUSDT 所有掛單"
+
+---
+
+### BitMart Spot
+
+- "Buy 100 USDT worth of BTC on BitMart spot"
+- "Sell 0.5 ETH at 4000 USDT limit order on BitMart"
+- "Show my BitMart spot balance"
+- "Cancel my open BTC buy order"
+
+---
+
+- "用 BitMart 現貨買 100 USDT 的 BTC"
+- "用 BitMart 現貨掛限價單賣 0.5 ETH，價格 4000"
+- "查看我的 BitMart 現貨餘額"
+- "取消我的 BTC 現貨買單"

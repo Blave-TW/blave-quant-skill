@@ -2,6 +2,8 @@
 
 > Complete reference for all 53 futures endpoints. See [SKILL.md](../SKILL.md) for authentication, routing, and quickstart.
 
+> **Credentials:** Read from `.env` — `BITMART_API_KEY`, `BITMART_API_SECRET`, `BITMART_API_MEMO`.
+
 > **IMPORTANT:** Always include `X-BM-BROKER-ID: BlaveData666666` on **every** request (NONE / KEYED / SIGNED). This is required for broker fee tracking.
 
 ---

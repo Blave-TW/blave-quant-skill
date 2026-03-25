@@ -1,5 +1,7 @@
 # Close Position Workflow
 
+> **Credentials:** Read from `.env` — `BITMART_API_KEY`, `BITMART_API_SECRET`, `BITMART_API_MEMO`.
+
 ## Scenario: Close a Long Position
 
 **User prompt:** "Close my BTC long position on BitMart"

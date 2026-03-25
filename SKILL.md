@@ -229,7 +229,7 @@ secret-key: $blave_secret_key
 
 ## Authentication
 
-**Credentials** (env vars or `~/.bitmart/config.toml`):
+**Credentials** (from `.env`):
 - `BITMART_API_KEY`, `BITMART_API_SECRET`, `BITMART_API_MEMO`
 
 **Before any private API call:** verify credentials are available. If missing — **STOP** and guide user to set them up.
@@ -379,7 +379,7 @@ Submit TP and SL as **two separate calls**.
 
 ## Authentication
 
-**Credentials** (env vars or `~/.bitmart/config.toml`):
+**Credentials** (from `.env`):
 - `BITMART_API_KEY`, `BITMART_API_SECRET`, `BITMART_API_MEMO`
 
 **Before any private API call:** verify credentials are available. If missing — **STOP** and guide user to set them up.

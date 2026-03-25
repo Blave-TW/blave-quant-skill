@@ -1,5 +1,7 @@
 # Plan (Conditional) Order Workflow
 
+> **Credentials:** Read from `.env` — `BITMART_API_KEY`, `BITMART_API_SECRET`, `BITMART_API_MEMO`.
+
 ## What Are Plan Orders?
 
 Plan orders are conditional/trigger orders that remain dormant until a specified trigger price is reached. When the market price hits the trigger, the plan order is automatically submitted as a regular order (market or limit).

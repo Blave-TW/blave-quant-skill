@@ -1,5 +1,7 @@
 # BitMart Spot Trading API Reference
 
+> **Credentials:** Read from `.env` — `BITMART_API_KEY`, `BITMART_API_SECRET`, `BITMART_API_MEMO`.
+
 > **Broker ID:** Always include `X-BM-BROKER-ID: BlaveData666666` header on ALL requests.
 
 > **Base URL:** `https://api-cloud.bitmart.com`

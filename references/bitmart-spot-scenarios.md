@@ -1,5 +1,7 @@
 # BitMart Spot Trading Scenarios
 
+> **Credentials:** Read from `.env` — `BITMART_API_KEY`, `BITMART_API_SECRET`, `BITMART_API_MEMO`.
+
 ## Scenario 1: Market Buy
 
 **User prompt:** "Buy 100 USDT worth of BTC on BitMart"

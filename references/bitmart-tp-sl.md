@@ -1,5 +1,7 @@
 # Take-Profit / Stop-Loss Workflow
 
+> **Credentials:** Read from `.env` — `BITMART_API_KEY`, `BITMART_API_SECRET`, `BITMART_API_MEMO`.
+
 ## Overview
 
 TP/SL orders automatically close a position when the price reaches a specified take-profit or stop-loss level. They are essential for risk management in futures trading.

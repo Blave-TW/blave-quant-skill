@@ -26,62 +26,19 @@
 
 ## 2. Environment Variables Setup
 
-Set the following environment variables in your shell profile (`~/.bashrc`, `~/.zshrc`, or equivalent):
+Add the following to your `.env` file:
 
-```bash
-export BITMART_API_KEY="your-api-key"
-export BITMART_API_SECRET="your-secret-key"
-export BITMART_API_MEMO="your-memo"
+```
+BITMART_API_KEY=your-api-key
+BITMART_API_SECRET=your-secret-key
+BITMART_API_MEMO=your-memo
 ```
 
-After adding, reload your shell:
-
-```bash
-source ~/.zshrc   # or source ~/.bashrc
-```
-
-Verify they are set:
-
-```bash
-echo "Key: ${BITMART_API_KEY:0:5}...${BITMART_API_KEY: -4}"
-echo "Memo: ${BITMART_API_MEMO:0:3}..."
-```
-
-**Security:** Never display the full secret key or memo. The commands above show only partial values for verification.
+**Security:** Never display the full secret key or memo.
 
 ---
 
-## 3. Config File Setup
-
-As an alternative to environment variables, you can use a config file.
-
-Create the config directory and file:
-
-```bash
-mkdir -p ~/.bitmart
-chmod 700 ~/.bitmart
-```
-
-Create `~/.bitmart/config.toml`:
-
-```toml
-[default]
-api_key = "your-api-key"
-api_secret = "your-secret-key"
-memo = "your-memo"
-```
-
-Set restrictive permissions:
-
-```bash
-chmod 600 ~/.bitmart/config.toml
-```
-
-**Priority:** Environment variables take precedence over the config file if both are set.
-
----
-
-## 4. Signature Generation
+## 3. Signature Generation
 
 BitMart uses HMAC-SHA256 signatures for authenticated (SIGNED) API calls.
 
