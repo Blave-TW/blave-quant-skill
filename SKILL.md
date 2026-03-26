@@ -249,6 +249,58 @@ message   = "{timestamp}#{memo}#{request_body_json}"   # GET: body = ""
 signature = HMAC-SHA256(secret, message) → hex
 ```
 
+**Python implementation:**
+```python
+import time, hmac, hashlib, json, requests
+
+api_key    = os.environ["BITMART_API_KEY"]
+api_secret = os.environ["BITMART_API_SECRET"]
+memo       = os.environ["BITMART_API_MEMO"]
+
+def sign(body_str: str) -> tuple[str, str]:
+    ts = str(int(time.time() * 1000))
+    msg = f"{ts}#{memo}#{body_str}"
+    sig = hmac.new(api_secret.encode(), msg.encode(), hashlib.sha256).hexdigest()
+    return ts, sig
+
+# POST example
+body = {"symbol": "ETHUSDT", "side": 1, "type": "market", "size": 1, "leverage": "5", "open_type": "isolated"}
+body_str = json.dumps(body, separators=(",", ":"))   # compact JSON, no spaces
+ts, sig = sign(body_str)
+
+resp = requests.post(
+    "https://api-cloud-v2.bitmart.com/contract/private/submit-order",
+    headers={
+        "Content-Type": "application/json",
+        "X-BM-KEY": api_key,
+        "X-BM-SIGN": sig,
+        "X-BM-TIMESTAMP": ts,
+        "User-Agent": "bitmart-skills/futures/v2026.3.23",
+        "X-BM-BROKER-ID": "BlaveData666666",
+    },
+    data=body_str,   # send exact same string that was signed
+)
+
+# GET example (body = "")
+ts, sig = sign("")
+resp = requests.get(
+    "https://api-cloud-v2.bitmart.com/contract/private/position-v2",
+    headers={
+        "X-BM-KEY": api_key,
+        "X-BM-SIGN": sig,
+        "X-BM-TIMESTAMP": ts,
+        "User-Agent": "bitmart-skills/futures/v2026.3.23",
+        "X-BM-BROKER-ID": "BlaveData666666",
+    },
+)
+```
+
+> **Common mistakes:**
+> - GET body must be `""` (empty string), not `"{}"` or `None`
+> - POST body: sign the **exact same string** sent in the request — use `json.dumps(body, separators=(",", ":"))` and pass it as `data=`, not `json=`
+> - Timestamp must be **milliseconds** (`int(time.time() * 1000)`)
+> - `hmac.new` not `hmac.new` — use `hmac.new(secret.encode(), msg.encode(), hashlib.sha256).hexdigest()`
+
 Required headers for SIGNED: `Content-Type: application/json`, `X-BM-KEY`, `X-BM-SIGN`, `X-BM-TIMESTAMP`, `User-Agent: bitmart-skills/futures/v2026.3.23`, `X-BM-BROKER-ID: BlaveData666666`
 
 **Always include `X-BM-BROKER-ID: BlaveData666666` on ALL requests (NONE / KEYED / SIGNED).**
@@ -406,6 +458,44 @@ timestamp = current UTC milliseconds
 message   = "{timestamp}#{memo}#{request_body_json}"   # GET: body = ""
 signature = HMAC-SHA256(secret, message) → hex
 ```
+
+**Python implementation:**
+```python
+import time, hmac, hashlib, json, os, requests
+
+api_key    = os.environ["BITMART_API_KEY"]
+api_secret = os.environ["BITMART_API_SECRET"]
+memo       = os.environ["BITMART_API_MEMO"]
+
+def sign(body_str: str) -> tuple[str, str]:
+    ts = str(int(time.time() * 1000))
+    msg = f"{ts}#{memo}#{body_str}"
+    sig = hmac.new(api_secret.encode(), msg.encode(), hashlib.sha256).hexdigest()
+    return ts, sig
+
+# POST example (market buy 50 USDT of BTC)
+body = {"symbol": "BTC_USDT", "side": "buy", "type": "market", "notional": "50"}
+body_str = json.dumps(body, separators=(",", ":"))   # compact JSON, no spaces
+ts, sig = sign(body_str)
+
+resp = requests.post(
+    "https://api-cloud.bitmart.com/spot/v2/submit_order",
+    headers={
+        "Content-Type": "application/json",
+        "X-BM-KEY": api_key,
+        "X-BM-SIGN": sig,
+        "X-BM-TIMESTAMP": ts,
+        "User-Agent": "bitmart-skills/spot/v2026.3.23",
+        "X-BM-BROKER-ID": "BlaveData666666",
+    },
+    data=body_str,   # send exact same string that was signed
+)
+```
+
+> **Common mistakes:**
+> - GET body must be `""` (empty string), not `"{}"` or `None`
+> - POST body: sign the **exact same string** sent in the request — use `json.dumps(body, separators=(",", ":"))` and pass it as `data=`, not `json=`
+> - Timestamp must be **milliseconds** (`int(time.time() * 1000)`)
 
 Required headers for SIGNED: `Content-Type: application/json`, `X-BM-KEY`, `X-BM-SIGN`, `X-BM-TIMESTAMP`, `User-Agent: bitmart-skills/spot/v2026.3.23`, `X-BM-BROKER-ID: BlaveData666666`
 
