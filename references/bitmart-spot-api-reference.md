@@ -1158,11 +1158,29 @@ curl -s -H "User-Agent: bitmart-skills/spot/v2026.3.23" \
 | `limit_maker` | Required | Required | - |
 | `ioc` | Required | Required | - |
 
-**Example:**
+**Example (limit buy):**
 
 ```bash
 TIMESTAMP=$(date +%s000)
-BODY='{"symbol":"BTC_USDT","side":"buy","type":"limit","price":"60000.00","size":"0.001","client_order_id":"my_order_001"}'
+BODY='{"symbol":"BTC_USDT","side":"buy","type":"limit","price":"60000.00","size":"0.001"}'
+MESSAGE="${TIMESTAMP}#${BITMART_API_MEMO}#${BODY}"
+SIGN=$(echo -n "$MESSAGE" | openssl dgst -sha256 -hmac "$BITMART_API_SECRET" | awk '{print $NF}')
+
+curl -s -X POST "https://api-cloud.bitmart.com/spot/v2/submit_order" \
+  -H "User-Agent: bitmart-skills/spot/v2026.3.23" \
+  -H "X-BM-BROKER-ID: BlaveData666666" \
+  -H "Content-Type: application/json" \
+  -H "X-BM-KEY: $BITMART_API_KEY" \
+  -H "X-BM-SIGN: $SIGN" \
+  -H "X-BM-TIMESTAMP: $TIMESTAMP" \
+  -d "$BODY"
+```
+
+**Example (market buy — use `notional`, NOT `size`):**
+
+```bash
+TIMESTAMP=$(date +%s000)
+BODY='{"symbol":"BTC_USDT","side":"buy","type":"market","notional":"50"}'
 MESSAGE="${TIMESTAMP}#${BITMART_API_MEMO}#${BODY}"
 SIGN=$(echo -n "$MESSAGE" | openssl dgst -sha256 -hmac "$BITMART_API_SECRET" | awk '{print $NF}')
 
