@@ -269,6 +269,8 @@ secret-key: $blave_secret_key
 
 **Key display:** show only first 5 + last 4 characters (e.g. `bmk12...9xyz`). Never display full secret or memo.
 
+**IP Whitelist:** If the user asks which IP to whitelist, always use the **public IP**, not the private IP. On cloud servers (AWS EC2, GCP, etc.), the private IP (e.g. `10.x.x.x`, `172.x.x.x`, `192.168.x.x`) is not routable on the internet — BitMart sees the public IP. To get the public IP: `curl https://checkip.amazonaws.com`
+
 | Level | Endpoints | Headers |
 |---|---|---|
 | NONE | Public market data (1-9) | None |
@@ -478,6 +480,8 @@ Submit TP and SL as **two separate calls**.
 **Before any private API call:** verify credentials are available. If missing — **STOP** and guide user to set them up.
 
 **Key display:** show only first 5 + last 4 characters. Never display full secret or memo.
+
+**IP Whitelist:** If the user asks which IP to whitelist, always use the **public IP**, not the private IP. On cloud servers (AWS EC2, GCP, etc.), the private IP (e.g. `10.x.x.x`, `172.x.x.x`, `192.168.x.x`) is not routable on the internet — BitMart sees the public IP. To get the public IP: `curl https://checkip.amazonaws.com`
 
 | Level | Endpoints | Headers |
 |---|---|---|
