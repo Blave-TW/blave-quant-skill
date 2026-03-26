@@ -49,7 +49,40 @@ secret-key: $blave_secret_key
 ### Alpha Table
 `GET /alpha_table` — Latest alpha for all symbols across all indicators. No params.
 
-**Response:** `{ data: { BTCUSDT: { holder_concentration: {"-": -2.35}, holder_concentration_chg: {"1h": -0.01, ...}, ... } }, fields: [...], note: {...} }`
+**Response structure per symbol:**
+
+| Field | Description |
+|---|---|
+| `statistics` | Predictive stats (see below) |
+| `price` | `{"-": 70000}` current price |
+| `price_change` | `{"15min": 0.001, "1h": ..., "24h": ...}` price change ratio |
+| `market_cap` | `{"-": 1234567890}` market cap in USD |
+| `market_cap_percentile` | `{"-": 85.3}` percentile among all symbols |
+| `funding_rate` | `{"binance": -0.01, "bitget": ...}` funding rate by exchange |
+| `oi_imbalance` | `{"-": 0.12}` open interest imbalance |
+| `holder_concentration` | `{"-": -2.35}` |
+| `holder_concentration_chg` | `{"15min": ..., "1h": ..., "24h": ...}` |
+| `taker_intensity` | `{"15min": ..., "1h": ..., "24h": ...}` |
+| `whale_hunter` | `{"15min-score_oi": ..., "15min-score_volume": ...}` |
+| `squeeze_momentum` | `{"-": -1.33}` |
+| `market_sentiment` | `{"-": -1.61}` |
+| `liquidation` | `{"15min": ..., "1h": ..., "24h": ...}` |
+| `unusual_movement` | `{"15min": ..., "1h": ..., "24h": ...}` |
+
+**`statistics` object** (predictive stats based on historical alpha):
+
+| Field | Description |
+|---|---|
+| `up_prob` | Probability of price going up in next 24h (0~1) |
+| `exp_value` | Expected return in next 24h |
+| `avg_up_return` | Average return on days price went up |
+| `avg_down_return` | Average return on days price went down |
+| `return_ratio` | Ratio of avg_up_return / abs(avg_down_return) |
+| `is_data_sufficient` | Whether enough history exists for reliable stats |
+
+> `statistics` reflects the **current alpha reading's** historical predictive power — use it to screen coins with high up_prob or positive exp_value.
+
+**Other response fields:**
 - `fields` — indicator metadata (id, name, name_en, name_zh, param)
 - `note` — color-coded interpretation ranges keyed by indicator ID
 - Empty string `""` = insufficient data for that timeframe
