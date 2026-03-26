@@ -5,6 +5,19 @@ A skill that gives your agent three capabilities:
 2. **BitMart Futures** — Trade perpetual futures contracts on BitMart
 3. **BitMart Spot** — Buy and sell spot assets on BitMart
 
+## Security
+
+This skill is **documentation only** — it contains no executable code, scripts, or binaries.
+
+- All files are plain Markdown (`.md`)
+- No `package.json`, no scripts, no dependencies
+- All API calls are made directly by your agent — this skill only provides the instructions
+- Your API keys stay in your local `.env` file and are never transmitted anywhere by this skill
+
+You can inspect the full source at: [https://github.com/Blave-TW/blave-quant-skill](https://github.com/Blave-TW/blave-quant-skill)
+
+---
+
 ## Install
 
 ```bash
@@ -117,3 +130,16 @@ BITMART_API_MEMO=YOUR_MEMO
 - "用 BitMart 現貨掛限價單賣 0.5 ETH，價格 4000"
 - "查看我的 BitMart 現貨餘額"
 - "取消我的 BTC 現貨買單"
+
+---
+
+## Disclaimer
+
+This skill is provided for informational and automation purposes only. It does not constitute financial, investment, or trading advice. Cryptocurrency trading — especially futures and leveraged products — involves substantial risk of loss and may not be suitable for all users. Past performance is not indicative of future results.
+
+By using this skill, you acknowledge that:
+- All trading decisions are solely your own responsibility
+- The authors and maintainers of this skill are not liable for any losses incurred
+- You should consult a qualified financial advisor before making investment decisions
+
+**本 Skill 僅供資訊參考與自動化操作使用，不構成任何投資建議。加密貨幣交易（尤其是合約與槓桿產品）具有高度風險，可能導致重大損失。過去績效不代表未來結果。使用本 Skill 即表示您同意，所有交易決策均由您自行負責，作者與維護者不對任何損失承擔責任。**
