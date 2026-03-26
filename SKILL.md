@@ -44,6 +44,18 @@ secret-key: $blave_secret_key
 
 > For Python examples, see `references/blave-api.md`.
 
+## Limits & Notes
+
+| Item | Value |
+|---|---|
+| Rate limit | 100 requests / 5 minutes per API key |
+| Rate limit exceeded | Returns `429 Too Many Requests` — wait for 5-minute reset |
+| Data update frequency | Every 5 minutes |
+| History backfill | Max 1 year |
+| Timestamps | UTC+0 |
+
+**Support:** info@blave.org | [Discord](https://discord.gg/D6cv5KDJja)
+
 ## Endpoints
 
 ### Alpha Table
