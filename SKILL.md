@@ -1,6 +1,6 @@
 ---
 name: blave-quant
-description: "Use for: (1) Blave market alpha data — holder concentration, taker intensity, whale hunter, squeeze momentum, market direction, capital shortage, sector rotation, top trader exposure, kline, alpha table; (2) BitMart futures/contract trading — opening/closing positions, leverage, plan orders, TP/SL, trailing stops, account management, sub-account transfers; (3) BitMart spot trading — buy/sell, limit/market orders, account balance, order history, sub-account transfers."
+description: "Use for: (1) Blave market alpha data — 籌碼集中度 holder concentration, 多空力道 taker intensity, 巨鯨警報 whale hunter, 擠壓動能 squeeze momentum, 市場方向 market direction, 資金稀缺 capital shortage, 板塊輪動 sector rotation, Blave頂尖交易員 top trader exposure, kline, alpha table, 市場情緒 market sentiment; (2) BitMart futures/contract trading — opening/closing positions, leverage, plan orders, TP/SL, trailing stops, account management, sub-account transfers; (3) BitMart spot trading — buy/sell, limit/market orders, account balance, order history, sub-account transfers."
 ---
 
 # Blave Quant Skill
@@ -63,31 +63,31 @@ Each symbol contains indicator fields plus:
 `symbol`✓, `period`✓ (`5min`/`15min`/`1h`/`4h`/`8h`/`1d`), `start_date`, `end_date`
 → `[{time, open, high, low, close}]` — time is Unix UTC+0
 
-### `GET /market_direction/get_alpha` — Market direction (BTC only, no symbol param)
+### `GET /market_direction/get_alpha` — 市場方向 Market direction (BTC only, no symbol param)
 `period`✓, `start_date`, `end_date` → `{data: {alpha, timestamp}}`
 
-### `GET /market_sentiment/get_alpha` — Market sentiment
+### `GET /market_sentiment/get_alpha` — 市場情緒 Market sentiment
 `symbol`✓, `period`✓, `start_date`, `end_date` → `{data: {alpha, timestamp, stat}}`
 
-### `GET /capital_shortage/get_alpha` — Capital shortage (market-wide, no symbol param)
+### `GET /capital_shortage/get_alpha` — 資金稀缺 Capital shortage (market-wide, no symbol param)
 `period`✓, `start_date`, `end_date` → `{data: {alpha, timestamp, stat}}`
 
-### `GET /holder_concentration/get_alpha` — Holder concentration (higher = more concentrated)
+### `GET /holder_concentration/get_alpha` — 籌碼集中度 Holder concentration (higher = more concentrated)
 `symbol`✓, `period`✓, `start_date`, `end_date` → `{data: {alpha, timestamp, stat}}`
 
-### `GET /taker_intensity/get_alpha` — Taker intensity (positive = buying, negative = selling)
+### `GET /taker_intensity/get_alpha` — 多空力道 Taker intensity (positive = buying, negative = selling)
 `symbol`✓, `period`✓, `timeframe` (`15min`/`1h`/`4h`/`8h`/`24h`/`3d`), `start_date`, `end_date`
 
-### `GET /whale_hunter/get_alpha` — Whale activity
+### `GET /whale_hunter/get_alpha` — 巨鯨警報 Whale activity
 `symbol`✓, `period`✓, `timeframe`, `score_type` (`score_oi`/`score_volume`), `start_date`, `end_date`
 
-### `GET /squeeze_momentum/get_alpha` — Squeeze momentum (period fixed to `1d`)
+### `GET /squeeze_momentum/get_alpha` — 擠壓動能 Squeeze momentum (period fixed to `1d`)
 `symbol`✓, `start_date`, `end_date` → includes `scolor` (momentum direction label)
 
-### `GET /blave_top_trader/get_exposure` — Top trader exposure (BTC only, no symbol param)
+### `GET /blave_top_trader/get_exposure` — Blave頂尖交易員 Top trader exposure (BTC only, no symbol param)
 `period`✓, `start_date`, `end_date` → `{data: {alpha, timestamp}}`
 
-### `GET /sector_rotation/get_history_data` — Sector rotation, no params
+### `GET /sector_rotation/get_history_data` — 板塊輪動 Sector rotation, no params
 
 All `get_alpha` responses include `stat`: `up_prob`, `exp_value`, `avg_up_return`, `avg_down_return`, `return_ratio`, `is_data_sufficient`
 

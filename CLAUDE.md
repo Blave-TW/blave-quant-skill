@@ -38,15 +38,15 @@ Base URL: `https://api.blave.org`
 
 - `alpha_table` — latest alpha for all symbols; use for multi-coin queries or screening
 - `kline` — OHLCV candlestick data
-- `market_direction/get_alpha` — market direction (BTCUSDT)
-- `market_sentiment/get_symbols` / `get_alpha` — market sentiment time series + stat
-- `capital_shortage/get_alpha` — capital shortage (market-wide)
-- `sector_rotation/get_history_data` — sector rotation history
-- `holder_concentration/get_symbols` / `get_alpha` — holder concentration time series + stat
-- `taker_intensity/get_symbols` / `get_alpha` — taker intensity time series + stat
-- `whale_hunter/get_symbols` / `get_alpha` — whale activity; supports `score_type`
-- `squeeze_momentum/get_symbols` / `get_alpha` — squeeze momentum + scolor; period fixed to `1d`
-- `blave_top_trader/get_exposure` — top trader net exposure (BTCUSDT)
+- `market_direction/get_alpha` — 市場方向 market direction (BTCUSDT)
+- `market_sentiment/get_symbols` / `get_alpha` — 市場情緒 market sentiment time series + stat
+- `capital_shortage/get_alpha` — 資金稀缺 capital shortage (market-wide)
+- `sector_rotation/get_history_data` — 板塊輪動 sector rotation history
+- `holder_concentration/get_symbols` / `get_alpha` — 籌碼集中度 holder concentration time series + stat
+- `taker_intensity/get_symbols` / `get_alpha` — 多空力道 taker intensity time series + stat
+- `whale_hunter/get_symbols` / `get_alpha` — 巨鯨警報 whale activity; supports `score_type`
+- `squeeze_momentum/get_symbols` / `get_alpha` — 擠壓動能 squeeze momentum + scolor; period fixed to `1d`
+- `blave_top_trader/get_exposure` — Blave頂尖交易員 top trader net exposure (BTCUSDT)
 
 ## BitMart Futures
 
