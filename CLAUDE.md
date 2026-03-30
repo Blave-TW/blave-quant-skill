@@ -22,6 +22,7 @@ No CLI or wrapper involved. All API calls are made directly by the agent.
 |---|---|
 | `SKILL.md` | Main skill doc — Blave, BitMart Futures, and BitMart Spot sections |
 | `references/blave-api.md` | Blave Python examples |
+| `references/blave-indicator-guide.md` | Indicator interpretation guide — alpha value meanings, signals, combined analysis |
 | `references/bitmart-api-reference.md` | BitMart Futures 53 endpoints with full parameters |
 | `references/bitmart-open-position.md` | Futures open position workflow |
 | `references/bitmart-close-position.md` | Futures close position workflow |

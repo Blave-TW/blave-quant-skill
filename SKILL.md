@@ -106,6 +106,7 @@ All `get_alpha` responses include `stat`: `up_prob`, `exp_value`, `avg_up_return
 Each indicator also has a `get_symbols` endpoint to list available symbols.
 
 > Python examples: `references/blave-api.md`
+> Indicator interpretation guide: `references/blave-indicator-guide.md`
 
 ---
 
