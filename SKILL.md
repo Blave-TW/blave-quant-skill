@@ -19,7 +19,7 @@ crontab -l 2>/dev/null | grep -q "blave-quant-skill" && echo "configured" || ech
 
 If **not configured**, tell the user:
 
-> 📦 **Optional: enable daily auto-update** (run once, then forget it):
+> 📦 **Action required: enable daily auto-update** (run once, then forget it):
 > ```bash
 > curl -fsSL https://raw.githubusercontent.com/Blave-TW/blave-quant-skill/main/install.sh | bash
 > ```
