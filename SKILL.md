@@ -31,6 +31,7 @@ curl -fsSL https://raw.githubusercontent.com/Blave-TW/blave-quant-skill/main/ins
 ## Setup
 
 No API key or 401/403 → guide user to:
+
 - Subscribe: **[https://blave.org/landing/en/pricing](https://blave.org/landing/en/pricing)** — $629/year, 14-day free trial
 - Create key: **[https://blave.org/landing/en/api?tab=blave](https://blave.org/landing/en/api?tab=blave)**
 
@@ -42,12 +43,12 @@ Add to `.env`: `blave_api_key=...` and `blave_secret_key=...`
 
 ## Limits
 
-| Item | Value |
-|---|---|
-| Rate limit | 100 req / 5 min — `429` if exceeded, resets after 5 min |
-| Data update | Every 5 minutes |
-| History | Max 1 year |
-| Timestamps | UTC+0 |
+| Item        | Value                                                   |
+| ----------- | ------------------------------------------------------- |
+| Rate limit  | 100 req / 5 min — `429` if exceeded, resets after 5 min |
+| Data update | Every 5 minutes                                         |
+| History     | Max 1 year                                              |
+| Timestamps  | UTC+0                                                   |
 
 ## Usage Guidelines
 
@@ -60,15 +61,15 @@ Add to `.env`: `blave_api_key=...` and `blave_secret_key=...`
 
 Each symbol contains indicator fields plus:
 
-| Field | Description |
-|---|---|
-| `statistics` | `up_prob`, `exp_value`, `avg_up_return`, `avg_down_return`, `return_ratio`, `is_data_sufficient` |
-| `price` | `{"-": 70000}` |
-| `price_change` | `{"15min": ..., "1h": ..., "24h": ...}` |
-| `market_cap` | `{"-": 1234567890}` |
-| `market_cap_percentile` | `{"-": 85.3}` |
-| `funding_rate` | `{"binance": -0.01, ...}` per exchange |
-| `oi_imbalance` | `{"-": 0.12}` |
+| Field                   | Description                                                                                      |
+| ----------------------- | ------------------------------------------------------------------------------------------------ |
+| `statistics`            | `up_prob`, `exp_value`, `avg_up_return`, `avg_down_return`, `return_ratio`, `is_data_sufficient` |
+| `price`                 | `{"-": 70000}`                                                                                   |
+| `price_change`          | `{"15min": ..., "1h": ..., "24h": ...}`                                                          |
+| `market_cap`            | `{"-": 1234567890}`                                                                              |
+| `market_cap_percentile` | `{"-": 85.3}`                                                                                    |
+| `funding_rate`          | `{"binance": -0.01, ...}` per exchange                                                           |
+| `oi_imbalance`          | `{"-": 0.12}`                                                                                    |
 
 > `statistics.up_prob` = probability of upward move in 24h. `statistics.exp_value` = expected return. Use these to screen coins.
 
@@ -77,31 +78,42 @@ Each symbol contains indicator fields plus:
 ---
 
 ### `GET /kline` — OHLCV candles
+
 `symbol`✓, `period`✓ (`5min`/`15min`/`1h`/`4h`/`8h`/`1d`), `start_date`, `end_date`
 → `[{time, open, high, low, close}]` — time is Unix UTC+0
 
+**`period` format:** `{number}{unit}` — unit: `min` / `h` / `d`. Examples: `15min`, `1h`, `4h`, `1d`, `7d`, `30d`.
+
 ### `GET /market_direction/get_alpha` — 市場方向 Market Direction (BTC only, no symbol param)
+
 `period`✓, `start_date`, `end_date` → `{data: {alpha, timestamp}}`
 
 ### `GET /market_sentiment/get_alpha` — 市場情緒 Market Sentiment
+
 `symbol`✓, `period`✓, `start_date`, `end_date` → `{data: {alpha, timestamp, stat}}`
 
 ### `GET /capital_shortage/get_alpha` — 資金稀缺 Capital Shortage (market-wide, no symbol param)
+
 `period`✓, `start_date`, `end_date` → `{data: {alpha, timestamp, stat}}`
 
 ### `GET /holder_concentration/get_alpha` — 籌碼集中度 Holder Concentration (higher = more concentrated)
+
 `symbol`✓, `period`✓, `start_date`, `end_date` → `{data: {alpha, timestamp, stat}}`
 
 ### `GET /taker_intensity/get_alpha` — 多空力道 Taker Intensity (positive = buying, negative = selling)
+
 `symbol`✓, `period`✓, `timeframe` (`15min`/`1h`/`4h`/`8h`/`24h`/`3d`), `start_date`, `end_date`
 
 ### `GET /whale_hunter/get_alpha` — 巨鯨警報 Whale Hunter
+
 `symbol`✓, `period`✓, `timeframe`, `score_type` (`score_oi`/`score_volume`), `start_date`, `end_date`
 
 ### `GET /squeeze_momentum/get_alpha` — 擠壓動能 Squeeze Momentum (period fixed to `1d`)
+
 `symbol`✓, `start_date`, `end_date` → includes `scolor` (momentum direction label)
 
-### `GET /blave_top_trader/get_exposure` — Blave頂尖交易員 Top Trader Exposure (BTC only, no symbol param)
+### `GET /blave_top_trader/get_exposure` — Blave 頂尖交易員 Top Trader Exposure (BTC only, no symbol param)
+
 `period`✓, `start_date`, `end_date` → `{data: {alpha, timestamp}}`
 
 ### `GET /sector_rotation/get_history_data` — 板塊輪動 Sector Rotation, no params
@@ -129,11 +141,11 @@ Each indicator also has a `get_symbols` endpoint to list available symbols.
 
 Verify credentials before any private call. If missing — **STOP**.
 
-| Level | Endpoints | Headers |
-|---|---|---|
-| NONE | Public market data | — |
-| KEYED | Read-only private | `X-BM-KEY` |
-| SIGNED | Write operations | `X-BM-KEY` + `X-BM-SIGN` + `X-BM-TIMESTAMP` |
+| Level  | Endpoints          | Headers                                     |
+| ------ | ------------------ | ------------------------------------------- |
+| NONE   | Public market data | —                                           |
+| KEYED  | Read-only private  | `X-BM-KEY`                                  |
+| SIGNED | Write operations   | `X-BM-KEY` + `X-BM-SIGN` + `X-BM-TIMESTAMP` |
 
 **Signature:** `HMAC-SHA256(secret, "{timestamp}#{memo}#{body}")` — GET body = `""`
 
@@ -146,46 +158,53 @@ Verify credentials before any private call. If missing — **STOP**.
 ## Operation Flow
 
 ### Step 0: Credential Check
+
 Verify `BITMART_API_KEY`, `BITMART_API_SECRET`, `BITMART_API_MEMO`. If missing — **STOP**.
 
 ### Step 1.1: Query Positions (READ)
+
 `GET /contract/private/position-v2` (KEYED, no signature needed)
 Filter `current_amount != "0"` → display symbol, position_side, current_amount, entry_price, leverage, open_type, liquidation_price, unrealized_pnl
 
 ### Step 1.5: Pre-Trade Check (MANDATORY before open/leverage)
+
 1. Call `GET /contract/private/position-v2?symbol=<SYMBOL>`
 2. If `current_amount` non-zero → inherit `leverage` and `open_type`, do NOT override
 3. If user wants different values → **STOP**, warn to close position first
 
 ### Step 1.55: Pre-Mode-Switch Check
+
 Confirm no positions (Step 1.5) AND no open orders (`GET /contract/private/get-open-orders`). If either exists → **STOP**.
 
 ### Step 1.6: TP/SL on Existing Position
+
 `POST /contract/private/submit-tp-sl-order` — submit TP and SL as **two separate calls**
 
-| Param | Value |
-|---|---|
-| `type` | `"take_profit"` or `"stop_loss"` |
-| `side` | `3` close long / `2` close short |
-| `trigger_price` | Activation price |
-| `executive_price` | `"0"` for market fill |
-| `price_type` | `1` last / `2` mark |
-| `plan_category` | `2` |
+| Param             | Value                            |
+| ----------------- | -------------------------------- |
+| `type`            | `"take_profit"` or `"stop_loss"` |
+| `side`            | `3` close long / `2` close short |
+| `trigger_price`   | Activation price                 |
+| `executive_price` | `"0"` for market fill            |
+| `price_type`      | `1` last / `2` mark              |
+| `plan_category`   | `2`                              |
 
 ### Step 2: Execute
+
 - READ → call, parse, display
 - WRITE → present summary → ask **"CONFIRM"** → execute
 
 **submit-order rules:**
 
-| Scenario | Send | Omit |
-|---|---|---|
-| Open, market | symbol, side, type:`"market"`, size, leverage, open_type | price |
-| Open, limit | symbol, side, type:`"limit"`, price, size, leverage, open_type | — |
-| Close, market | symbol, side, type:`"market"`, size | price, leverage, open_type |
-| Close, limit | symbol, side, type:`"limit"`, price, size | leverage, open_type |
+| Scenario      | Send                                                           | Omit                       |
+| ------------- | -------------------------------------------------------------- | -------------------------- |
+| Open, market  | symbol, side, type:`"market"`, size, leverage, open_type       | price                      |
+| Open, limit   | symbol, side, type:`"limit"`, price, size, leverage, open_type | —                          |
+| Close, market | symbol, side, type:`"market"`, size                            | price, leverage, open_type |
+| Close, limit  | symbol, side, type:`"limit"`, price, size                      | leverage, open_type        |
 
 ### Step 3: Verify
+
 - After open: `position-v2` → report entry price, size, leverage, liquidation price
 - After close: `position-v2` → report realized PnL
 - After order: `GET /contract/private/order` → confirm status
@@ -200,14 +219,14 @@ Confirm no positions (Step 1.5) AND no open orders (`GET /contract/private/get-o
 
 ## Error Handling
 
-| Code | Action |
-|---|---|
-| 30005 | Wrong signature → see `references/bitmart-signature.md` |
-| 30007 | Timestamp drift → sync clock |
-| 40012/40040 | Leverage/mode conflict → inherit existing position values |
-| 40027/42000 | Insufficient balance → transfer from spot or reduce size |
-| 429 | Rate limited → wait |
-| 403/503 Cloudflare | Wait 30-60s, retry max 3× |
+| Code               | Action                                                    |
+| ------------------ | --------------------------------------------------------- |
+| 30005              | Wrong signature → see `references/bitmart-signature.md`   |
+| 30007              | Timestamp drift → sync clock                              |
+| 40012/40040        | Leverage/mode conflict → inherit existing position values |
+| 40027/42000        | Insufficient balance → transfer from spot or reduce size  |
+| 429                | Rate limited → wait                                       |
+| 403/503 Cloudflare | Wait 30-60s, retry max 3×                                 |
 
 ## Spot ↔ Futures Transfer
 
@@ -215,20 +234,22 @@ Present summary → ask **"CONFIRM"** → execute.
 
 **Endpoint:** `POST https://api-cloud-v2.bitmart.com/account/v1/transfer-contract` (SIGNED)
 
-| Param | Value |
-|---|---|
-| `currency` | `USDT` only |
-| `amount` | transfer amount |
-| `type` | `"spot_to_contract"` or `"contract_to_spot"` |
+| Param      | Value                                        |
+| ---------- | -------------------------------------------- |
+| `currency` | `USDT` only                                  |
+| `amount`   | transfer amount                              |
+| `type`     | `"spot_to_contract"` or `"contract_to_spot"` |
 
 Rate limit: 1 req/2sec. ⚠️ `/spot/v1/transfer-contract` does NOT exist.
 
 ## Security
+
 - WRITE operations require **"CONFIRM"**
 - Always show liquidation price before opening leveraged positions
 - "Not financial advice. Futures trading carries significant risk of loss."
 
 ## References
+
 - `references/bitmart-api-reference.md` — 53 endpoints
 - `references/bitmart-signature.md` — Python signature implementation
 - `references/bitmart-open-position.md` / `bitmart-close-position.md` / `bitmart-plan-order.md` / `bitmart-tp-sl.md`
@@ -256,29 +277,33 @@ Same signature method as Futures. Credentials from `.env`: `BITMART_API_KEY`, `B
 ## Operation Flow
 
 ### Step 0: Credential Check
+
 Verify credentials. If missing — **STOP**.
 
 ### Step 1: Identify Intent
+
 - **READ:** market data, balance, order history
 - **WRITE:** submit/cancel orders, withdraw
 - **TRANSFER:** spot ↔ futures → see Part 2 **Spot ↔ Futures Transfer**
 
 ### Step 2: Execute Orders
+
 - READ → call, parse, display
 - WRITE → present summary → ask **"CONFIRM"** → execute
 
 **Endpoint:** `POST /spot/v2/submit_order`
 
-| Scenario | side | type | Key param |
-|---|---|---|---|
-| Buy, market | `buy` | `market` | `notional` (USDT to spend) |
-| Buy, limit | `buy` | `limit` | `size` (base qty) + `price` |
-| Sell, market | `sell` | `market` | `size` (base qty) |
-| Sell, limit | `sell` | `limit` | `size` + `price` |
+| Scenario     | side   | type     | Key param                   |
+| ------------ | ------ | -------- | --------------------------- |
+| Buy, market  | `buy`  | `market` | `notional` (USDT to spend)  |
+| Buy, limit   | `buy`  | `limit`  | `size` (base qty) + `price` |
+| Sell, market | `sell` | `market` | `size` (base qty)           |
+| Sell, limit  | `sell` | `limit`  | `size` + `price`            |
 
 > Market buy uses `notional`, NOT `size`.
 
 ### Step 3: Verify
+
 After order → query order detail. After cancel → check open orders.
 
 ## Order Reference
@@ -291,19 +316,21 @@ After order → query order detail. After cancel → check open orders.
 
 ## Error Handling
 
-| Code | Action |
-|---|---|
-| 30005 | Wrong signature → see `references/bitmart-signature.md` |
-| 30007 | Timestamp drift → sync clock |
-| 50000 | Insufficient balance |
-| 429 | Rate limited → wait |
-| 403/503 Cloudflare | Wait 30-60s, retry max 3× |
+| Code               | Action                                                  |
+| ------------------ | ------------------------------------------------------- |
+| 30005              | Wrong signature → see `references/bitmart-signature.md` |
+| 30007              | Timestamp drift → sync clock                            |
+| 50000              | Insufficient balance                                    |
+| 429                | Rate limited → wait                                     |
+| 403/503 Cloudflare | Wait 30-60s, retry max 3×                               |
 
 ## Security
+
 - WRITE operations require **"CONFIRM"**
 - "Not financial advice. Spot trading carries risk of loss."
 
 ## References
+
 - `references/bitmart-spot-api-reference.md` — 34 endpoints
 - `references/bitmart-signature.md` — Python signature implementation
 - `references/bitmart-spot-authentication.md` / `bitmart-spot-scenarios.md`
