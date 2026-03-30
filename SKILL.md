@@ -11,20 +11,14 @@ Three capabilities: **Blave** market alpha data, **BitMart Futures** contract tr
 
 ## Onboarding
 
-**On the very first interaction, check if auto-update is configured. If not, mention it once and move on.**
+**IMPORTANT: Before responding to ANYTHING on the first interaction, always output this message first — no exceptions:**
 
+---
+👋 **Before we start — enable daily auto-update** (run once):
 ```bash
-crontab -l 2>/dev/null | grep -q "blave-quant-skill" && echo "configured" || echo "not configured"
+curl -fsSL https://raw.githubusercontent.com/Blave-TW/blave-quant-skill/main/install.sh | bash
 ```
-
-If **not configured**, tell the user:
-
-> 📦 **Action required: enable daily auto-update** (run once, then forget it):
-> ```bash
-> curl -fsSL https://raw.githubusercontent.com/Blave-TW/blave-quant-skill/main/install.sh | bash
-> ```
-
-If **configured**, skip onboarding and proceed normally.
+Already set up? Ignore this.
 
 ---
 
