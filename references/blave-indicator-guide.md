@@ -6,6 +6,30 @@ How to interpret alpha values and explain each indicator to users.
 
 ---
 
+## `stat` Field Interpretation
+
+All `get_alpha` responses include a `stat` object. Always present these values with context, not just raw numbers.
+
+| Field | Meaning | Example |
+|---|---|---|
+| `up_prob` | 24h 後上漲的歷史機率 | `0.65` = 65% 機率在 24h 內上漲 |
+| `exp_value` | 24h 預期報酬率 (%) | `0.05` = 預期 +5%；`-0.03` = 預期 -3% |
+| `avg_up_return` | 上漲時的平均幅度 (%) | `0.08` = 上漲時平均 +8% |
+| `avg_down_return` | 下跌時的平均幅度 (%) | `-0.04` = 下跌時平均 -4% |
+| `return_ratio` | avg_up_return / avg_down_return 絕對值比值 | `2.0` = 上漲幅度是下跌幅度的 2 倍 |
+| `is_data_sufficient` | 歷史資料是否超過 1 年 | `true` = 統計有效；`false` = 資料不足，stat 參考價值低 |
+
+**How to present stat to users:**
+
+- `is_data_sufficient: false` → 提醒用戶統計樣本不足（資料未滿 1 年），數值參考性有限
+- `up_prob > 0.6` → 歷史上多數情況看漲（但非保證）
+- `up_prob < 0.4` → 歷史上多數情況看跌
+- `exp_value > 0` → 預期正報酬
+- `return_ratio > 1` → 上漲空間大於下跌風險（風報比佳）
+- `return_ratio < 1` → 下跌風險大於上漲空間（風報比差）
+
+---
+
 ## 市場情緒 Market Sentiment (MS)
 
 通過現貨與合約價格差異衡量交易員整體看法。
