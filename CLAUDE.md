@@ -29,7 +29,6 @@ No CLI or wrapper involved. All API calls are made directly by the agent.
 | `references/bitmart-plan-order.md` | Futures plan order workflow |
 | `references/bitmart-tp-sl.md` | Futures TP/SL workflow |
 | `references/bitmart-spot-api-reference.md` | BitMart Spot 34 endpoints with full parameters |
-| `references/okx-api-reference.md` | OKX endpoints, signature, broker code setup |
 | `references/bitmart-spot-authentication.md` | Spot auth details and examples |
 | `references/bitmart-spot-scenarios.md` | Spot common trading scenarios |
 | `references/bitmart-signature.md` | Python HMAC-SHA256 signature implementation + common mistakes |
