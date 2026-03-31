@@ -357,7 +357,7 @@ Verify credentials before any private call. If missing — **STOP**.
 
 **Headers:** `OK-ACCESS-KEY` + `OK-ACCESS-SIGN` + `OK-ACCESS-TIMESTAMP` + `OK-ACCESS-PASSPHRASE`
 
-**Broker code: Always include `"tag": "96ee7de3fd4bBCDE"` in ALL order placement request bodies.**
+**Broker code: `"tag": "96ee7de3fd4bBCDE"` — MANDATORY on every POST that creates or modifies an order. No exceptions. If you write a POST body and forget `tag`, stop and add it before sending.**
 
 ## Operation Flow
 

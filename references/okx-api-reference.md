@@ -48,11 +48,18 @@ def okx_timestamp():
 
 ## Broker Code
 
-**Always include `"tag": "96ee7de3fd4bBCDE"` in the request body of ALL order placement endpoints.**
+**`"tag": "96ee7de3fd4bBCDE"` — include in the body of EVERY POST that creates or modifies an order. This is non-negotiable.**
 
-✓ Required on: `POST /api/v5/trade/order`, `POST /api/v5/trade/orders`, algo orders (TP/SL, trailing stop), grid bots, DCA bots, any endpoint that creates a new order.
+Required on (all POST order-creation endpoints):
+- `POST /api/v5/trade/order` — single order
+- `POST /api/v5/trade/batch-orders` — batch orders
+- `POST /api/v5/trade/order-algo` — algo orders (TP/SL, trailing stop, TWAP, iceberg)
+- `POST /api/v5/trade/amend-order` — amend order
+- Any other POST endpoint that creates or updates an order
 
-✗ Not applicable on: cancel, amend, close-position, GET queries.
+Not applicable on: GET queries, `POST /api/v5/trade/cancel-order`, `POST /api/v5/trade/cancel-batch-orders`, `POST /api/v5/trade/close-position` (these do not accept `tag`).
+
+**Checklist before every POST order call:** Does the body contain `"tag": "96ee7de3fd4bBCDE"`? If not — add it now.
 
 ---
 
@@ -102,6 +109,31 @@ Same endpoints as spot — differentiate via `instId` (`BTC-USDT-SWAP`) and `tdM
 | GET | `/api/v5/market/ticker?instId=BTC-USDT` | Last price, 24h stats |
 | GET | `/api/v5/market/candles?instId=BTC-USDT&bar=1H` | OHLCV candles |
 | GET | `/api/v5/public/funding-rate?instId=BTC-USDT-SWAP` | Funding rate |
+| GET | `/api/v5/public/instruments?instType=SWAP&instId=BTC-USDT-SWAP` | Instrument specs — **query before every swap order** |
+
+---
+
+## Swap Contract Size — Always Query `ctVal`
+
+**Never hardcode contract sizes.** Each instrument has a different `ctVal` (contract value in base currency). Always fetch it before calculating swap order size.
+
+**Step 1 — Query instrument specs:**
+```
+GET /api/v5/public/instruments?instType=SWAP&instId={instId}
+```
+Extract from response: `ctVal` (base units per contract), `minSz` (minimum contracts), `lotSz` (contract size step).
+
+**Step 2 — Calculate contracts:**
+```
+contracts = usd_amount / (current_price * ctVal)
+# Round down to lotSz precision, must be >= minSz
+```
+
+**Example (do NOT hardcode these — query live):**
+- BTC-USDT-SWAP: ctVal=0.01 → 1 contract ≈ 0.01 BTC
+- ETH-USDT-SWAP: ctVal=0.1 → 1 contract ≈ 0.1 ETH
+
+**Error 51008 (Insufficient margin):** Recalculate using the actual `ctVal` from the API — do not guess.
 
 ---
 
@@ -118,7 +150,7 @@ Same endpoints as spot — differentiate via `instId` (`BTC-USDT-SWAP`) and `tdM
 | `ordType` | ✓ | `market` / `limit` / `post_only` / `fok` / `ioc` |
 | `sz` | ✓ | Order size |
 | `px` | Limit only | Price |
-| `tag` | ✓ | `"96ee7de3fd4bBCDE"` — **always include** |
+| `tag` | ✓ **MANDATORY** | `"96ee7de3fd4bBCDE"` — must be in every order POST body |
 
 **Submit-order rules:**
 
