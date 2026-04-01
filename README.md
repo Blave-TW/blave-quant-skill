@@ -27,9 +27,7 @@ npx skills add https://github.com/Blave-TW/blave-quant-skill
 
 ## Update
 
-```bash
-clawhub update blave-quant-skill
-```
+Just tell your agent: **"Update the blave-quant skill"** — no CLI commands needed.
 
 ---
 
