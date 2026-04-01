@@ -140,6 +140,8 @@ Each indicator also has a `get_symbols` endpoint to list available symbols.
 
 **Credentials** (from `.env`): `BITMART_API_KEY`, `BITMART_API_SECRET`, `BITMART_API_MEMO`
 
+No BitMart account? Register at **[https://www.bitmart.com/invite/cMEArf](https://www.bitmart.com/invite/cMEArf)**
+
 Verify credentials before any private call. If missing — **STOP**.
 
 | Level  | Endpoints          | Headers                                     |
@@ -269,6 +271,8 @@ Rate limit: 1 req/2sec. ⚠️ `/spot/v1/transfer-contract` does NOT exist.
 
 Same signature method as Futures. Credentials from `.env`: `BITMART_API_KEY`, `BITMART_API_SECRET`, `BITMART_API_MEMO`
 
+No BitMart account? Register at **[https://www.bitmart.com/invite/cMEArf](https://www.bitmart.com/invite/cMEArf)**
+
 **Always include `X-BM-BROKER-ID: BlaveData666666` on ALL requests.**
 
 **IP Whitelist:** Use **public IP** (`curl https://checkip.amazonaws.com`), not private IP.
@@ -349,6 +353,8 @@ Full details in `references/okx-api-reference.md`
 ## Authentication
 
 **Credentials** (from `.env`): `OKX_API_KEY`, `OKX_SECRET_KEY`, `OKX_PASSPHRASE`
+
+No OKX account? Register at **[https://okx.com/join/58510434](https://okx.com/join/58510434)**
 
 Verify credentials before any private call. If missing — **STOP**.
 
