@@ -1,0 +1,12 @@
+{
+  "name": "blave-quant",
+  "tagline": "Crypto market alpha data + BitMart & OKX trading",
+  "description": "Blave Quant gives your agent three capabilities:\n\n1. **Blave Market Alpha** — Fetch crypto market signals including Holder Concentration, Taker Intensity, Whale Hunter, Squeeze Momentum, Market Direction, Capital Shortage, Sector Rotation, Top Trader Exposure, kline data, and alpha table screening.\n\n2. **BitMart Trading** — Full futures and spot trading on BitMart: open/close positions, leverage, plan orders, TP/SL, trailing stops, order history, and account management.\n\n3. **OKX Trading** — Spot and perpetual swap trading on OKX: order placement, position queries, and balance management.",
+  "version": "1.0.0",
+  "category": "data",
+  "tags": ["crypto", "trading", "bitmart", "okx", "blave", "futures", "spot", "alpha", "market-data"],
+  "license": "MIT",
+  "pricing": "free",
+  "support_url": "https://github.com/Blave-TW/blave-quant-skill/issues",
+  "homepage": "https://blave.org"
+}
