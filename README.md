@@ -12,7 +12,8 @@ This skill is **documentation only** — it contains no executable code, scripts
 - All files are plain Markdown (`.md`)
 - No `package.json`, no scripts, no dependencies
 - All API calls are made directly by your agent — this skill only provides the instructions
-- Your API keys stay in your local `.env` file and are never transmitted anywhere by this skill
+- Your API keys stay in your local `.env` file. This skill contains no executable code and does not transmit keys itself — however, following the instructions will cause your agent to send keys to Blave, BitMart, and OKX APIs when making calls. We recommend using API keys with minimum required permissions and enabling IP whitelisting where possible.
+- API request signing (HMAC-SHA256) is performed by your agent in code — the reference docs include `openssl`/`curl` shell examples for illustration only. No local shell tools are required by this skill.
 
 You can inspect the full source at: [https://github.com/Blave-TW/blave-quant-skill](https://github.com/Blave-TW/blave-quant-skill)
 
