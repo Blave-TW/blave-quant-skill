@@ -20,7 +20,7 @@ metadata:
 
 # Blave Quant Skill
 
-Three capabilities: **Blave** market alpha data, **BitMart Futures** contract trading, **BitMart Spot** trading.
+Three capabilities: **Blave** market alpha data, **BitMart** trading (futures & spot), **OKX** trading.
 
 ---
 
