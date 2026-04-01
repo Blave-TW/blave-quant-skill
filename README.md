@@ -24,6 +24,12 @@ You can inspect the full source at: [https://github.com/Blave-TW/blave-quant-ski
 npx skills add https://github.com/Blave-TW/blave-quant-skill
 ```
 
+## Update
+
+```bash
+clawhub update blave-quant-skill
+```
+
 ---
 
 ## Setup
