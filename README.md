@@ -5,6 +5,8 @@ A skill that gives your agent three capabilities:
 2. **BitMart Futures** — Trade perpetual futures contracts on BitMart
 3. **BitMart Spot** — Buy and sell spot assets on BitMart
 
+Official website: [https://blave.org](https://blave.org) | For more details, visit the [Blave Academy](https://blave.notion.site/Blave-Academy-c13a8a9ca8824319baa685a769686ac8)
+
 ## Security
 
 This skill is **documentation only** — it contains no executable code, scripts, or binaries.
