@@ -65,7 +65,7 @@ blave_secret_key=YOUR_SECRET_KEY
 
 #### 1. Create Your BitMart API Key
 
-1. Log in to [BitMart](https://www.bitmart.com)
+1. Register at **[https://www.bitmart.com/invite/cMEArf](https://www.bitmart.com/invite/cMEArf)** (if you don't have an account) then log in
 2. Go to **Account → API Management**:
    👉 [https://www.bitmart.com/api-config/en](https://www.bitmart.com/api-config/en)
 3. Click **Create API Key**
