@@ -52,6 +52,17 @@ Base URL: `https://api.blave.org`
 - `whale_hunter/get_symbols` / `get_alpha` — 巨鯨警報 Whale Hunter; supports `score_type`
 - `squeeze_momentum/get_symbols` / `get_alpha` — 擠壓動能 Squeeze Momentum + scolor; period fixed to `1d`
 - `blave_top_trader/get_exposure` — Blave頂尖交易員 Top Trader Exposure (BTCUSDT)
+- `screener/get_saved_conditions` — user's saved screener conditions
+- `screener/get_saved_condition_result` — symbols matching a saved condition (`condition_id` required)
+- `hyperliquid/leaderboard` — top 100 Hyperliquid traders (`sort_by` param)
+- `hyperliquid/traders` — Blave-curated tracked trader list with names/descriptions
+- `hyperliquid/trader_position` — perp/spot positions + net equity (`address` required)
+- `hyperliquid/trader_history` — fill history (`address` required)
+- `hyperliquid/trader_performance` — cumulative PnL chart (`address` required)
+- `hyperliquid/trader_open_order` — open orders (`address` required)
+- `hyperliquid/top_trader_position` — aggregated long/short positions of top 100 traders
+- `hyperliquid/top_trader_exposure_history` — historical net exposure (`symbol`, `period` required)
+- `hyperliquid/bucket_stats` — profit/loss stats + positions by account value bucket
 
 ## BitMart Futures
 
