@@ -1,11 +1,12 @@
 # Blave Quant Skill
 
-A skill that gives your agent four capabilities:
+A skill that gives your agent five capabilities:
 
 1. **Blave** — Fetch crypto market alpha data (holder concentration, whale hunter, taker intensity, and more)
 2. **BitMart Futures** — Trade perpetual futures contracts on BitMart
 3. **BitMart Spot** — Buy and sell spot assets on BitMart
-4. **Bybit** — Spot and derivatives/perpetual swap trading on Bybit
+4. **OKX** — Spot and perpetual swap trading on OKX
+5. **Bybit** — Spot and derivatives/perpetual swap trading on Bybit
 
 Official website: [https://blave.org](https://blave.org) | For more details, visit the [Blave Academy](https://blave.notion.site/Blave-Academy-c13a8a9ca8824319baa685a769686ac8)
 
@@ -16,7 +17,7 @@ This skill is **documentation only** — it contains no executable code, scripts
 - All files are plain Markdown (`.md`)
 - No `package.json`, no scripts, no dependencies
 - All API calls are made directly by your agent — this skill only provides the instructions
-- Your API keys stay in your local `.env` file. This skill contains no executable code and does not transmit keys itself — however, following the instructions will cause your agent to send keys to Blave, BitMart, and OKX APIs when making calls. We recommend using API keys with minimum required permissions and enabling IP whitelisting where possible.
+- Your API keys stay in your local `.env` file. This skill contains no executable code and does not transmit keys itself — however, following the instructions will cause your agent to send keys to Blave, BitMart, OKX, and Bybit APIs when making calls. We recommend using API keys with minimum required permissions and enabling IP whitelisting where possible.
 - API request signing (HMAC-SHA256) is performed by your agent in code — the reference docs include `openssl`/`curl` shell examples for illustration only. No local shell tools are required by this skill.
 
 You can inspect the full source at: [https://github.com/Blave-TW/blave-quant-skill](https://github.com/Blave-TW/blave-quant-skill)
@@ -90,11 +91,37 @@ BITMART_API_MEMO=YOUR_MEMO
 
 ---
 
+### OKX API
+
+#### 1. Create Your OKX API Key
+
+1. Register at **[https://okx.com/join/58510434](https://okx.com/join/58510434)** (if you don't have an account)
+2. Go to **Account → API Management**
+3. Click **Create API Key**
+4. Enable permissions: **Read** + **Trade** (do NOT enable Withdraw)
+5. Set a **Passphrase** (required for signing requests)
+6. Save your credentials:
+   - **API Key**
+   - **Secret Key** (shown only once — save it immediately)
+   - **Passphrase** (the one you just set)
+
+#### 2. Add OKX Credentials
+
+Add the following to your `.env` file:
+
+```
+OKX_API_KEY=YOUR_API_KEY
+OKX_SECRET_KEY=YOUR_SECRET_KEY
+OKX_PASSPHRASE=YOUR_PASSPHRASE
+```
+
+---
+
 ### Bybit API
 
 #### 1. Create Your Bybit API Key
 
-1. Register at **[https://www.bybit.com/invite?ref=Ue001036](https://www.bybit.com/invite?ref=Ue001036)** (if you don't have an account)
+1. Register at **[https://partner.bybit.com/b/BLAVE](https://partner.bybit.com/b/BLAVE)** (if you don't have an account)
 2. Go to **Account → API Management**
 3. Click **Create New Key**
 4. Enable permissions: **Read** + **Trade** (do NOT enable Withdraw)
@@ -162,6 +189,22 @@ BYBIT_API_SECRET=YOUR_API_SECRET
 - "用 BitMart 現貨掛限價單賣 0.5 ETH，價格 4000"
 - "查看我的 BitMart 現貨餘額"
 - "取消我的 BTC 現貨買單"
+
+---
+
+### OKX
+
+- "Buy 100 USDT worth of BTC on OKX spot"
+- "Open a long position on BTC-USDT-SWAP with 10x leverage on OKX"
+- "Check my OKX account balance"
+- "Set take profit at 100000 and stop loss at 90000 for my OKX BTC swap position"
+
+---
+
+- "用 OKX 現貨買 100 USDT 的 BTC"
+- "用 OKX 開 BTC 永續合約 10 倍槓桿多單"
+- "查看我的 OKX 帳戶餘額"
+- "幫我的 OKX BTC 永續倉位設定止盈 100000、止損 90000"
 
 ---
 
