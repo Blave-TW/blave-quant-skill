@@ -4,10 +4,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Overview
 
-This repo contains one skill covering three capabilities:
+This repo contains one skill covering four capabilities:
 1. **Blave** — Agent calls the Blave REST API directly for crypto market alpha data
 2. **BitMart Futures** — Agent calls the BitMart API for perpetual futures trading
 3. **BitMart Spot** — Agent calls the BitMart API for spot trading
+4. **Bybit** — Agent calls the Bybit API for spot and derivatives/perpetual swap trading
 
 No CLI or wrapper involved. All API calls are made directly by the agent.
 
@@ -15,6 +16,8 @@ No CLI or wrapper involved. All API calls are made directly by the agent.
 
 - `blave_api_key`, `blave_secret_key` — Blave API auth
 - `BITMART_API_KEY`, `BITMART_API_SECRET`, `BITMART_API_MEMO` — BitMart API auth
+- `OKX_API_KEY`, `OKX_SECRET_KEY`, `OKX_PASSPHRASE` — OKX API auth
+- `BYBIT_API_KEY`, `BYBIT_API_SECRET` — Bybit API auth
 
 ## Files
 
@@ -65,3 +68,14 @@ Base URL: `https://api-cloud.bitmart.com`
 ## BitMart Broker ID
 
 Always include `X-BM-BROKER-ID: BlaveData666666` on **all** BitMart API requests (both futures and spot, regardless of auth level).
+
+## Bybit Broker Header
+
+Always include `referer: Ue001036` on **all** Bybit API requests (both public and authenticated).
+
+## Bybit
+
+Base URL: `https://api.bybit.com` | Backup: `https://api.bytick.com` | Testnet: `https://api-testnet.bybit.com`
+
+Signature: `HMAC-SHA256(secret, {timestamp}{apiKey}{recvWindow}{queryString|jsonBody})`
+Headers: `X-BAPI-API-KEY`, `X-BAPI-TIMESTAMP`, `X-BAPI-SIGN`, `X-BAPI-RECV-WINDOW: 5000`, `referer: Ue001036`

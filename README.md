@@ -1,9 +1,11 @@
 # Blave Quant Skill
 
-A skill that gives your agent three capabilities:
+A skill that gives your agent four capabilities:
+
 1. **Blave** — Fetch crypto market alpha data (holder concentration, whale hunter, taker intensity, and more)
 2. **BitMart Futures** — Trade perpetual futures contracts on BitMart
 3. **BitMart Spot** — Buy and sell spot assets on BitMart
+4. **Bybit** — Spot and derivatives/perpetual swap trading on Bybit
 
 Official website: [https://blave.org](https://blave.org) | For more details, visit the [Blave Academy](https://blave.notion.site/Blave-Academy-c13a8a9ca8824319baa685a769686ac8)
 
@@ -88,6 +90,29 @@ BITMART_API_MEMO=YOUR_MEMO
 
 ---
 
+### Bybit API
+
+#### 1. Create Your Bybit API Key
+
+1. Register at **[https://www.bybit.com/invite?ref=Ue001036](https://www.bybit.com/invite?ref=Ue001036)** (if you don't have an account)
+2. Go to **Account → API Management**
+3. Click **Create New Key**
+4. Enable permissions: **Read** + **Trade** (do NOT enable Withdraw)
+5. Save your credentials:
+   - **API Key**
+   - **API Secret** (shown only once — save it immediately)
+
+#### 2. Add Bybit Credentials
+
+Add the following to your `.env` file:
+
+```
+BYBIT_API_KEY=YOUR_API_KEY
+BYBIT_API_SECRET=YOUR_API_SECRET
+```
+
+---
+
 ## Usage Examples
 
 ### Blave Market Data
@@ -117,7 +142,7 @@ BITMART_API_MEMO=YOUR_MEMO
 
 ---
 
-- "用 BitMart 開一個 BTCUSDT 10倍槓桿多單，0.01 BTC，市價"
+- "用 BitMart 開一個 BTCUSDT 10 倍槓桿多單，0.01 BTC，市價"
 - "查看我目前的 BitMart 合約倉位"
 - "幫我的 BTCUSDT 多單設定止盈 100000、止損 90000"
 - "取消 ETHUSDT 所有掛單"
@@ -145,6 +170,7 @@ BITMART_API_MEMO=YOUR_MEMO
 This skill is provided for informational and automation purposes only. It does not constitute financial, investment, or trading advice. Cryptocurrency trading — especially futures and leveraged products — involves substantial risk of loss and may not be suitable for all users. Past performance is not indicative of future results.
 
 By using this skill, you acknowledge that:
+
 - All trading decisions are solely your own responsibility
 - The authors and maintainers of this skill are not liable for any losses incurred
 - You should consult a qualified financial advisor before making investment decisions
