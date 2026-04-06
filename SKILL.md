@@ -50,7 +50,7 @@ Add to `.env`: `blave_api_key=...` and `blave_secret_key=...`
 | ----------- | ------------------------------------------------------- |
 | Rate limit  | 100 req / 5 min — `429` if exceeded, resets after 5 min |
 | Data update | Every 5 minutes                                         |
-| History     | Max 1 year                                              |
+| History     | Max 1 year **per request** (use multiple requests with different date ranges to retrieve data beyond 1 year) |
 | Timestamps  | UTC+0                                                   |
 
 ## Usage Guidelines
