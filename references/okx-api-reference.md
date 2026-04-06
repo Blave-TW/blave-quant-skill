@@ -26,6 +26,7 @@
 | `OK-ACCESS-TIMESTAMP` | ISO 8601 ms timestamp |
 | `OK-ACCESS-PASSPHRASE` | Passphrase set at key creation |
 | `Content-Type` | `application/json` (POST only) |
+| `User-Agent` | `Mozilla/5.0` — **required on ALL requests**, omitting returns `403 Error code 1010` |
 
 **Credentials from `.env`:** `OKX_API_KEY`, `OKX_SECRET_KEY`, `OKX_PASSPHRASE`
 
