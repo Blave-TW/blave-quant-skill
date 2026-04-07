@@ -145,25 +145,54 @@ def run_backtest(df):
     fee_cost  = np.abs(np.diff(sized, prepend=0)) * FEE
     strat_ret = sized * fwd_ret - fee_cost
 
-    # Metrics
+    # ── Bar-level metrics ────────────────────────────────────────────────────
     r = strat_ret[~np.isnan(strat_ret)]
-    ann_ret  = r.mean() * HOURS_PER_YEAR
-    ann_vol  = r.std()  * np.sqrt(HOURS_PER_YEAR)
-    sharpe   = ann_ret / ann_vol
     cum      = np.cumprod(1 + r)
     peak     = np.maximum.accumulate(cum)
-    max_dd   = ((cum - peak) / peak).min()
-    n_trades = int((np.diff(position.astype(int)) == 1).sum())
+    total_years = len(r) / HOURS_PER_YEAR
+
+    total_return  = cum[-1] - 1
+    ann_ret       = (1 + total_return) ** (1 / total_years) - 1
+    ann_vol       = r.std() * np.sqrt(HOURS_PER_YEAR)
+    sharpe        = ann_ret / ann_vol if ann_vol > 0 else np.nan
+    max_dd        = ((cum - peak) / peak).min()
+
+    # ── Trade-level metrics ──────────────────────────────────────────────────
+    # Each trade = one entry→exit cycle; compute per-trade net return
+    entries = np.where(np.diff(position.astype(int)) == 1)[0] + 1
+    exits   = np.where(np.diff(position.astype(int)) == -1)[0] + 1
+    if position[-1] == 1:                          # still in position at end
+        exits = np.append(exits, len(position) - 1)
+
+    trade_returns = []
+    for entry_i, exit_i in zip(entries, exits):
+        trade_r = strat_ret[entry_i:exit_i]
+        trade_r = trade_r[~np.isnan(trade_r)]
+        if len(trade_r) > 0:
+            trade_returns.append(np.prod(1 + trade_r) - 1)
+
+    trade_returns = np.array(trade_returns)
+    n_trades      = len(trade_returns)
+    win_rate      = (trade_returns > 0).mean() if n_trades > 0 else np.nan
+    avg_win       = trade_returns[trade_returns > 0].mean() if (trade_returns > 0).any() else np.nan
+    avg_loss      = trade_returns[trade_returns <= 0].mean() if (trade_returns <= 0).any() else np.nan
+    avg_trades_yr = n_trades / total_years
 
     return {
-        "sharpe": sharpe,
-        "total_return": cum[-1] - 1,
-        "max_dd": max_dd,
-        "n_trades": n_trades,
+        "total_return":  total_return,
+        "ann_ret":       ann_ret,
+        "ann_vol":       ann_vol,
+        "sharpe":        sharpe,
+        "max_dd":        max_dd,
+        "win_rate":      win_rate,
+        "avg_win":       avg_win,
+        "avg_loss":      avg_loss,
+        "n_trades":      n_trades,
+        "avg_trades_yr": avg_trades_yr,
         "position": position,
-        "sized": sized,
+        "sized":    sized,
         "strat_ret": strat_ret,
-        "cum": cum,
+        "cum":      cum,
     }
 
 
@@ -237,6 +266,142 @@ def plot_pnl(df, result, symbol):
     print(f"Saved: {fname}")
 
 
+# ── 2D Parameter Scan ────────────────────────────────────────────────────────
+THRESHOLDS = [-2, -1.5, -1, -0.5, 0, 0.5, 1, 1.5, 2]
+
+def param_scan(df):
+    sharpe_grid = np.full((len(THRESHOLDS), len(THRESHOLDS)), np.nan)
+    for i, entry in enumerate(THRESHOLDS):
+        for j, exit_ in enumerate(THRESHOLDS):
+            if exit_ > entry:
+                continue
+            r = run_backtest_params(df, entry, exit_)
+            if r is not None:
+                sharpe_grid[i, j] = r["sharpe"]
+    return sharpe_grid
+
+
+def run_backtest_params(df, entry_th, exit_th):
+    """Lightweight version for scanning — returns only Sharpe."""
+    close = df["close"].values
+    hc    = df["hc"].values
+    n     = len(df)
+
+    fwd_ret = np.empty(n)
+    fwd_ret[:-1] = np.diff(close) / close[:-1]
+    fwd_ret[-1]  = 0.0
+
+    log_ret = np.concatenate([[0.0], np.log(close[1:] / close[:-1])])
+    realized_vol = np.full(n, np.nan)
+    for i in range(VOL_WINDOW, n):
+        realized_vol[i] = log_ret[i - VOL_WINDOW:i].std() * np.sqrt(HOURS_PER_YEAR)
+
+    position = np.zeros(n)
+    in_pos = False
+    for i in range(n):
+        if np.isnan(hc[i]):
+            position[i] = float(in_pos)
+            continue
+        if not in_pos and hc[i] > entry_th:
+            in_pos = True
+        elif in_pos and hc[i] < exit_th:
+            in_pos = False
+        position[i] = float(in_pos)
+
+    vol_scalar = np.where(
+        (realized_vol > 0) & ~np.isnan(realized_vol),
+        np.clip(TARGET_VOL / realized_vol, 0, MAX_LEV),
+        1.0
+    )
+    sized     = position * vol_scalar
+    fee_cost  = np.abs(np.diff(sized, prepend=0)) * FEE
+    strat_ret = sized * fwd_ret - fee_cost
+
+    r = strat_ret[~np.isnan(strat_ret)]
+    if len(r) == 0 or r.std() == 0:
+        return None
+
+    total_years = len(r) / HOURS_PER_YEAR
+    ann_ret = (1 + np.prod(1 + r) - 1) ** (1 / total_years) - 1
+    ann_vol = r.std() * np.sqrt(HOURS_PER_YEAR)
+    return {"sharpe": ann_ret / ann_vol}
+
+
+def find_plateau(sharpe_grid, window=1):
+    """
+    Find the parameter plateau: the cell whose neighborhood has the
+    highest mean Sharpe. Uses a (2*window+1) × (2*window+1) window.
+    This is more robust than picking the single best cell, as it
+    avoids isolated peaks that may be overfitted.
+    """
+    rows, cols = sharpe_grid.shape
+    neighborhood_mean = np.full((rows, cols), np.nan)
+
+    for i in range(rows):
+        for j in range(cols):
+            if np.isnan(sharpe_grid[i, j]):
+                continue
+            neighbors = []
+            for di in range(-window, window + 1):
+                for dj in range(-window, window + 1):
+                    ni, nj = i + di, j + dj
+                    if 0 <= ni < rows and 0 <= nj < cols:
+                        v = sharpe_grid[ni, nj]
+                        if not np.isnan(v):
+                            neighbors.append(v)
+            if neighbors:
+                neighborhood_mean[i, j] = np.mean(neighbors)
+
+    best_idx = np.unravel_index(np.nanargmax(neighborhood_mean), neighborhood_mean.shape)
+    return best_idx, neighborhood_mean
+
+
+def plot_heatmap(sharpe_grid, neighborhood_mean, plateau_idx, symbol):
+    peak_idx = np.unravel_index(np.nanargmax(sharpe_grid), sharpe_grid.shape)
+
+    fig, axes = plt.subplots(1, 2, figsize=(18, 7))
+
+    for ax, mark_idx, title, note in [
+        (axes[0], peak_idx,    "Peak — highest single Sharpe",
+         f"Selected: entry={THRESHOLDS[peak_idx[0]]}, exit={THRESHOLDS[peak_idx[1]]}\n"
+         f"Sharpe={sharpe_grid[peak_idx]:.2f} — may be overfitted if isolated"),
+        (axes[1], plateau_idx, "Plateau — most stable region",
+         f"Selected: entry={THRESHOLDS[plateau_idx[0]]}, exit={THRESHOLDS[plateau_idx[1]]}\n"
+         f"Sharpe={sharpe_grid[plateau_idx]:.2f} — neighbors also perform well → more robust"),
+    ]:
+        masked = np.ma.masked_invalid(sharpe_grid)
+        cmap = plt.cm.RdYlGn.copy()
+        cmap.set_bad(color="#cccccc")
+        vals = sharpe_grid[~np.isnan(sharpe_grid)]
+        im = ax.imshow(masked, cmap=cmap, vmin=min(0, vals.min()),
+                       vmax=np.percentile(vals, 95), aspect="auto")
+
+        ax.add_patch(plt.Rectangle(
+            (mark_idx[1] - 0.5, mark_idx[0] - 0.5), 1, 1,
+            fill=False, edgecolor="gold", linewidth=3
+        ))
+        for i in range(len(THRESHOLDS)):
+            for j in range(len(THRESHOLDS)):
+                v = sharpe_grid[i, j]
+                ax.text(j, i, f"{v:.2f}" if not np.isnan(v) else "N/A",
+                        ha="center", va="center", fontsize=8,
+                        color="#888" if np.isnan(v) else "black")
+
+        ax.set_xticks(range(len(THRESHOLDS))); ax.set_xticklabels(THRESHOLDS)
+        ax.set_yticks(range(len(THRESHOLDS))); ax.set_yticklabels(THRESHOLDS)
+        ax.set_xlabel("Exit Threshold")
+        ax.set_ylabel("Entry Threshold")
+        ax.set_title(f"{symbol} — {title}\n{note}", fontsize=10)
+        plt.colorbar(im, ax=ax, label="Sharpe Ratio")
+
+    plt.suptitle("Same Sharpe grid, different selection method — prefer Plateau", fontsize=12)
+    plt.tight_layout()
+    fname = f"{symbol}_hc_heatmap.png"
+    plt.savefig(fname, dpi=150)
+    plt.show()
+    print(f"Saved: {fname}")
+
+
 # ── Main ──────────────────────────────────────────────────────────────────────
 if __name__ == "__main__":
     print(f"Loading data for {SYMBOL} ({START_DATE} → {END_DATE}, {PERIOD})...")
@@ -246,12 +411,34 @@ if __name__ == "__main__":
     df = kline[["close"]].join(hc[["hc"]], how="inner").dropna(subset=["close"])
     print(f"Aligned rows: {len(df)}")
 
+    # Step 1: 2D scan → find plateau
+    print("Running 2D parameter scan...")
+    sharpe_grid = param_scan(df)
+    plateau_idx, neighborhood_mean = find_plateau(sharpe_grid, window=1)
+
+    best_entry = THRESHOLDS[plateau_idx[0]]
+    best_exit  = THRESHOLDS[plateau_idx[1]]
+    print(f"Plateau center: entry={best_entry}, exit={best_exit} "
+          f"(neighborhood mean Sharpe={neighborhood_mean[plateau_idx]:.2f})")
+
+    plot_heatmap(sharpe_grid, neighborhood_mean, plateau_idx, SYMBOL)
+
+    # Step 2: full backtest with plateau parameters
+    global ENTRY_TH, EXIT_TH
+    ENTRY_TH, EXIT_TH = best_entry, best_exit
+
     result = run_backtest(df)
     print(f"\nResults (entry>{ENTRY_TH}, exit<{EXIT_TH}):")
-    print(f"  Sharpe       : {result['sharpe']:.2f}")
-    print(f"  Total Return : {result['total_return']*100:.1f}%")
-    print(f"  Max Drawdown : {result['max_dd']*100:.1f}%")
-    print(f"  # Trades     : {result['n_trades']}")
+    print(f"  總報酬率            : {result['total_return']*100:.1f}%")
+    print(f"  年化報酬率           : {result['ann_ret']*100:.1f}%")
+    print(f"  年化波動度           : {result['ann_vol']*100:.1f}%")
+    print(f"  Sharpe Ratio      : {result['sharpe']:.2f}")
+    print(f"  最大回撤 (MDD)      : {result['max_dd']*100:.1f}%")
+    print(f"  勝率                : {result['win_rate']*100:.1f}%")
+    print(f"  平均獲利 (per trade): {result['avg_win']*100:.2f}%")
+    print(f"  平均虧損 (per trade): {result['avg_loss']*100:.2f}%")
+    print(f"  總交易次數           : {result['n_trades']}")
+    print(f"  平均年交易次數        : {result['avg_trades_yr']:.1f}")
 
     plot_pnl(df, result, SYMBOL)
 ```
@@ -289,6 +476,14 @@ if __name__ == "__main__":
 ## Notes
 
 - **Long only** — no short positions taken
-- Entry threshold (1.0) is stricter than exit (-0.5) — gives the position room to breathe through short-term noise
+- Entry threshold is stricter than exit — gives the position room to breathe through short-term noise
 - Vol-targeting scales down automatically during high-volatility periods; a coin with 3× BTC vol receives ~1/3 the position size for the same signal
 - Signals update every 5 minutes; on `1h` period each bar reflects the last finalized hourly HC value
+
+### Parameter Selection: Plateau vs Peak
+
+**Do not simply pick the highest Sharpe cell.** A single peak is often an overfitted outlier — it performs well in-sample but is fragile out-of-sample.
+
+Instead, use `find_plateau()` to compute the **neighborhood mean Sharpe** for each cell (average of the cell and its surrounding valid cells within a 3×3 window). The cell with the highest neighborhood mean sits at the center of a stable region — a **parameter plateau** — where nearby combinations also perform well. This indicates robustness: small changes to the thresholds do not collapse performance.
+
+The heatmap shows the same Sharpe grid twice. Left panel marks the **peak** (highest single cell); right panel marks the **plateau center** (cell whose neighborhood has the highest mean Sharpe). Both show the true Sharpe value in each cell — the difference is only which cell is highlighted. Prefer the plateau selection even if its raw Sharpe is slightly lower than the peak.
