@@ -32,6 +32,7 @@ import numpy as np
 import pandas as pd
 import requests
 import matplotlib.pyplot as plt
+import numba
 import os
 
 # ── Config ──────────────────────────────────────────────────────────────────
@@ -103,45 +104,54 @@ def load_hc(symbol, start, end, period):
     return df
 
 
+# ── Numba: only the stateful signal loop ─────────────────────────────────────
+# Rolling vol  → Pandas rolling (Cython/C, fastest for window stats)
+# Signal loop  → Numba njit    (stateful: each bar depends on previous state)
+# Everything else → NumPy      (vectorized, no overhead)
+# First call triggers JIT compilation (~2–5 s, once per session).
+
+@numba.njit(cache=True)
+def _signal_loop(signal, entry_th, exit_th):
+    n = len(signal)
+    position = np.zeros(n)
+    in_pos = False
+    for i in range(n):
+        if np.isnan(signal[i]):
+            position[i] = 1.0 if in_pos else 0.0
+            continue
+        if not in_pos and signal[i] > entry_th:
+            in_pos = True
+        elif in_pos and signal[i] < exit_th:
+            in_pos = False
+        position[i] = 1.0 if in_pos else 0.0
+    return position
+
+
 # ── Backtest ──────────────────────────────────────────────────────────────────
 def run_backtest(df):
-    close = df["close"].values
-    hc    = df["hc"].values
+    close = df["close"].values.astype(np.float64)
+    hc    = df["hc"].values.astype(np.float64)
     n     = len(df)
 
-    # Forward returns
+    # NumPy — vectorized
+    log_ret = np.concatenate([[0.0], np.log(close[1:] / close[:-1])])
     fwd_ret = np.empty(n)
     fwd_ret[:-1] = np.diff(close) / close[:-1]
     fwd_ret[-1]  = 0.0
 
-    # Rolling realized vol (annualized)
-    log_ret = np.concatenate([[0.0], np.log(close[1:] / close[:-1])])
-    realized_vol = np.full(n, np.nan)
-    for i in range(VOL_WINDOW, n):
-        realized_vol[i] = log_ret[i - VOL_WINDOW:i].std() * np.sqrt(HOURS_PER_YEAR)
+    # Pandas rolling — C-implemented window stats, fastest for this operation
+    realized_vol = pd.Series(log_ret).rolling(VOL_WINDOW).std().values * np.sqrt(HOURS_PER_YEAR)
 
-    # Signal: long only
-    position = np.zeros(n)
-    in_pos = False
-    for i in range(n):
-        if np.isnan(hc[i]):
-            position[i] = float(in_pos)
-            continue
-        if not in_pos and hc[i] > ENTRY_TH:
-            in_pos = True
-        elif in_pos and hc[i] < EXIT_TH:
-            in_pos = False
-        position[i] = float(in_pos)
+    # Numba njit — only the stateful entry/exit loop benefits from JIT
+    position = _signal_loop(hc, ENTRY_TH, EXIT_TH)
 
-    # Vol-targeting
+    # NumPy — vectorized vol-targeting and fee calculation
     vol_scalar = np.where(
         (realized_vol > 0) & ~np.isnan(realized_vol),
         np.clip(TARGET_VOL / realized_vol, 0, MAX_LEV),
         1.0
     )
-    sized = position * vol_scalar
-
-    # Transaction cost
+    sized     = position * vol_scalar
     fee_cost  = np.abs(np.diff(sized, prepend=0)) * FEE
     strat_ret = sized * fwd_ret - fee_cost
 
@@ -282,33 +292,19 @@ def param_scan(df):
 
 
 def run_backtest_params(df, entry_th, exit_th):
-    """Lightweight version for scanning — returns only Sharpe."""
-    close = df["close"].values
-    hc    = df["hc"].values
+    """Lightweight param-scan version: same stack as run_backtest, returns Sharpe only."""
+    close = df["close"].values.astype(np.float64)
+    hc    = df["hc"].values.astype(np.float64)
     n     = len(df)
 
+    log_ret = np.concatenate([[0.0], np.log(close[1:] / close[:-1])])
     fwd_ret = np.empty(n)
     fwd_ret[:-1] = np.diff(close) / close[:-1]
     fwd_ret[-1]  = 0.0
 
-    log_ret = np.concatenate([[0.0], np.log(close[1:] / close[:-1])])
-    realized_vol = np.full(n, np.nan)
-    for i in range(VOL_WINDOW, n):
-        realized_vol[i] = log_ret[i - VOL_WINDOW:i].std() * np.sqrt(HOURS_PER_YEAR)
-
-    position = np.zeros(n)
-    in_pos = False
-    for i in range(n):
-        if np.isnan(hc[i]):
-            position[i] = float(in_pos)
-            continue
-        if not in_pos and hc[i] > entry_th:
-            in_pos = True
-        elif in_pos and hc[i] < exit_th:
-            in_pos = False
-        position[i] = float(in_pos)
-
-    vol_scalar = np.where(
+    realized_vol = pd.Series(log_ret).rolling(VOL_WINDOW).std().values * np.sqrt(HOURS_PER_YEAR)
+    position     = _signal_loop(hc, entry_th, exit_th)
+    vol_scalar   = np.where(
         (realized_vol > 0) & ~np.isnan(realized_vol),
         np.clip(TARGET_VOL / realized_vol, 0, MAX_LEV),
         1.0
@@ -320,7 +316,6 @@ def run_backtest_params(df, entry_th, exit_th):
     r = strat_ret[~np.isnan(strat_ret)]
     if len(r) == 0 or r.std() == 0:
         return None
-
     total_years = len(r) / HOURS_PER_YEAR
     ann_ret = (1 + np.prod(1 + r) - 1) ** (1 / total_years) - 1
     ann_vol = r.std() * np.sqrt(HOURS_PER_YEAR)
@@ -479,6 +474,7 @@ if __name__ == "__main__":
 - Entry threshold is stricter than exit — gives the position room to breathe through short-term noise
 - Vol-targeting scales down automatically during high-volatility periods; a coin with 3× BTC vol receives ~1/3 the position size for the same signal
 - Signals update every 5 minutes; on `1h` period each bar reflects the last finalized hourly HC value
+- **Performance stack:** Rolling vol uses `pd.Series.rolling().std()` (Pandas Cython/C — fastest for window statistics). The entry/exit signal loop uses `@numba.njit` — this is the only loop that benefits from JIT because each bar depends on the previous bar's state (cannot be vectorized). Everything else (fwd_ret, vol-targeting, fees, returns) uses NumPy vectorized ops. First call triggers JIT compilation (~2–5 s, once per session). If numba is not installed: `pip install numba`
 
 ### Parameter Selection: Plateau vs Peak
 
