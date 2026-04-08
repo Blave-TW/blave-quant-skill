@@ -33,7 +33,9 @@ import pandas as pd
 import requests
 import matplotlib.pyplot as plt
 import numba
-import os
+from dotenv import dotenv_values
+
+_env = dotenv_values()  # reads .env from current directory
 
 # ── Config ──────────────────────────────────────────────────────────────────
 SYMBOL         = "BTCUSDT"
@@ -48,9 +50,9 @@ VOL_WINDOW     = 720            # 30 days × 24h
 HOURS_PER_YEAR = 8760
 FEE            = 0.0005         # 0.05% per side (taker fee)
 
-API_BASE  = "https://api.blave.org"
-API_KEY    = os.environ["blave_api_key"]
-API_SECRET = os.environ["blave_secret_key"]
+API_BASE   = "https://api.blave.org"
+API_KEY    = _env["blave_api_key"]
+API_SECRET = _env["blave_secret_key"]
 HEADERS    = {"api-key": API_KEY, "secret-key": API_SECRET}
 
 
@@ -475,6 +477,23 @@ if __name__ == "__main__":
 - Vol-targeting scales down automatically during high-volatility periods; a coin with 3× BTC vol receives ~1/3 the position size for the same signal
 - Signals update every 5 minutes; on `1h` period each bar reflects the last finalized hourly HC value
 - **Performance stack:** Rolling vol uses `pd.Series.rolling().std()` (Pandas Cython/C — fastest for window statistics). The entry/exit signal loop uses `@numba.njit` — this is the only loop that benefits from JIT because each bar depends on the previous bar's state (cannot be vectorized). Everything else (fwd_ret, vol-targeting, fees, returns) uses NumPy vectorized ops. First call triggers JIT compilation (~2–5 s, once per session). If numba is not installed: `pip install numba`
+
+### Live Trading Execution Timing
+
+The backtest computes `fwd_ret[i] = (close[i+1] - close[i]) / close[i]`, which means it assumes the order is **executed at bar i's close price** — the same bar where the signal fires.
+
+In live trading, the correct sequence is:
+
+```
+bar i closes
+  → fetch the latest signal
+  → signal changed → place market order immediately
+  → fill ≈ bar i+1 open (for liquid pairs like BTC, this is effectively bar i close)
+```
+
+**Do NOT wait for bar i+1 to close before placing the order.** Waiting an extra bar means your execution price is one full bar later than what the backtest assumes, causing live performance to diverge from backtest results.
+
+---
 
 ### Parameter Selection: Plateau vs Peak
 
