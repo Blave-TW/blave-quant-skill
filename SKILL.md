@@ -10,6 +10,8 @@ metadata:
       env:
         - blave_api_key
         - blave_secret_key
+    optional:
+      env:
         - BITMART_API_KEY
         - BITMART_API_SECRET
         - BITMART_API_MEMO
