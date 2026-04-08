@@ -201,11 +201,158 @@ def run_backtest(df):
         "avg_loss":      avg_loss,
         "n_trades":      n_trades,
         "avg_trades_yr": avg_trades_yr,
-        "position": position,
-        "sized":    sized,
-        "strat_ret": strat_ret,
-        "cum":      cum,
+        "position":      position,
+        "sized":         sized,
+        "strat_ret":     strat_ret,
+        "realized_vol":  realized_vol,
+        "cum":           cum,
     }
+
+
+# ── Regime Analysis ──────────────────────────────────────────────────────────
+def regime_analysis(df, result):
+    """Break down performance by: calendar year, Bull/Bear, High/Low volatility."""
+    strat_ret    = result["strat_ret"]
+    realized_vol = result["realized_vol"]
+    close        = df["close"].values
+    dates        = df.index
+
+    # Bull/Bear: price vs 200-period rolling MA (window scales with VOL_WINDOW)
+    ma_window = VOL_WINDOW * 200 // 30          # 200 days expressed in bars
+    ma200     = pd.Series(close).rolling(ma_window).mean().values
+    valid_ma  = ~np.isnan(ma200)
+
+    # High/Low vol: above vs below median realized vol
+    vol_median  = np.nanmedian(realized_vol)
+    valid_vol   = ~np.isnan(realized_vol)
+
+    def _stats(mask):
+        r = strat_ret[mask]
+        r = r[~np.isnan(r)]
+        if len(r) < 2:
+            return None
+        total_years = len(r) / HOURS_PER_YEAR
+        cum_r   = np.prod(1 + r) - 1
+        ann_r   = (1 + cum_r) ** (1 / total_years) - 1 if total_years > 0 else np.nan
+        ann_vol = r.std() * np.sqrt(HOURS_PER_YEAR)
+        sharpe  = ann_r / ann_vol if ann_vol > 0 else np.nan
+        cum_curve = np.cumprod(1 + r)
+        peak    = np.maximum.accumulate(cum_curve)
+        mdd     = ((cum_curve - peak) / peak).min()
+        n_total = len(strat_ret[~np.isnan(strat_ret)])
+        return dict(ann_ret=ann_r, ann_vol=ann_vol, sharpe=sharpe,
+                    max_dd=mdd, pct_time=len(r) / n_total)
+
+    rows = []
+
+    # ── By calendar year ────────────────────────────────────────────────────
+    for yr in sorted(dates.year.unique()):
+        mask = (dates.year == yr)
+        s = _stats(mask)
+        if s:
+            rows.append({"label": str(yr), **s})
+
+    rows.append({"label": "─" * 20})   # separator
+
+    # ── Bull vs Bear ─────────────────────────────────────────────────────────
+    bull = close > ma200
+    for label, mask in [("Bull (price > MA200)", bull & valid_ma),
+                         ("Bear (price < MA200)", ~bull & valid_ma)]:
+        s = _stats(mask)
+        if s:
+            rows.append({"label": label, **s})
+
+    rows.append({"label": "─" * 20})
+
+    # ── High vol vs Low vol ───────────────────────────────────────────────────
+    highvol = realized_vol > vol_median
+    for label, mask in [("High Vol (>median)",  highvol & valid_vol),
+                         ("Low  Vol (≤median)",  ~highvol & valid_vol)]:
+        s = _stats(mask)
+        if s:
+            rows.append({"label": label, **s})
+
+    # ── Print table ───────────────────────────────────────────────────────────
+    hdr = f"  {'Regime':<22} {'Ann Ret':>9} {'Ann Vol':>9} {'Sharpe':>8} {'MDD':>8} {'Time%':>7}"
+    print(f"\n{'─' * len(hdr)}")
+    print("  Regime Analysis")
+    print('─' * len(hdr))
+    print(hdr)
+    print('─' * len(hdr))
+    for row in rows:
+        if "ann_ret" not in row:          # separator row
+            print(f"  {row['label']}")
+            continue
+        print(f"  {row['label']:<22} {row['ann_ret']*100:>8.1f}% {row['ann_vol']*100:>8.1f}%"
+              f" {row['sharpe']:>8.2f} {row['max_dd']*100:>7.1f}% {row['pct_time']*100:>6.1f}%")
+    print('─' * len(hdr))
+
+
+# ── Regime Chart ──────────────────────────────────────────────────────────────
+def plot_regime(df, result, symbol):
+    strat_ret    = result["strat_ret"]
+    realized_vol = result["realized_vol"]
+    close        = df["close"].values
+    dates        = df.index
+
+    ma_window  = VOL_WINDOW * 200 // 30
+    ma200      = pd.Series(close).rolling(ma_window).mean().values
+    valid_ma   = ~np.isnan(ma200)
+    vol_median = np.nanmedian(realized_vol)
+    valid_vol  = ~np.isnan(realized_vol)
+    bull       = close > ma200
+    highvol    = realized_vol > vol_median
+
+    def _stats(mask):
+        r = strat_ret[mask]; r = r[~np.isnan(r)]
+        if len(r) < 2: return None
+        total_years = len(r) / HOURS_PER_YEAR; cum_r = np.prod(1 + r) - 1
+        ann_r   = (1 + cum_r) ** (1 / total_years) - 1 if total_years > 0 else np.nan
+        ann_vol = r.std() * np.sqrt(HOURS_PER_YEAR)
+        sharpe  = ann_r / ann_vol if ann_vol > 0 else np.nan
+        cc = np.cumprod(1 + r); pk = np.maximum.accumulate(cc)
+        return dict(ann_ret=ann_r, sharpe=sharpe, max_dd=((cc - pk) / pk).min())
+
+    groups = {
+        "By Year":           [(str(yr), _stats(dates.year == yr))
+                               for yr in sorted(dates.year.unique())],
+        "Trend Regime":      [("Bull\n(>MA200)", _stats(bull & valid_ma)),
+                               ("Bear\n(<MA200)", _stats(~bull & valid_ma))],
+        "Volatility Regime": [("High Vol\n(>median)", _stats(highvol & valid_vol)),
+                               ("Low Vol\n(≤median)",  _stats(~highvol & valid_vol))],
+    }
+    groups = {k: [(lbl, s) for lbl, s in v if s is not None] for k, v in groups.items()}
+
+    fig, axes = plt.subplots(1, 3, figsize=(16, 6))
+    for ax, (group_name, items) in zip(axes, groups.items()):
+        labels  = [lbl for lbl, _ in items]
+        ann_ret = [s["ann_ret"] * 100 for _, s in items]
+        sharpe  = [s["sharpe"]        for _, s in items]
+        mdd     = [s["max_dd"] * 100  for _, s in items]
+        x = np.arange(len(labels)); w = 0.25
+        b1 = ax.bar(x - w, ann_ret, w, label="Ann Ret (%)", color="#3498db", alpha=0.85)
+        b2 = ax.bar(x,     sharpe,  w, label="Sharpe",      color="#2ecc71", alpha=0.85)
+        b3 = ax.bar(x + w, mdd,     w, label="MDD (%)",     color="#e74c3c", alpha=0.85)
+        for bars in [b1, b2, b3]:
+            for bar in bars:
+                h = bar.get_height()
+                ax.text(bar.get_x() + bar.get_width() / 2,
+                        h + (0.3 if h >= 0 else -1.5),
+                        f"{h:.1f}", ha="center",
+                        va="bottom" if h >= 0 else "top", fontsize=8)
+        ax.axhline(0, color="#555", lw=0.8)
+        ax.set_title(group_name, fontsize=13, fontweight="bold")
+        ax.set_xticks(x); ax.set_xticklabels(labels, fontsize=10)
+        ax.set_ylabel("Value", fontsize=10); ax.legend(fontsize=9)
+        all_vals = ann_ret + sharpe + mdd
+        ax.set_ylim(min(all_vals) - 5, max(all_vals) + 8)
+
+    fig.suptitle(f"{symbol} — Regime Analysis", fontsize=13, fontweight="bold", y=1.01)
+    plt.tight_layout()
+    fname = f"{symbol}_hc_regime.png"
+    plt.savefig(fname, dpi=150, bbox_inches="tight")
+    plt.show()
+    print(f"Saved: {fname}")
 
 
 # ── PnL Chart ─────────────────────────────────────────────────────────────────
@@ -437,6 +584,8 @@ if __name__ == "__main__":
     print(f"  總交易次數           : {result['n_trades']}")
     print(f"  平均年交易次數        : {result['avg_trades_yr']:.1f}")
 
+    regime_analysis(df, result)
+    plot_regime(df, result, SYMBOL)
     plot_pnl(df, result, SYMBOL)
 ```
 

@@ -143,3 +143,23 @@ params = {"period": "1h", "start_date": "2025-01-01", "end_date": "2025-03-01"}
 response = requests.get(f"{BASE_URL}/blave_top_trader/get_exposure", headers=headers, params=params, timeout=60)
 print(response.json())
 ```
+
+---
+
+## alpha_table Field Reference
+
+Each symbol in `/alpha_table` contains:
+
+| Field | Description |
+|---|---|
+| `statistics` | `up_prob` (prob of 24h upward move), `exp_value` (expected return), `avg_up_return`, `avg_down_return`, `return_ratio`, `is_data_sufficient` |
+| `price` | `{"-": 70000}` — current price |
+| `price_change` | `{"15min": ..., "1h": ..., "24h": ...}` — % change |
+| `market_cap` | `{"-": 1234567890}` — USD market cap |
+| `market_cap_percentile` | `{"-": 85.3}` — percentile among all listed coins |
+| `funding_rate` | `{"binance": -0.01, ...}` — per exchange |
+| `oi_imbalance` | `{"-": 0.12}` — OI imbalance |
+
+`fields` = indicator metadata. `note` = color ranges. `""` = insufficient data.
+
+Use `statistics.up_prob` and `statistics.exp_value` for screening. Always check `is_data_sufficient` before using `statistics`.

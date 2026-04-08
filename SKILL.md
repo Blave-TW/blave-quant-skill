@@ -40,9 +40,6 @@ Workflow templates for common use cases. **When the user's request matches one o
 
 ---
 
-
----
-
 # PART 1: Blave Market Data
 
 ## Setup
@@ -71,26 +68,14 @@ Add to `.env`: `blave_api_key=...` and `blave_secret_key=...`
 
 - **Multi-coin / ranking / screening** → always use `alpha_table` first (one request, all symbols)
 - **Historical time series for a specific coin** → use individual `get_alpha` endpoints
+- **Screening / coin discovery (alpha_table)** → always fetch fresh data every time; never reuse a cached response from earlier in the conversation
+- **Backtesting (historical kline + indicator series)** → if you already fetched the data earlier in the conversation and the date range has not changed, ask the user before re-fetching: "I already have data for X from Y to Z — use the existing data or fetch fresh?"
 
 ## Endpoints
 
 ### `GET /alpha_table` — All symbols, latest alpha, no params
 
-Each symbol contains indicator fields plus:
-
-| Field                   | Description                                                                                      |
-| ----------------------- | ------------------------------------------------------------------------------------------------ |
-| `statistics`            | `up_prob`, `exp_value`, `avg_up_return`, `avg_down_return`, `return_ratio`, `is_data_sufficient` |
-| `price`                 | `{"-": 70000}`                                                                                   |
-| `price_change`          | `{"15min": ..., "1h": ..., "24h": ...}`                                                          |
-| `market_cap`            | `{"-": 1234567890}`                                                                              |
-| `market_cap_percentile` | `{"-": 85.3}`                                                                                    |
-| `funding_rate`          | `{"binance": -0.01, ...}` per exchange                                                           |
-| `oi_imbalance`          | `{"-": 0.12}`                                                                                    |
-
-> `statistics.up_prob` = probability of upward move in 24h. `statistics.exp_value` = expected return. Use these to screen coins.
-
-`fields` = indicator metadata. `note` = color ranges. `""` = insufficient data.
+Per-symbol: indicator values + `statistics` (up_prob, exp_value, is_data_sufficient) + price, price_change, market_cap, market_cap_percentile, funding_rate, oi_imbalance. `""` = insufficient data. → Full field reference: `references/blave-api.md`
 
 ---
 
@@ -159,60 +144,22 @@ Returns 400 if `condition_id` is missing or not an integer; 404 if condition not
 
 ### Hyperliquid Top Trader Tracking
 
-#### `GET /hyperliquid/leaderboard` — Hyperliquid top 100 traders
+> Full response formats: `references/hyperliquid-api.md`
 
-`sort_by` (default `accountValue`; or any window key e.g. `week`, `month`, `allTime` for PnL sort)
-
-Returns top 100 traders with `ethAddress`, `accountValue`, `windowPerformances`, and `displayName` (for Blave-tracked traders). Cached 5 min.
-
-#### `GET /hyperliquid/traders` — Blave-curated trader list
-
-No params. Returns dict of `{address: {name: {en, zh}, description: {en, zh}}}` for traders Blave tracks (e.g. BlaveClaw, Machi Big Brother, James Wynn, etc.).
-
-#### `GET /hyperliquid/trader_position` — Trader's current positions
-
-`address`✓ → `{perp, spot, abstraction, net_equity, trader_name, description}`
-- `perp.assetPositions` — perpetual positions with `coin`, `szi`, `entryPx`, `unrealizedPnl`, `token_id`
-- `spot.balances` — spot token balances
-- `net_equity` — total account value (USD)
-Cached 15 s.
-
-#### `GET /hyperliquid/trader_history` — Trader's fill history
-
-`address`✓ → list of `{coin, px, sz, dir, closedPnl, time, token_id}`
-- `dir`: trade direction (Open Long / Close Long / etc.)
-- `closedPnl`: realized PnL for closed trades
-- `time`: Unix timestamp (seconds)
-Cached 60 s.
-
-#### `GET /hyperliquid/trader_performance` — Trader's PnL chart
-
-`address`✓ → `{chart: {timestamp: [...], pnl: [...]}}` — cumulative PnL over time. Cached 60 s.
-
-#### `GET /hyperliquid/trader_open_order` — Trader's open orders
-
-`address`✓ → list of open orders `{coin, sz, px, side, token_id, ...}`. Cached 60 s.
-
-#### `GET /hyperliquid/top_trader_position` — Aggregated top trader positions
-
-No params. Aggregates long/short positions across top 100 leaderboard traders → `{long: [{coin, position, ...}], short: [...]}`. Cached 5 min.
-
-#### `GET /hyperliquid/top_trader_exposure_history` — Historical top trader net exposure
-
-`symbol`✓, `period`✓, `start_date`, `end_date` → `{data: {...}}` — time series of net long/short exposure for the symbol.
-
-#### `GET /hyperliquid/bucket_stats` — Profit/loss stats by account size bucket
-
-No params. Returns trader stats grouped by account value:
-- Buckets: `lt_100`, `100_to_1k`, `1k_to_10k`, `10k_to_100k`, `100k_to_1M`, `gt_1M`, `top_traders`
-- Each bucket: `{stats: {count, profit_ratio, loss_ratio}, positions: {long, short}, long_exposure, short_exposure, net_exposure}`
-- Returns `{"status": "warming_up"}` with HTTP 202 while cache is being built (retry after a few seconds).
-Cached ~5 min.
+| Endpoint | Params | Cache |
+|---|---|---|
+| `GET /hyperliquid/leaderboard` | `sort_by` (accountValue/week/month/allTime) | 5 min |
+| `GET /hyperliquid/traders` | — | — |
+| `GET /hyperliquid/trader_position` | `address`✓ → perp positions, spot balances, net_equity | 15 s |
+| `GET /hyperliquid/trader_history` | `address`✓ → fills with closedPnl, dir | 60 s |
+| `GET /hyperliquid/trader_performance` | `address`✓ → `{chart: {timestamp, pnl}}` cumulative PnL | 60 s |
+| `GET /hyperliquid/trader_open_order` | `address`✓ → open orders | 60 s |
+| `GET /hyperliquid/top_trader_position` | — → aggregated long/short across top 100 | 5 min |
+| `GET /hyperliquid/top_trader_exposure_history` | `symbol`✓, `period`✓, dates | — |
+| `GET /hyperliquid/bucket_stats` | — → stats by account size bucket; 202 while warming up | ~5 min |
 
 > Python examples: `references/blave-api.md`
-> Indicator interpretation guide: `references/blave-indicator-guide.md`
-
----
+> Indicator interpretation: `references/blave-indicator-guide.md`
 
 ---
 
@@ -345,8 +292,6 @@ Rate limit: 1 req/2sec. ⚠️ `/spot/v1/transfer-contract` does NOT exist.
 
 ---
 
----
-
 # PART 3: BitMart Spot Trading
 
 **Base URL:** `https://api-cloud.bitmart.com` | **Symbol:** `BTC_USDT` (underscore) | **Success:** `code == 1000`
@@ -428,8 +373,6 @@ After order → query order detail. After cancel → check open orders.
 
 ---
 
----
-
 # PART 4: OKX Trading
 
 **Base URL:** `https://www.okx.com` | **Spot:** `BTC-USDT` | **Swap:** `BTC-USDT-SWAP` | **Success:** `"code": "0"`
@@ -476,8 +419,6 @@ After order → `GET /api/v5/trade/order` → confirm status. After close → `G
 
 ## References
 - `references/okx-api-reference.md` — endpoints, signature, order params
-
----
 
 ---
 
@@ -545,8 +486,6 @@ After order → `GET /v5/order/realtime` → confirm status. After close → `GE
 - WRITE operations require **"CONFIRM"**
 - Always show liquidation price before opening leveraged positions
 - "Not financial advice. Trading carries significant risk of loss."
-
----
 
 ---
 
