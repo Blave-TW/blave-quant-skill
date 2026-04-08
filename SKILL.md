@@ -162,10 +162,7 @@ Returns 400 if `condition_id` is missing or not an integer; 404 if condition not
 
 Receive TradingView alerts in real time via Server-Sent Events.
 
-| Method | Path | Purpose |
-|---|---|---|
-| POST | `/tradingview/webhook` | TradingView sends alert here (set in TV alert webhook URL) |
-| GET | `/tradingview/stream?channel=<ch>&last_id=<id>` | Agent listens — SSE stream |
+**Endpoint:** `GET /sse/tradingview/stream?channel=<ch>&last_id=<id>`
 
 **Event format:** `data: {"id": "1712054400000-0", ...alert_fields}`
 - `id` — pass as `last_id` on reconnect to resume without losing signals
@@ -175,7 +172,7 @@ Receive TradingView alerts in real time via Server-Sent Events.
 
 > Full Python example with reconnect loop: `references/tradingview-stream.md`
 >
-> To enable a webhook channel, contact the Blave team.
+> Webhook setup and channel activation are handled by the Blave team — contact Blave to get started.
 
 ---
 

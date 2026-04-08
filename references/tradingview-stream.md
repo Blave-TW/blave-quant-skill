@@ -5,7 +5,7 @@
 ```
 TradingView Alert  →  POST /tradingview/webhook  →  Redis Stream
                                                            ↓
-                                        GET /tradingview/stream  →  Agent
+                                        GET /sse/tradingview/stream  →  Agent
 ```
 
 1. TradingView fires an alert → sends POST to Blave webhook with your channel code
@@ -15,39 +15,9 @@ TradingView Alert  →  POST /tradingview/webhook  →  Redis Stream
 
 ---
 
-## Endpoints
-
-**Base URL:** `https://api.blave.org`
-
-| Method | Path | Purpose |
-|---|---|---|
-| POST | `/tradingview/webhook` | TradingView sends alert here |
-| GET | `/tradingview/stream` | Agent listens here (SSE) |
-
----
-
-## TradingView Webhook Setup
-
-> **Channel activation required.** To get a channel code, contact the Blave team.
-
-In your TradingView alert, set:
-- **Webhook URL:** `https://api.blave.org/tradingview/webhook`
-- **Message (JSON):**
-```json
-{
-  "channel": "YOUR_CHANNEL_CODE",
-  "action": "{{strategy.order.action}}",
-  "symbol": "{{ticker}}",
-  "price": "{{close}}",
-  "time": "{{time}}"
-}
-```
-
-`channel` must match your configured code. All other fields are passed through as-is.
-
----
-
 ## Stream Connection
+
+> **Webhook & channel activation:** Handled by the Blave team. Contact Blave to set up your TradingView webhook and get your channel name.
 
 **Params:**
 
