@@ -4,11 +4,12 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Overview
 
-This repo contains one skill covering four capabilities:
+This repo contains one skill covering five capabilities:
 1. **Blave** — Agent calls the Blave REST API directly for crypto market alpha data
 2. **BitMart Futures** — Agent calls the BitMart API for perpetual futures trading
 3. **BitMart Spot** — Agent calls the BitMart API for spot trading
 4. **Bybit** — Agent calls the Bybit API for spot and derivatives/perpetual swap trading
+5. **BingX** — Agent calls the BingX API for spot and perpetual swap trading
 
 No CLI or wrapper involved. All API calls are made directly by the agent.
 
@@ -18,6 +19,7 @@ No CLI or wrapper involved. All API calls are made directly by the agent.
 - `BITMART_API_KEY`, `BITMART_API_SECRET`, `BITMART_API_MEMO` — BitMart API auth
 - `OKX_API_KEY`, `OKX_SECRET_KEY`, `OKX_PASSPHRASE` — OKX API auth
 - `BYBIT_API_KEY`, `BYBIT_API_SECRET` — Bybit API auth
+- `BINGX_API_KEY`, `BINGX_SECRET_KEY` — BingX API auth
 
 ## Files
 
@@ -38,6 +40,7 @@ No CLI or wrapper involved. All API calls are made directly by the agent.
 | `references/bitmart-signature.md` | Python HMAC-SHA256 signature implementation + common mistakes |
 | `references/hyperliquid-api.md` | Hyperliquid API — all 9 endpoints with params, response format, cache times |
 | `references/tradingview-stream.md` | TradingView SSE stream — webhook setup, Python streaming client with reconnect |
+| `references/bingx-api-reference.md` | BingX 59 endpoints, Python signature, spot + perpetual swap |
 
 ## Blave API Endpoints
 
@@ -92,3 +95,14 @@ Base URL: `https://api.bybit.com` | Backup: `https://api.bytick.com` | Testnet: 
 
 Signature: `HMAC-SHA256(secret, {timestamp}{apiKey}{recvWindow}{queryString|jsonBody})`
 Headers: `X-BAPI-API-KEY`, `X-BAPI-TIMESTAMP`, `X-BAPI-SIGN`, `X-BAPI-RECV-WINDOW: 5000`, `referer: Ue001036`
+
+## BingX Source Header
+
+Always include `X-SOURCE-KEY: BX-AI-SKILL` on **all** BingX API requests (both public and authenticated).
+
+## BingX
+
+Base URL: `https://open-api.bingx.com` | Fallback: `https://open-api.bingx.pro` | Paper: `https://open-api-vst.bingx.com`
+
+Signature: `HMAC-SHA256(secret, sorted_params_canonical_string)` → hex, appended as `&signature=<hex>`
+Headers: `X-BX-APIKEY`, `X-SOURCE-KEY: BX-AI-SKILL`
