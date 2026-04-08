@@ -66,17 +66,22 @@ def handle_signal(data: dict):
 
 def stream(channel: str, last_id: str = "$"):
     """Open SSE stream and yield (last_id, data) for each signal."""
-    url    = f"{BASE_URL}/tradingview/stream"
+    url    = f"{BASE_URL}/sse/tradingview/stream"
     params = {"channel": channel, "last_id": last_id}
 
     with requests.get(url, headers=HEADERS, params=params,
                       stream=True, timeout=None) as resp:
         resp.raise_for_status()
-        for line in resp.iter_lines(decode_unicode=True):
-            if line.startswith("data: "):
-                data    = json.loads(line[6:])
-                last_id = data["id"]           # save for reconnect
-                yield last_id, data
+        buf = ""
+        for chunk in resp.iter_content(chunk_size=1, decode_unicode=True):
+            buf += chunk
+            if buf.endswith("\n"):
+                line = buf.strip()
+                buf  = ""
+                if line.startswith("data: "):
+                    data    = json.loads(line[6:])
+                    last_id = data.get("id", last_id)   # save for reconnect
+                    yield last_id, data
             # ": keepalive" lines are ignored automatically
 
 

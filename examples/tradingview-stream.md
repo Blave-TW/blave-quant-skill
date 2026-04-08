@@ -41,11 +41,16 @@ def stream(channel: str, last_id: str = "$"):
     with requests.get(url, headers=HEADERS, params=params,
                       stream=True, timeout=None) as resp:
         resp.raise_for_status()
-        for line in resp.iter_lines(decode_unicode=True):
-            if line.startswith("data: "):
-                data    = json.loads(line[6:])
-                last_id = data["id"]
-                yield last_id, data
+        buf = ""
+        for chunk in resp.iter_content(chunk_size=1, decode_unicode=True):
+            buf += chunk
+            if buf.endswith("\n"):
+                line = buf.strip()
+                buf  = ""
+                if line.startswith("data: "):
+                    data    = json.loads(line[6:])
+                    last_id = data.get("id", last_id)
+                    yield last_id, data
 
 
 def run():
