@@ -36,6 +36,8 @@ No CLI or wrapper involved. All API calls are made directly by the agent.
 | `references/bitmart-spot-authentication.md` | Spot auth details and examples |
 | `references/bitmart-spot-scenarios.md` | Spot common trading scenarios |
 | `references/bitmart-signature.md` | Python HMAC-SHA256 signature implementation + common mistakes |
+| `references/hyperliquid-api.md` | Hyperliquid API — all 9 endpoints with params, response format, cache times |
+| `references/tradingview-stream.md` | TradingView SSE stream — webhook setup, Python streaming client with reconnect |
 
 ## Blave API Endpoints
 

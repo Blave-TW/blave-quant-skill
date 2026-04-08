@@ -106,6 +106,12 @@ def load_hc(symbol, start, end, period):
     return df
 
 
+# ── Helpers ──────────────────────────────────────────────────────────────────
+def _sharpe(r):
+    s = r.std()
+    return (r.mean() / s) * np.sqrt(HOURS_PER_YEAR) if s > 0 else np.nan
+
+
 # ── Numba: only the stateful signal loop ─────────────────────────────────────
 # Rolling vol  → Pandas rolling (Cython/C, fastest for window stats)
 # Signal loop  → Numba njit    (stateful: each bar depends on previous state)
@@ -166,7 +172,7 @@ def run_backtest(df):
     total_return  = cum[-1] - 1
     ann_ret       = (1 + total_return) ** (1 / total_years) - 1
     ann_vol       = r.std() * np.sqrt(HOURS_PER_YEAR)
-    sharpe        = ann_ret / ann_vol if ann_vol > 0 else np.nan
+    sharpe        = _sharpe(r)
     max_dd        = ((cum - peak) / peak).min()
 
     # ── Trade-level metrics ──────────────────────────────────────────────────
@@ -235,7 +241,7 @@ def regime_analysis(df, result):
         cum_r   = np.prod(1 + r) - 1
         ann_r   = (1 + cum_r) ** (1 / total_years) - 1 if total_years > 0 else np.nan
         ann_vol = r.std() * np.sqrt(HOURS_PER_YEAR)
-        sharpe  = ann_r / ann_vol if ann_vol > 0 else np.nan
+        sharpe  = _sharpe(r)
         cum_curve = np.cumprod(1 + r)
         peak    = np.maximum.accumulate(cum_curve)
         mdd     = ((cum_curve - peak) / peak).min()
@@ -309,7 +315,7 @@ def plot_regime(df, result, symbol):
         total_years = len(r) / HOURS_PER_YEAR; cum_r = np.prod(1 + r) - 1
         ann_r   = (1 + cum_r) ** (1 / total_years) - 1 if total_years > 0 else np.nan
         ann_vol = r.std() * np.sqrt(HOURS_PER_YEAR)
-        sharpe  = ann_r / ann_vol if ann_vol > 0 else np.nan
+        sharpe  = _sharpe(r)
         cc = np.cumprod(1 + r); pk = np.maximum.accumulate(cc)
         return dict(ann_ret=ann_r, sharpe=sharpe, max_dd=((cc - pk) / pk).min())
 
@@ -465,10 +471,7 @@ def run_backtest_params(df, entry_th, exit_th):
     r = strat_ret[~np.isnan(strat_ret)]
     if len(r) == 0 or r.std() == 0:
         return None
-    total_years = len(r) / HOURS_PER_YEAR
-    ann_ret = (1 + np.prod(1 + r) - 1) ** (1 / total_years) - 1
-    ann_vol = r.std() * np.sqrt(HOURS_PER_YEAR)
-    return {"sharpe": ann_ret / ann_vol}
+    return {"sharpe": _sharpe(r)}
 
 
 def find_plateau(sharpe_grid, window=1):

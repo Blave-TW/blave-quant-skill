@@ -158,6 +158,27 @@ Returns 400 if `condition_id` is missing or not an integer; 404 if condition not
 | `GET /hyperliquid/top_trader_exposure_history` | `symbol`✓, `period`✓, dates | — |
 | `GET /hyperliquid/bucket_stats` | — → stats by account size bucket; 202 while warming up | ~5 min |
 
+### TradingView Signal Stream (SSE)
+
+Receive TradingView alerts in real time via Server-Sent Events.
+
+| Method | Path | Purpose |
+|---|---|---|
+| POST | `/tradingview/webhook` | TradingView sends alert here (set in TV alert webhook URL) |
+| GET | `/tradingview/stream?channel=<ch>&last_id=<id>` | Agent listens — SSE stream |
+
+**Event format:** `data: {"id": "1712054400000-0", ...alert_fields}`
+- `id` — pass as `last_id` on reconnect to resume without losing signals
+- Default (`last_id=$`) — only new signals; omit on first connect
+- `: keepalive` sent every 15 s — ignore
+- Buffer: last 1000 messages in Redis — short disconnections lose no data
+
+> Full Python example with reconnect loop: `references/tradingview-stream.md`
+>
+> To enable a webhook channel, contact the Blave team.
+
+---
+
 > Python examples: `references/blave-api.md`
 > Indicator interpretation: `references/blave-indicator-guide.md`
 
