@@ -49,6 +49,7 @@ MAX_LEV        = 2.0            # max position size (leverage cap)
 VOL_WINDOW     = 720            # 30 days × 24h
 HOURS_PER_YEAR = 8760
 FEE            = 0.0005         # 0.05% per side (taker fee)
+SHARPE_MODE    = "mean"         # "mean" = r.mean()/r.std()  |  "slope" = OLS slope / residual std
 
 API_BASE   = "https://api.blave.org"
 API_KEY    = _env["blave_api_key"]
@@ -108,8 +109,23 @@ def load_hc(symbol, start, end, period):
 
 # ── Helpers ──────────────────────────────────────────────────────────────────
 def _sharpe(r):
+    """
+    mean mode : (mean / std) * sqrt(N)           — industry standard
+    slope mode: OLS slope of cumulative PnL / diff(residual).std() * sqrt(N)
+                ≈ mean mode for stationary returns, but penalises front-loaded
+                or decaying strategies and rewards improving ones.
+    """
     s = r.std()
-    return (r.mean() / s) * np.sqrt(HOURS_PER_YEAR) if s > 0 else np.nan
+    if s == 0: return np.nan
+    if SHARPE_MODE == "slope":
+        cum = np.cumsum(r)
+        n   = len(r)
+        x   = np.arange(n, dtype=np.float64); x -= x.mean()
+        slope = x.dot(cum) / x.dot(x)               # return per bar
+        resid = cum - (cum.mean() + slope * x)
+        rvol  = np.diff(resid).std()                 # per-bar residual vol
+        return (slope / rvol) * np.sqrt(HOURS_PER_YEAR) if rvol > 0 else np.nan
+    return (r.mean() / s) * np.sqrt(HOURS_PER_YEAR)
 
 
 # ── Numba: only the stateful signal loop ─────────────────────────────────────
