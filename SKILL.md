@@ -77,6 +77,10 @@ Add to `.env`: `blave_api_key=...` and `blave_secret_key=...`
 
 ## Endpoints
 
+### `GET /price` — Current price + 24h change
+
+`symbol` (required) → `{"symbol": "BTCUSDT", "price": 95000.0, "change_24h": 2.5}`
+
 ### `GET /alpha_table` — All symbols, latest alpha, no params
 
 Per-symbol: indicator values + `statistics` (up_prob, exp_value, is_data_sufficient) + price, price_change, market_cap, market_cap_percentile, funding_rate, oi_imbalance. `""` = insufficient data. → Full field reference: `references/blave-api.md`

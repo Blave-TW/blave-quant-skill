@@ -46,6 +46,7 @@ No CLI or wrapper involved. All API calls are made directly by the agent.
 
 Base URL: `https://api.blave.org`
 
+- `price` — current price + 24h change for a symbol (`symbol` required)
 - `alpha_table` — latest alpha for all symbols; use for multi-coin queries or screening
 - `kline` — OHLCV candlestick data
 - `market_direction/get_alpha` — 市場方向 Market Direction (BTCUSDT)

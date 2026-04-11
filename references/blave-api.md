@@ -18,6 +18,17 @@ BASE_URL = "https://api.blave.org"
 
 ---
 
+## Price
+
+```python
+params = {"symbol": "BTCUSDT"}
+response = requests.get(f"{BASE_URL}/price", headers=headers, params=params, timeout=60)
+print(response.json())
+# {"symbol": "BTCUSDT", "price": 95000.0, "change_24h": 2.5}
+```
+
+---
+
 ## Alpha Table
 
 ```python
