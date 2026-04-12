@@ -11,6 +11,7 @@ This repo contains one skill covering five capabilities:
 4. **Bybit** — Agent calls the Bybit API for spot and derivatives/perpetual swap trading
 5. **BingX** — Agent calls the BingX API for spot and perpetual swap trading
 6. **Bitget** — Agent calls the Bitget API for spot and futures trading
+7. **Binance** — Agent calls the Binance API for spot and USDS-M futures trading
 
 No CLI or wrapper involved. All API calls are made directly by the agent.
 
@@ -22,6 +23,7 @@ No CLI or wrapper involved. All API calls are made directly by the agent.
 - `BYBIT_API_KEY`, `BYBIT_API_SECRET` — Bybit API auth
 - `BINGX_API_KEY`, `BINGX_SECRET_KEY` — BingX API auth
 - `BITGET_API_KEY`, `BITGET_SECRET_KEY`, `BITGET_PASSPHRASE` — Bitget API auth
+- `BINANCE_API_KEY`, `BINANCE_SECRET_KEY` — Binance API auth
 
 ## Files
 
@@ -44,6 +46,7 @@ No CLI or wrapper involved. All API calls are made directly by the agent.
 | `references/tradingview-stream.md` | TradingView SSE stream — webhook setup, Python streaming client with reconnect |
 | `references/bingx-api-reference.md` | BingX 59 endpoints, Python signature, spot + perpetual swap |
 | `references/bitget-api-reference.md` | Bitget spot + futures endpoints, Python signature |
+| `references/binance-api-reference.md` | Binance spot + USDS-M futures endpoints, Python signature |
 
 ## Blave API Endpoints
 
@@ -117,3 +120,10 @@ Base URL: `https://api.bitget.com`
 
 Signature: `Base64(HMAC-SHA256(secret, timestamp + METHOD + path + body))`
 Headers: `ACCESS-KEY`, `ACCESS-SIGN`, `ACCESS-PASSPHRASE`, `ACCESS-TIMESTAMP`
+
+## Binance
+
+Spot Base URL: `https://api.binance.com` | Futures Base URL: `https://fapi.binance.com`
+
+Signature: `HMAC-SHA256(secret, queryString + requestBody)` → hex, `signature` as last param
+Headers: `X-MBX-APIKEY`

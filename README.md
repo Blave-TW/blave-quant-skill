@@ -1,6 +1,6 @@
 # Blave Quant Skill
 
-A skill that gives your agent seven capabilities:
+A skill that gives your agent eight capabilities:
 
 1. **Blave** — Fetch crypto market alpha data (holder concentration, whale hunter, taker intensity, and more)
 2. **BitMart Futures** — Trade perpetual futures contracts on BitMart
@@ -9,6 +9,7 @@ A skill that gives your agent seven capabilities:
 5. **Bybit** — Spot and derivatives/perpetual swap trading on Bybit
 6. **BingX** — Spot and perpetual swap trading on BingX
 7. **Bitget** — Spot and futures trading on Bitget
+8. **Binance** — Spot and USDS-M futures trading on Binance
 
 Official website: [https://blave.org](https://blave.org) | For more details, visit the [Blave Academy](https://blave.notion.site/Blave-Academy-c13a8a9ca8824319baa685a769686ac8)
 
@@ -19,7 +20,7 @@ This skill is **documentation only** — it contains no executable code, scripts
 - All files are plain Markdown (`.md`)
 - No `package.json`, no scripts, no dependencies
 - All API calls are made directly by your agent — this skill only provides the instructions
-- Your API keys stay in your local `.env` file. This skill contains no executable code and does not transmit keys itself — however, following the instructions will cause your agent to send keys to Blave, BitMart, OKX, Bybit, BingX, and Bitget APIs when making calls. We recommend using API keys with minimum required permissions and enabling IP whitelisting where possible.
+- Your API keys stay in your local `.env` file. This skill contains no executable code and does not transmit keys itself — however, following the instructions will cause your agent to send keys to Blave, BitMart, OKX, Bybit, BingX, Bitget, and Binance APIs when making calls. We recommend using API keys with minimum required permissions and enabling IP whitelisting where possible.
 - API request signing (HMAC-SHA256) is performed by your agent in code — the reference docs include `openssl`/`curl` shell examples for illustration only. No local shell tools are required by this skill.
 
 You can inspect the full source at: [https://github.com/Blave-TW/blave-quant-skill](https://github.com/Blave-TW/blave-quant-skill)
@@ -289,6 +290,45 @@ BITGET_PASSPHRASE=YOUR_PASSPHRASE
 - "用 Bitget 開 BTCUSDT 合約 10 倍槓桿多單"
 - "查看我的 Bitget 帳戶餘額"
 - "查看我的 Bitget 合約倉位"
+
+---
+
+### Binance
+
+- "Buy 100 USDT worth of BTC on Binance spot"
+- "Open a long BTCUSDT futures position with 10x leverage on Binance"
+- "Check my Binance account balance"
+- "Set take profit and stop loss for my Binance BTC futures position"
+
+---
+
+- "用 Binance 現貨買 100 USDT 的 BTC"
+- "用 Binance 開 BTCUSDT 合約 10 倍槓桿多單"
+- "查看我的 Binance 帳戶餘額"
+- "幫我的 Binance BTC 合約倉位設定止盈止損"
+
+---
+
+### Binance API Setup
+
+#### 1. Create Your Binance API Key
+
+1. Register at **[https://www.binance.com/](https://www.binance.com/)** (if you don't have an account)
+2. Go to **Account → API Management**
+3. Click **Create API**
+4. Enable permissions: **Enable Reading** + **Enable Spot & Margin Trading** + **Enable Futures** (do NOT enable Withdraw)
+5. Save your credentials:
+   - **API Key**
+   - **Secret Key** (shown only once — save it immediately)
+
+#### 2. Add Binance Credentials
+
+Add the following to your `.env` file:
+
+```
+BINANCE_API_KEY=YOUR_API_KEY
+BINANCE_SECRET_KEY=YOUR_SECRET_KEY
+```
 
 ---
 
