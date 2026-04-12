@@ -1,6 +1,6 @@
 ---
 name: blave-quant
-description: "Use for: (1) Blave market alpha data — 籌碼集中度 Holder Concentration, 多空力道 Taker Intensity, 巨鯨警報 Whale Hunter, 擠壓動能 Squeeze Momentum, 市場方向 Market Direction, 資金稀缺 Capital Shortage, 板塊輪動 Sector Rotation, Blave頂尖交易員 Top Trader Exposure, kline, alpha table, 市場情緒 Market Sentiment, screener saved conditions, Hyperliquid top trader tracking (leaderboard, positions, history, performance, bucket stats); (2) BitMart futures/contract trading — opening/closing positions, leverage, plan orders, TP/SL, trailing stops, account management, sub-account transfers; (3) BitMart spot trading — buy/sell, limit/market orders, account balance, order history, sub-account transfers; (4) OKX trading — spot and perpetual swap, order placement, positions, balance; (5) Bybit trading — spot and derivatives/perpetual swap, order placement, positions, balance, TP/SL; (6) BingX trading — spot and perpetual swap, order placement, position management, leverage, TWAP orders, OCO orders."
+description: "Use for: (1) Blave market alpha data — 籌碼集中度 Holder Concentration, 多空力道 Taker Intensity, 巨鯨警報 Whale Hunter, 擠壓動能 Squeeze Momentum, 市場方向 Market Direction, 資金稀缺 Capital Shortage, 板塊輪動 Sector Rotation, Blave頂尖交易員 Top Trader Exposure, kline, alpha table, 市場情緒 Market Sentiment, screener saved conditions, Hyperliquid top trader tracking (leaderboard, positions, history, performance, bucket stats); (2) BitMart futures/contract trading — opening/closing positions, leverage, plan orders, TP/SL, trailing stops, account management, sub-account transfers; (3) BitMart spot trading — buy/sell, limit/market orders, account balance, order history, sub-account transfers; (4) OKX trading — spot and perpetual swap, order placement, positions, balance; (5) Bybit trading — spot and derivatives/perpetual swap, order placement, positions, balance, TP/SL; (6) BingX trading — spot and perpetual swap, order placement, position management, leverage, TWAP orders, OCO orders; (7) Bitget trading — spot and futures, order placement, position management, leverage, plan orders."
 version: 1.2.1
 metadata:
   openclaw:
@@ -22,11 +22,14 @@ metadata:
         - BYBIT_API_SECRET
         - BINGX_API_KEY
         - BINGX_SECRET_KEY
+        - BITGET_API_KEY
+        - BITGET_SECRET_KEY
+        - BITGET_PASSPHRASE
 ---
 
 # Blave Quant Skill
 
-Five capabilities: **Blave** market alpha data, **BitMart** trading, **OKX** trading, **Bybit** trading, **BingX** trading.
+Six capabilities: **Blave** market alpha data, **BitMart** trading, **OKX** trading, **Bybit** trading, **BingX** trading, **Bitget** trading.
 
 ## Examples
 
@@ -584,4 +587,79 @@ After order → query order status. After close → query positions.
 
 ## References
 - `references/bingx-api-reference.md` — 59 endpoints, Python signature, full params
+
+---
+
+# PART 7: Bitget Trading
+
+**Base URL:** `https://api.bitget.com` | **Spot:** `BTCUSDT` | **Futures:** `BTCUSDT` + `productType=USDT-FUTURES` | **Success:** `"code": "00000"`
+
+Full details in `references/bitget-api-reference.md`
+
+## Authentication
+
+**Credentials** (from `.env`): `BITGET_API_KEY`, `BITGET_SECRET_KEY`, `BITGET_PASSPHRASE`
+
+No Bitget account? Register at **[https://www.bitget.com/](https://www.bitget.com/)**
+
+Verify credentials before any private call. If missing — **STOP**.
+
+**Signature:** `Base64(HMAC-SHA256(secret, timestamp + METHOD + path + body))`
+- `timestamp`: Unix milliseconds
+- GET body = `""`
+- POST body = compact JSON (no spaces)
+
+**Headers (authenticated requests):**
+```
+ACCESS-KEY: <api_key>
+ACCESS-SIGN: <base64 signature>
+ACCESS-PASSPHRASE: <passphrase>
+ACCESS-TIMESTAMP: <unix ms>
+Content-Type: application/json
+locale: en-US
+```
+
+> Python signature implementation: `references/bitget-api-reference.md`
+
+## Operation Flow
+
+### Step 0: Credential Check
+Verify `BITGET_API_KEY`, `BITGET_SECRET_KEY`, `BITGET_PASSPHRASE`. If missing — **STOP**.
+
+### Step 1: Pre-Trade Check (Futures)
+- Query positions: `GET /api/v2/mix/position/all-position?productType=USDT-FUTURES`
+- If position exists → inherit leverage and margin mode, do NOT override
+
+### Step 2: Execute
+- READ → call, parse, display
+- WRITE → present summary → ask **"CONFIRM"** → execute
+
+### Step 3: Verify
+After order → query order status. After close → query positions.
+
+## Quick Reference
+
+| Operation | Method | Path |
+|---|---|---|
+| Spot balances | GET | `/api/v2/spot/account/assets` |
+| Futures account | GET | `/api/v2/mix/account/accounts?productType=USDT-FUTURES` |
+| All balances | GET | `/api/v2/account/all-account-balance` |
+| Place spot order | POST | `/api/v2/spot/trade/place-order` |
+| Cancel spot order | POST | `/api/v2/spot/trade/cancel-order` |
+| Spot open orders | GET | `/api/v2/spot/trade/unfilled-orders` |
+| Place futures order | POST | `/api/v2/mix/order/place-order` |
+| Cancel futures order | POST | `/api/v2/mix/order/cancel-order` |
+| Futures positions | GET | `/api/v2/mix/position/all-position` |
+| Set leverage | POST | `/api/v2/mix/account/set-leverage` |
+| Set margin mode | POST | `/api/v2/mix/account/set-margin-mode` |
+| Spot ticker | GET | `/api/v2/spot/market/tickers` |
+| Futures ticker | GET | `/api/v2/mix/market/ticker` |
+
+## Security
+- WRITE operations require **"CONFIRM"**
+- Always show liquidation price before opening leveraged positions
+- "Not financial advice. Trading carries significant risk of loss."
+
+## References
+- `references/bitget-api-reference.md` — spot + futures endpoints, Python signature
 

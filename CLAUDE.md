@@ -10,6 +10,7 @@ This repo contains one skill covering five capabilities:
 3. **BitMart Spot** — Agent calls the BitMart API for spot trading
 4. **Bybit** — Agent calls the Bybit API for spot and derivatives/perpetual swap trading
 5. **BingX** — Agent calls the BingX API for spot and perpetual swap trading
+6. **Bitget** — Agent calls the Bitget API for spot and futures trading
 
 No CLI or wrapper involved. All API calls are made directly by the agent.
 
@@ -20,6 +21,7 @@ No CLI or wrapper involved. All API calls are made directly by the agent.
 - `OKX_API_KEY`, `OKX_SECRET_KEY`, `OKX_PASSPHRASE` — OKX API auth
 - `BYBIT_API_KEY`, `BYBIT_API_SECRET` — Bybit API auth
 - `BINGX_API_KEY`, `BINGX_SECRET_KEY` — BingX API auth
+- `BITGET_API_KEY`, `BITGET_SECRET_KEY`, `BITGET_PASSPHRASE` — Bitget API auth
 
 ## Files
 
@@ -41,6 +43,7 @@ No CLI or wrapper involved. All API calls are made directly by the agent.
 | `references/hyperliquid-api.md` | Hyperliquid API — all 9 endpoints with params, response format, cache times |
 | `references/tradingview-stream.md` | TradingView SSE stream — webhook setup, Python streaming client with reconnect |
 | `references/bingx-api-reference.md` | BingX 59 endpoints, Python signature, spot + perpetual swap |
+| `references/bitget-api-reference.md` | Bitget spot + futures endpoints, Python signature |
 
 ## Blave API Endpoints
 
@@ -107,3 +110,10 @@ Base URL: `https://open-api.bingx.com` | Fallback: `https://open-api.bingx.pro` 
 
 Signature: `HMAC-SHA256(secret, sorted_params_canonical_string)` → hex, appended as `&signature=<hex>`
 Headers: `X-BX-APIKEY`, `X-SOURCE-KEY: BX-AI-SKILL`
+
+## Bitget
+
+Base URL: `https://api.bitget.com`
+
+Signature: `Base64(HMAC-SHA256(secret, timestamp + METHOD + path + body))`
+Headers: `ACCESS-KEY`, `ACCESS-SIGN`, `ACCESS-PASSPHRASE`, `ACCESS-TIMESTAMP`
