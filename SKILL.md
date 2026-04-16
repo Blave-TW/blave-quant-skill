@@ -42,6 +42,7 @@ Workflow templates for common use cases. **When the user's request matches one o
 | `examples/hyperliquid-copy-trading.md` | User wants to find traders to follow / copy trade on Hyperliquid |
 | `examples/blave-alpha-screening.md` | User wants to screen or find high-conviction / small-cap tokens |
 | `examples/backtest-holder-concentration.md` | User wants to backtest a strategy using Blave alpha signals |
+| `examples/truth-social-trump-monitor.md` | User wants to monitor Trump's Truth Social posts with translation |
 
 ## Output Rule — Chart Auto-Send
 
