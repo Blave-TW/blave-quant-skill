@@ -43,6 +43,7 @@ Workflow templates for common use cases. **When the user's request matches one o
 | `examples/blave-alpha-screening.md` | User wants to screen or find high-conviction / small-cap tokens |
 | `examples/backtest-holder-concentration.md` | User wants to backtest a strategy using Blave alpha signals |
 | `examples/truth-social-trump-monitor.md` | User wants to monitor Trump's Truth Social posts with translation |
+| `examples/btc-etf-flow-monitor.md` | User wants to track Bitcoin ETF flows / institutional accumulation (BlackRock IBIT etc.) |
 
 ## Output Rule — Chart Auto-Send
 
