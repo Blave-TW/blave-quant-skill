@@ -12,6 +12,7 @@ This repo contains one skill covering five capabilities:
 5. **BingX** — Agent calls the BingX API for spot and perpetual swap trading
 6. **Bitget** — Agent calls the Bitget API for spot and futures trading
 7. **Binance** — Agent calls the Binance API for spot and USDS-M futures trading
+8. **Bitfinex** — Agent calls the Bitfinex API for spot, margin, and funding/lending
 
 No CLI or wrapper involved. All API calls are made directly by the agent.
 
@@ -24,6 +25,7 @@ No CLI or wrapper involved. All API calls are made directly by the agent.
 - `BINGX_API_KEY`, `BINGX_SECRET_KEY` — BingX API auth
 - `BITGET_API_KEY`, `BITGET_SECRET_KEY`, `BITGET_PASSPHRASE` — Bitget API auth
 - `BINANCE_API_KEY`, `BINANCE_SECRET_KEY` — Binance API auth
+- `BITFINEX_API_KEY`, `BITFINEX_API_SECRET` — Bitfinex API auth
 
 ## Files
 
@@ -47,6 +49,7 @@ No CLI or wrapper involved. All API calls are made directly by the agent.
 | `references/bingx-api-reference.md` | BingX 59 endpoints, Python signature, spot + perpetual swap |
 | `references/bitget-api-reference.md` | Bitget spot + futures endpoints, Python signature |
 | `references/binance-api-reference.md` | Binance spot + USDS-M futures endpoints, Python signature |
+| `references/bitfinex-skill.md` | Bitfinex spot, margin, funding/lending endpoints, HMAC-SHA384 signature |
 
 ## Blave API Endpoints
 
@@ -127,3 +130,11 @@ Spot Base URL: `https://api.binance.com` | Futures Base URL: `https://fapi.binan
 
 Signature: `HMAC-SHA256(secret, queryString + requestBody)` → hex, `signature` as last param
 Headers: `X-MBX-APIKEY`
+
+## Bitfinex
+
+Base URL: `https://api.bitfinex.com` (auth) | `https://api-pub.bitfinex.com` (public)
+
+Signature: `HMAC-SHA384(secret, "/api/" + path + nonce + body)` → hex
+Headers: `bfx-apikey`, `bfx-nonce`, `bfx-signature`
+Affiliate code: `"meta": {"aff_code": "ZZDLtrXMF"}` on every order
