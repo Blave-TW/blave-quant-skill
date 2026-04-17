@@ -1,131 +1,146 @@
 # Example: Truth Social Trump Post Monitor
 
-Monitor Trump's Truth Social posts in real time, translate to Traditional Chinese via Google Translate (no LLM tokens), and push new posts.
+Monitor Trump's Truth Social posts, translate to Traditional Chinese via Google Translate (no LLM tokens), and push to Telegram.
+
+Uses `trumpstruth.org/feed` RSS — works from any server (including AWS) with plain `requests`, no Cloudflare bypass needed.
 
 ---
 
 ## Dependencies
 
 ```bash
-pip install curl-cffi deep-translator
+pip install deep-translator requests
 ```
-
-- **curl_cffi** — TLS fingerprint impersonation to bypass Cloudflare (required; plain `requests` gets 403)
-- **deep-translator** — free Google Translate wrapper, no API key needed
 
 ---
 
 ## Code
 
 ```python
-import re
-import time
-import json
-from curl_cffi import requests as cf_requests
+#!/usr/bin/env python3
+"""
+川普 Truth Social 監控 → 翻譯中文 → 推送 Telegram
+透過 trumpstruth.org RSS Feed，每 5 分鐘執行一次（cron）
+"""
+
+import re, json, time
+import xml.etree.ElementTree as ET
+from pathlib import Path
+from datetime import datetime
+import requests
 from deep_translator import GoogleTranslator
 
-# ── Config ──────────────────────────────────────────────────────────────────
-ACCOUNT_ID   = "107780257626128497"   # @realDonaldTrump
-POLL_SECONDS = 60                      # check every 60s
-IMPERSONATE  = "chrome110"             # TLS fingerprint that passes Cloudflare
-BASE         = "https://truthsocial.com/api/v1"
-TRANSLATOR   = GoogleTranslator(source="en", target="zh-TW")
+# ── Config ────────────────────────────────────────────────────────────────
+RSS_URL          = "https://www.trumpstruth.org/feed"
+TRANSLATOR       = GoogleTranslator(source="en", target="zh-TW")
+TELEGRAM_TOKEN   = "YOUR_BOT_TOKEN"
+TELEGRAM_CHAT_ID = "YOUR_CHAT_ID"
+STATE_FILE       = Path(__file__).parent / "trump_monitor_state.json"
+HEADERS          = {"User-Agent": "Mozilla/5.0 (compatible; TrumpMonitor/1.0)"}
 
 
-# ── Helpers ─────────────────────────────────────────────────────────────────
-def strip_html(html: str) -> str:
-    """Remove HTML tags, convert <br> to newline, decode entities."""
-    text = re.sub(r"<br\s*/?>", "\n", html)
+# ── Helpers ───────────────────────────────────────────────────────────────
+def strip_html(html):
+    text = re.sub(r"<br\s*/?>", "\n", html or "")
     text = re.sub(r"<[^>]+>", "", text)
-    for old, new in [("&amp;", "&"), ("&lt;", "<"), ("&gt;", ">"),
-                     ("&#39;", "'"), ("&quot;", '"')]:
+    for old, new in [("&amp;","&"),("&lt;","<"),("&gt;",">"),("&#39;","'"),("&quot;",'"')]:
         text = text.replace(old, new)
     return text.strip()
 
 
-def translate(text: str) -> str:
-    """Translate to zh-TW via Google Translate. Returns original on failure."""
-    if not text:
-        return ""
+def translate(text):
     try:
-        return TRANSLATOR.translate(text)
+        return TRANSLATOR.translate(text) if text else ""
     except Exception:
         return text
 
 
-def push_message(post: dict):
-    """
-    Send the translated post to your notification channel.
-    Replace this with your actual push logic (Telegram, Slack, webhook, etc.)
-    """
-    print("=" * 60)
-    print(f"[{post['created_at']}]")
-    print(f"{post['content_en']}")
-    print()
-    print(f"{post['content_zh']}")
-    print(f"-- Reblogs: {post['reblogs']} | Favourites: {post['favourites']}")
-    print(f"-- https://truthsocial.com/@realDonaldTrump/{post['id']}")
-    print("=" * 60)
-    print()
-
-
-# ── Fetch ───────────────────────────────────────────────────────────────────
-def fetch_posts(session, since_id=None, limit=20):
-    """Fetch latest posts. Returns list of dicts, newest first."""
-    params = {"limit": limit, "exclude_replies": "true"}
-    if since_id:
-        params["since_id"] = since_id
-
-    r = session.get(
-        f"{BASE}/accounts/{ACCOUNT_ID}/statuses",
-        params=params,
-        headers={"Accept": "application/json", "Referer": "https://truthsocial.com/"},
+def tg(msg):
+    requests.post(
+        f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/sendMessage",
+        json={"chat_id": TELEGRAM_CHAT_ID, "text": msg,
+              "parse_mode": "Markdown", "disable_web_page_preview": True},
+        timeout=10,
     )
-    r.raise_for_status()
-    raw = r.json()
 
+
+def load_state():
+    if STATE_FILE.exists():
+        with open(STATE_FILE) as f:
+            return json.load(f)
+    return {"seen_ids": []}
+
+
+def save_state(state):
+    state["seen_ids"] = state["seen_ids"][-200:]  # keep last 200 to avoid bloat
+    with open(STATE_FILE, "w") as f:
+        json.dump(state, f)
+
+
+# ── Fetch ─────────────────────────────────────────────────────────────────
+def fetch_posts():
+    r = requests.get(RSS_URL, headers=HEADERS, timeout=20)
+    r.raise_for_status()
+    root = ET.fromstring(r.content)
+    ns   = {"truth": "https://truthsocial.com/ns"}
     posts = []
-    for p in raw:
-        content = strip_html(p.get("content", ""))
-        if not content:
-            continue  # skip image/video-only posts
-        posts.append({
-            "id":         p["id"],
-            "created_at": p["created_at"],
-            "content_en": content,
-            "content_zh": "",
-            "reblogs":    p.get("reblogs_count", 0),
-            "favourites": p.get("favourites_count", 0),
-        })
+    for item in root.findall(".//item"):
+        orig_id  = item.findtext("truth:originalId", namespaces=ns)
+        guid     = item.findtext("guid", "")
+        post_id  = orig_id or guid.split("/")[-1]
+        title    = item.findtext("title", "")
+        desc     = strip_html(item.findtext("description", ""))
+        pub_date = item.findtext("pubDate", "")
+        orig_url = item.findtext("truth:originalUrl", namespaces=ns) or guid
+
+        content = desc if len(desc) > len(title) else title
+        content = content.strip()
+        if not content or content == "[No Title]":
+            continue
+
+        try:
+            dt = datetime.strptime(pub_date, "%a, %d %b %Y %H:%M:%S %z")
+            ts_str = dt.strftime("%Y-%m-%d %H:%M UTC")
+        except Exception:
+            ts_str = pub_date[:25] if pub_date else ""
+
+        posts.append({"id": post_id, "content": content,
+                      "url": orig_url, "pub_date": ts_str})
     return posts
 
 
-# ── Main Loop ───────────────────────────────────────────────────────────────
+# ── Main ──────────────────────────────────────────────────────────────────
 def run():
-    session = cf_requests.Session(impersonate=IMPERSONATE)
-    last_id = None
+    state    = load_state()
+    seen_ids = set(state["seen_ids"])
+    is_first = len(seen_ids) == 0
 
-    # First run: fetch latest 5 and display them
-    posts = fetch_posts(session, limit=5)
-    if posts:
-        last_id = posts[0]["id"]
-        for p in reversed(posts):  # oldest first
-            p["content_zh"] = translate(p["content_en"])
-            push_message(p)
+    posts = fetch_posts()
+    if not posts:
+        return
 
-    # Poll loop
-    while True:
-        time.sleep(POLL_SECONDS)
-        try:
-            new_posts = fetch_posts(session, since_id=last_id)
-            if not new_posts:
-                continue
-            last_id = new_posts[0]["id"]
-            for p in reversed(new_posts):  # oldest first
-                p["content_zh"] = translate(p["content_en"])
-                push_message(p)
-        except Exception as e:
-            print(f"Error: {e} — retrying in {POLL_SECONDS}s")
+    if is_first:
+        # First run: push latest 3, mark all as seen
+        to_push = posts[:3]
+        for p in posts:
+            seen_ids.add(p["id"])
+    else:
+        to_push = [p for p in posts if p["id"] not in seen_ids]
+        for p in to_push:
+            seen_ids.add(p["id"])
+
+    for p in reversed(to_push):  # oldest first
+        zh = translate(p["content"])
+        msg = (f"🇺🇸 *川普 Truth Social*\n"
+               f"🕐 `{p['pub_date']}`\n\n"
+               f"*🇬🇧 英文原文*\n{p['content']}\n\n"
+               f"*🇹🇼 中文翻譯*\n{zh}\n\n"
+               f"[原文連結]({p['url']})")
+        tg(msg)
+        time.sleep(1)
+
+    state["seen_ids"] = list(seen_ids)
+    save_state(state)
 
 
 if __name__ == "__main__":
@@ -134,60 +149,71 @@ if __name__ == "__main__":
 
 ---
 
+## Deployment
+
+### Cron (every 5 minutes)
+
+```bash
+*/5 * * * * cd /path/to/project && python3 trump_monitor.py >> /var/log/trump_monitor.log 2>&1
+```
+
+### Systemd Timer (alternative)
+
+```ini
+# /etc/systemd/system/trump-monitor.timer
+[Unit]
+Description=Trump Truth Social Monitor
+
+[Timer]
+OnCalendar=*:0/5
+Persistent=true
+
+[Install]
+WantedBy=timers.target
+```
+
+---
+
 ## How It Works
 
 | Step | Detail |
 |---|---|
-| **Fetch** | `GET /api/v1/accounts/{id}/statuses` via Mastodon-compatible API. `since_id` param ensures only new posts are returned on subsequent polls |
-| **Translate** | `deep-translator` calls Google Translate web API (free, no key). EN → zh-TW |
-| **Push** | `push_message()` — replace with your Telegram bot / Slack webhook / any channel |
-| **Anti-block** | `curl_cffi` with `impersonate="chrome110"` matches Chrome's TLS fingerprint. Plain `requests` gets Cloudflare 403 |
+| **Fetch** | `GET https://www.trumpstruth.org/feed` — RSS feed with `truth:originalId` and `truth:originalUrl` custom XML namespaces |
+| **Dedup** | `trump_monitor_state.json` stores last 200 seen post IDs; only new posts get pushed |
+| **Translate** | `deep-translator` calls Google Translate free endpoint. EN → zh-TW |
+| **Push** | Telegram Bot API with Markdown formatting |
+| **First run** | Pushes latest 3 posts, marks all 100 as seen so next run only gets truly new ones |
 
 ---
 
 ## Customising the Push Channel
 
-### Telegram Bot
-
-```python
-import requests as std_requests
-
-TELEGRAM_BOT_TOKEN = "your_bot_token"
-TELEGRAM_CHAT_ID   = "your_chat_id"
-
-def push_message(post: dict):
-    text = (
-        f"*{post['created_at']}*\n\n"
-        f"{post['content_en']}\n\n"
-        f"---\n"
-        f"{post['content_zh']}\n\n"
-        f"[Link](https://truthsocial.com/@realDonaldTrump/{post['id']})"
-    )
-    std_requests.post(
-        f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage",
-        json={"chat_id": TELEGRAM_CHAT_ID, "text": text, "parse_mode": "Markdown"},
-    )
-```
-
 ### Slack Webhook
 
-```python
-import requests as std_requests
+Replace `tg(msg)` with:
 
+```python
 SLACK_WEBHOOK_URL = "https://hooks.slack.com/services/T.../B.../xxx"
 
-def push_message(post: dict):
-    std_requests.post(SLACK_WEBHOOK_URL, json={
-        "text": f"{post['created_at']}\n{post['content_en']}\n\n{post['content_zh']}"
-    })
+def slack(msg):
+    requests.post(SLACK_WEBHOOK_URL, json={"text": msg}, timeout=10)
+```
+
+### Discord Webhook
+
+```python
+DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/..."
+
+def discord(msg):
+    requests.post(DISCORD_WEBHOOK_URL, json={"content": msg}, timeout=10)
 ```
 
 ---
 
 ## Notes
 
-- **Rate limit:** Truth Social has no documented rate limit, but polling faster than every 30s is aggressive. 60s is safe
-- **Cloudflare:** if `chrome110` stops working, try `chrome`, `chrome120`, `safari`, or `safari15_5`
-- **Google Translate limit:** `deep-translator` uses the free web endpoint; extremely heavy use (thousands of calls/hour) may trigger temporary IP blocks. At 1 call per minute this is not a concern
-- **Empty posts:** posts with only images/videos have empty `content` and are skipped. If you want media posts too, check `p.get("media_attachments", [])`
-- **Reblogs (retweets):** `exclude_replies=true` still includes reblogs. To filter those out, check `if p.get("reblog") is None`
+- **RSS source:** `trumpstruth.org` is a third-party RSS mirror of Trump's Truth Social posts. It returns standard RSS XML with custom `truth:` namespace fields
+- **No Cloudflare issue:** unlike Truth Social's own API, this RSS feed works with plain `requests` from any IP (including AWS/GCP)
+- **Feed size:** returns ~100 most recent posts per request
+- **Google Translate limit:** `deep-translator` uses the free web endpoint; at 5-min intervals this is well within limits
+- **State file:** keeps last 200 IDs to prevent duplicate pushes across restarts. Safe to delete to reset
