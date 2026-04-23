@@ -131,6 +131,14 @@ Spot Base URL: `https://api.binance.com` | Futures Base URL: `https://fapi.binan
 Signature: `HMAC-SHA256(secret, queryString + requestBody)` → hex, `signature` as last param
 Headers: `X-MBX-APIKEY`
 
+## Binance Broker ID (Blave)
+
+Broker attribution is per-order via `newClientOrderId` (NOT a header). Every order placement MUST include `newClientOrderId` starting with:
+- Spot: `x-GBN6HWR2` (broker ID `GBN6HWR2`)
+- USDS-M Futures: `x-52DDFAFN` (broker ID `52DDFAFN`)
+
+Total length ≤ 36 chars. Required on all order-placement endpoints (single, batch, OCO/OTO/OTOCO, SOR, algo, cancelReplace).
+
 ## Bitfinex
 
 Base URL: `https://api.bitfinex.com` (auth) | `https://api-pub.bitfinex.com` (public)

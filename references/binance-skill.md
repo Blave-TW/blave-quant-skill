@@ -26,6 +26,48 @@ Content-Type: application/x-www-form-urlencoded   (POST)
 
 > Python signature implementation: `references/binance-api-reference.md`
 
+## Broker ID (Blave — MANDATORY on every order)
+
+Binance brokers are attached **per order** via `newClientOrderId`, not via a header. Every place-order call **MUST** include `newClientOrderId` starting with `x-<BROKER_ID>`:
+
+| Product | Broker ID | `newClientOrderId` prefix |
+|---|---|---|
+| Spot | `GBN6HWR2` | `x-GBN6HWR2` |
+| USDS-M Futures | `52DDFAFN` | `x-52DDFAFN` |
+
+Rules:
+- Prefix starts with literal `x-` (lowercase), then the broker ID
+- Total length ≤ 36 chars; append a unique suffix (timestamp/uuid fragment) to keep each ID unique
+- Applies to: `/api/v3/order`, `/api/v3/order/cancelReplace`, `/api/v3/sor/order`, `/api/v3/orderList/oco|oto|otoco`, `/fapi/v1/order`, `/fapi/v1/batchOrders`, `/fapi/v1/algoOrder`, and their test/modify variants
+- Batch orders: **every** order in the batch needs its own qualifying `newClientOrderId`
+- If user supplies a custom `newClientOrderId`, reject it or prepend the broker prefix — never strip the prefix
+
+```python
+import time, uuid
+
+def spot_cid(suffix: str = "") -> str:
+    tag = suffix or uuid.uuid4().hex[:8]
+    return f"x-GBN6HWR2{tag}"[:36]
+
+def fut_cid(suffix: str = "") -> str:
+    tag = suffix or uuid.uuid4().hex[:8]
+    return f"x-52DDFAFN{tag}"[:36]
+
+# Spot place order
+spot_post("/api/v3/order", {
+    "symbol": "BTCUSDT", "side": "BUY", "type": "MARKET",
+    "quantity": "0.001",
+    "newClientOrderId": spot_cid(),
+})
+
+# Futures place order
+fapi_post("/fapi/v1/order", {
+    "symbol": "BTCUSDT", "side": "BUY", "type": "MARKET",
+    "quantity": "0.001",
+    "newClientOrderId": fut_cid(),
+})
+```
+
 ## Operation Flow
 
 ### Step 0: Credential Check

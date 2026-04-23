@@ -26,6 +26,29 @@ X-MBX-APIKEY: <api_key>
 Content-Type: application/x-www-form-urlencoded   (POST)
 ```
 
+## Broker ID (Blave)
+
+Binance broker attribution is per-order via `newClientOrderId`, **not** a header.
+
+| Product | Broker ID | `newClientOrderId` prefix |
+|---|---|---|
+| Spot | `GBN6HWR2` | `x-GBN6HWR2` |
+| USDS-M Futures | `52DDFAFN` | `x-52DDFAFN` |
+
+- Total length of `newClientOrderId` ≤ 36 chars
+- Required on `/api/v3/order`, `/api/v3/order/cancelReplace`, `/api/v3/sor/order`, `/api/v3/orderList/oco|oto|otoco`, `/fapi/v1/order`, `/fapi/v1/batchOrders`, `/fapi/v1/algoOrder`, and their test/modify variants
+- Batch orders: every order in the batch must carry its own prefixed `newClientOrderId`
+
+```python
+import uuid
+
+def spot_cid(suffix: str = "") -> str:
+    return f"x-GBN6HWR2{suffix or uuid.uuid4().hex[:8]}"[:36]
+
+def fut_cid(suffix: str = "") -> str:
+    return f"x-52DDFAFN{suffix or uuid.uuid4().hex[:8]}"[:36]
+```
+
 ---
 
 ## Python Signature Implementation
@@ -113,7 +136,7 @@ def fapi_put(path, params=None):    return bn_put(FAPI_URL, path, params)
 | POST | `/api/v3/order/cancelReplace` | Atomic cancel & replace |
 | PUT | `/api/v3/order/amend/keepPriority` | Amend quantity (keep queue priority) |
 
-**Spot order params:** `symbol`, `side` (BUY/SELL), `type` (LIMIT/MARKET/STOP_LOSS/TAKE_PROFIT/STOP_LOSS_LIMIT/TAKE_PROFIT_LIMIT/LIMIT_MAKER), `timeInForce` (GTC/IOC/FOK), `quantity`, `quoteOrderQty` (market buy by quote), `price`
+**Spot order params:** `symbol`, `side` (BUY/SELL), `type` (LIMIT/MARKET/STOP_LOSS/TAKE_PROFIT/STOP_LOSS_LIMIT/TAKE_PROFIT_LIMIT/LIMIT_MAKER), `timeInForce` (GTC/IOC/FOK), `quantity`, `quoteOrderQty` (market buy by quote), `price`, **`newClientOrderId` (REQUIRED: must start with `x-GBN6HWR2`, ≤36 chars)**
 
 ### Order Query
 
@@ -165,7 +188,7 @@ def fapi_put(path, params=None):    return bn_put(FAPI_URL, path, params)
 | POST | `/fapi/v1/batchOrders` | Batch place (max 5) |
 | POST | `/fapi/v1/algoOrder` | Algo/conditional order (STOP/TP/TRAILING) |
 
-**Futures order params:** `symbol`, `side` (BUY/SELL), `positionSide` (BOTH/LONG/SHORT), `type` (LIMIT/MARKET/STOP/STOP_MARKET/TAKE_PROFIT/TAKE_PROFIT_MARKET/TRAILING_STOP_MARKET), `quantity`, `price`, `stopPrice`, `timeInForce`, `reduceOnly`
+**Futures order params:** `symbol`, `side` (BUY/SELL), `positionSide` (BOTH/LONG/SHORT), `type` (LIMIT/MARKET/STOP/STOP_MARKET/TAKE_PROFIT/TAKE_PROFIT_MARKET/TRAILING_STOP_MARKET), `quantity`, `price`, `stopPrice`, `timeInForce`, `reduceOnly`, **`newClientOrderId` (REQUIRED: must start with `x-52DDFAFN`, ≤36 chars)**
 
 ### Order Modification
 
