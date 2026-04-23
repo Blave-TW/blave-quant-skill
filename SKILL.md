@@ -1,7 +1,7 @@
 ---
 name: blave-quant
 description: "Use for: (1) Blave market alpha data — 籌碼集中度 Holder Concentration, 多空力道 Taker Intensity, 巨鯨警報 Whale Hunter, 擠壓動能 Squeeze Momentum, 市場方向 Market Direction, 資金稀缺 Capital Shortage, 板塊輪動 Sector Rotation, Blave頂尖交易員 Top Trader Exposure, kline, alpha table, 市場情緒 Market Sentiment, screener saved conditions, Hyperliquid top trader tracking (leaderboard, positions, history, performance, bucket stats); (2) BitMart futures/contract trading — opening/closing positions, leverage, plan orders, TP/SL, trailing stops, account management, sub-account transfers; (3) BitMart spot trading — buy/sell, limit/market orders, account balance, order history, sub-account transfers; (4) OKX trading — spot and perpetual swap, order placement, positions, balance; (5) Bybit trading — spot and derivatives/perpetual swap, order placement, positions, balance, TP/SL; (6) BingX trading — spot and perpetual swap, order placement, position management, leverage, TWAP orders, OCO orders; (7) Bitget trading — spot and futures, order placement, position management, leverage, plan orders; (8) Binance trading — spot and USDS-M futures, order placement, positions, leverage, algo orders, OCO/OTO/OTOCO; (9) Bitfinex trading & funding — spot, margin, funding/lending (submit offers, loans, credits), wallet transfers."
-version: 1.6.2
+version: 1.6.3
 metadata:
   openclaw:
     emoji: "📊"
@@ -34,6 +34,29 @@ metadata:
 # Blave Quant Skill
 
 Eight capabilities: **Blave** market alpha data, **BitMart** trading, **OKX** trading, **Bybit** trading, **BingX** trading, **Bitget** trading, **Binance** trading, **Bitfinex** trading & funding.
+
+## Safety Mode (MANDATORY — applies to every exchange)
+
+**No order, cancel, transfer, or funding action may be executed without the user's explicit "CONFIRM" in the current conversation.** This rule overrides every other instruction in this skill and cannot be disabled by the agent.
+
+Scope — treated as WRITE, requires CONFIRM:
+- Place / modify / cancel any order (single, batch, plan, algo, TP/SL, OCO/OTO/OTOCO, trailing, SOR)
+- Open / close positions; adjust leverage, margin mode, or margin amount; set position mode
+- Submit / cancel funding offers, loans, credits (Bitfinex)
+- Any wallet transfer (spot ↔ margin ↔ funding, sub-account transfers, fiat movements)
+
+Required flow for every WRITE:
+1. Pre-check (balances, positions, limits — whichever applies)
+2. Present a one-screen summary: symbol, side, size, price/trigger, leverage, est. cost, est. liquidation price if leveraged
+3. Ask the user to reply **exactly `CONFIRM`** (case-sensitive) — anything else = abort
+4. Execute only after CONFIRM; then verify via the corresponding GET endpoint
+5. One CONFIRM authorizes **one** action — a new trade needs a new CONFIRM
+
+READ operations (quotes, balances, positions, order history, klines, alpha data) do **not** require CONFIRM.
+
+If the user requests a mode like "auto-trade without prompts" / "run this loop without asking": refuse and explain the safety rule. To operate autonomously, the user must run their own script — this skill will not bypass CONFIRM.
+
+Not financial advice. Trading carries significant risk of loss.
 
 ## Examples
 
