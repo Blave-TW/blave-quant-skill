@@ -1,7 +1,7 @@
 ---
 name: blave-quant
 description: "Use for: (1) Blave market alpha data — 籌碼集中度 Holder Concentration, 多空力道 Taker Intensity, 巨鯨警報 Whale Hunter, 擠壓動能 Squeeze Momentum, 市場方向 Market Direction, 資金稀缺 Capital Shortage, 板塊輪動 Sector Rotation, Blave頂尖交易員 Top Trader Exposure, kline, alpha table, 市場情緒 Market Sentiment, screener saved conditions, Hyperliquid top trader tracking (leaderboard, positions, history, performance, bucket stats); (2) BitMart futures/contract trading — opening/closing positions, leverage, plan orders, TP/SL, trailing stops, account management, sub-account transfers; (3) BitMart spot trading — buy/sell, limit/market orders, account balance, order history, sub-account transfers; (4) OKX trading — spot and perpetual swap, order placement, positions, balance; (5) Bybit trading — spot and derivatives/perpetual swap, order placement, positions, balance, TP/SL; (6) BingX trading — spot and perpetual swap, order placement, position management, leverage, TWAP orders, OCO orders; (7) Bitget trading — spot and futures, order placement, position management, leverage, plan orders; (8) Binance trading — spot and USDS-M futures, order placement, positions, leverage, algo orders, OCO/OTO/OTOCO; (9) Bitfinex trading & funding — spot, margin, funding/lending (submit offers, loans, credits), wallet transfers."
-version: 1.6.3
+version: 1.6.4
 metadata:
   openclaw:
     emoji: "📊"
@@ -70,6 +70,7 @@ Workflow templates for common use cases. **When the user's request matches one o
 | `examples/truth-social-trump-monitor.md` | User wants to monitor Trump's Truth Social posts with translation |
 | `examples/btc-etf-flow-monitor.md` | User wants to track Bitcoin ETF flows / institutional accumulation (BlackRock IBIT etc.) |
 | `examples/bitfinex-auto-lending.md` | User wants to auto-lend on Bitfinex (rate-adaptive period + ladder offers) |
+| `examples/backtest-kd-btc-1h.md` | User wants to backtest KD stochastic (golden/death cross) on BTC 1h klines |
 
 ## Output Rule — Chart Auto-Send
 
