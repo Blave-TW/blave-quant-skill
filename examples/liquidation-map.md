@@ -1,10 +1,12 @@
 # Example: Liquidation Map (爆倉地圖)
 
-Fetches and visualizes the BTC liquidation heatmap — where leveraged positions are at risk of being liquidated, and where actual liquidations have recently occurred.
+**爆倉地圖（Liquidation Map）** 顯示合約市場交易者持倉的潛在爆倉價位區間與爆倉量。爆倉地圖是根據整合價格走勢、交易員持倉與槓桿率統計出整體市場的多空持倉分佈與潛在的清算風險，當市場上漲或下跌至爆倉價位時，交易員部位會被強制平倉。
+
+**爆倉地圖變化（Liquidation Map Change）** 主要呈現不同時間段建立的交易員持倉（爆倉柱），從 0–1 小時到 8–24 小時以不同顏色顯示。可以通過觀察不同時間段建立的爆倉柱來觀察行情接下來的發展方向。
 
 Two charts are generated:
 1. **Liquidation Heatmap** — OI distribution + 24h long/short liquidation exposure at each price level + cumulative exposure line
-2. **Recent Liquidation Events** — actual liquidations by time window (0–1h, 1–8h, 8–24h)
+2. **Liquidation Map Change** — 不同時間段建立的爆倉點位 (0–1h / 1–8h / 8–24h)
 
 ---
 
@@ -188,7 +190,7 @@ print(f"Saved: {fname}")
 
 ### Chart 2 — Liquidation Map Change (爆倉地圖變化)
 
-右圖顯示的是**爆倉地圖的變化**：在不同時間窗口內，實際被觸發的爆倉點位分布。每根柱代表某個價格區間在該時段內發生的總爆倉金額。
+呈現不同時間段建立的爆倉柱，每根柱代表該價格區間在對應時段內的爆倉金額。可通過觀察不同時間段的爆倉柱分布，判斷行情接下來的發展方向。
 
 | Bar | Meaning |
 |---|---|
@@ -196,7 +198,7 @@ print(f"Saved: {fname}")
 | Green (1–8h) | 1–8 小時前在該點位發生的爆倉 |
 | Red (8–24h) | 8–24 小時前在該點位發生的爆倉 |
 
-**Key insight:** 某個價格區間出現大量白色柱 → 該點位剛剛發生大規模爆倉，說明市場正在主動清算該區間的槓桿倉位。紅色柱密集的區間代表較早前已被清洗過的點位，通常阻力較低，價格再次經過時更容易穿越。
+**Key insight:** 白色柱密集的區間代表剛剛發生大規模爆倉，市場正在主動清算該點位的槓桿倉位，可能引發短線反向行情。紅色柱代表較早前已被清洗過的點位，再次經過時阻力相對較低。
 
 ---
 
