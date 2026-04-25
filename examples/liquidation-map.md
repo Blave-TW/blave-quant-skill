@@ -186,15 +186,17 @@ print(f"Saved: {fname}")
 
 **Key insight:** Large green bars below current price = big long liquidation clusters. If price drops to those levels, a cascade of forced selling can accelerate the move down. Large red bars above price = short squeeze clusters.
 
-### Chart 2 — Recent Liquidation Events
+### Chart 2 — Liquidation Map Change (爆倉地圖變化)
+
+右圖顯示的是**爆倉地圖的變化**：在不同時間窗口內，實際被觸發的爆倉點位分布。每根柱代表某個價格區間在該時段內發生的總爆倉金額。
 
 | Bar | Meaning |
 |---|---|
-| White (0–1h) | Liquidations that already happened in the last hour |
-| Green (1–8h) | Liquidations in the last 1–8 hours |
-| Red (8–24h) | Liquidations in the last 8–24 hours |
+| White (0–1h) | 最近 1 小時內在該點位發生的爆倉 |
+| Green (1–8h) | 1–8 小時前在該點位發生的爆倉 |
+| Red (8–24h) | 8–24 小時前在該點位發生的爆倉 |
 
-**Key insight:** Heavy recent liquidation at a price level suggests that zone has already been "cleaned out" — less resistance for price to pass through again. Fresh white bars near current price signal active liquidation cascade.
+**Key insight:** 某個價格區間出現大量白色柱 → 該點位剛剛發生大規模爆倉，說明市場正在主動清算該區間的槓桿倉位。紅色柱密集的區間代表較早前已被清洗過的點位，通常阻力較低，價格再次經過時更容易穿越。
 
 ---
 
