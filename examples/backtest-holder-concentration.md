@@ -195,8 +195,7 @@ def run_backtest(df):
     # Each trade = one entry→exit cycle; compute per-trade net return
     entries = np.where(np.diff(position.astype(int)) == 1)[0] + 1
     exits   = np.where(np.diff(position.astype(int)) == -1)[0] + 1
-    if position[-1] == 1:                          # still in position at end
-        exits = np.append(exits, len(position) - 1)
+    # Do NOT force-close the last open position — leave it open if still in trade at end of data
 
     trade_returns = []
     for entry_i, exit_i in zip(entries, exits):
