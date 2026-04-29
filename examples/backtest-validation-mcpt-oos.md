@@ -108,7 +108,7 @@ def load_kline(start, end):
 
 def load_ti(start, end):
     chunks = _fetch_year_chunks("taker_intensity/get_alpha",
-                                {"symbol": "DOGEUSDT", "period": "1h",
+                                {"symbol": "DOGEUSDT", "period": "1h", "timeframe": "24h",
                                  "start_date": start, "end_date": end})
     ts, alphas = [], []
     for chunk in chunks:
