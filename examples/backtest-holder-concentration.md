@@ -32,6 +32,7 @@ import numpy as np
 import pandas as pd
 import gzip
 import json
+import numba
 import requests
 import matplotlib.pyplot as plt
 from dotenv import dotenv_values
@@ -131,6 +132,7 @@ def _sharpe(r):
 
 
 # ── Signal loop ───────────────────────────────────────────────────────────────
+@numba.njit(cache=True)
 def _signal_loop(signal, entry_th, exit_th):
     n = len(signal)
     position = np.zeros(n)

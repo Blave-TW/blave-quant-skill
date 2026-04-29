@@ -33,6 +33,7 @@ For history beyond 1 year, send one request per year and concatenate.
 ```python
 import gzip
 import json
+import numba
 import numpy as np
 import pandas as pd
 import requests
@@ -112,6 +113,7 @@ def _sharpe(r):
 
 
 # ── Crossover signal loop ─────────────────────────────────────────────────────
+@numba.njit(cache=True)
 def _kd_signal_loop(k, d):
     n = len(k)
     position = np.zeros(n)
