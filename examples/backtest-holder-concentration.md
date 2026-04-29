@@ -83,7 +83,7 @@ def load_kline(symbol, start, end, period):
     chunks = fetch_range("kline", {"symbol": symbol, "period": period,
                                    "start_date": start, "end_date": end})
     rows = [row for chunk in chunks for row in chunk]
-    df = pd.DataFrame(rows, columns=["time", "open", "high", "low", "close"])
+    df = pd.DataFrame(rows)
     df["time"] = pd.to_datetime(df["time"], unit="s", utc=True)
     df = df.set_index("time").sort_index().drop_duplicates()
     df["close"] = df["close"].astype(float)

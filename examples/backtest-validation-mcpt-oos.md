@@ -98,7 +98,7 @@ def load_kline(start, end):
     chunks = _fetch_year_chunks("kline", {"symbol": "DOGEUSDT", "period": "1h",
                                            "start_date": start, "end_date": end})
     rows = [row for chunk in chunks for row in chunk]
-    df = pd.DataFrame(rows, columns=["time", "open", "high", "low", "close"])
+    df = pd.DataFrame(rows)
     df["time"] = pd.to_datetime(df["time"], unit="s", utc=True)
     df = df.set_index("time").sort_index().drop_duplicates()
     for col in ["open", "high", "low", "close"]:
