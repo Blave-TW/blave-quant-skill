@@ -31,6 +31,8 @@ For history beyond 1 year, send one request per year and concatenate.
 ## Full Backtest Code
 
 ```python
+import gzip
+import json
 import numpy as np
 import pandas as pd
 import requests
@@ -42,6 +44,7 @@ _env = dotenv_values()
 # ── Config ────────────────────────────────────────────────────────────────────
 from datetime import datetime, timedelta, timezone
 
+STRATEGY_NAME  = "BTC KD Golden Cross"
 SYMBOL         = "BTCUSDT"
 END_DATE       = datetime.now(timezone.utc).strftime("%Y-%m-%d")
 START_DATE     = (datetime.now(timezone.utc) - timedelta(days=365)).strftime("%Y-%m-%d")
@@ -465,6 +468,40 @@ def plot_heatmap(grid, nbr_mean, plateau_idx, symbol):
     print(f"Saved: {fname}")
 
 
+# ── Upload Report ─────────────────────────────────────────────────────────────
+def upload_report(df, result):
+    ts_arr   = (df.index.astype(np.int64) // 10**9)
+    closes   = df["close"].values
+    klines   = [[int(ts), float(o), float(h), float(l), float(c)]
+                for ts, o, h, l, c in zip(ts_arr,
+                    df["open"].values, df["high"].values, df["low"].values, closes)]
+    position = result["position"]
+    entries  = np.where(np.diff(position.astype(int)) == 1)[0] + 1
+    exits    = np.where(np.diff(position.astype(int)) == -1)[0] + 1
+    trades   = sorted(
+        [{"time": int(ts_arr[i]), "action": "BUY",  "price": float(closes[i])} for i in entries] +
+        [{"time": int(ts_arr[i]), "action": "SELL", "price": float(closes[i])} for i in exits],
+        key=lambda t: t["time"],
+    )
+    slow_k, d_line = result["slow_k"], result["d"]
+    indicators = [
+        {"name": "%K", "type": "line",
+         "data": [[int(ts), float(v)] for ts, v in zip(ts_arr, slow_k)  if not np.isnan(v)]},
+        {"name": "%D", "type": "line",
+         "data": [[int(ts), float(v)] for ts, v in zip(ts_arr, d_line) if not np.isnan(v)]},
+    ]
+    body = json.dumps({
+        "strategy_name": STRATEGY_NAME, "symbol": SYMBOL, "interval": PERIOD, "mode": "backtest",
+        "code": open(__file__).read(), "trades": trades, "klines": klines, "indicators": indicators,
+        "returns": np.where(np.isnan(result["strat_ret"]), 0.0, result["strat_ret"]).tolist(),
+    }).encode()
+    requests.post("https://api.blave.org/openclaw/strategy/report",
+        headers={"api-key": _env["blave_api_key"], "secret-key": _env["blave_secret_key"],
+                 "Content-Type": "application/json", "Content-Encoding": "gzip"},
+        data=gzip.compress(body), timeout=60).raise_for_status()
+    print("Report uploaded.")
+
+
 # ── Main ──────────────────────────────────────────────────────────────────────
 if __name__ == "__main__":
     print(f"Loading kline for {SYMBOL} ({START_DATE} → {END_DATE}, {PERIOD})...")
@@ -502,6 +539,7 @@ if __name__ == "__main__":
     regime_analysis(df, result)
     plot_regime(df, result, SYMBOL)
     plot_pnl(df, result, SYMBOL)
+    upload_report(df, result)
 ```
 
 ---

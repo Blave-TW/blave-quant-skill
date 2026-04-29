@@ -30,14 +30,16 @@ For history beyond 1 year, send one request per year and concatenate.
 ```python
 import numpy as np
 import pandas as pd
+import gzip
+import json
 import requests
 import matplotlib.pyplot as plt
-import numba
 from dotenv import dotenv_values
 
 _env = dotenv_values()  # reads .env from current directory
 
 # ── Config ──────────────────────────────────────────────────────────────────
+STRATEGY_NAME  = "BTC HC Long"
 SYMBOL         = "BTCUSDT"
 START_DATE     = "2023-01-01"
 END_DATE       = "2024-12-31"
@@ -128,13 +130,7 @@ def _sharpe(r):
     return (r.mean() / s) * np.sqrt(HOURS_PER_YEAR)
 
 
-# ── Numba: only the stateful signal loop ─────────────────────────────────────
-# Rolling vol  → Pandas rolling (Cython/C, fastest for window stats)
-# Signal loop  → Numba njit    (stateful: each bar depends on previous state)
-# Everything else → NumPy      (vectorized, no overhead)
-# First call triggers JIT compilation (~2–5 s, once per session).
-
-@numba.njit(cache=True)
+# ── Signal loop ───────────────────────────────────────────────────────────────
 def _signal_loop(signal, entry_th, exit_th):
     n = len(signal)
     position = np.zeros(n)
@@ -564,6 +560,38 @@ def plot_heatmap(sharpe_grid, neighborhood_mean, plateau_idx, symbol):
     print(f"Saved: {fname}")
 
 
+# ── Upload Report ─────────────────────────────────────────────────────────────
+def upload_report(kline, df, result):
+    ts_arr   = (df.index.astype(np.int64) // 10**9)
+    ohlcv    = kline.reindex(df.index)
+    closes   = df["close"].values
+    klines   = [[int(ts), float(o), float(h), float(l), float(c)]
+                for ts, o, h, l, c in zip(ts_arr,
+                    ohlcv["open"].values, ohlcv["high"].values,
+                    ohlcv["low"].values,  ohlcv["close"].values)]
+    position = result["position"]
+    entries  = np.where(np.diff(position.astype(int)) == 1)[0] + 1
+    exits    = np.where(np.diff(position.astype(int)) == -1)[0] + 1
+    trades   = sorted(
+        [{"time": int(ts_arr[i]), "action": "BUY",  "price": float(closes[i])} for i in entries] +
+        [{"time": int(ts_arr[i]), "action": "SELL", "price": float(closes[i])} for i in exits],
+        key=lambda t: t["time"],
+    )
+    hc_vals    = df["hc"].values
+    indicators = [{"name": "HC Alpha", "type": "line",
+                   "data": [[int(ts), float(v)] for ts, v in zip(ts_arr, hc_vals) if not np.isnan(v)]}]
+    body = json.dumps({
+        "strategy_name": STRATEGY_NAME, "symbol": SYMBOL, "interval": PERIOD, "mode": "backtest",
+        "code": open(__file__).read(), "trades": trades, "klines": klines, "indicators": indicators,
+        "returns": np.where(np.isnan(result["strat_ret"]), 0.0, result["strat_ret"]).tolist(),
+    }).encode()
+    requests.post("https://api.blave.org/openclaw/strategy/report",
+        headers={"api-key": _env["blave_api_key"], "secret-key": _env["blave_secret_key"],
+                 "Content-Type": "application/json", "Content-Encoding": "gzip"},
+        data=gzip.compress(body), timeout=60).raise_for_status()
+    print("Report uploaded.")
+
+
 # ── Main ──────────────────────────────────────────────────────────────────────
 if __name__ == "__main__":
     print(f"Loading data for {SYMBOL} ({START_DATE} → {END_DATE}, {PERIOD})...")
@@ -605,6 +633,7 @@ if __name__ == "__main__":
     regime_analysis(df, result)
     plot_regime(df, result, SYMBOL)
     plot_pnl(df, result, SYMBOL)
+    upload_report(kline, df, result)
 ```
 
 ---
