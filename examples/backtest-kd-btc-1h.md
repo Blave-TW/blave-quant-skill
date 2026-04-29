@@ -35,7 +35,6 @@ import numpy as np
 import pandas as pd
 import requests
 import matplotlib.pyplot as plt
-import numba
 from dotenv import dotenv_values
 
 _env = dotenv_values()
@@ -109,18 +108,14 @@ def _sharpe(r):
     return (r.mean() / s) * np.sqrt(HOURS_PER_YEAR)
 
 
-# ── Numba: crossover signal loop ──────────────────────────────────────────────
-# Each bar depends on the previous bar's K/D values and position state →
-# must be sequential; Numba njit gives ~20× speedup over pure Python.
-
-@numba.njit(cache=True)
+# ── Crossover signal loop ─────────────────────────────────────────────────────
 def _kd_signal_loop(k, d):
     n = len(k)
     position = np.zeros(n)
     in_pos = False
     for i in range(1, n):
-        ki,  di  = k[i],   d[i]
-        kp,  dp  = k[i-1], d[i-1]
+        ki, di = k[i],   d[i]
+        kp, dp = k[i-1], d[i-1]
         if np.isnan(ki) or np.isnan(di) or np.isnan(kp) or np.isnan(dp):
             position[i] = 1.0 if in_pos else 0.0
             continue
@@ -532,7 +527,7 @@ if __name__ == "__main__":
 - **Parameter scan** sweeps K_PERIOD (5/9/14/21/34/55) × K_SMOOTH (2/3/5/8/13); D_SMOOTH is fixed at 3. The plateau selection (neighborhood mean Sharpe) is preferred over the single best cell — see HC backtest example for explanation
 - **OB/OS filter (optional):** only enter golden cross when %K < 20 (oversold zone) for a stricter variant. Not implemented by default — add `and ki < 20` to the golden cross condition in `_kd_signal_loop`
 - **Smoothing method:** this example uses SMA for both %K and %D, matching the classic formula. EWM (`pd.Series.ewm(span=k_smooth)`) gives more weight to recent bars and is common in real-time systems; swap in if preferred
-- **Performance stack:** same as HC backtest — rolling vol via Pandas rolling (C/Cython), crossover loop via `@numba.njit` (stateful, can't vectorize), everything else NumPy vectorized
+- **Performance stack:** rolling vol via Pandas rolling (C/Cython), crossover loop via pure Python (stateful, can't vectorize — but fast enough for any reasonable history length), everything else NumPy vectorized
 
 ### Live Execution Timing
 
