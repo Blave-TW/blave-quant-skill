@@ -122,7 +122,7 @@ def get_frr(symbol="fUST"):
 
 def get_book_best_bid(symbol="fUST", demand_threshold=50_000):
     """Rate where cumulative borrower demand ≥ threshold."""
-    r = requests.get(f"{PUB_URL}/v2/book/{symbol}/P0",
+    r = requests.get(f"{PUB_URL}/v2/book/{symbol}/P1",
                      params={"len": 250}, timeout=10)
     r.raise_for_status()
     bids = sorted([e for e in r.json() if e[3] > 0], key=lambda x: -x[0])

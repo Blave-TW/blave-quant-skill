@@ -84,7 +84,8 @@ def load_kline(symbol, start, end, period):
 
     df = pd.DataFrame(rows)
     df["time"] = pd.to_datetime(df["time"], unit="s", utc=True)
-    df = df.set_index("time").sort_index().drop_duplicates()
+    df = df.set_index("time").sort_index()
+    df = df[~df.index.duplicated(keep="first")]
     for col in ["open", "high", "low", "close"]:
         df[col] = df[col].astype(float)
     return df

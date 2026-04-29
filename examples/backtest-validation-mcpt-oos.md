@@ -100,7 +100,8 @@ def load_kline(start, end):
     rows = [row for chunk in chunks for row in chunk]
     df = pd.DataFrame(rows)
     df["time"] = pd.to_datetime(df["time"], unit="s", utc=True)
-    df = df.set_index("time").sort_index().drop_duplicates()
+    df = df.set_index("time").sort_index()
+    df = df[~df.index.duplicated(keep="first")]
     for col in ["open", "high", "low", "close"]:
         df[col] = df[col].astype(float)
     return df
@@ -116,7 +117,8 @@ def load_ti(start, end):
         ts.extend(data.get("timestamp", []))
         alphas.extend(data.get("alpha", []))
     df = pd.DataFrame({"time": pd.to_datetime(ts, unit="s", utc=True), "ti": alphas})
-    df = df.set_index("time").sort_index().drop_duplicates()
+    df = df.set_index("time").sort_index()
+    df = df[~df.index.duplicated(keep="first")]
     df["ti"] = pd.to_numeric(df["ti"], errors="coerce")
     return df
 
