@@ -432,8 +432,8 @@ def plot_heatmap(grid, nbr_mean, plateau_idx, symbol):
 
     for ax, mark_idx, title, note in [
         (axes[0], peak_idx,    "Peak — highest single Sharpe",
-         f"K_PERIOD={K_PERIOD_SCAN[mark_idx[0]]}, K_SMOOTH={K_SMOOTH_SCAN[mark_idx[1]]}\n"
-         f"Sharpe={grid[mark_idx]:.2f} — may be overfitted if isolated"),
+         f"K_PERIOD={K_PERIOD_SCAN[peak_idx[0]]}, K_SMOOTH={K_SMOOTH_SCAN[peak_idx[1]]}\n"
+         f"Sharpe={grid[peak_idx]:.2f} — may be overfitted if isolated"),
         (axes[1], plateau_idx, "Plateau — most stable region",
          f"K_PERIOD={K_PERIOD_SCAN[plateau_idx[0]]}, K_SMOOTH={K_SMOOTH_SCAN[plateau_idx[1]]}\n"
          f"Sharpe={grid[plateau_idx]:.2f} — neighbors also perform well → more robust"),
