@@ -78,7 +78,7 @@ def load_kline(symbol, start, end, period):
         rows.extend(r.json())
         cursor = chunk_end
 
-    df = pd.DataFrame(rows, columns=["time", "open", "high", "low", "close"])
+    df = pd.DataFrame(rows)
     df["time"] = pd.to_datetime(df["time"], unit="s", utc=True)
     df = df.set_index("time").sort_index().drop_duplicates()
     for col in ["open", "high", "low", "close"]:
