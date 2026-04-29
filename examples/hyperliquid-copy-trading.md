@@ -11,10 +11,29 @@ Find Hyperliquid traders suitable for copy trading based on:
 
 ---
 
+## Setup
+
+```python
+import requests, os
+from dotenv import load_dotenv
+load_dotenv()
+
+HEADERS = {
+    "api-key": os.getenv("blave_api_key"),
+    "secret-key": os.getenv("blave_secret_key"),
+}
+BASE_URL = "https://api.blave.org"
+```
+
+---
+
 ## Step 1: Get Leaderboard
 
-```
-GET /hyperliquid/leaderboard?sort_by=allTime
+```python
+resp = requests.get(f"{BASE_URL}/hyperliquid/leaderboard", headers=HEADERS,
+                    params={"sort_by": "allTime"}, timeout=60)
+resp.raise_for_status()
+leaderboard = resp.json()  # direct list, no wrapper
 ```
 
 Returns top 100 traders. Each entry includes `ethAddress`, `accountValue`, `windowPerformances` (day / week / month / allTime PnL, ROI, volume).
@@ -56,8 +75,11 @@ for trader in leaderboard:
 
 For each candidate, fetch the PnL curve:
 
-```
-GET /hyperliquid/trader_performance?address=<ethAddress>
+```python
+resp = requests.get(f"{BASE_URL}/hyperliquid/trader_performance", headers=HEADERS,
+                    params={"address": candidate['address']}, timeout=60)
+resp.raise_for_status()
+chart = resp.json()['chart']  # response: {"chart": {"pnl": [...], "timestamp": [...]}}
 ```
 
 Returns `{chart: {timestamp: [...], pnl: [...]}}` — cumulative PnL (USD) over time.
@@ -68,8 +90,8 @@ import numpy as np
 pnl_arr    = np.array(chart['pnl'],       dtype=float)
 timestamps = np.array(chart['timestamp'], dtype=float)  # Unix seconds
 
-# Require at least 90 data points
-if len(pnl_arr) < 90:
+# Require at least 30 data points (Hyperliquid performance data granularity varies by trader activity)
+if len(pnl_arr) < 30:
     continue
 
 # Per-period PnL changes (NOT "daily" — spacing varies by trader/activity)
@@ -84,7 +106,7 @@ avg_dt         = np.diff(timestamps).mean()            # seconds per period
 periods_per_year = (365 * 24 * 3600) / avg_dt
 
 sharpe = (period_returns.mean() / period_returns.std()) * np.sqrt(periods_per_year)
-if sharpe < 1.5:
+if sharpe < 0.5:
     continue
 
 # Max drawdown (absolute USD, from running cumulative-PnL peak)
@@ -98,7 +120,7 @@ win_rate = (period_returns > 0).mean()
 track_days = (timestamps[-1] - timestamps[0]) / 86400
 ```
 
-**Final filter:** keep only traders where both `month_pnl > 0` and `week_pnl > 0` — confirms recent consistency, not just historical glory.
+**Final filter:** keep only traders where `month_pnl > 0` — confirms recent consistency, not just historical glory. (Weekly PnL is too noisy to use as a hard filter.)
 
 ---
 
@@ -180,8 +202,13 @@ print('Saved: hyperliquid_top_traders.png')
 
 ## Step 4: Inspect Current Positions
 
-```
-GET /hyperliquid/trader_position?address=<ethAddress>
+```python
+resp = requests.get(f"{BASE_URL}/hyperliquid/trader_position", headers=HEADERS,
+                    params={"address": address}, timeout=60)
+resp.raise_for_status()
+data = resp.json()  # response: {"net_equity": ..., "perp": {...}, "spot": {...}, ...}
+perp = data['perp']
+net_equity = float(data['net_equity'])
 ```
 
 Returns:
@@ -210,8 +237,11 @@ for pos in perp['assetPositions']:
 
 ## Step 5: Check Open Orders
 
-```
-GET /hyperliquid/trader_open_order?address=<ethAddress>
+```python
+resp = requests.get(f"{BASE_URL}/hyperliquid/trader_open_order", headers=HEADERS,
+                    params={"address": address}, timeout=60)
+resp.raise_for_status()
+open_orders = resp.json()['data']
 ```
 
 Review pending limit orders to understand their entry/exit plan. If they have many close orders stacked (like selling into strength), factor that into your copy — they may be planning to exit soon.
