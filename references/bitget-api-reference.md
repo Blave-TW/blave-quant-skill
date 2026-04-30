@@ -143,12 +143,12 @@ def bitget_post(path, body=None):
 
 | Method | Path | Description |
 |---|---|---|
-| GET | `/api/v2/mix/market/ticker` | Futures ticker (`symbol` or `productType`) |
+| GET | `/api/v2/mix/market/tickers` | All futures tickers (`productType` required) |
+| GET | `/api/v2/mix/market/ticker` | Single futures ticker (`symbol` + `productType`) |
 | GET | `/api/v2/mix/market/depth` | Orderbook (`symbol`, `limit`) |
 | GET | `/api/v2/mix/market/candles` | Kline (trade/index/mark price types) |
 | GET | `/api/v2/mix/market/trades` | Recent trades |
-| GET | `/api/v2/mix/public/contracts` | Contract info |
-| GET | `/api/v2/mix/market/funding-rate` | Funding rate (current/historical) |
+| GET | `/api/v2/mix/market/current-fund-rate` | Current funding rate (`symbol`, `productType`); response is array, use `data[0].fundingRate` |
 | GET | `/api/v2/mix/market/open-interest` | Open interest |
 
 ### Trading (Private)
