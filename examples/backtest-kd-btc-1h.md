@@ -31,13 +31,13 @@ For history beyond 1 year, send one request per year and concatenate.
 ## Full Backtest Code
 
 ```python
-import gzip
-import json
-import numba
+import gzip, json, sys, requests
 import numpy as np
 import pandas as pd
-import requests
 import matplotlib.pyplot as plt
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).parent.parent))
+from backtesting import Backtest, Strategy
 from dotenv import dotenv_values
 
 _env = dotenv_values()
@@ -45,59 +45,57 @@ _env = dotenv_values()
 # ── Config ────────────────────────────────────────────────────────────────────
 from datetime import datetime, timedelta, timezone
 
-STRATEGY_NAME  = "BTC KD Golden Cross"
-SYMBOL         = "BTCUSDT"
-END_DATE       = datetime.now(timezone.utc).strftime("%Y-%m-%d")
-START_DATE     = (datetime.now(timezone.utc) - timedelta(days=365)).strftime("%Y-%m-%d")
-PERIOD         = "1h"
-K_PERIOD       = 9          # stochastic lookback window (raw %K)
-K_SMOOTH       = 3          # %K smoothing period (SMA → slow %K)
-D_SMOOTH       = 3          # %D smoothing period (SMA of slow %K)
-TARGET_VOL     = 0.30       # 30% annualized target volatility
-MAX_LEV        = 2.0        # position size cap
-VOL_WINDOW     = 720        # rolling vol window: 30 days × 24h
+MODE          = "backtest"
+STRATEGY_NAME = "btc_kd_long"
+SYMBOL        = "BTCUSDT"
+INTERVAL      = "1h"
+START         = (datetime.now(timezone.utc) - timedelta(days=365)).strftime("%Y-%m-%d")
+END           = None
+D_SMOOTH      = 3           # %D smoothing — fixed, not optimized
+VOL_TARGET    = 0.30
+VOL_LOOKBACK  = 720         # 30 days × 24h
+VOL_FLOOR     = 0.02
 HOURS_PER_YEAR = 8760
-FEE            = 0.0005     # 0.05% per side (taker fee)
+FEE           = 0.0005
+BUDGET_USDT   = 1_000       # set to your actual trading capital
 
-API_BASE   = "https://api.blave.org"
-API_KEY    = _env["blave_api_key"]
-API_SECRET = _env["blave_secret_key"]
-HEADERS    = {"api-key": API_KEY, "secret-key": API_SECRET}
+K_PERIOD_SCAN = [5, 9, 14, 21, 34, 55]
+K_SMOOTH_SCAN = [2, 3, 5, 8, 13]
+
+_HDRS = {"api-key": _env.get("blave_api_key", ""), "secret-key": _env.get("blave_secret_key", "")}
 
 
 # ── Fetch ─────────────────────────────────────────────────────────────────────
-def load_kline(symbol, start, end, period):
+def fetch_historical(symbol, start, end):
     s = datetime.strptime(start, "%Y-%m-%d")
-    e = datetime.strptime(end,   "%Y-%m-%d")
-    rows = []
-    cursor = s
+    e = datetime.utcnow() if not end else datetime.strptime(end, "%Y-%m-%d")
+    rows, cursor = [], s
     while cursor < e:
         chunk_end = min(cursor + timedelta(days=365), e)
-        r = requests.get(f"{API_BASE}/kline", headers=HEADERS, params={
-            "symbol": symbol, "period": period,
+        r = requests.get("https://api.blave.org/kline", headers=_HDRS, params={
+            "symbol": symbol, "period": INTERVAL,
             "start_date": cursor.strftime("%Y-%m-%d"),
             "end_date":   chunk_end.strftime("%Y-%m-%d"),
-        }, timeout=20)
+        }, timeout=60)
         r.raise_for_status()
         rows.extend(r.json())
         cursor = chunk_end
-
     df = pd.DataFrame(rows)
     df["time"] = pd.to_datetime(df["time"], unit="s", utc=True)
     df = df.set_index("time").sort_index()
     df = df[~df.index.duplicated(keep="first")]
-    for col in ["open", "high", "low", "close"]:
-        df[col] = df[col].astype(float)
-    return df
+    df = df.rename(columns={"open": "Open", "high": "High", "low": "Low", "close": "Close"})
+    df["Volume"] = 0
+    return df[["Open", "High", "Low", "Close", "Volume"]].astype(float)
 
 
-# ── KD Computation ────────────────────────────────────────────────────────────
+# ── KD Computation (for visualization only) ───────────────────────────────────
 def compute_kd(df, k_period, k_smooth, d_smooth):
-    low_min  = df["low"].rolling(k_period).min()
-    high_max = df["high"].rolling(k_period).max()
+    low_min  = df["Low"].rolling(k_period).min()
+    high_max = df["High"].rolling(k_period).max()
     denom    = high_max - low_min
     raw_k    = pd.Series(
-        np.where(denom > 0, (df["close"] - low_min) / denom * 100, 50.0),
+        np.where(denom > 0, (df["Close"] - low_min) / denom * 100, 50.0),
         index=df.index,
     )
     slow_k = raw_k.rolling(k_smooth).mean()
@@ -105,121 +103,105 @@ def compute_kd(df, k_period, k_smooth, d_smooth):
     return slow_k, d
 
 
-# ── Helpers ───────────────────────────────────────────────────────────────────
-def _sharpe(r):
-    s = r.std()
-    if s == 0:
-        return np.nan
-    return (r.mean() / s) * np.sqrt(HOURS_PER_YEAR)
+# ── Signal (pure function — identical in backtest and live) ──────────────────
+def compute_signal(k: float, k_prev: float, d: float, d_prev: float, in_long: bool) -> str:
+    """Returns desired position state: 'LONG' or 'FLAT'."""
+    if np.isnan(k) or np.isnan(d) or np.isnan(k_prev) or np.isnan(d_prev):
+        return "LONG" if in_long else "FLAT"
+    if not in_long and k_prev <= d_prev and k > d:   # golden cross → enter
+        return "LONG"
+    if in_long and k_prev >= d_prev and k < d:        # death cross → exit
+        return "FLAT"
+    return "LONG" if in_long else "FLAT"
 
 
-# ── Crossover signal loop ─────────────────────────────────────────────────────
-@numba.njit(cache=True)
-def _kd_signal_loop(k, d):
-    n = len(k)
-    position = np.zeros(n)
-    in_pos = False
-    for i in range(1, n):
-        ki, di = k[i],   d[i]
-        kp, dp = k[i-1], d[i-1]
-        if np.isnan(ki) or np.isnan(di) or np.isnan(kp) or np.isnan(dp):
-            position[i] = 1.0 if in_pos else 0.0
-            continue
-        if not in_pos and kp <= dp and ki > di:   # golden cross → enter
-            in_pos = True
-        elif in_pos and kp >= dp and ki < di:     # death cross → exit
-            in_pos = False
-        position[i] = 1.0 if in_pos else 0.0
-    return position
+# ── Vol-targeting helper ─────────────────────────────────────────────────────
+def _vol_series(close):
+    log_ret = np.concatenate([[0], np.diff(np.log(close))])
+    return (pd.Series(log_ret)
+              .rolling(VOL_LOOKBACK, min_periods=1)
+              .std()
+              .fillna(VOL_TARGET / np.sqrt(HOURS_PER_YEAR))
+              .values * np.sqrt(HOURS_PER_YEAR))
 
 
-# ── Backtest ──────────────────────────────────────────────────────────────────
-def run_backtest(df, k_period=None, k_smooth=None, d_smooth=None):
-    k_period = k_period or K_PERIOD
-    k_smooth = k_smooth or K_SMOOTH
-    d_smooth = d_smooth or D_SMOOTH
+# ── Backtest strategy ────────────────────────────────────────────────────────
+class BlaveStrategy(Strategy):
+    k_period = 9
+    k_smooth = 3
+    d_smooth = 3
 
-    slow_k, d = compute_kd(df, k_period, k_smooth, d_smooth)
-    close = df["close"].values.astype(np.float64)
-    k_arr = slow_k.values.astype(np.float64)
-    d_arr = d.values.astype(np.float64)
-    n     = len(df)
+    def init(self):
+        low_min  = pd.Series(self.data.Low).rolling(self.k_period).min().values
+        high_max = pd.Series(self.data.High).rolling(self.k_period).max().values
+        denom    = high_max - low_min
+        raw_k    = np.where(denom > 0, (self.data.Close - low_min) / denom * 100, 50.0)
+        slow_k   = pd.Series(raw_k).rolling(self.k_smooth).mean().values
+        d_line   = pd.Series(slow_k).rolling(self.d_smooth).mean().values
+        self.slow_k = self.I(lambda x: x, slow_k,         name="%K")
+        self.d_line = self.I(lambda x: x, d_line,         name="%D")
+        self.vol    = self.I(_vol_series,  self.data.Close, name="Vol")
 
+    def next(self):
+        k      = float(self.slow_k[-1])
+        k_prev = float(self.slow_k[-2]) if len(self.slow_k) > 1 else np.nan
+        d      = float(self.d_line[-1])
+        d_prev = float(self.d_line[-2]) if len(self.d_line) > 1 else np.nan
+        in_long = self.position.is_long
+        sig    = compute_signal(k, k_prev, d, d_prev, in_long)
+        size   = min(VOL_TARGET / max(float(self.vol[-1]), VOL_FLOOR), 0.99)
+        if sig == "LONG" and not in_long:
+            self.buy(size=size)
+        elif sig == "FLAT" and in_long:
+            self.position.close()
+
+
+# ── Plateau selection ────────────────────────────────────────────────────────
+def _find_plateau(heatmap, window=1):
+    grid_df  = heatmap.unstack()
+    grid     = grid_df.values.astype(float)
+    row_vals = grid_df.index.tolist()
+    col_vals = grid_df.columns.tolist()
+    rows, cols = grid.shape
+    nbr_mean   = np.full((rows, cols), np.nan)
+    for i in range(rows):
+        for j in range(cols):
+            if np.isnan(grid[i, j]): continue
+            nb = [grid[i+di, j+dj]
+                  for di in range(-window, window+1)
+                  for dj in range(-window, window+1)
+                  if 0 <= i+di < rows and 0 <= j+dj < cols
+                  and not np.isnan(grid[i+di, j+dj])]
+            if nb: nbr_mean[i, j] = np.mean(nb)
+    best = np.unravel_index(np.nanargmax(nbr_mean), nbr_mean.shape)
+    return row_vals[best[0]], col_vals[best[1]]
+
+
+# ── Reconstruct arrays for visualization ─────────────────────────────────────
+def _reconstruct_arrays(df, stats):
+    equity = stats["_equity_curve"]["Equity"].reindex(df.index, method="ffill")
+    strat_ret = equity.pct_change().fillna(0).values
+    position = np.zeros(len(df))
+    for _, row in stats["_trades"].iterrows():
+        i0 = df.index.searchsorted(row["EntryTime"])
+        i1 = df.index.searchsorted(row["ExitTime"])
+        position[i0:i1] = 1.0
+    close = df["Close"].values
     log_ret = np.concatenate([[0.0], np.log(close[1:] / close[:-1])])
-    fwd_ret = np.empty(n)
-    fwd_ret[:-1] = np.diff(close) / close[:-1]
-    fwd_ret[-1]  = 0.0
-
-    realized_vol = pd.Series(log_ret).rolling(VOL_WINDOW).std().values * np.sqrt(HOURS_PER_YEAR)
-    position     = _kd_signal_loop(k_arr, d_arr)
-
-    vol_scalar = np.where(
-        (realized_vol > 0) & ~np.isnan(realized_vol),
-        np.clip(TARGET_VOL / realized_vol, 0, MAX_LEV),
-        1.0,
-    )
-    sized     = position * vol_scalar
-    fee_cost  = np.abs(np.diff(sized, prepend=0)) * FEE
-    strat_ret = sized * fwd_ret - fee_cost
-
-    r   = strat_ret[~np.isnan(strat_ret)]
-    cum = np.cumprod(1 + r)
-    pk  = np.maximum.accumulate(cum)
-    total_years = len(r) / HOURS_PER_YEAR
-
-    total_return = cum[-1] - 1
-    ann_ret      = (1 + total_return) ** (1 / total_years) - 1
-    ann_vol      = r.std() * np.sqrt(HOURS_PER_YEAR)
-    sharpe       = _sharpe(r)
-    max_dd       = ((cum - pk) / pk).min()
-
-    entries = np.where(np.diff(position.astype(int)) == 1)[0] + 1
-    exits   = np.where(np.diff(position.astype(int)) == -1)[0] + 1
-    # Do NOT force-close the last open position — leave it open if still in trade at end of data
-
-    trade_returns = []
-    for e_i, x_i in zip(entries, exits):
-        tr = strat_ret[e_i:x_i]
-        tr = tr[~np.isnan(tr)]
-        if len(tr) > 0:
-            trade_returns.append(np.prod(1 + tr) - 1)
-
-    trade_returns  = np.array(trade_returns)
-    n_trades       = len(trade_returns)
-    win_rate       = (trade_returns > 0).mean() if n_trades > 0 else np.nan
-    avg_win        = trade_returns[trade_returns > 0].mean() if (trade_returns > 0).any() else np.nan
-    avg_loss       = trade_returns[trade_returns <= 0].mean() if (trade_returns <= 0).any() else np.nan
-    avg_trades_yr  = n_trades / total_years
-
-    return {
-        "total_return":  total_return,
-        "ann_ret":       ann_ret,
-        "ann_vol":       ann_vol,
-        "sharpe":        sharpe,
-        "max_dd":        max_dd,
-        "win_rate":      win_rate,
-        "avg_win":       avg_win,
-        "avg_loss":      avg_loss,
-        "n_trades":      n_trades,
-        "avg_trades_yr": avg_trades_yr,
-        "position":      position,
-        "sized":         sized,
-        "strat_ret":     strat_ret,
-        "realized_vol":  realized_vol,
-        "cum":           cum,
-        "slow_k":        slow_k.values,
-        "d":             d.values,
-    }
+    realized_vol = pd.Series(log_ret).rolling(VOL_LOOKBACK).std().values * np.sqrt(HOURS_PER_YEAR)
+    cum = equity.values / equity.values[0]
+    return {"strat_ret": strat_ret, "position": position,
+            "realized_vol": realized_vol, "cum": cum}
 
 
 # ── Regime Analysis ───────────────────────────────────────────────────────────
 def regime_analysis(df, result):
     strat_ret    = result["strat_ret"]
     realized_vol = result["realized_vol"]
-    close        = df["close"].values
+    close        = df["Close"].values
     dates        = df.index
 
-    ma_window = VOL_WINDOW * 200 // 30
+    ma_window = VOL_LOOKBACK * 200 // 30
     ma200     = pd.Series(close).rolling(ma_window).mean().values
     valid_ma  = ~np.isnan(ma200)
     vol_med   = np.nanmedian(realized_vol)
@@ -232,7 +214,7 @@ def regime_analysis(df, result):
         cum_r   = np.prod(1 + r) - 1
         ann_r   = (1 + cum_r) ** (1 / years) - 1 if years > 0 else np.nan
         ann_v   = r.std() * np.sqrt(HOURS_PER_YEAR)
-        sh      = _sharpe(r)
+        sh      = (r.mean() / r.std()) * np.sqrt(HOURS_PER_YEAR) if r.std() > 0 else np.nan
         cc      = np.cumprod(1 + r); pk = np.maximum.accumulate(cc)
         mdd     = ((cc - pk) / pk).min()
         n_tot   = len(strat_ret[~np.isnan(strat_ret)])
@@ -270,13 +252,11 @@ def regime_analysis(df, result):
 
 
 # ── PnL Chart ─────────────────────────────────────────────────────────────────
-def plot_pnl(df, result, symbol):
-    close  = df["close"].values
+def plot_pnl(df, result, slow_k, d_line, best_kp, best_ks, symbol):
+    close  = df["Close"].values
     dates  = df.index
     cum    = result["cum"]
     pos    = result["position"]
-    slow_k = result["slow_k"]
-    d_line = result["d"]
     peak   = np.maximum.accumulate(cum)
     dd     = (cum - peak) / peak
 
@@ -307,8 +287,8 @@ def plot_pnl(df, result, symbol):
     l2, lb2 = ax2.get_legend_handles_labels()
     ax1.legend(l1 + l2, lb1 + lb2, fontsize=10, loc="upper left")
     ax1.set_title(
-        f"{symbol} — KD Strategy  K({K_PERIOD},{K_SMOOTH})  D({D_SMOOTH})\n"
-        f"Vol-Target {TARGET_VOL*100:.0f}%  |  Max Lev {MAX_LEV}x  |  Fee {FEE*100:.2f}%/side",
+        f"{symbol} — KD Strategy  K({best_kp},{best_ks})  D({D_SMOOTH})\n"
+        f"Vol-Target {VOL_TARGET*100:.0f}%  |  Fee {FEE*100:.2f}%/side",
         fontsize=13,
     )
 
@@ -339,9 +319,9 @@ def plot_pnl(df, result, symbol):
 def plot_regime(df, result, symbol):
     strat_ret    = result["strat_ret"]
     realized_vol = result["realized_vol"]
-    close        = df["close"].values
+    close        = df["Close"].values
     dates        = df.index
-    ma_window    = VOL_WINDOW * 200 // 30
+    ma_window    = VOL_LOOKBACK * 200 // 30
     ma200        = pd.Series(close).rolling(ma_window).mean().values
     valid_ma     = ~np.isnan(ma200)
     vol_med      = np.nanmedian(realized_vol)
@@ -355,7 +335,8 @@ def plot_regime(df, result, symbol):
         years = len(r) / HOURS_PER_YEAR; cum_r = np.prod(1 + r) - 1
         ann_r = (1 + cum_r) ** (1 / years) - 1 if years > 0 else np.nan
         cc = np.cumprod(1 + r); pk = np.maximum.accumulate(cc)
-        return dict(ann_ret=ann_r, sharpe=_sharpe(r), max_dd=((cc - pk) / pk).min())
+        sh = (r.mean() / r.std()) * np.sqrt(HOURS_PER_YEAR) if r.std() > 0 else np.nan
+        return dict(ann_ret=ann_r, sharpe=sh, max_dd=((cc - pk) / pk).min())
 
     groups = {
         "By Year":           [(str(yr), _stats(dates.year == yr))
@@ -399,47 +380,23 @@ def plot_regime(df, result, symbol):
     print(f"Saved: {fname}")
 
 
-# ── 2D Parameter Scan (K_PERIOD × K_SMOOTH) ──────────────────────────────────
-K_PERIOD_SCAN = [5, 9, 14, 21, 34, 55]
-K_SMOOTH_SCAN = [2, 3, 5, 8, 13]
-
-def param_scan(df):
-    grid = np.full((len(K_PERIOD_SCAN), len(K_SMOOTH_SCAN)), np.nan)
-    for i, kp in enumerate(K_PERIOD_SCAN):
-        for j, ks in enumerate(K_SMOOTH_SCAN):
-            res = run_backtest(df, k_period=kp, k_smooth=ks, d_smooth=D_SMOOTH)
-            if res is not None and not np.isnan(res["sharpe"]):
-                grid[i, j] = res["sharpe"]
-    return grid
-
-
-def find_plateau(grid, window=1):
-    rows, cols = grid.shape
-    nbr_mean = np.full((rows, cols), np.nan)
-    for i in range(rows):
-        for j in range(cols):
-            if np.isnan(grid[i, j]): continue
-            neighbors = [grid[i+di, j+dj]
-                         for di in range(-window, window+1)
-                         for dj in range(-window, window+1)
-                         if 0 <= i+di < rows and 0 <= j+dj < cols
-                         and not np.isnan(grid[i+di, j+dj])]
-            if neighbors: nbr_mean[i, j] = np.mean(neighbors)
-    best = np.unravel_index(np.nanargmax(nbr_mean), nbr_mean.shape)
-    return best, nbr_mean
-
-
-def plot_heatmap(grid, nbr_mean, plateau_idx, symbol):
+# ── Heatmap Plot ──────────────────────────────────────────────────────────────
+def plot_heatmap(heatmap, best_kp, best_ks, symbol):
+    grid_df  = heatmap.unstack()           # rows=k_period, cols=k_smooth
+    kp_vals  = grid_df.index.tolist()
+    ks_vals  = grid_df.columns.tolist()
+    grid     = grid_df.values.astype(float)
     peak_idx = np.unravel_index(np.nanargmax(grid), grid.shape)
-    fig, axes = plt.subplots(1, 2, figsize=(16, 6))
+    plat_idx = (kp_vals.index(best_kp), ks_vals.index(best_ks))
 
+    fig, axes = plt.subplots(1, 2, figsize=(16, 6))
     for ax, mark_idx, title, note in [
-        (axes[0], peak_idx,    "Peak — highest single Sharpe",
-         f"K_PERIOD={K_PERIOD_SCAN[peak_idx[0]]}, K_SMOOTH={K_SMOOTH_SCAN[peak_idx[1]]}\n"
+        (axes[0], peak_idx, "Peak — highest single Sharpe",
+         f"K_PERIOD={kp_vals[peak_idx[0]]}, K_SMOOTH={ks_vals[peak_idx[1]]}\n"
          f"Sharpe={grid[peak_idx]:.2f} — may be overfitted if isolated"),
-        (axes[1], plateau_idx, "Plateau — most stable region",
-         f"K_PERIOD={K_PERIOD_SCAN[plateau_idx[0]]}, K_SMOOTH={K_SMOOTH_SCAN[plateau_idx[1]]}\n"
-         f"Sharpe={grid[plateau_idx]:.2f} — neighbors also perform well → more robust"),
+        (axes[1], plat_idx, "Plateau — most stable region",
+         f"K_PERIOD={best_kp}, K_SMOOTH={best_ks}\n"
+         f"Sharpe={grid[plat_idx]:.2f} — neighbors also perform well → more robust"),
     ]:
         masked = np.ma.masked_invalid(grid)
         cmap = plt.cm.RdYlGn.copy(); cmap.set_bad(color="#cccccc")
@@ -450,14 +407,14 @@ def plot_heatmap(grid, nbr_mean, plateau_idx, symbol):
             (mark_idx[1] - 0.5, mark_idx[0] - 0.5), 1, 1,
             fill=False, edgecolor="gold", linewidth=3,
         ))
-        for i in range(len(K_PERIOD_SCAN)):
-            for j in range(len(K_SMOOTH_SCAN)):
+        for i in range(len(kp_vals)):
+            for j in range(len(ks_vals)):
                 v = grid[i, j]
                 ax.text(j, i, f"{v:.2f}" if not np.isnan(v) else "N/A",
                         ha="center", va="center", fontsize=9,
                         color="#888" if np.isnan(v) else "black")
-        ax.set_xticks(range(len(K_SMOOTH_SCAN)));  ax.set_xticklabels(K_SMOOTH_SCAN)
-        ax.set_yticks(range(len(K_PERIOD_SCAN)));  ax.set_yticklabels(K_PERIOD_SCAN)
+        ax.set_xticks(range(len(ks_vals)));  ax.set_xticklabels(ks_vals)
+        ax.set_yticks(range(len(kp_vals)));  ax.set_yticklabels(kp_vals)
         ax.set_xlabel("K_SMOOTH (slow %K period)")
         ax.set_ylabel("K_PERIOD (stochastic lookback)")
         ax.set_title(f"{symbol} — {title}\n{note}", fontsize=10)
@@ -472,34 +429,28 @@ def plot_heatmap(grid, nbr_mean, plateau_idx, symbol):
 
 
 # ── Upload Report ─────────────────────────────────────────────────────────────
-def upload_report(df, result):
-    ts_arr   = (df.index.astype(np.int64) // 10**9)
-    closes   = df["close"].values
-    klines   = [[int(ts), float(o), float(h), float(l), float(c)]
-                for ts, o, h, l, c in zip(ts_arr,
-                    df["open"].values, df["high"].values, df["low"].values, closes)]
-    position = result["position"]
-    entries  = np.where(np.diff(position.astype(int)) == 1)[0] + 1
-    exits    = np.where(np.diff(position.astype(int)) == -1)[0] + 1
-    trades   = sorted(
-        [{"time": int(ts_arr[i]), "action": "BUY",  "price": float(closes[i])} for i in entries] +
-        [{"time": int(ts_arr[i]), "action": "SELL", "price": float(closes[i])} for i in exits],
-        key=lambda t: t["time"],
-    )
-    slow_k, d_line = result["slow_k"], result["d"]
-    indicators = [
-        {"name": "%K", "type": "line",
-         "data": [[int(ts), float(v)] for ts, v in zip(ts_arr, slow_k)  if not np.isnan(v)]},
-        {"name": "%D", "type": "line",
-         "data": [[int(ts), float(v)] for ts, v in zip(ts_arr, d_line) if not np.isnan(v)]},
-    ]
+def upload_report(df, stats):
+    ts_arr  = (df.index.astype(np.int64) // 10**9).tolist()
+    klines  = [[int(ts), float(o), float(h), float(l), float(c)]
+               for ts, o, h, l, c in zip(ts_arr,
+                   df["Open"], df["High"], df["Low"], df["Close"])]
+    trades = []
+    for _, row in stats["_trades"].iterrows():
+        trades.append({"time": int(row["EntryTime"].timestamp()), "action": "BUY",  "price": float(row["EntryPrice"])})
+        trades.append({"time": int(row["ExitTime"].timestamp()),  "action": "SELL", "price": float(row["ExitPrice"])})
+    trades.sort(key=lambda t: t["time"])
+    equity  = stats["_equity_curve"]["Equity"].reindex(df.index, method="ffill").values
+    log_ret = np.diff(np.log(np.where(equity > 0, equity, 1)))
+    returns = [0.0] + [0.0 if r != r else float(r) for r in log_ret]
     body = json.dumps({
-        "strategy_name": STRATEGY_NAME, "symbol": SYMBOL, "interval": PERIOD, "mode": "backtest",
-        "code": open(__file__).read(), "trades": trades, "klines": klines, "indicators": indicators,
-        "returns": np.where(np.isnan(result["strat_ret"]), 0.0, result["strat_ret"]).tolist(),
+        "strategy_name": STRATEGY_NAME, "symbol": SYMBOL, "interval": INTERVAL,
+        "mode": "backtest", "code": open(__file__).read(),
+        "trades": trades, "klines": klines, "indicators": [],
+        "returns": returns,
     }).encode()
     requests.post("https://api.blave.org/openclaw/strategy/report",
-        headers={"api-key": _env["blave_api_key"], "secret-key": _env["blave_secret_key"],
+        headers={"api-key": _env.get("blave_api_key", ""),
+                 "secret-key": _env.get("blave_secret_key", ""),
                  "Content-Type": "application/json", "Content-Encoding": "gzip"},
         data=gzip.compress(body), timeout=60).raise_for_status()
     print("Report uploaded.")
@@ -507,42 +458,36 @@ def upload_report(df, result):
 
 # ── Main ──────────────────────────────────────────────────────────────────────
 if __name__ == "__main__":
-    print(f"Loading kline for {SYMBOL} ({START_DATE} → {END_DATE}, {PERIOD})...")
-    df = load_kline(SYMBOL, START_DATE, END_DATE, PERIOD)
+    df = fetch_historical(SYMBOL, START, END)
     print(f"Bars loaded: {len(df)}")
 
-    # Step 1: 2D scan → find plateau
-    print("Running 2D parameter scan (K_PERIOD × K_SMOOTH)...")
-    grid = param_scan(df)
-    plateau_idx, nbr_mean = find_plateau(grid, window=1)
-
-    best_kp = K_PERIOD_SCAN[plateau_idx[0]]
-    best_ks = K_SMOOTH_SCAN[plateau_idx[1]]
-    print(f"Plateau: K_PERIOD={best_kp}, K_SMOOTH={best_ks}  "
-          f"(neighborhood mean Sharpe={nbr_mean[plateau_idx]:.2f})")
-
-    plot_heatmap(grid, nbr_mean, plateau_idx, SYMBOL)
+    # Step 1: optimize K_PERIOD × K_SMOOTH → find plateau
+    print("Optimizing K_PERIOD × K_SMOOTH...")
+    bt = Backtest(df, BlaveStrategy, cash=BUDGET_USDT, commission=FEE, trade_on_close=True)
+    _, heatmap = bt.optimize(
+        k_period=K_PERIOD_SCAN,
+        k_smooth=K_SMOOTH_SCAN,
+        maximize="Sharpe Ratio",
+        return_heatmap=True,
+    )
+    best_kp, best_ks = _find_plateau(heatmap)
+    print(f"Plateau: K_PERIOD={best_kp}, K_SMOOTH={best_ks}")
+    plot_heatmap(heatmap, best_kp, best_ks, SYMBOL)
 
     # Step 2: full backtest with plateau parameters
-    K_PERIOD, K_SMOOTH = best_kp, best_ks
-    result = run_backtest(df, k_period=K_PERIOD, k_smooth=K_SMOOTH, d_smooth=D_SMOOTH)
+    BlaveStrategy.k_period = best_kp
+    BlaveStrategy.k_smooth = best_ks
+    bt2   = Backtest(df, BlaveStrategy, cash=BUDGET_USDT, commission=FEE, trade_on_close=True)
+    stats = bt2.run()
+    print(stats[["Return [%]", "Sharpe Ratio", "Max. Drawdown [%]", "Win Rate [%]", "# Trades"]])
 
-    print(f"\nResults — KD({K_PERIOD},{K_SMOOTH},{D_SMOOTH}):")
-    print(f"  總報酬率            : {result['total_return']*100:.1f}%")
-    print(f"  年化報酬率           : {result['ann_ret']*100:.1f}%")
-    print(f"  年化波動度           : {result['ann_vol']*100:.1f}%")
-    print(f"  Sharpe Ratio      : {result['sharpe']:.2f}")
-    print(f"  最大回撤 (MDD)      : {result['max_dd']*100:.1f}%")
-    print(f"  勝率                : {result['win_rate']*100:.1f}%")
-    print(f"  平均獲利 (per trade): {result['avg_win']*100:.2f}%")
-    print(f"  平均虧損 (per trade): {result['avg_loss']*100:.2f}%")
-    print(f"  總交易次數           : {result['n_trades']}")
-    print(f"  平均年交易次數        : {result['avg_trades_yr']:.1f}")
+    result           = _reconstruct_arrays(df, stats)
+    slow_k, d_line   = compute_kd(df, best_kp, best_ks, D_SMOOTH)
 
     regime_analysis(df, result)
     plot_regime(df, result, SYMBOL)
-    plot_pnl(df, result, SYMBOL)
-    upload_report(df, result)
+    plot_pnl(df, result, slow_k.values, d_line.values, best_kp, best_ks, SYMBOL)
+    upload_report(df, stats)
 ```
 
 ---
@@ -551,14 +496,14 @@ if __name__ == "__main__":
 
 | Parameter | Default | Notes |
 |---|---|---|
-| `K_PERIOD` | `9` | Stochastic lookback — lower = faster, more signals |
-| `K_SMOOTH` | `3` | Slow %K smoothing (SMA) — higher = smoother |
-| `D_SMOOTH` | `3` | %D smoothing (SMA of slow %K) — fixed at 3 in scan |
-| `PERIOD` | `1h` | Kline timeframe |
-| `VOL_WINDOW` | `720` | 30 days × 24h rolling vol |
-| `TARGET_VOL` | `0.30` | 30% annualized target |
-| `MAX_LEV` | `2.0` | Position size cap |
+| `K_PERIOD_SCAN` | `[5,9,14,21,34,55]` | Stochastic lookback values swept during optimization |
+| `K_SMOOTH_SCAN` | `[2,3,5,8,13]` | Slow %K smoothing values swept during optimization |
+| `D_SMOOTH` | `3` | %D smoothing (SMA of slow %K) — fixed, not optimized |
+| `INTERVAL` | `1h` | Kline timeframe |
+| `VOL_LOOKBACK` | `720` | 30 days × 24h rolling vol window |
+| `VOL_TARGET` | `0.30` | 30% annualized vol target |
 | `FEE` | `0.0005` | 0.05% per side (taker fee) |
+| `BUDGET_USDT` | `1000` | Starting capital for backtest |
 
 ---
 
@@ -566,7 +511,7 @@ if __name__ == "__main__":
 
 - **Long only** — no short positions
 - **Parameter scan** sweeps K_PERIOD (5/9/14/21/34/55) × K_SMOOTH (2/3/5/8/13); D_SMOOTH is fixed at 3. The plateau selection (neighborhood mean Sharpe) is preferred over the single best cell — see HC backtest example for explanation
-- **OB/OS filter (optional):** only enter golden cross when %K < 20 (oversold zone) for a stricter variant. Not implemented by default — add `and ki < 20` to the golden cross condition in `_kd_signal_loop`
+- **OB/OS filter (optional):** only enter golden cross when %K < 20 (oversold zone) for a stricter variant. Not implemented by default — add `and k < 20` to the golden cross condition in `compute_signal`
 - **Smoothing method:** this example uses SMA for both %K and %D, matching the classic formula. EWM (`pd.Series.ewm(span=k_smooth)`) gives more weight to recent bars and is common in real-time systems; swap in if preferred
 - **Performance stack:** rolling vol via Pandas rolling (C/Cython), crossover loop via pure Python (stateful, can't vectorize — but fast enough for any reasonable history length), everything else NumPy vectorized
 

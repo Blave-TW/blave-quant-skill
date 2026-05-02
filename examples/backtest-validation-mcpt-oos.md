@@ -6,7 +6,7 @@ Validates two DOGE 1h long-only strategies side by side using:
 
 1. **IS (In-Sample) Parameter Optimization** — 2D param scan on the first 2 years to find the most robust (plateau) parameters for each strategy
 2. **OOS (Out-of-Sample) Validation** — run the IS-selected params on the held-out final year; a strategy with real edge should degrade gracefully, not collapse
-3. **MCPT (Monte Carlo Permutation Test)** — shuffle the position array 1000 times, recompute Sharpe on each shuffle; p-value = fraction of shuffled Sharpes ≥ actual OOS Sharpe; p < 0.05 means the timing adds statistically significant value
+3. **MCPT (Monte Carlo Permutation Test)** — shuffle the forward return series 2000 times while keeping positions fixed, recompute Sharpe on each shuffle; p-value = fraction of shuffled Sharpes ≥ actual OOS Sharpe; p < 0.05 means the timing adds statistically significant value
 
 **Strategies compared:**
 
@@ -35,11 +35,17 @@ IS: trailing 3 → 1 year ago | OOS: trailing 1 year → today
 ## Full Code
 
 ```python
+# NOTE: This is a validation-only research script. The MCPT algorithm requires raw
+# position and return arrays, so it uses a lightweight custom engine (_run) rather
+# than backtesting.py. For deployment, use strategies/TEMPLATE.py instead.
+import sys
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).parent.parent))
+
 import numpy as np
 import pandas as pd
 import requests
 import matplotlib.pyplot as plt
-import numba
 from datetime import datetime, timedelta, timezone
 from dotenv import dotenv_values
 
@@ -137,28 +143,49 @@ def compute_kd(df, k_period, k_smooth, d_smooth=D_SMOOTH):
     return slow_k.values, d.values
 
 
-@numba.njit(cache=True)
-def _kd_signal_loop(k, d):
-    n = len(k); position = np.zeros(n); in_pos = False
+def _compute_kd_signal(k, k_prev, d, d_prev, in_long: bool) -> str:
+    """Pure signal function — matches compute_signal() semantics from TEMPLATE.py."""
+    if np.isnan(k) or np.isnan(d) or np.isnan(k_prev) or np.isnan(d_prev):
+        return "LONG" if in_long else "FLAT"
+    if not in_long and k_prev <= d_prev and k > d:   # golden cross
+        return "LONG"
+    if in_long and k_prev >= d_prev and k < d:        # death cross
+        return "FLAT"
+    return "LONG" if in_long else "FLAT"
+
+
+def _compute_ti_signal(ti: float, in_long: bool, entry_th: float, exit_th: float) -> str:
+    """Pure signal function — matches compute_signal() semantics from TEMPLATE.py."""
+    if np.isnan(ti):
+        return "LONG" if in_long else "FLAT"
+    if not in_long and ti > entry_th:
+        return "LONG"
+    if in_long and ti < exit_th:
+        return "FLAT"
+    return "LONG" if in_long else "FLAT"
+
+
+def _build_kd_position(k_arr, d_arr):
+    """Build 0/1 position array from KD signal — used by _run() and mcpt()."""
+    n = len(k_arr)
+    position = np.zeros(n)
+    in_long = False
     for i in range(1, n):
-        ki, di, kp, dp = k[i], d[i], k[i-1], d[i-1]
-        if np.isnan(ki) or np.isnan(di) or np.isnan(kp) or np.isnan(dp):
-            position[i] = 1.0 if in_pos else 0.0; continue
-        if not in_pos and kp <= dp and ki > di:  in_pos = True
-        elif in_pos  and kp >= dp and ki < di:   in_pos = False
-        position[i] = 1.0 if in_pos else 0.0
+        sig = _compute_kd_signal(k_arr[i], k_arr[i-1], d_arr[i], d_arr[i-1], in_long)
+        in_long = (sig == "LONG")
+        position[i] = 1.0 if in_long else 0.0
     return position
 
 
-@numba.njit(cache=True)
-def _ti_signal_loop(signal, entry_th, exit_th):
-    n = len(signal); position = np.zeros(n); in_pos = False
+def _build_ti_position(ti_arr, entry_th, exit_th):
+    """Build 0/1 position array from TI signal — used by _run() and mcpt()."""
+    n = len(ti_arr)
+    position = np.zeros(n)
+    in_long = False
     for i in range(n):
-        if np.isnan(signal[i]):
-            position[i] = 1.0 if in_pos else 0.0; continue
-        if not in_pos and signal[i] > entry_th:  in_pos = True
-        elif in_pos  and signal[i] < exit_th:    in_pos = False
-        position[i] = 1.0 if in_pos else 0.0
+        sig = _compute_ti_signal(ti_arr[i], in_long, entry_th, exit_th)
+        in_long = (sig == "LONG")
+        position[i] = 1.0 if in_long else 0.0
     return position
 
 
@@ -253,7 +280,7 @@ def kd_param_scan(df_kline):
     for i, kp in enumerate(KD_PERIOD_SCAN):
         for j, ks in enumerate(KD_SMOOTH_SCAN):
             k_arr, d_arr = compute_kd(df_kline, kp, ks)
-            pos = _kd_signal_loop(k_arr, d_arr)
+            pos = _build_kd_position(k_arr, d_arr)
             res = _run(close, pos)
             if not np.isnan(res["sharpe"]): grid[i, j] = res["sharpe"]
     return grid
@@ -268,7 +295,7 @@ def ti_param_scan(df_kline, df_ti):
     for i, entry in enumerate(TI_THRESHOLDS):
         for j, exit_ in enumerate(TI_THRESHOLDS):
             if exit_ > entry: continue
-            pos = _ti_signal_loop(ti, entry, exit_)
+            pos = _build_ti_position(ti, entry, exit_)
             res = _run(close, pos)
             if not np.isnan(res["sharpe"]): grid[i, j] = res["sharpe"]
     return grid, df
@@ -312,7 +339,7 @@ def plot_results(symbol, results):
         oos_color = "#2ecc71" if r["oos_res"]["sharpe"] > 0 else "#e74c3c"
         ax_oos.plot(r["oos_dates"], (r["oos_res"]["cum"] - 1) * 100, color=oos_color, lw=1.5)
         ax_oos.axhline(0, color="#888", lw=0.6, ls="--")
-        sig_str = f"p={r['mcpt_pvalue']:.3f} {'✅' if r['mcpt_pvalue'] < 0.05 else '❌'}"
+        sig_str = f"p={r['mcpt_pvalue']:.3f} {'[sig]' if r['mcpt_pvalue'] < 0.05 else '[ns]'}"
         ax_oos.set_title(
             f"{label} — OOS (1y)\n"
             f"Sharpe={r['oos_res']['sharpe']:.2f}  "
@@ -371,12 +398,12 @@ if __name__ == "__main__":
 
     # ── KD: IS full backtest ──────────────────────────────────────────────────
     kd_k_is, kd_d_is = compute_kd(kline_is, best_kp, best_ks)
-    kd_pos_is        = _kd_signal_loop(kd_k_is, kd_d_is)
+    kd_pos_is        = _build_kd_position(kd_k_is, kd_d_is)
     kd_is_res        = _run(kline_is["close"].values.astype(np.float64), kd_pos_is)
 
     # ── KD: OOS validation ────────────────────────────────────────────────────
     kd_k_oos, kd_d_oos = compute_kd(kline_oos, best_kp, best_ks)
-    kd_pos_oos         = _kd_signal_loop(kd_k_oos, kd_d_oos)
+    kd_pos_oos         = _build_kd_position(kd_k_oos, kd_d_oos)
     kd_oos_res         = _run(kline_oos["close"].values.astype(np.float64), kd_pos_oos)
 
     # ── KD: MCPT on OOS ──────────────────────────────────────────────────────
@@ -395,14 +422,14 @@ if __name__ == "__main__":
     # ── TI: IS full backtest ──────────────────────────────────────────────────
     ti_close_is  = df_ti_is["close"].values.astype(np.float64)
     ti_signal_is = df_ti_is["ti"].values.astype(np.float64)
-    ti_pos_is    = _ti_signal_loop(ti_signal_is, best_entry, best_exit)
+    ti_pos_is    = _build_ti_position(ti_signal_is, best_entry, best_exit)
     ti_is_res    = _run(ti_close_is, ti_pos_is)
 
     # ── TI: OOS validation ────────────────────────────────────────────────────
     df_ti_oos   = kline_oos[["close"]].join(ti_oos[["ti"]], how="inner").dropna(subset=["close"])
     ti_close_oos  = df_ti_oos["close"].values.astype(np.float64)
     ti_signal_oos = df_ti_oos["ti"].values.astype(np.float64)
-    ti_pos_oos    = _ti_signal_loop(ti_signal_oos, best_entry, best_exit)
+    ti_pos_oos    = _build_ti_position(ti_signal_oos, best_entry, best_exit)
     ti_oos_res    = _run(ti_close_oos, ti_pos_oos)
 
     # ── TI: MCPT on OOS ──────────────────────────────────────────────────────
@@ -426,7 +453,7 @@ if __name__ == "__main__":
         ("IS MDD",                f"{kd_is_res['max_dd']*100:.1f}%", f"{ti_is_res['max_dd']*100:.1f}%"),
         ("OOS MDD",               f"{kd_oos_res['max_dd']*100:.1f}%", f"{ti_oos_res['max_dd']*100:.1f}%"),
         ("MCPT p-value (OOS)",    f"{kd_pvalue:.3f}",             f"{ti_pvalue:.3f}"),
-        ("MCPT significant?",     "✅" if kd_pvalue < 0.05 else "❌", "✅" if ti_pvalue < 0.05 else "❌"),
+        ("MCPT significant?",     "[sig]" if kd_pvalue < 0.05 else "[ns]", "[sig]" if ti_pvalue < 0.05 else "[ns]"),
     ]
     for label, kd_val, ti_val in rows:
         print(f"  {label:<28} {kd_val:>12} {ti_val:>12}")
@@ -484,8 +511,8 @@ if __name__ == "__main__":
 
 ## Notes
 
-- **MCPT method — position permutation:** shuffles the entry/exit timing (position array) while keeping the return series fixed. Tests: "given BTC's actual return distribution, does the timing of this strategy's trades matter?" This is comparable across both strategies because neither strategy has its signal permuted — only when it acts.
-- **Why not permute returns?** For KD, the signal is derived from price; permuting returns changes the price path and therefore the KD signal itself, making it circular. Position permutation is clean for both strategies.
+- **MCPT method — return permutation:** shuffles the forward return series while keeping the position array fixed. Fees and vol-scaling are therefore identical across all permutations. Tests: "given this strategy's entry/exit timing, are the return periods it selects better than a random draw?"
+- **Why not permute position?** A random shuffle of a binary 0/1 array produces ~N×p×(1−p) transitions vs. the strategy's much smaller number. With FEE=0.0005 that creates 30–40× more fee drag on every permutation, forcing all permuted Sharpes deeply negative and producing a biased p-value regardless of whether the strategy has real edge.
 - **IS/OOS split is time-based, not random.** Shuffling time order for a financial backtest introduces look-ahead bias. The IS period always precedes OOS.
 - **Walk-forward extension:** for more rigorous validation, replace the single IS/OOS split with multiple expanding windows (e.g., 12-month IS → 3-month OOS, rolling forward). Not implemented here to keep the example readable.
 - **Both strategies use the same backtest engine** (`_run`), same vol-targeting, same fee model — the only difference is how `position` is computed.
