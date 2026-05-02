@@ -66,7 +66,7 @@ Workflow templates for common use cases. **When the user's request matches one o
 |---|---|
 | `examples/hyperliquid-copy-trading.md` | User wants to find traders to follow / copy trade on Hyperliquid |
 | `examples/blave-alpha-screening.md` | User wants to screen or find high-conviction / small-cap tokens |
-| `examples/backtest-holder-concentration.md` | User wants to backtest a strategy using Blave alpha signals |
+| `examples/backtest-holder-concentration.md` | User wants to backtest a strategy using any Blave alpha signal (holder concentration, taker intensity, liquidation, whale hunter, etc.) — contains the canonical data-fetch pattern (parallel arrays `data.alpha` / `data.timestamp`, annual chunking) |
 | `examples/truth-social-trump-monitor.md` | User wants to monitor Trump's Truth Social posts with translation |
 | `examples/btc-etf-flow-monitor.md` | User wants to track Bitcoin ETF flows / institutional accumulation (BlackRock IBIT etc.) |
 | `examples/bitfinex-auto-lending.md` | User wants to auto-lend on Bitfinex (rate-adaptive period + ladder offers) |
