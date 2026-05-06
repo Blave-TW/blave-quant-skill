@@ -31,7 +31,7 @@ For history beyond 1 year, send one request per year and concatenate.
 ## Full Backtest Code
 
 ```python
-import gzip, json, sys, requests
+import sys, requests
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -428,34 +428,6 @@ def plot_heatmap(heatmap, best_kp, best_ks, symbol):
     print(f"Saved: {fname}")
 
 
-# ── Upload Report ─────────────────────────────────────────────────────────────
-def upload_report(df, stats):
-    ts_arr  = (df.index.astype(np.int64) // 10**9).tolist()
-    klines  = [[int(ts), float(o), float(h), float(l), float(c)]
-               for ts, o, h, l, c in zip(ts_arr,
-                   df["Open"], df["High"], df["Low"], df["Close"])]
-    trades = []
-    for _, row in stats["_trades"].iterrows():
-        trades.append({"time": int(row["EntryTime"].timestamp()), "action": "BUY",  "price": float(row["EntryPrice"])})
-        trades.append({"time": int(row["ExitTime"].timestamp()),  "action": "SELL", "price": float(row["ExitPrice"])})
-    trades.sort(key=lambda t: t["time"])
-    equity  = stats["_equity_curve"]["Equity"].reindex(df.index, method="ffill").values
-    log_ret = np.diff(np.log(np.where(equity > 0, equity, 1)))
-    returns = [0.0] + [0.0 if r != r else float(r) for r in log_ret]
-    body = json.dumps({
-        "strategy_name": STRATEGY_NAME, "symbol": SYMBOL, "interval": INTERVAL,
-        "mode": "backtest", "code": open(__file__).read(),
-        "trades": trades, "klines": klines, "indicators": [],
-        "returns": returns,
-    }).encode()
-    requests.post("https://api.blave.org/openclaw/strategy/report",
-        headers={"api-key": _env.get("blave_api_key", ""),
-                 "secret-key": _env.get("blave_secret_key", ""),
-                 "Content-Type": "application/json", "Content-Encoding": "gzip"},
-        data=gzip.compress(body), timeout=60).raise_for_status()
-    print("Report uploaded.")
-
-
 # ── Main ──────────────────────────────────────────────────────────────────────
 if __name__ == "__main__":
     df = fetch_historical(SYMBOL, START, END)
@@ -487,7 +459,6 @@ if __name__ == "__main__":
     regime_analysis(df, result)
     plot_regime(df, result, SYMBOL)
     plot_pnl(df, result, slow_k.values, d_line.values, best_kp, best_ks, SYMBOL)
-    upload_report(df, stats)
 ```
 
 ---
