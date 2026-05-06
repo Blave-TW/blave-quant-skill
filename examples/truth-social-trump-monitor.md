@@ -48,6 +48,10 @@ def strip_html(html):
     return text.strip()
 
 
+def has_real_content(content):
+    return bool(content) and not content.startswith("[No Title]")
+
+
 def translate(text):
     try:
         return TRANSLATOR.translate(text) if text else ""
@@ -68,11 +72,17 @@ def load_state():
     if STATE_FILE.exists():
         with open(STATE_FILE) as f:
             return json.load(f)
-    return {"seen_ids": []}
+    return {"seen_ids": [], "pending": {}}
 
 
 def save_state(state):
     state["seen_ids"] = state["seen_ids"][-200:]  # keep last 200 to avoid bloat
+    # Drop pending entries older than 24h (content won't appear after that)
+    now = time.time()
+    state["pending"] = {
+        pid: meta for pid, meta in state.get("pending", {}).items()
+        if now - meta.get("added_at", 0) < 86400
+    }
     with open(STATE_FILE, "w") as f:
         json.dump(state, f)
 
@@ -88,6 +98,8 @@ def fetch_posts():
         orig_id  = item.findtext("truth:originalId", namespaces=ns)
         guid     = item.findtext("guid", "")
         post_id  = orig_id or guid.split("/")[-1]
+        if not post_id:
+            continue
         title    = item.findtext("title", "")
         desc     = strip_html(item.findtext("description", ""))
         pub_date = item.findtext("pubDate", "")
@@ -95,8 +107,6 @@ def fetch_posts():
 
         content = desc if len(desc) > len(title) else title
         content = content.strip()
-        if not content or content == "[No Title]":
-            continue
 
         try:
             dt = datetime.strptime(pub_date, "%a, %d %b %Y %H:%M:%S %z")
@@ -105,41 +115,72 @@ def fetch_posts():
             ts_str = pub_date[:25] if pub_date else ""
 
         posts.append({"id": post_id, "content": content,
-                      "url": orig_url, "pub_date": ts_str})
+                      "url": orig_url, "pub_date": ts_str,
+                      "has_content": has_real_content(content)})
     return posts
+
+
+# ── Push ──────────────────────────────────────────────────────────────────
+def push(p):
+    zh = translate(p["content"])
+    msg = (f"🇺🇸 *川普 Truth Social*\n"
+           f"🕐 `{p['pub_date']}`\n\n"
+           f"*🇬🇧 英文原文*\n{p['content']}\n\n"
+           f"*🇹🇼 中文翻譯*\n{zh}\n\n"
+           f"[原文連結]({p['url']})")
+    tg(msg)
 
 
 # ── Main ──────────────────────────────────────────────────────────────────
 def run():
     state    = load_state()
     seen_ids = set(state["seen_ids"])
-    is_first = len(seen_ids) == 0
+    pending  = state.get("pending", {})
+    is_first = len(seen_ids) == 0 and len(pending) == 0
 
-    posts = fetch_posts()
+    posts       = fetch_posts()
+    posts_by_id = {p["id"]: p for p in posts}
+
     if not posts:
         return
 
     if is_first:
-        # First run: push latest 3, mark all as seen
-        to_push = posts[:3]
+        # First run: push latest 3 with real content, mark all as seen
+        to_push = [p for p in posts if p["has_content"]][:3]
         for p in posts:
             seen_ids.add(p["id"])
+        pending.clear()
     else:
-        to_push = [p for p in posts if p["id"] not in seen_ids]
-        for p in to_push:
-            seen_ids.add(p["id"])
+        to_push = []
 
-    for p in reversed(to_push):  # oldest first
-        zh = translate(p["content"])
-        msg = (f"🇺🇸 *川普 Truth Social*\n"
-               f"🕐 `{p['pub_date']}`\n\n"
-               f"*🇬🇧 英文原文*\n{p['content']}\n\n"
-               f"*🇹🇼 中文翻譯*\n{zh}\n\n"
-               f"[原文連結]({p['url']})")
-        tg(msg)
+        # Re-check pending posts: push those whose content has now appeared
+        recovered = [pid for pid in list(pending)
+                     if pid in posts_by_id and posts_by_id[pid]["has_content"]]
+        for pid in recovered:
+            to_push.append(posts_by_id[pid])
+            del pending[pid]
+            seen_ids.add(pid)
+
+        # Handle brand-new posts (not seen, not pending)
+        for p in posts:
+            if p["id"] in seen_ids or p["id"] in pending:
+                continue
+            if p["has_content"]:
+                to_push.append(p)
+                seen_ids.add(p["id"])
+            else:
+                # Content not yet filled in — hold in pending for later runs
+                pending[p["id"]] = {
+                    "url": p["url"], "pub_date": p["pub_date"],
+                    "added_at": time.time(),
+                }
+
+    for p in sorted(to_push, key=lambda x: x["pub_date"]):  # oldest first
+        push(p)
         time.sleep(1)
 
     state["seen_ids"] = list(seen_ids)
+    state["pending"]  = pending
     save_state(state)
 
 
@@ -180,9 +221,10 @@ WantedBy=timers.target
 |---|---|
 | **Fetch** | `GET https://www.trumpstruth.org/feed` — RSS feed with `truth:originalId` and `truth:originalUrl` custom XML namespaces |
 | **Dedup** | `trump_monitor_state.json` stores last 200 seen post IDs; only new posts get pushed |
+| **Pending** | Posts whose description is still empty (trumpstruth.org has ~hours lag) go into `pending` instead of `seen`. Every run re-checks pending posts; as soon as content appears they are pushed then moved to seen. Pending entries older than 24h are dropped. |
 | **Translate** | `deep-translator` calls Google Translate free endpoint. EN → zh-TW |
 | **Push** | Telegram Bot API with Markdown formatting |
-| **First run** | Pushes latest 3 posts, marks all 100 as seen so next run only gets truly new ones |
+| **First run** | Pushes latest 3 posts with real content, marks all 100 as seen so next run only gets truly new ones |
 
 ---
 
