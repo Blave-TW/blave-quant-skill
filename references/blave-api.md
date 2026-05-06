@@ -43,7 +43,10 @@ print(response.json())
 ```python
 params = {"symbol": "BTCUSDT", "period": "1h", "start_date": "2025-01-01", "end_date": "2025-03-01"}
 response = requests.get(f"{BASE_URL}/kline", headers=headers, params=params, timeout=60)
-print(response.json())
+raw = response.json()
+# returns a list directly (NOT {"data": [...]}):
+# [{"date": "2025-01-01 00:00:00", "open": 94000.0, "high": 95500.0, "low": 93200.0, "close": 95000.0, "volume": 1234.5}, ...]
+data = raw if isinstance(raw, list) else raw.get("data", [])
 ```
 
 ---
