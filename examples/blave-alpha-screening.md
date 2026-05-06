@@ -35,9 +35,9 @@ alpha_table = resp.json()
 results = []
 for symbol, d in alpha_table['data'].items():
     try:
-        mc_pct = float(d.get('market_cap_percentile', {}).get('-', '') or '')
-        hc     = float(d.get('holder_concentration', {}).get('-', '') or '')
-        wh_24h = float(d.get('whale_hunter', {}).get('24h-score_oi', '') or '')
+        mc_pct = float(d.get('market_cap_percentile', {}).get('-', ''))
+        hc     = float(d.get('holder_concentration', {}).get('-', ''))
+        wh_24h = float(d.get('whale_hunter', {}).get('24h-score_oi', ''))
         stats  = d.get('statistics', {})
         mc_usd = float(d.get('market_cap', {}).get('-', 0) or 0)
         up_prob = float(stats.get('up_prob', 0) or 0)
@@ -102,7 +102,7 @@ print("\n✓ = is_data_sufficient (statistics reliable)  ~ = insufficient histor
 Confirm buying pressure is actually present (not just silent accumulation). Add inside the loop, after extracting `hc` and `wh_24h`:
 
 ```python
-taker = float(d.get('taker_intensity', {}).get('24h', '') or '')
+taker = float(d.get('taker_intensity', {}).get('24h', ''))
 
 # Tighten filter to require net buying:
 if mc_pct <= 50 and hc > 0.5 and wh_24h > 0.5 and taker > 0:
