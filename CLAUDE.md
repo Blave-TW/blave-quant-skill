@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Overview
 
-This repo contains one skill covering five capabilities:
+This repo contains one skill covering nine capabilities:
 1. **Blave** — Agent calls the Blave REST API directly for crypto market alpha data
 2. **BitMart Futures** — Agent calls the BitMart API for perpetual futures trading
 3. **BitMart Spot** — Agent calls the BitMart API for spot trading
@@ -13,6 +13,7 @@ This repo contains one skill covering five capabilities:
 6. **Bitget** — Agent calls the Bitget API for spot and futures trading
 7. **Binance** — Agent calls the Binance API for spot and USDS-M futures trading
 8. **Bitfinex** — Agent calls the Bitfinex API for spot, margin, and funding/lending
+9. **TWSE / TPEX（台股）** — Agent queries Taiwan stock market data (stock code lookup, quotes, PE/yield/PB) via public APIs; no API key required
 
 No CLI or wrapper involved. All API calls are made directly by the agent.
 
@@ -50,6 +51,8 @@ No CLI or wrapper involved. All API calls are made directly by the agent.
 | `references/bitget-api-reference.md` | Bitget spot + futures endpoints, Python signature |
 | `references/binance-api-reference.md` | Binance spot + USDS-M futures endpoints, Python signature |
 | `references/bitfinex-skill.md` | Bitfinex spot, margin, funding/lending endpoints, HMAC-SHA384 signature |
+| `references/twse-skill.md` | TWSE/TPEX 台股查詢 — 快速參考：endpoints、欄位說明、Python 搜尋範例 |
+| `references/twse-api-reference.md` | TWSE/TPEX 完整 API 參考：上市/上櫃清單、行情、停復牌、民國年轉換 |
 
 ## Blave API Endpoints
 
@@ -150,3 +153,27 @@ Base URL: `https://api.bitfinex.com` (auth) | `https://api-pub.bitfinex.com` (pu
 Signature: `HMAC-SHA384(secret, "/api/" + path + nonce + body)` → hex
 Headers: `bfx-apikey`, `bfx-nonce`, `bfx-signature`
 Affiliate code: `"meta": {"aff_code": "ZZDLtrXMF"}` on every order
+
+## TWSE / TPEX — 台股市場查詢
+
+**No API key required.** Public data, no authentication.
+
+| Market | Base URL |
+|---|---|
+| TWSE 上市 | `https://openapi.twse.com.tw` |
+| TPEX 上櫃 | `https://www.tpex.org.tw` |
+
+Key endpoints:
+- `GET /v1/exchangeReport/BWIBBU_ALL` — all listed stocks: `Code`, `Name`, `PEratio`, `DividendYield`, `PBratio`
+- `GET /v1/exchangeReport/STOCK_DAY_ALL` — all listed stocks daily quote: open/high/low/close, volume
+- `GET https://www.tpex.org.tw/openapi/v1/tpex_mainboard_quotes` — all OTC stocks: `SecuritiesCompanyCode`, `CompanyName`, quote data
+
+**Lookup flow:** Download full list → filter locally by `Code` or `Name` keyword.
+When market is unknown, query both TWSE and TPEX and merge results.
+
+Date format: ROC calendar — `1150507` = 2026/05/07 (民國115年05月07日)
+
+All queries are read-only — **Safety Mode CONFIRM is NOT required.**
+
+> Quick reference: `references/twse-skill.md`
+> Full API reference with Python examples: `references/twse-api-reference.md`
