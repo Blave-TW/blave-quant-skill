@@ -22,10 +22,11 @@ Step 2: 下載 CAPTCHA 圖片，存成本地檔案
         → 用自己的 vision 讀取圖片，取得 5 個字元的答案
 
 Step 3: POST bsMenu.aspx（帶齊所有表單欄位）
-        → 若驗證失敗（回應頁面仍含 CaptchaImage.aspx）→ 回到 Step 1 重試
-        → 若成功 → 解析 HTML 表格
+        → 若回應頁面找不到 bsContent 連結 → CAPTCHA 失敗，回到 Step 1 重試
+        → 若找到 bsContent 連結 → 繼續 Step 4
 
-Step 4: 解析結果表格，輸出各券商資料
+Step 4: GET bsContent.aspx?StkNo=<股票代號>（同一 session）
+        → 回傳逗號分隔純文字，解析後輸出各券商資料
 ```
 
 ---
@@ -84,25 +85,26 @@ form_data.update({
 post_r = session.post(f"{BASE}/bsMenu.aspx", data=form_data, timeout=15)
 result_soup = BeautifulSoup(post_r.text, "html.parser")
 
-# 判斷 CAPTCHA 是否成功：若回應頁仍含圖片 → 失敗，重試
-if result_soup.find("img", src=lambda s: s and "CaptchaImage.aspx" in s):
+# 判斷 CAPTCHA 是否成功：只有成功才會出現 bsContent 連結
+bscontent_link = result_soup.find("a", href=lambda h: h and "bsContent" in h)
+if not bscontent_link:
     raise RuntimeError("CAPTCHA wrong, retry from Step 1")
 ```
 
 ---
 
-## Step 4 — 解析結果表格
+## Step 4 — GET bsContent.aspx 取得實際資料
+
+POST 回應本身沒有資料表格，需用同一 session GET `bsContent.aspx`，回傳逗號分隔純文字。
 
 ```python
+data_r = session.get(f"{BASE}/bsContent.aspx", params={"StkNo": stock_code}, timeout=15)
+data_r.encoding = "utf-8"
+
 rows = []
-for table in result_soup.find_all("table"):
-    headers = [th.get_text(strip=True) for th in table.find_all("th")]
-    if not headers:
-        continue
-    for tr in table.find_all("tr"):
-        cells = [td.get_text(strip=True) for td in tr.find_all("td")]
-        if len(cells) == len(headers):
-            rows.append(dict(zip(headers, cells)))
+for line in data_r.text.splitlines():
+    if "," in line:
+        rows.append(line.split(","))
 
 for row in rows:
     print(row)

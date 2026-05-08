@@ -300,8 +300,8 @@ No API key required. Full reference: `references/twse-api-reference.md` | Quick 
 2. 下載 CAPTCHA 圖片存成本地檔案（如 `/tmp/bsr_captcha.png`）
 3. 用 `Read` tool 讀取圖片，以自己的 vision 識別 5 個字元
 4. POST 表單（帶齊 `__VIEWSTATE` 等隱藏欄位 + 股票代號 + CAPTCHA 答案）
-5. 解析回應 HTML 表格取得分點資料
-6. 若 CAPTCHA 失敗（回應頁仍含 CAPTCHA 圖片）→ 重新 GET 頁面重試
+5. 若回應頁找不到 `bsContent` 連結 → CAPTCHA 失敗，重新 GET 頁面重試
+6. 成功後用同一 session GET `bsContent.aspx?StkNo=<股票代號>`，解析逗號分隔純文字取得分點資料
 
 查詢為唯讀，**不需要 Safety Mode CONFIRM**。
 
