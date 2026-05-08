@@ -1,6 +1,6 @@
 ---
 name: blave-quant
-description: "Use for: (1) Blave market alpha data — 籌碼集中度 Holder Concentration, 多空力道 Taker Intensity, 巨鯨警報 Whale Hunter, 擠壓動能 Squeeze Momentum, 市場方向 Market Direction, 資金稀缺 Capital Shortage, 板塊輪動 Sector Rotation, Blave頂尖交易員 Top Trader Exposure, kline, alpha table, 市場情緒 Market Sentiment, screener saved conditions, Hyperliquid top trader tracking (leaderboard, positions, history, performance, bucket stats); (2) BitMart futures/contract trading — opening/closing positions, leverage, plan orders, TP/SL, trailing stops, account management, sub-account transfers; (3) BitMart spot trading — buy/sell, limit/market orders, account balance, order history, sub-account transfers; (4) OKX trading — spot and perpetual swap, order placement, positions, balance; (5) Bybit trading — spot and derivatives/perpetual swap, order placement, positions, balance, TP/SL; (6) BingX trading — spot and perpetual swap, order placement, position management, leverage, TWAP orders, OCO orders; (7) Bitget trading — spot and futures, order placement, position management, leverage, plan orders; (8) Binance trading — spot and USDS-M futures, order placement, positions, leverage, algo orders, OCO/OTO/OTOCO; (9) Bitfinex trading & funding — spot, margin, funding/lending (submit offers, loans, credits), wallet transfers; (10) TWSE/TPEX 台股查詢 — look up Taiwan stock codes and company names, query daily quotes (open/high/low/close, volume), PE ratio, dividend yield, PB ratio for listed (上市) and OTC (上櫃) stocks; no API key required."
+description: "Use for: (1) Blave market alpha data — 籌碼集中度 Holder Concentration, 多空力道 Taker Intensity, 巨鯨警報 Whale Hunter, 擠壓動能 Squeeze Momentum, 市場方向 Market Direction, 資金稀缺 Capital Shortage, 板塊輪動 Sector Rotation, Blave頂尖交易員 Top Trader Exposure, kline, alpha table, 市場情緒 Market Sentiment, screener saved conditions, Hyperliquid top trader tracking (leaderboard, positions, history, performance, bucket stats); (2) BitMart futures/contract trading — opening/closing positions, leverage, plan orders, TP/SL, trailing stops, account management, sub-account transfers; (3) BitMart spot trading — buy/sell, limit/market orders, account balance, order history, sub-account transfers; (4) OKX trading — spot and perpetual swap, order placement, positions, balance; (5) Bybit trading — spot and derivatives/perpetual swap, order placement, positions, balance, TP/SL; (6) BingX trading — spot and perpetual swap, order placement, position management, leverage, TWAP orders, OCO orders; (7) Bitget trading — spot and futures, order placement, position management, leverage, plan orders; (8) Binance trading — spot and USDS-M futures, order placement, positions, leverage, algo orders, OCO/OTO/OTOCO; (9) Bitfinex trading & funding — spot, margin, funding/lending (submit offers, loans, credits), wallet transfers; (10) TWSE/TPEX 台股查詢 — look up Taiwan stock codes and company names, query daily quotes (open/high/low/close, volume), PE ratio, dividend yield, PB ratio for listed (上市) and OTC (上櫃) stocks; no API key required; (11) TWSE BSR 分點資料 — query broker/dealer daily buy/sell breakdown for any Taiwan stock via CAPTCHA-protected form at bsr.twse.com.tw; agent solves CAPTCHA using its own vision."
 version: 1.7.0
 metadata:
   openclaw:
@@ -33,7 +33,7 @@ metadata:
 
 # Blave Quant Skill
 
-Nine capabilities: **Blave** market alpha data, **BitMart** trading, **OKX** trading, **Bybit** trading, **BingX** trading, **Bitget** trading, **Binance** trading, **Bitfinex** trading & funding, **TWSE/TPEX** 台股查詢.
+Eleven capabilities: **Blave** market alpha data, **BitMart** trading, **OKX** trading, **Bybit** trading, **BingX** trading, **Bitget** trading, **Binance** trading, **Bitfinex** trading & funding, **TWSE/TPEX** 台股查詢, **TWSE BSR** 分點資料.
 
 ## Safety Mode (MANDATORY — applies to every exchange)
 
@@ -272,4 +272,36 @@ When the user wants to trade, **ask which exchange** if not specified, then **re
 2. READ → call, parse, display
 3. WRITE → present summary → ask **"CONFIRM"** → execute
 4. After order → verify status
+
+---
+
+# TWSE 台股查詢
+
+No API key required. Full reference: `references/twse-api-reference.md` | Quick reference: `references/twse-skill.md`
+
+| 用途 | URL |
+|---|---|
+| 上市股票清單 + PE/殖利率/PB | `https://openapi.twse.com.tw/v1/exchangeReport/BWIBBU_ALL` |
+| 上市股票全日行情 | `https://openapi.twse.com.tw/v1/exchangeReport/STOCK_DAY_ALL` |
+| 上櫃股票清單 + 行情 | `https://www.tpex.org.tw/openapi/v1/tpex_mainboard_quotes` |
+
+查詢流程：下載完整清單 → 本地依 `Code`/`Name` 篩選。不確定上市或上櫃時兩者都查再合併。
+
+---
+
+# TWSE BSR 分點資料
+
+查詢各券商對特定股票的當日買賣明細。需通過 CAPTCHA，由 agent 自行用 vision 解碼。
+
+**Full reference: `references/twse-bsr-reference.md`**
+
+**流程：**
+1. `requests.Session()` GET `https://bsr.twse.com.tw/bshtm/bsMenu.aspx` — 取得 ASP.NET 隱藏欄位 + CAPTCHA 圖片 URL
+2. 下載 CAPTCHA 圖片存成本地檔案（如 `/tmp/bsr_captcha.png`）
+3. 用 `Read` tool 讀取圖片，以自己的 vision 識別 5 個字元
+4. POST 表單（帶齊 `__VIEWSTATE` 等隱藏欄位 + 股票代號 + CAPTCHA 答案）
+5. 解析回應 HTML 表格取得分點資料
+6. 若 CAPTCHA 失敗（回應頁仍含 CAPTCHA 圖片）→ 重新 GET 頁面重試
+
+查詢為唯讀，**不需要 Safety Mode CONFIRM**。
 

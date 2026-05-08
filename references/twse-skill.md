@@ -104,3 +104,13 @@ def find_otc_by_name(keyword):
 - 台股代號格式：一般股票為 4 位數字（如 `2330`）、ETF 以 `00` 開頭（如 `0050`）、債券 ETF 含英文字母（如 `00679B`）
 - 查詢不確定在上市或上櫃時，兩個 API 都下載後合併搜尋
 - 全部為唯讀查詢，不需要 Safety Mode CONFIRM
+
+---
+
+## 分點資料（BSR 買賣日報表）
+
+查詢各券商對特定股票的當日買賣明細，需通過 CAPTCHA 驗證。
+
+**流程：** GET 頁面取表單欄位 → 下載 CAPTCHA 圖片 → 用自己的 vision 讀取答案 → POST 表單 → 解析結果表格
+
+詳細流程與 Python 程式碼：`references/twse-bsr-reference.md`

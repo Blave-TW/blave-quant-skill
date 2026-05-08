@@ -14,6 +14,7 @@ This repo contains one skill covering nine capabilities:
 7. **Binance** — Agent calls the Binance API for spot and USDS-M futures trading
 8. **Bitfinex** — Agent calls the Bitfinex API for spot, margin, and funding/lending
 9. **TWSE / TPEX（台股）** — Agent queries Taiwan stock market data (stock code lookup, quotes, PE/yield/PB) via public APIs; no API key required
+10. **TWSE BSR 分點資料** — Agent queries broker/dealer daily trading report via CAPTCHA-protected form; agent solves CAPTCHA using its own vision
 
 No CLI or wrapper involved. All API calls are made directly by the agent.
 
@@ -53,6 +54,7 @@ No CLI or wrapper involved. All API calls are made directly by the agent.
 | `references/bitfinex-skill.md` | Bitfinex spot, margin, funding/lending endpoints, HMAC-SHA384 signature |
 | `references/twse-skill.md` | TWSE/TPEX 台股查詢 — 快速參考：endpoints、欄位說明、Python 搜尋範例 |
 | `references/twse-api-reference.md` | TWSE/TPEX 完整 API 參考：上市/上櫃清單、行情、停復牌、民國年轉換 |
+| `references/twse-bsr-reference.md` | TWSE BSR 分點資料 — 表單結構、CAPTCHA vision 解碼流程、Python 範例 |
 
 ## Blave API Endpoints
 
