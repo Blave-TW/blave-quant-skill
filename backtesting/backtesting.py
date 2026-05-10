@@ -2059,36 +2059,33 @@ class Backtest:
                     equity[i] = equity[i - 1] * (1 + w @ ret)
             return equity[warmup:]
 
-        # ── Equal-weight ──────────────────────────────────────────────────────
-        ew_w   = np.full((n_rebal, n_stocks), 1.0 / n_stocks)
-        ew_eq  = _simulate(ew_w)
+        # ── Equal-weight: rebalances weekly (maintains equal weights) ────────────
+        ew_w  = np.full((n_rebal, n_stocks), 1.0 / n_stocks)
+        ew_eq = _simulate(ew_w)
 
-        # ── Random (vectorized across periods using BLAS) ─────────────────────
+        # ── Random: buy-and-hold with fixed Dirichlet weights ────────────────
+        # Weights drawn once per simulation, never rebalanced.
+        # One-time buy cost applied at entry; no further turnover.
+        # Fully vectorized via BLAS: (n_active, n_stocks) @ (n_stocks, n_sim)
         rng          = default_rng(seed)
-        rand_weights = rng.dirichlet(np.ones(n_stocks), size=(n_sim, n_rebal))
+        rand_weights = rng.dirichlet(np.ones(n_stocks), size=(n_sim,))  # (n_sim, n_stocks)
 
-        rand_paths = np.ones((n_sim, n_days))
-        w_prev     = np.zeros((n_sim, n_stocks))
-        rb         = 0
+        active_close = close_arr[warmup:]                  # (n_active, n_stocks)
+        n_active     = len(active_close)
+        with np.errstate(divide='ignore', invalid='ignore'):
+            daily_rets = np.nan_to_num(
+                active_close[1:] / active_close[:-1] - 1,
+                nan=0., posinf=0., neginf=0.,
+            )                                              # (n_active-1, n_stocks)
 
-        for i in range(warmup + 1, n_days):
-            if rb < n_rebal and i == exec_idx[rb]:
-                gap   = _safe_ret(open_arr[i], close_arr[i - 1])
-                gap_r = rand_paths[:, i - 1] * (1 + w_prev @ gap)
+        # (n_active-1, n_sim) portfolio daily returns via BLAS
+        port_daily = daily_rets @ rand_weights.T           # BLAS dgemm
+        # Cumulative product → (n_sim, n_active)
+        rand_paths = np.empty((n_sim, n_active))
+        rand_paths[:, 0] = 1.0 - comm                     # one-time entry cost
+        rand_paths[:, 1:] = (rand_paths[:, 0:1]
+                             * np.cumprod(1 + port_daily, axis=0).T)
 
-                w_new    = rand_weights[:, rb, :]
-                turnover = np.abs(w_new - w_prev).sum(axis=1)
-                gap_r   *= 1 - turnover * comm
-
-                intra = _safe_ret(close_arr[i], open_arr[i])
-                rand_paths[:, i] = gap_r * (1 + w_new @ intra)
-                w_prev = w_new
-                rb    += 1
-            else:
-                ret = _safe_ret(close_arr[i], close_arr[i - 1])
-                rand_paths[:, i] = rand_paths[:, i - 1] * (1 + w_prev @ ret)
-
-        rand_paths = rand_paths[:, warmup:]   # trim warmup
         active_idx = idx[warmup:]
 
         return {
