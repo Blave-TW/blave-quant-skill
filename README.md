@@ -30,12 +30,20 @@ You can inspect the full source at: [https://github.com/Blave-TW/blave-quant-ski
 ## Install
 
 ```bash
-npx skills add https://github.com/Blave-TW/blave-quant-skill
+npx -y skills add https://github.com/Blave-TW/blave-quant-skill -a openclaw -s blave-quant -y
 ```
+
+The `-a openclaw -s blave-quant -y` flags skip the interactive picker — required for agents driving the install via tmux/SSH (the TUI breaks with arrow-key navigation in those environments). For `claude-code`, replace `-a openclaw` with `-a claude-code`.
 
 ## Update
 
-Just tell your agent: **"Update the blave-quant skill"** — no CLI commands needed.
+Run the same install command again — it overwrites the existing skill in place.
+
+```bash
+npx -y skills add https://github.com/Blave-TW/blave-quant-skill -a openclaw -s blave-quant -y
+```
+
+Or just tell your agent: **"Update the blave-quant skill"** — the agent will run the command above on your behalf.
 
 ---
 
