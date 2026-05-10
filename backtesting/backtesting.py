@@ -1309,6 +1309,7 @@ class Backtest:
                  exclusive_orders=False,
                  finalize_trades=False,
                  signals: Optional[pd.DataFrame] = None,
+                 warmup_bars: Optional[int] = None,
                  ):
         if not (isinstance(strategy, type) and issubclass(strategy, Strategy)):
             raise TypeError('`strategy` must be a Strategy sub-type')
@@ -1348,6 +1349,7 @@ class Backtest:
                                 else float(commission))
             self._pf_cash = float(cash)
             self._pf_commission = commission_float
+            self._pf_warmup_bars = warmup_bars  # None = auto-detect from signals NaN
             self._broker = None       # not used in portfolio mode
             self._strategy = strategy
             self._results: Optional[pd.Series] = None
@@ -1900,6 +1902,27 @@ class Backtest:
 
     # ── Portfolio-mode methods ─────────────────────────────────────────────────
 
+    def _portfolio_warmup(self) -> int:
+        """
+        Return the number of leading bars to exclude from stats/benchmarks.
+
+        If ``warmup_bars`` was given explicitly, use that.
+        Otherwise auto-detect from the first row in ``signals`` that has at
+        least one non-NaN value (i.e. the first bar where any indicator is ready).
+        Falls back to 0 if signals is empty or fully NaN.
+        """
+        if self._pf_warmup_bars is not None:
+            return max(0, int(self._pf_warmup_bars))
+        if self._signals.empty:
+            return 0
+        valid = self._signals.dropna(how='all')
+        if valid.empty:
+            return 0
+        try:
+            return int(self._data.index.get_loc(valid.index[0]))
+        except KeyError:
+            return 0
+
     def _run_portfolio(self, **kwargs) -> pd.Series:
         """Internal: run backtest in portfolio mode (MultiIndex data)."""
         raw = self._data
@@ -1928,15 +1951,18 @@ class Backtest:
             broker.next()
             strategy.next()
 
-        equity = pd.Series(broker._equity, index=raw.index).bfill().fillna(self._pf_cash)
+        # Trim warmup bars from equity and ohlc before computing stats
+        warmup = self._portfolio_warmup()
+        equity_s = pd.Series(broker._equity, index=raw.index)
+        equity   = equity_s.iloc[warmup:].bfill().fillna(self._pf_cash)
 
         # Build a representative single-asset OHLCV for compute_stats
         first = assets[0]
-        ohlc_repr = raw[first][['Open', 'Close']].copy().rename(
-            columns={'Open': 'Open', 'Close': 'Close'})
+        ohlc_repr = raw[first][['Open', 'Close']].copy()
         ohlc_repr['High']   = ohlc_repr['Close']
         ohlc_repr['Low']    = ohlc_repr['Close']
         ohlc_repr['Volume'] = np.nan
+        ohlc_repr = ohlc_repr.iloc[warmup:]
 
         self._results = compute_stats(
             trades=[],
@@ -1992,13 +2018,16 @@ class Backtest:
         open_arr  = _prep('Open')    # (n_days, n_stocks)
         comm      = self._pf_commission
 
-        # Rebalancing indices
-        rebal_dates = pd.date_range(idx[0], idx[-1], freq=rebal_freq)
+        # Warmup: benchmarks also start investing from this bar (same as strategy)
+        warmup = self._portfolio_warmup()
+
+        # Rebalancing indices — only count dates from warmup onwards
+        rebal_dates = pd.date_range(idx[warmup], idx[-1], freq=rebal_freq)
         rebal_dates = rebal_dates[rebal_dates.isin(idx)]
-        rebal_idx   = np.searchsorted(idx, rebal_dates)   # bar indices where we EXECUTE
+        rebal_idx   = np.searchsorted(idx, rebal_dates)
         # Execution happens at bar rebal_idx[p]+1 (next bar's open after signal)
         exec_idx = rebal_idx + 1
-        exec_idx = exec_idx[exec_idx < n_days]            # drop if signal on last bar
+        exec_idx = exec_idx[exec_idx < n_days]
         n_rebal  = len(exec_idx)
 
         def _safe_ret(num: np.ndarray, den: np.ndarray) -> np.ndarray:
@@ -2009,29 +2038,26 @@ class Backtest:
         def _simulate(weights_per_rebal: np.ndarray) -> np.ndarray:
             """
             weights_per_rebal: (n_rebal, n_stocks)
-            Returns equity path: (n_days,)
+            Returns equity path starting from bar warmup: (n_days - warmup,)
             """
             equity = np.ones(n_days)
             w      = np.zeros(n_stocks)
             rb     = 0
-            for i in range(1, n_days):
+            for i in range(warmup + 1, n_days):
                 if rb < n_rebal and i == exec_idx[rb]:
-                    # gap return with old weights
                     gap   = _safe_ret(open_arr[i], close_arr[i - 1])
                     eq    = equity[i - 1] * (1 + w @ gap)
-                    # cost
                     new_w    = weights_per_rebal[rb]
                     turnover = float(np.abs(new_w - w).sum())
                     eq      *= 1 - turnover * comm
                     w        = new_w
-                    # intraday with new weights
                     intra = _safe_ret(close_arr[i], open_arr[i])
                     equity[i] = eq * (1 + w @ intra)
                     rb += 1
                 else:
                     ret = _safe_ret(close_arr[i], close_arr[i - 1])
                     equity[i] = equity[i - 1] * (1 + w @ ret)
-            return equity
+            return equity[warmup:]
 
         # ── Equal-weight ──────────────────────────────────────────────────────
         ew_w   = np.full((n_rebal, n_stocks), 1.0 / n_stocks)
@@ -2040,35 +2066,36 @@ class Backtest:
         # ── Random (vectorized across periods using BLAS) ─────────────────────
         rng          = default_rng(seed)
         rand_weights = rng.dirichlet(np.ones(n_stocks), size=(n_sim, n_rebal))
-        # (n_sim, n_rebal, n_stocks)
 
         rand_paths = np.ones((n_sim, n_days))
         w_prev     = np.zeros((n_sim, n_stocks))
         rb         = 0
 
-        for i in range(1, n_days):
+        for i in range(warmup + 1, n_days):
             if rb < n_rebal and i == exec_idx[rb]:
-                # gap: (1, n_stocks) broadcast over (n_sim, n_stocks)
-                gap   = _safe_ret(open_arr[i], close_arr[i - 1])           # (n_stocks,)
-                gap_r = rand_paths[:, i - 1] * (1 + w_prev @ gap)          # (n_sim,)
+                gap   = _safe_ret(open_arr[i], close_arr[i - 1])
+                gap_r = rand_paths[:, i - 1] * (1 + w_prev @ gap)
 
-                w_new    = rand_weights[:, rb, :]                           # (n_sim, n_stocks)
-                turnover = np.abs(w_new - w_prev).sum(axis=1)               # (n_sim,)
+                w_new    = rand_weights[:, rb, :]
+                turnover = np.abs(w_new - w_prev).sum(axis=1)
                 gap_r   *= 1 - turnover * comm
 
-                intra = _safe_ret(close_arr[i], open_arr[i])                # (n_stocks,)
-                rand_paths[:, i] = gap_r * (1 + w_new @ intra)              # (n_sim,)
+                intra = _safe_ret(close_arr[i], open_arr[i])
+                rand_paths[:, i] = gap_r * (1 + w_new @ intra)
                 w_prev = w_new
                 rb    += 1
             else:
-                ret = _safe_ret(close_arr[i], close_arr[i - 1])             # (n_stocks,)
-                rand_paths[:, i] = rand_paths[:, i - 1] * (1 + w_prev @ ret)  # (n_sim,)
+                ret = _safe_ret(close_arr[i], close_arr[i - 1])
+                rand_paths[:, i] = rand_paths[:, i - 1] * (1 + w_prev @ ret)
+
+        rand_paths = rand_paths[:, warmup:]   # trim warmup
+        active_idx = idx[warmup:]
 
         return {
-            'equal_weight': pd.Series(ew_eq,                      index=idx),
-            'random_mean':  pd.Series(rand_paths.mean(axis=0),    index=idx),
-            'random_p10':   pd.Series(np.percentile(rand_paths, 10, axis=0), index=idx),
-            'random_p90':   pd.Series(np.percentile(rand_paths, 90, axis=0), index=idx),
+            'equal_weight': pd.Series(ew_eq,                           index=active_idx),
+            'random_mean':  pd.Series(rand_paths.mean(axis=0),         index=active_idx),
+            'random_p10':   pd.Series(np.percentile(rand_paths, 10, axis=0), index=active_idx),
+            'random_p90':   pd.Series(np.percentile(rand_paths, 90, axis=0), index=active_idx),
             'random_paths': rand_paths,
         }
 
