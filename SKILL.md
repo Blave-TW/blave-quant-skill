@@ -75,6 +75,7 @@ Workflow templates for common use cases. **When the user's request matches one o
 | `examples/bitfinex-auto-lending.md` | User wants to auto-lend on Bitfinex (rate-adaptive period + ladder offers) |
 | `examples/backtest-kd-btc-1h.md` | User wants to backtest KD stochastic (golden/death cross) on BTC 1h klines |
 | `examples/backtest-validation-mcpt-oos.md` | User wants to validate a strategy with IS/OOS split and Monte Carlo Permutation Test (MCPT) |
+| `examples/backtest-twstock-foreign-zscore.md` | User wants to backtest a **multi-stock Taiwan equity portfolio** strategy — canonical pattern for multi-symbol data fetch (institutional + price_adj), TS Z-Score signal construction, weekly rebalancing loop with transaction costs, and random-weight benchmark simulation |
 | `examples/liquidation-map.md` | User wants to visualize the liquidation heatmap or recent liquidation events (爆倉地圖) |
 | `references/marketplace.md` | User wants to browse, load, or submit strategies on the BlaveClaw Marketplace |
 
