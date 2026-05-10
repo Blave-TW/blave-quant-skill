@@ -27,6 +27,13 @@ Benchmarks: equal-weight, 2000 random-weight simulations (vectorized, ~100× fas
 ## Code
 
 ```python
+# ── Path setup: use backtesting package from this skill, not PyPI ─────────────
+import sys
+from pathlib import Path
+# When running from strategies/<name>/ inside blaveclaw-config:
+sys.path.insert(0, str(Path(__file__).parent.parent.parent / "skills" / "blave-quant"))
+sys.path.insert(0, str(Path(__file__).parent.parent.parent))
+
 # ── Imports ───────────────────────────────────────────────────────────────────
 import numpy as np
 import pandas as pd
