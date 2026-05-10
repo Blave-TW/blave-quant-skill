@@ -83,6 +83,7 @@ Base URL: `https://api.blave.org`
 - `liquidation/get_map_change` — recent liquidation events by time window (`hist_0_1h`, `hist_1_8h`, `hist_8_24h`)
 - `studio/market/twstock/price/<stock_id>` — Taiwan stock raw daily OHLCV; `start`/`end` optional (YYYY-MM-DD); data from 2000-01-04
 - `studio/market/twstock/price_adj/<stock_id>` — Taiwan stock forward-adjusted (向後調整/後復權) daily OHLCV; same params; use for backtesting total return
+- `studio/market/twstock/institutional/<stock_id>` — Taiwan stock 三大法人每日買賣超 (wide format: foreign / investment trust / dealer self / dealer hedging × buy / sell, in shares); `start`/`end` optional
 - `screener/get_saved_conditions` — user's saved screener conditions
 - `screener/get_saved_condition_result` — symbols matching a saved condition (`condition_id` required)
 - `hyperliquid/leaderboard` — top 100 Hyperliquid traders (`sort_by` param)

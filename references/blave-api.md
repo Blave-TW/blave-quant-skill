@@ -193,6 +193,37 @@ data = response.json()["data"]
 
 ---
 
+## Taiwan Stock Institutional Investors — 三大法人
+
+Daily buy/sell shares by institutional investor type (wide format, one row per trading day).
+`start` / `end` optional (omit for full history).
+
+```python
+params = {"start": "2024-01-01", "end": "2024-12-31"}
+response = requests.get(f"{BASE_URL}/studio/market/twstock/institutional/2330", headers=headers, params=params, timeout=60)
+data = response.json()["data"]
+# [{"date": "2024-01-02", "stock_id": "2330",
+#   "foreign_buy": 28464159, "foreign_sell": 47404324,
+#   "trust_buy": 5553520,   "trust_sell": 269712,
+#   "dealer_self_buy": 452000, "dealer_self_sell": 366190,
+#   "dealer_hedge_buy": 942546, "dealer_hedge_sell": 780090,
+#   "foreign_dealer_self_buy": 0, "foreign_dealer_self_sell": 0}, ...]
+```
+
+**Field meanings:**
+| Field | Investor type |
+|---|---|
+| `foreign_*` | 外資 (Foreign Investor) — 最常被追蹤 |
+| `trust_*` | 投信 (Investment Trust) |
+| `dealer_self_*` | 自營商自行買賣 (Dealer self) |
+| `dealer_hedge_*` | 自營商避險 (Dealer hedging) |
+| `foreign_dealer_self_*` | 外資自營 (Foreign Dealer Self) — 多為 0 |
+
+Net buy = `*_buy - *_sell`. Use for 籌碼面分析、外資進出追蹤、與股價走勢交叉比對。
+Values are **shares** (股), not dollars.
+
+---
+
 ## alpha_table Field Reference
 
 Each symbol in `/alpha_table` contains:
