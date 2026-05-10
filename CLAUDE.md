@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Overview
 
-This repo contains one skill covering nine capabilities:
+This repo contains one skill covering ten capabilities:
 1. **Blave** — Agent calls the Blave REST API directly for crypto market alpha data
 2. **BitMart Futures** — Agent calls the BitMart API for perpetual futures trading
 3. **BitMart Spot** — Agent calls the BitMart API for spot trading
@@ -13,8 +13,9 @@ This repo contains one skill covering nine capabilities:
 6. **Bitget** — Agent calls the Bitget API for spot and futures trading
 7. **Binance** — Agent calls the Binance API for spot and USDS-M futures trading
 8. **Bitfinex** — Agent calls the Bitfinex API for spot, margin, and funding/lending
-9. **TWSE / TPEX（台股）** — Agent queries Taiwan stock market data (stock code lookup, quotes, PE/yield/PB) via public APIs; no API key required
-10. **TWSE BSR 分點資料** — Agent queries broker/dealer daily trading report via CAPTCHA-protected form; agent solves CAPTCHA using its own vision
+9. **KuCoin** — Agent calls the KuCoin API for spot and futures/perpetual contract trading
+10. **TWSE / TPEX（台股）** — Agent queries Taiwan stock market data (stock code lookup, quotes, PE/yield/PB) via public APIs; no API key required
+11. **TWSE BSR 分點資料** — Agent queries broker/dealer daily trading report via CAPTCHA-protected form; agent solves CAPTCHA using its own vision
 
 No CLI or wrapper involved. All API calls are made directly by the agent.
 
@@ -28,6 +29,7 @@ No CLI or wrapper involved. All API calls are made directly by the agent.
 - `BITGET_API_KEY`, `BITGET_SECRET_KEY`, `BITGET_PASSPHRASE` — Bitget API auth
 - `BINANCE_API_KEY`, `BINANCE_SECRET_KEY` — Binance API auth
 - `BITFINEX_API_KEY`, `BITFINEX_API_SECRET` — Bitfinex API auth
+- `KUCOIN_API_KEY`, `KUCOIN_API_SECRET`, `KUCOIN_API_PASSPHRASE` — KuCoin API auth
 
 ## Files
 
@@ -52,6 +54,9 @@ No CLI or wrapper involved. All API calls are made directly by the agent.
 | `references/bitget-api-reference.md` | Bitget spot + futures endpoints, Python signature |
 | `references/binance-api-reference.md` | Binance spot + USDS-M futures endpoints, Python signature |
 | `references/bitfinex-skill.md` | Bitfinex spot, margin, funding/lending endpoints, HMAC-SHA384 signature |
+| `references/kucoin-skill.md` | KuCoin spot + futures overview — auth, broker headers, operation flow, quick reference |
+| `references/kucoin-api-reference.md` | KuCoin spot + futures full endpoints, Python signature + broker sign helper |
+| `references/kucoin-bpp.md` | KuCoin Broker Pro Program — commission tiers, referral bonuses, dashboard guide |
 | `references/twse-skill.md` | TWSE/TPEX 台股查詢 — 快速參考：endpoints、欄位說明、Python 搜尋範例 |
 | `references/twse-api-reference.md` | TWSE/TPEX 完整 API 參考：上市/上櫃清單、行情、停復牌、民國年轉換 |
 | `references/twse-bsr-reference.md` | TWSE BSR 分點資料 — 表單結構、CAPTCHA vision 解碼流程、Python 範例 |
@@ -76,6 +81,8 @@ Base URL: `https://api.blave.org`
 - `liquidation/get_alpha` — 爆倉指標 Liquidation alpha time series + stat; `timeframe` default `24h`
 - `liquidation/get_map` — liquidation heatmap: price levels vs USD exposure (`labels`, `liquidation`, `cumsum`, `oi_value`, `price`)
 - `liquidation/get_map_change` — recent liquidation events by time window (`hist_0_1h`, `hist_1_8h`, `hist_8_24h`)
+- `studio/market/twstock/price/<stock_id>` — Taiwan stock raw daily OHLCV; `start`/`end` optional (YYYY-MM-DD); data from 2000-01-04
+- `studio/market/twstock/price_adj/<stock_id>` — Taiwan stock forward-adjusted (向後調整/後復權) daily OHLCV; same params; use for backtesting total return
 - `screener/get_saved_conditions` — user's saved screener conditions
 - `screener/get_saved_condition_result` — symbols matching a saved condition (`condition_id` required)
 - `hyperliquid/leaderboard` — top 100 Hyperliquid traders (`sort_by` param)
@@ -147,6 +154,25 @@ Broker attribution is per-order via `newClientOrderId` (NOT a header). Every ord
 - USDS-M Futures: `x-52DDFAFN` (broker ID `52DDFAFN`)
 
 Total length ≤ 36 chars. Required on all order-placement endpoints (single, batch, OCO/OTO/OTOCO, SOR, algo, cancelReplace).
+
+## KuCoin Broker Attribution
+
+Always include **4 broker headers** on **all** KuCoin API requests (spot and futures, public and private). Omitting them disqualifies broker rebates.
+
+| Header | Spot | Futures |
+|---|---|---|
+| `KC-BROKER-NAME` | `blave` | `blaveFutures` |
+| `KC-API-PARTNER` | `blave` | `blaveFutures` |
+| `KC-API-PARTNER-SIGN` | `Base64(HMAC-SHA256(KUCOIN_BROKER_KEY, ts + "blave" + apiKey))` | `Base64(HMAC-SHA256(KUCOIN_BROKER_KEY, ts + "blaveFutures" + apiKey))` |
+| `KC-API-PARTNER-VERIFY` | `true` | `true` |
+
+## KuCoin
+
+Spot Base URL: `https://api.kucoin.com` | Futures Base URL: `https://api-futures.kucoin.com`
+
+Symbol format: Spot `BTC-USDT` | Futures `XBTUSDTM` (BTC uses `XBT`, append `USDTM` for linear perpetual)
+
+Signature: `Base64(HMAC-SHA256(secret, timestamp + METHOD + path + body))` → headers: `KC-API-KEY`, `KC-API-SIGN`, `KC-API-TIMESTAMP`, `KC-API-PASSPHRASE` (signed), `KC-API-KEY-VERSION: 3`
 
 ## Bitfinex
 

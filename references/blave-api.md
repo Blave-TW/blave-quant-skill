@@ -160,6 +160,39 @@ print(response.json())
 
 ---
 
+## Taiwan Stock Daily Price
+
+Raw unadjusted daily OHLCV. `start` / `end` are optional (omit for full history).
+
+```python
+params = {"start": "2020-01-01", "end": "2024-12-31"}
+response = requests.get(f"{BASE_URL}/studio/market/twstock/price/2330", headers=headers, params=params, timeout=60)
+data = response.json()["data"]
+# [{"date": "2020-01-02", "stock_id": "2330", "open": 335.0, "high": 338.5,
+#   "low": 334.0, "close": 337.0, "spread": 2.0,
+#   "volume": 33282120, "turnover_value": 11224165450, "turnover_count": 17160}, ...]
+```
+
+---
+
+## Taiwan Stock Daily Price — Forward Adjusted (向後調整)
+
+Prices adjusted for cash and stock dividends using forward (後復權) method:
+historical prices are unchanged; prices from each ex-dividend date onward are
+multiplied by the cumulative adjustment factor. Suitable for backtesting total return.
+
+```python
+params = {"start": "2020-01-01", "end": "2024-12-31"}
+response = requests.get(f"{BASE_URL}/studio/market/twstock/price_adj/2330", headers=headers, params=params, timeout=60)
+data = response.json()["data"]
+# Same schema as /price but close/open/high/low are dividend-adjusted.
+# Adjusted prices will be higher than raw for recent periods (dividends compound forward).
+```
+
+**Stock ID examples:** `2330` (台積電), `0050` (元大台灣50), `2317` (鴻海), `006208` (富邦台50)
+
+---
+
 ## alpha_table Field Reference
 
 Each symbol in `/alpha_table` contains:
