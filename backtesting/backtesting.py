@@ -50,6 +50,7 @@ class Strategy(metaclass=ABCMeta):
         self._broker: _Broker = broker
         self._data: _Data = data
         self._params = self._check_params(params)
+        self._signals: pd.DataFrame = pd.DataFrame()  # injected by Backtest in portfolio mode
 
     def __repr__(self):
         return '<Strategy ' + str(self) + '>'
@@ -318,6 +319,30 @@ class Strategy(metaclass=ABCMeta):
     def closed_trades(self) -> 'Tuple[Trade, ...]':
         """List of settled trades (see `Trade`)."""
         return tuple(self._broker.closed_trades)
+
+    def allocate(self, weights: pd.Series):
+        """
+        Set target portfolio weights. **Portfolio mode only** (MultiIndex data).
+
+        Parameters
+        ----------
+        weights : pd.Series
+            Symbol → weight mapping (values ≥ 0, sum ≤ 1). Missing symbols get 0.
+            Cash fraction = 1 - sum(weights).
+
+        Call this inside `next()` on rebalancing bars. Execution happens at the
+        **next bar's open** (consistent with `trade_on_close=False` semantics).
+        """
+        w = weights.reindex(self._broker._assets).fillna(0).values.astype(float)
+        self._broker._pending_weights = w
+
+    @property
+    def signals(self) -> pd.DataFrame:
+        """
+        Extra signal DataFrame sliced to the current bar.
+        Passed as ``signals=`` to :class:`Backtest`. Available in portfolio mode.
+        """
+        return self._signals.iloc[:len(self._data)]
 
 
 class _Orders(tuple):
@@ -736,6 +761,107 @@ class Trade:
             kwargs = {'stop': price} if type == 'sl' else {'limit': price}
             order = self.__broker.new_order(-self.size, trade=self, tag=self.tag, **kwargs)
             setattr(self, attr, order)
+
+
+class _PortfolioPosition:
+    """Minimal position stub for portfolio-mode strategies."""
+    def __init__(self, weights: np.ndarray, assets: list):
+        self._weights = weights
+        self._assets = assets
+
+    @property
+    def is_long(self) -> bool:
+        return float(self._weights.sum()) > 0
+
+    @property
+    def is_short(self) -> bool:
+        return False
+
+    @property
+    def size(self) -> float:
+        return float(self._weights.sum())
+
+    @property
+    def pl(self) -> float:
+        return 0.0
+
+    def close(self, portion: float = 1.0):
+        raise RuntimeError(
+            "Use Strategy.allocate() to manage positions in portfolio mode.")
+
+
+class _PortfolioBroker:
+    """
+    Portfolio-mode broker. Tracks a weight vector across N assets and computes
+    equity via ``w @ r`` instead of individual share positions.
+
+    Execution timing mirrors ``trade_on_close=False``:
+    - Signal fires at bar i close  (``strategy.next()`` calls ``allocate()``)
+    - Trades execute at bar i+1 open (``broker.next()`` on bar i+1)
+
+    On a rebalancing bar the equity update is split into three steps:
+    1. Gap return   (close[i-1] → open[i])  with **old** weights
+    2. Transaction cost on |Δweight|
+    3. Intraday return (open[i] → close[i]) with **new** weights
+    """
+
+    def __init__(self, *, close_arr: np.ndarray, open_arr: np.ndarray,
+                 cash: float, commission: float, assets: list):
+        self._close = close_arr          # (n_days, n_assets)
+        self._open  = open_arr           # (n_days, n_assets)
+        self._assets = list(assets)
+        self._commission = float(commission)
+        n = len(assets)
+        self._weights: np.ndarray = np.zeros(n)
+        self._pending_weights: Optional[np.ndarray] = None
+        self._equity = np.full(close_arr.shape[0], np.nan)
+        self._equity[0] = float(cash)
+        self._i: int = 0
+
+    @property
+    def equity(self) -> float:
+        v = self._equity[self._i]
+        return float(v) if not np.isnan(v) else float(self._equity[0])
+
+    @property
+    def position(self) -> _PortfolioPosition:
+        return _PortfolioPosition(self._weights, self._assets)
+
+    @property
+    def orders(self):
+        return ()
+
+    @property
+    def trades(self) -> list:
+        return []
+
+    @property
+    def closed_trades(self) -> list:
+        return []
+
+    def next(self):
+        self._i += 1
+        i = self._i
+        with np.errstate(divide='ignore', invalid='ignore'):
+            def _safe(arr):
+                return np.nan_to_num(arr, nan=0., posinf=0., neginf=0.)
+
+            if self._pending_weights is not None:
+                # Step 1: gap return (close[i-1] → open[i]) with old weights
+                gap = _safe(self._open[i] / self._close[i - 1] - 1)
+                eq  = self._equity[i - 1] * (1.0 + float(self._weights @ gap))
+                # Step 2: transaction cost
+                new_w    = self._pending_weights
+                turnover = float(np.abs(new_w - self._weights).sum())
+                eq      *= 1.0 - turnover * self._commission
+                self._weights         = new_w
+                self._pending_weights = None
+                # Step 3: intraday return (open[i] → close[i]) with new weights
+                intra = _safe(self._close[i] / self._open[i] - 1)
+                self._equity[i] = eq * (1.0 + float(self._weights @ intra))
+            else:
+                ret = _safe(self._close[i] / self._close[i - 1] - 1)
+                self._equity[i] = self._equity[i - 1] * (1.0 + float(self._weights @ ret))
 
 
 class _Broker:
@@ -1182,6 +1308,7 @@ class Backtest:
                  hedging=False,
                  exclusive_orders=False,
                  finalize_trades=False,
+                 signals: Optional[pd.DataFrame] = None,
                  ):
         if not (isinstance(strategy, type) and issubclass(strategy, Strategy)):
             raise TypeError('`strategy` must be a Strategy sub-type')
@@ -1198,6 +1325,35 @@ class Backtest:
 
         data = data.copy(deep=False)
 
+        # ── Portfolio mode: MultiIndex columns (asset, OHLCV) ────────────────
+        self._is_portfolio = isinstance(data.columns, pd.MultiIndex)
+        if self._is_portfolio:
+            if len(data) == 0:
+                raise ValueError('`data` is empty')
+            level1 = set(data.columns.get_level_values(1))
+            if not {'Open', 'Close'}.issubset(level1):
+                raise ValueError(
+                    "Portfolio `data` must have at least 'Open' and 'Close' "
+                    "for every asset (MultiIndex columns: (asset, OHLCV_col))")
+            if not data.index.is_monotonic_increasing:
+                warnings.warn('Data index is not sorted in ascending order. Sorting.',
+                              stacklevel=2)
+                data = data.sort_index()
+            self._data = data
+            self._assets: list = data.columns.get_level_values(0).unique().tolist()
+            self._signals: pd.DataFrame = (
+                signals.reindex(data.index) if signals is not None
+                else pd.DataFrame(index=data.index))
+            commission_float = (commission[1] if isinstance(commission, tuple)
+                                else float(commission))
+            self._pf_cash = float(cash)
+            self._pf_commission = commission_float
+            self._broker = None       # not used in portfolio mode
+            self._strategy = strategy
+            self._results: Optional[pd.Series] = None
+            return
+
+        # ── Single-asset mode (original validation, unchanged) ───────────────
         # Convert index to datetime index
         if (not isinstance(data.index, pd.DatetimeIndex) and
             not isinstance(data.index, pd.RangeIndex) and
@@ -1291,6 +1447,9 @@ class Backtest:
             period of the `Strategy.I` indicator which lags the most.
             Obviously, this can affect results.
         """
+        if self._is_portfolio:
+            return self._run_portfolio(**kwargs)
+
         data = _Data(self._data.copy(deep=False))
         broker: _Broker = self._broker(data=data)
         strategy: Strategy = self._strategy(broker, data, kwargs)
@@ -1738,6 +1897,180 @@ class Backtest:
             reverse_indicators=reverse_indicators,
             show_legend=show_legend,
             open_browser=open_browser)
+
+    # ── Portfolio-mode methods ─────────────────────────────────────────────────
+
+    def _run_portfolio(self, **kwargs) -> pd.Series:
+        """Internal: run backtest in portfolio mode (MultiIndex data)."""
+        raw = self._data
+        assets = self._assets
+
+        def _prep(level1_col: str) -> np.ndarray:
+            arr = raw.loc[:, (slice(None), level1_col)].values.astype(float)
+            return pd.DataFrame(arr).replace(0, np.nan).ffill().values
+
+        close_arr = _prep('Close')
+        open_arr  = _prep('Open')
+
+        broker = _PortfolioBroker(
+            close_arr=close_arr, open_arr=open_arr,
+            cash=self._pf_cash, commission=self._pf_commission,
+            assets=assets,
+        )
+
+        data = _Data(raw.copy(deep=False))
+        strategy: Strategy = self._strategy(broker, data, kwargs)
+        strategy._signals = self._signals.ffill().fillna(0)
+        strategy.init()
+
+        for i in range(1, len(raw)):
+            data._set_length(i + 1)
+            broker.next()
+            strategy.next()
+
+        equity = pd.Series(broker._equity, index=raw.index).bfill().fillna(self._pf_cash)
+
+        # Build a representative single-asset OHLCV for compute_stats
+        first = assets[0]
+        ohlc_repr = raw[first][['Open', 'Close']].copy().rename(
+            columns={'Open': 'Open', 'Close': 'Close'})
+        ohlc_repr['High']   = ohlc_repr['Close']
+        ohlc_repr['Low']    = ohlc_repr['Close']
+        ohlc_repr['Volume'] = np.nan
+
+        self._results = compute_stats(
+            trades=[],
+            equity=equity.values,
+            ohlc_data=ohlc_repr,
+            risk_free_rate=0.0,
+            strategy_instance=strategy,
+        )
+        return self._results
+
+    def run_benchmarks(self, rebal_freq: str = 'W-FRI',
+                       n_sim: int = 2000, seed: int = 42) -> dict:
+        """
+        Vectorized equal-weight and random-weight benchmarks.
+        **Portfolio mode only.**
+
+        Execution logic is identical to the strategy simulation: rebalancing
+        trades fill at the **next bar's open** with gap + intraday split.
+
+        Parameters
+        ----------
+        rebal_freq : str
+            Pandas offset alias for the rebalancing frequency (e.g. ``'W-FRI'``).
+        n_sim : int
+            Number of random Dirichlet-weight simulations.
+        seed : int
+            RNG seed for reproducibility.
+
+        Returns
+        -------
+        dict with keys:
+            ``equal_weight``  — pd.Series, equity curve
+            ``random_mean``   — pd.Series, mean of all simulations
+            ``random_p10``    — pd.Series, 10th-percentile equity
+            ``random_p90``    — pd.Series, 90th-percentile equity
+            ``random_paths``  — np.ndarray, shape (n_sim, n_days)
+        """
+        if not self._is_portfolio:
+            raise RuntimeError('run_benchmarks() is only available in portfolio mode '
+                               '(MultiIndex data).')
+
+        raw    = self._data
+        assets = self._assets
+        n_stocks = len(assets)
+        idx    = raw.index
+        n_days = len(idx)
+
+        def _prep(col: str) -> np.ndarray:
+            arr = raw.loc[:, (slice(None), col)].values.astype(float)
+            return pd.DataFrame(arr).replace(0, np.nan).ffill().values
+
+        close_arr = _prep('Close')   # (n_days, n_stocks)
+        open_arr  = _prep('Open')    # (n_days, n_stocks)
+        comm      = self._pf_commission
+
+        # Rebalancing indices
+        rebal_dates = pd.date_range(idx[0], idx[-1], freq=rebal_freq)
+        rebal_dates = rebal_dates[rebal_dates.isin(idx)]
+        rebal_idx   = np.searchsorted(idx, rebal_dates)   # bar indices where we EXECUTE
+        # Execution happens at bar rebal_idx[p]+1 (next bar's open after signal)
+        exec_idx = rebal_idx + 1
+        exec_idx = exec_idx[exec_idx < n_days]            # drop if signal on last bar
+        n_rebal  = len(exec_idx)
+
+        def _safe_ret(num: np.ndarray, den: np.ndarray) -> np.ndarray:
+            with np.errstate(divide='ignore', invalid='ignore'):
+                return np.nan_to_num(num / den - 1, nan=0., posinf=0., neginf=0.)
+
+        # ── Helper: simulate one set of weights per rebalancing period ────────
+        def _simulate(weights_per_rebal: np.ndarray) -> np.ndarray:
+            """
+            weights_per_rebal: (n_rebal, n_stocks)
+            Returns equity path: (n_days,)
+            """
+            equity = np.ones(n_days)
+            w      = np.zeros(n_stocks)
+            rb     = 0
+            for i in range(1, n_days):
+                if rb < n_rebal and i == exec_idx[rb]:
+                    # gap return with old weights
+                    gap   = _safe_ret(open_arr[i], close_arr[i - 1])
+                    eq    = equity[i - 1] * (1 + w @ gap)
+                    # cost
+                    new_w    = weights_per_rebal[rb]
+                    turnover = float(np.abs(new_w - w).sum())
+                    eq      *= 1 - turnover * comm
+                    w        = new_w
+                    # intraday with new weights
+                    intra = _safe_ret(close_arr[i], open_arr[i])
+                    equity[i] = eq * (1 + w @ intra)
+                    rb += 1
+                else:
+                    ret = _safe_ret(close_arr[i], close_arr[i - 1])
+                    equity[i] = equity[i - 1] * (1 + w @ ret)
+            return equity
+
+        # ── Equal-weight ──────────────────────────────────────────────────────
+        ew_w   = np.full((n_rebal, n_stocks), 1.0 / n_stocks)
+        ew_eq  = _simulate(ew_w)
+
+        # ── Random (vectorized across periods using BLAS) ─────────────────────
+        rng          = default_rng(seed)
+        rand_weights = rng.dirichlet(np.ones(n_stocks), size=(n_sim, n_rebal))
+        # (n_sim, n_rebal, n_stocks)
+
+        rand_paths = np.ones((n_sim, n_days))
+        w_prev     = np.zeros((n_sim, n_stocks))
+        rb         = 0
+
+        for i in range(1, n_days):
+            if rb < n_rebal and i == exec_idx[rb]:
+                # gap: (1, n_stocks) broadcast over (n_sim, n_stocks)
+                gap   = _safe_ret(open_arr[i], close_arr[i - 1])           # (n_stocks,)
+                gap_r = rand_paths[:, i - 1] * (1 + w_prev @ gap)          # (n_sim,)
+
+                w_new    = rand_weights[:, rb, :]                           # (n_sim, n_stocks)
+                turnover = np.abs(w_new - w_prev).sum(axis=1)               # (n_sim,)
+                gap_r   *= 1 - turnover * comm
+
+                intra = _safe_ret(close_arr[i], open_arr[i])                # (n_stocks,)
+                rand_paths[:, i] = gap_r * (1 + w_new @ intra)              # (n_sim,)
+                w_prev = w_new
+                rb    += 1
+            else:
+                ret = _safe_ret(close_arr[i], close_arr[i - 1])             # (n_stocks,)
+                rand_paths[:, i] = rand_paths[:, i - 1] * (1 + w_prev @ ret)  # (n_sim,)
+
+        return {
+            'equal_weight': pd.Series(ew_eq,                      index=idx),
+            'random_mean':  pd.Series(rand_paths.mean(axis=0),    index=idx),
+            'random_p10':   pd.Series(np.percentile(rand_paths, 10, axis=0), index=idx),
+            'random_p90':   pd.Series(np.percentile(rand_paths, 90, axis=0), index=idx),
+            'random_paths': rand_paths,
+        }
 
 
 # NOTE: Don't put anything public below this __all__ list
