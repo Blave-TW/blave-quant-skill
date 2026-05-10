@@ -435,7 +435,7 @@ if __name__ == "__main__":
 
     # Step 1: optimize K_PERIOD × K_SMOOTH → find plateau
     print("Optimizing K_PERIOD × K_SMOOTH...")
-    bt = Backtest(df, BlaveStrategy, cash=BUDGET_USDT, commission=FEE, trade_on_close=True)
+    bt = Backtest(df, BlaveStrategy, cash=BUDGET_USDT, commission=FEE, trade_on_close=False)
     _, heatmap = bt.optimize(
         k_period=K_PERIOD_SCAN,
         k_smooth=K_SMOOTH_SCAN,
@@ -449,7 +449,7 @@ if __name__ == "__main__":
     # Step 2: full backtest with plateau parameters
     BlaveStrategy.k_period = best_kp
     BlaveStrategy.k_smooth = best_ks
-    bt2   = Backtest(df, BlaveStrategy, cash=BUDGET_USDT, commission=FEE, trade_on_close=True)
+    bt2   = Backtest(df, BlaveStrategy, cash=BUDGET_USDT, commission=FEE, trade_on_close=False)
     stats = bt2.run()
     print(stats[["Return [%]", "Sharpe Ratio", "Max. Drawdown [%]", "Win Rate [%]", "# Trades"]])
 
@@ -488,14 +488,14 @@ if __name__ == "__main__":
 
 ### Live Execution Timing
 
-Backtest uses `fwd_ret[i] = (close[i+1] - close[i]) / close[i]`, meaning the order is filled at bar i's close price — the same bar where the crossover fires.
+The backtest uses `trade_on_close=False`: the signal fires at bar i's close, and the market order fills at **bar i+1's open**. This matches live trading exactly.
 
 In live trading:
 ```
 bar i closes
   → KD recomputes with new close
   → crossover detected → place market order immediately
-  → fill ≈ bar i+1 open (for BTC 1h this is effectively bar i close)
+  → fill at bar i+1 open
 ```
 
 Do NOT wait for bar i+1 to close. Waiting an extra bar introduces one-bar slippage that compounds over hundreds of trades and causes live PnL to diverge from backtest.

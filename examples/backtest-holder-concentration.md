@@ -448,7 +448,7 @@ if __name__ == "__main__":
     df = fetch_data(SYMBOL, START, end)
     print(f"  → {len(df):,} bars")
 
-    bt = Backtest(df, BlaveStrategy, cash=BUDGET_USDT, commission=FEE, trade_on_close=True)
+    bt = Backtest(df, BlaveStrategy, cash=BUDGET_USDT, commission=FEE, trade_on_close=False)
 
     # Step 1: 2D param scan → find plateau
     print("Running parameter scan ...")
@@ -515,7 +515,7 @@ if __name__ == "__main__":
 
 ### Live Trading Execution Timing
 
-The backtest computes `fwd_ret[i] = (close[i+1] - close[i]) / close[i]`, which means it assumes the order is **executed at bar i's close price** — the same bar where the signal fires.
+The backtest uses `trade_on_close=False`: the signal fires at bar i's close, and the market order fills at **bar i+1's open**. This matches live trading exactly.
 
 In live trading, the correct sequence is:
 
@@ -523,7 +523,7 @@ In live trading, the correct sequence is:
 bar i closes
   → fetch the latest signal
   → signal changed → place market order immediately
-  → fill ≈ bar i+1 open (for liquid pairs like BTC, this is effectively bar i close)
+  → fill at bar i+1 open
 ```
 
 **Do NOT wait for bar i+1 to close before placing the order.** Waiting an extra bar means your execution price is one full bar later than what the backtest assumes, causing live performance to diverge from backtest results.
