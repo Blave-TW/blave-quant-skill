@@ -277,6 +277,55 @@ Values are **shares** (股), not dollars. Data available from 1994-10-01.
 
 ---
 
+## Taiwan Stock Shareholding Distribution — 股權持股分級表
+
+Weekly shareholding distribution by bracket (one row per date × level).
+`start` / `end` optional (omit for full history). Data updates every Friday.
+
+```python
+params = {"start": "2024-01-01", "end": "2024-03-31"}
+response = requests.get(f"{BASE_URL}/studio/market/twstock/shareholding/2330", headers=headers, params=params, timeout=60)
+data = response.json()["data"]
+# [{"date": "2024-01-05", "stock_id": "2330",
+#   "level": "1-999",          "people": 732503,  "unit": 136261142,  "percent": 0.52},
+#  {"date": "2024-01-05", "stock_id": "2330",
+#   "level": "1,000-5,000",    "people": 371837,  "unit": 713353901,  "percent": 2.75},
+#  {"date": "2024-01-05", "stock_id": "2330",
+#   "level": "total",          "people": 1234567, "unit": 25932070992, "percent": 100.0}, ...]
+```
+
+**Field meanings:**
+| Field | 說明 |
+|---|---|
+| `level` | 持股級距 — holding bracket (e.g. `"1-999"`, `"1,000-5,000"`, … `"more than 1,000,001"`, `"total"`) |
+| `people` | 持股人數 — number of shareholders in this bracket |
+| `unit` | 持股股數 — total shares held by this bracket |
+| `percent` | 持股比例 (%) — percentage of total issued shares |
+
+**All 17 levels (in data order):**
+`1-999`, `1,000-5,000`, `5,001-10,000`, `10,001-15,000`, `15,001-20,000`, `20,001-30,000`,
+`30,001-40,000`, `40,001-50,000`, `50,001-100,000`, `100,001-200,000`, `200,001-400,000`,
+`400,001-600,000`, `600,001-800,000`, `800,001-1,000,000`, `more than 1,000,001`,
+`total`, `差異數調整（說明4）`
+
+**Common derived signals:**
+```python
+import pandas as pd
+df = pd.DataFrame(data)
+
+# 大股東集中度：持股 > 400,000 股的比例合計
+large_holder_levels = ["400,001-600,000", "600,001-800,000", "800,001-1,000,000", "more than 1,000,001"]
+df_large = df[df["level"].isin(large_holder_levels)].groupby("date")["percent"].sum().reset_index()
+df_large.columns = ["date", "large_holder_pct"]
+
+# 散戶比例：持股 1–999 股 (零股) 的人數趨勢
+df_retail = df[df["level"] == "1-999"][["date", "people", "percent"]]
+```
+
+Use for 籌碼面分析 — tracking whether large holders are accumulating or distributing over time.
+
+---
+
 ## alpha_table Field Reference
 
 Each symbol in `/alpha_table` contains:

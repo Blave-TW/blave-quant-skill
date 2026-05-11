@@ -85,6 +85,7 @@ Base URL: `https://api.blave.org`
 - `studio/market/twstock/price_adj/<stock_id>` — Taiwan stock forward-adjusted (向後調整/後復權) daily OHLCV; same params; use for backtesting total return
 - `studio/market/twstock/institutional/<stock_id>` — Taiwan stock 三大法人每日買賣超 (wide format: foreign / investment trust / dealer self / dealer hedging × buy / sell, in shares); `start`/`end` optional
 - `studio/market/twstock/margin/<stock_id>` — Taiwan stock 融資融券每日資料 (`margin_buy`, `margin_sell`, `margin_balance`, `margin_prev_balance`, `margin_limit`, `margin_cash_repay`, `short_sell`, `short_buy`, `short_balance`, `short_prev_balance`, `short_limit`, `short_cash_repay`, `offset_loan_short`; all in shares); `start`/`end` optional; data from 1994-10-01
+- `studio/market/twstock/shareholding/<stock_id>` — Taiwan stock 股權持股分級表 (weekly; `level`, `people`, `unit`, `percent` per bracket; 17 levels incl. `total`); `start`/`end` optional
 - `screener/get_saved_conditions` — user's saved screener conditions
 - `screener/get_saved_condition_result` — symbols matching a saved condition (`condition_id` required)
 - `hyperliquid/leaderboard` — top 100 Hyperliquid traders (`sort_by` param)
