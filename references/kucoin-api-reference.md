@@ -46,8 +46,8 @@ KuCoin broker attribution requires **4 additional headers** on every REST reques
 | `KC-API-PARTNER-SIGN` | computed (see below) | computed (see below) |
 | `KC-API-PARTNER-VERIFY` | `true` | `true` |
 
-**Partner sign formula:** `Base64(HMAC-SHA256(KUCOIN_BROKER_KEY, timestamp + partner + userApiKey))`
-- `KUCOIN_BROKER_KEY`: Blave's broker signing key (from KuCoin BPP onboarding, stored in `.env`)
+**Partner sign formula:** `Base64(HMAC-SHA256(BROKER_KEY, timestamp + partner + userApiKey))`
+- Spot broker key: `1c10e0c0-bc3e-4a18-ad53-e41e6df5f757` | Futures broker key: `520815df-b324-4494-9bc8-b1015732b902` (hardcoded Blave BPP constants)
 - `timestamp`: same unix-ms string used in `KC-API-TIMESTAMP`
 - `partner`: the partner/broker tag (`blave` or `blaveFutures`)
 - `userApiKey`: the user's `KUCOIN_API_KEY`
@@ -66,7 +66,8 @@ API_KEY        = env["KUCOIN_API_KEY"]
 API_SECRET     = env["KUCOIN_API_SECRET"]
 API_PASSPHRASE = env["KUCOIN_API_PASSPHRASE"]
 
-BROKER_KEY  = "<KUCOIN_BROKER_KEY>"   # Blave's broker signing key — fill in once received from KuCoin BPP
+SPOT_BROKER_KEY    = "1c10e0c0-bc3e-4a18-ad53-e41e6df5f757"
+FUTURES_BROKER_KEY = "520815df-b324-4494-9bc8-b1015732b902"
 
 SPOT_URL    = "https://api.kucoin.com"
 FUTURES_URL = "https://api-futures.kucoin.com"
@@ -89,7 +90,7 @@ def _headers(method: str, path: str, body: str = "", market: str = "spot") -> di
         "KC-API-KEY-VERSION":    "3",
         "KC-BROKER-NAME":        partner,
         "KC-API-PARTNER":        partner,
-        "KC-API-PARTNER-SIGN":   _b64_hmac(BROKER_KEY, ts + partner + API_KEY),
+        "KC-API-PARTNER-SIGN":   _b64_hmac(SPOT_BROKER_KEY if market == "spot" else FUTURES_BROKER_KEY, ts + partner + API_KEY),
         "KC-API-PARTNER-VERIFY": "true",
         "Content-Type":          "application/json",
     }

@@ -165,7 +165,7 @@ Always include **4 broker headers** on **all** KuCoin API requests (spot and fut
 |---|---|---|
 | `KC-BROKER-NAME` | `blave` | `blaveFutures` |
 | `KC-API-PARTNER` | `blave` | `blaveFutures` |
-| `KC-API-PARTNER-SIGN` | `Base64(HMAC-SHA256(KUCOIN_BROKER_KEY, ts + "blave" + apiKey))` | `Base64(HMAC-SHA256(KUCOIN_BROKER_KEY, ts + "blaveFutures" + apiKey))` |
+| `KC-API-PARTNER-SIGN` | `Base64(HMAC-SHA256("1c10e0c0-bc3e-4a18-ad53-e41e6df5f757", ts + "blave" + apiKey))` | `Base64(HMAC-SHA256("520815df-b324-4494-9bc8-b1015732b902", ts + "blaveFutures" + apiKey))` |
 | `KC-API-PARTNER-VERIFY` | `true` | `true` |
 
 ## KuCoin

@@ -44,7 +44,7 @@ KC-API-PARTNER-VERIFY: true
 ```
 
 **Partner sign:** `Base64(HMAC-SHA256(BROKER_KEY, timestamp + partner + KUCOIN_API_KEY))`
-- `BROKER_KEY`: Blave's broker signing key — hardcoded in `references/kucoin-api-reference.md` (not a user env var)
+- Spot `BROKER_KEY`: `1c10e0c0-bc3e-4a18-ad53-e41e6df5f757` | Futures `BROKER_KEY`: `520815df-b324-4494-9bc8-b1015732b902` — hardcoded in `references/kucoin-api-reference.md` (not a user env var)
 - `partner`: `blave` (spot) or `blaveFutures` (futures)
 
 > Full Python helper in `references/kucoin-api-reference.md`
