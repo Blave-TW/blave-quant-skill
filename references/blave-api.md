@@ -224,6 +224,49 @@ Values are **shares** (股), not dollars.
 
 ---
 
+## Taiwan Stock Margin Trading — 融資融券
+
+Daily margin purchase and short sale data (one row per trading day).
+`start` / `end` optional (omit for full history).
+
+```python
+params = {"start": "2024-01-01", "end": "2024-12-31"}
+response = requests.get(f"{BASE_URL}/studio/market/twstock/margin/2330", headers=headers, params=params, timeout=60)
+data = response.json()["data"]
+# [{"date": "2024-01-02", "stock_id": "2330",
+#   "margin_purchase_buy": 12345,      # 融資買進（股）
+#   "margin_purchase_sell": 9876,      # 融資賣出（股）
+#   "margin_purchase_cash_repayment": 100, # 融資現金償還
+#   "margin_purchase_today": 500000,   # 融資餘額（股）
+#   "margin_purchase_limit": 9999999,  # 融資限額
+#   "short_sale_buy": 3000,            # 融券買進（股）
+#   "short_sale_sell": 4000,           # 融券賣出（股）
+#   "short_sale_stock_repayment": 50,  # 融券現券償還
+#   "short_sale_today": 80000,         # 融券餘額（股）
+#   "short_sale_limit": 9999999}, ...] # 融券限額
+```
+
+**Field meanings:**
+| Field | 中文 | 說明 |
+|---|---|---|
+| `margin_purchase_buy` | 融資買進 | 當日新增融資股數 |
+| `margin_purchase_sell` | 融資賣出 | 當日融資賣出股數 |
+| `margin_purchase_today` | 融資餘額 | 當日收盤融資未償還股數 |
+| `short_sale_sell` | 融券賣出 | 當日新增放空股數 |
+| `short_sale_buy` | 融券買進 | 當日回補股數 |
+| `short_sale_today` | 融券餘額 | 當日收盤未回補融券股數 |
+
+**Common derived signals:**
+```python
+df["margin_net"] = df["margin_purchase_buy"] - df["margin_purchase_sell"]   # 融資淨增減
+df["short_net"]  = df["short_sale_sell"] - df["short_sale_buy"]             # 融券淨增減
+df["margin_ratio"] = df["margin_purchase_today"] / df["margin_purchase_limit"]  # 融資使用率
+```
+
+Values are **shares** (股), not dollars. Data available from 1994-10-01.
+
+---
+
 ## alpha_table Field Reference
 
 Each symbol in `/alpha_table` contains:
