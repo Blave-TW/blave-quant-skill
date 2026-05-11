@@ -1971,6 +1971,20 @@ class Backtest:
             risk_free_rate=0.0,
             strategy_instance=strategy,
         )
+        # Drop stats that are meaningless in portfolio mode:
+        # - trade-level stats (# Trades, Win Rate, etc.) — trades=[] so all 0/nan
+        # - market-comparison stats (Beta, Alpha, Buy & Hold) — based on first
+        #   asset's Close only, which is not a meaningful portfolio benchmark
+        _portfolio_drop = [
+            'Buy & Hold Return [%]', 'Beta', 'Alpha [%]',
+            'Exposure Time [%]',
+            '# Trades', 'Win Rate [%]',
+            'Best Trade [%]', 'Worst Trade [%]', 'Avg. Trade [%]',
+            'Max. Trade Duration', 'Avg. Trade Duration',
+            'Profit Factor', 'Expectancy [%]', 'SQN', 'Kelly Criterion',
+        ]
+        self._results = self._results.drop(
+            [k for k in _portfolio_drop if k in self._results.index])
         return self._results
 
     def run_benchmarks(self, rebal_freq: str = 'W-FRI',
