@@ -143,50 +143,47 @@ def compute_kd(df, k_period, k_smooth, d_smooth=D_SMOOTH):
     return slow_k.values, d.values
 
 
-def _compute_kd_signal(k, k_prev, d, d_prev, in_long: bool) -> str:
-    """Pure signal function — matches compute_signal() semantics from TEMPLATE.py."""
+def _compute_kd_signal(k, k_prev, d, d_prev) -> float:
+    """Pure signal function — matches compute_signal() semantics from TEMPLATE.py.
+    Returns 1.0 (long), 0.0 (flat), or nan (hold current position).
+    in_long is NOT a parameter — nan handles hold regardless of current state.
+    """
     if np.isnan(k) or np.isnan(d) or np.isnan(k_prev) or np.isnan(d_prev):
-        return "LONG" if in_long else "FLAT"
-    if not in_long and k_prev <= d_prev and k > d:   # golden cross
-        return "LONG"
-    if in_long and k_prev >= d_prev and k < d:        # death cross
-        return "FLAT"
-    return "LONG" if in_long else "FLAT"
+        return float("nan")              # warmup: hold
+    if k_prev <= d_prev and k > d:       # golden cross → long
+        return 1.0
+    if k_prev >= d_prev and k < d:       # death cross → flat
+        return 0.0
+    return float("nan")                  # between crossovers: hold
 
 
-def _compute_ti_signal(ti: float, in_long: bool, entry_th: float, exit_th: float) -> str:
-    """Pure signal function — matches compute_signal() semantics from TEMPLATE.py."""
-    if np.isnan(ti):
-        return "LONG" if in_long else "FLAT"
-    if not in_long and ti > entry_th:
-        return "LONG"
-    if in_long and ti < exit_th:
-        return "FLAT"
-    return "LONG" if in_long else "FLAT"
+def _compute_ti_signal(ti: float, entry_th: float, exit_th: float) -> float:
+    """Pure signal function — matches compute_signal() semantics from TEMPLATE.py.
+    Returns 1.0 (long), 0.0 (flat), or nan (hold current position).
+    in_long is NOT a parameter — nan handles hold regardless of current state.
+    """
+    if np.isnan(ti):     return float("nan")  # warmup / missing: hold
+    if ti > entry_th:    return 1.0            # above entry: long
+    if ti < exit_th:     return 0.0            # below exit: flat
+    return float("nan")                        # dead zone: hold
 
 
-def _build_kd_position(k_arr, d_arr):
-    """Build 0/1 position array from KD signal — used by _run() and mcpt()."""
-    n = len(k_arr)
-    position = np.zeros(n)
-    in_long = False
-    for i in range(1, n):
-        sig = _compute_kd_signal(k_arr[i], k_arr[i-1], d_arr[i], d_arr[i-1], in_long)
-        in_long = (sig == "LONG")
-        position[i] = 1.0 if in_long else 0.0
-    return position
+def _signals_to_position(sigs: list) -> np.ndarray:
+    """Third layer: nan=hold (ffill), default flat before first signal."""
+    return pd.Series(sigs, dtype=float).ffill().fillna(0.0).values
 
 
-def _build_ti_position(ti_arr, entry_th, exit_th):
-    """Build 0/1 position array from TI signal — used by _run() and mcpt()."""
-    n = len(ti_arr)
-    position = np.zeros(n)
-    in_long = False
-    for i in range(n):
-        sig = _compute_ti_signal(ti_arr[i], in_long, entry_th, exit_th)
-        in_long = (sig == "LONG")
-        position[i] = 1.0 if in_long else 0.0
-    return position
+def _build_kd_position(k_arr, d_arr) -> np.ndarray:
+    sigs = [float("nan")] + [
+        _compute_kd_signal(k_arr[i], k_arr[i - 1], d_arr[i], d_arr[i - 1])
+        for i in range(1, len(k_arr))
+    ]
+    return _signals_to_position(sigs)
+
+
+def _build_ti_position(ti_arr, entry_th, exit_th) -> np.ndarray:
+    sigs = [_compute_ti_signal(ti_arr[i], entry_th, exit_th) for i in range(len(ti_arr))]
+    return _signals_to_position(sigs)
 
 
 # ── Core Backtest Engine (shared) ─────────────────────────────────────────────
