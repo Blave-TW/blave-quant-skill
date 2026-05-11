@@ -234,33 +234,43 @@ params = {"start": "2024-01-01", "end": "2024-12-31"}
 response = requests.get(f"{BASE_URL}/studio/market/twstock/margin/2330", headers=headers, params=params, timeout=60)
 data = response.json()["data"]
 # [{"date": "2024-01-02", "stock_id": "2330",
-#   "margin_purchase_buy": 12345,      # 融資買進（股）
-#   "margin_purchase_sell": 9876,      # 融資賣出（股）
-#   "margin_purchase_cash_repayment": 100, # 融資現金償還
-#   "margin_purchase_today": 500000,   # 融資餘額（股）
-#   "margin_purchase_limit": 9999999,  # 融資限額
-#   "short_sale_buy": 3000,            # 融券買進（股）
-#   "short_sale_sell": 4000,           # 融券賣出（股）
-#   "short_sale_stock_repayment": 50,  # 融券現券償還
-#   "short_sale_today": 80000,         # 融券餘額（股）
-#   "short_sale_limit": 9999999}, ...] # 融券限額
+#   "margin_buy": 310,               # 融資買進
+#   "margin_sell": 513,              # 融資賣出
+#   "margin_balance": 12844,         # 融資餘額（當日）
+#   "margin_prev_balance": 13057,    # 融資餘額（前日）
+#   "margin_limit": 6483017,         # 融資限額
+#   "margin_cash_repay": 10,         # 融資現金償還
+#   "short_sell": 21,                # 融券賣出
+#   "short_buy": 2,                  # 融券買進
+#   "short_balance": 208,            # 融券餘額（當日）
+#   "short_prev_balance": 189,       # 融券餘額（前日）
+#   "short_limit": 6483017,          # 融券限額
+#   "short_cash_repay": 0,           # 融券現金償還
+#   "offset_loan_short": 1}, ...]    # 資券相抵
 ```
 
 **Field meanings:**
-| Field | 中文 | 說明 |
-|---|---|---|
-| `margin_purchase_buy` | 融資買進 | 當日新增融資股數 |
-| `margin_purchase_sell` | 融資賣出 | 當日融資賣出股數 |
-| `margin_purchase_today` | 融資餘額 | 當日收盤融資未償還股數 |
-| `short_sale_sell` | 融券賣出 | 當日新增放空股數 |
-| `short_sale_buy` | 融券買進 | 當日回補股數 |
-| `short_sale_today` | 融券餘額 | 當日收盤未回補融券股數 |
+| Field | 說明 |
+|---|---|
+| `margin_buy` | 融資買進 — shares purchased on margin today |
+| `margin_sell` | 融資賣出 — margin shares sold today |
+| `margin_balance` | 融資餘額 — today's outstanding margin balance (shares) |
+| `margin_prev_balance` | 融資前日餘額 — yesterday's margin balance |
+| `margin_limit` | 融資限額 — margin purchase ceiling |
+| `margin_cash_repay` | 融資現金償還 — cash repayment of margin |
+| `short_sell` | 融券賣出 — shares sold short today |
+| `short_buy` | 融券買進 — short shares covered today |
+| `short_balance` | 融券餘額 — today's outstanding short balance (shares) |
+| `short_prev_balance` | 融券前日餘額 — yesterday's short balance |
+| `short_limit` | 融券限額 — short sale ceiling |
+| `short_cash_repay` | 融券現金償還 — cash repayment of short |
+| `offset_loan_short` | 資券相抵 — shares offset between margin long and short |
 
 **Common derived signals:**
 ```python
-df["margin_net"] = df["margin_purchase_buy"] - df["margin_purchase_sell"]   # 融資淨增減
-df["short_net"]  = df["short_sale_sell"] - df["short_sale_buy"]             # 融券淨增減
-df["margin_ratio"] = df["margin_purchase_today"] / df["margin_purchase_limit"]  # 融資使用率
+df["margin_net"] = df["margin_buy"] - df["margin_sell"]        # 融資淨增減
+df["short_net"]  = df["short_sell"] - df["short_buy"]          # 融券淨增減
+df["margin_util"] = df["margin_balance"] / df["margin_limit"]  # 融資使用率
 ```
 
 Values are **shares** (股), not dollars. Data available from 1994-10-01.
