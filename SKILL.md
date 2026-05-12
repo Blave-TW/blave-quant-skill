@@ -266,6 +266,7 @@ Receive TradingView alerts in real time via Server-Sent Events.
 | `GET /studio/market/twstock/financials/<stock_id>` | 綜合損益表 (季頻, long format); `start`/`end` optional (YYYY-MM-DD) |
 | `GET /studio/market/twstock/balance_sheet/<stock_id>` | 資產負債表 (季頻, long format); `start`/`end` optional (YYYY-MM-DD) |
 | `GET /studio/market/twstock/cashflow/<stock_id>` | 現金流量表 (季頻, long format); `start`/`end` optional (YYYY-MM-DD) |
+| `GET /studio/market/twstock/monthly_revenue/<stock_id>` | 月營收 (月頻); `start`/`end` optional (YYYY-MM-DD); data from 2000-01-01; Redis-cached 24 h |
 
 `/price_adj` adjusts for cash and stock dividends — historical prices unchanged, prices from each ex-dividend date onward multiplied by cumulative factor. Use for backtesting total return.
 
@@ -274,6 +275,8 @@ Receive TradingView alerts in real time via Server-Sent Events.
 `/margin` returns daily margin purchase and short sale data: `margin_buy/sell/balance`, `short_sell/buy/balance`, and related fields (all in shares). Use for 融資餘額趨勢、融券回補訊號分析。
 
 `/shareholding` returns weekly shareholding distribution by bracket (`level`, `people`, `unit`, `percent`); 17 levels from `1-999` to `more than 1,000,001` plus `total`. Use for 大股東集中度追蹤、籌碼分散程度分析。
+
+`/monthly_revenue` returns monthly revenue per stock: `date` (YYYY-MM-01, month start), `revenue` (千元), `revenue_month` (1–12), `revenue_year`. Use for 營收動能選股、月增率/年增率分析。
 
 ---
 
