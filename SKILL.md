@@ -1,6 +1,6 @@
 ---
 name: blave-quant
-description: "Use for: (1) Blave market alpha data — 籌碼集中度 Holder Concentration, 多空力道 Taker Intensity, 巨鯨警報 Whale Hunter, 擠壓動能 Squeeze Momentum, 市場方向 Market Direction, 資金稀缺 Capital Shortage, 板塊輪動 Sector Rotation, Blave頂尖交易員 Top Trader Exposure, kline, alpha table, 市場情緒 Market Sentiment, screener saved conditions, Hyperliquid top trader tracking (leaderboard, positions, history, performance, bucket stats), Taiwan stock daily OHLCV, forward-adjusted prices, institutional investor buy/sell, margin trading data, shareholding distribution, and quarterly fundamental statements — income statement, balance sheet, cash flow (台股日K/向後調整/三大法人/融資融券/股權持股分級表/綜合損益表/資產負債表/現金流量表); (2) BitMart futures/contract trading — opening/closing positions, leverage, plan orders, TP/SL, trailing stops, account management, sub-account transfers; (3) BitMart spot trading — buy/sell, limit/market orders, account balance, order history, sub-account transfers; (4) OKX trading — spot and perpetual swap, order placement, positions, balance; (5) Bybit trading — spot and derivatives/perpetual swap, order placement, positions, balance, TP/SL; (6) BingX trading — spot and perpetual swap, order placement, position management, leverage, TWAP orders, OCO orders; (7) Bitget trading — spot and futures, order placement, position management, leverage, plan orders; (8) Binance trading — spot and USDS-M futures, order placement, positions, leverage, algo orders, OCO/OTO/OTOCO; (9) Bitfinex trading & funding — spot, margin, funding/lending (submit offers, loans, credits), wallet transfers; (10) KuCoin trading — spot and futures/perpetual contracts, order placement, position management, leverage, stop orders, account management; (11) TWSE/TPEX 台股查詢 — look up Taiwan stock codes and company names, query daily quotes (open/high/low/close, volume), PE ratio, dividend yield, PB ratio for listed (上市) and OTC (上櫃) stocks; no API key required; (12) TWSE BSR 分點資料 — query broker/dealer daily buy/sell breakdown for any Taiwan stock via CAPTCHA-protected form at bsr.twse.com.tw; agent solves CAPTCHA using its own vision."
+description: "Use for: (1) Blave market alpha data — 籌碼集中度 Holder Concentration, 多空力道 Taker Intensity, 巨鯨警報 Whale Hunter, 擠壓動能 Squeeze Momentum, 市場方向 Market Direction, 資金稀缺 Capital Shortage, 板塊輪動 Sector Rotation, Blave頂尖交易員 Top Trader Exposure, kline, alpha table, 市場情緒 Market Sentiment, screener saved conditions, Hyperliquid top trader tracking (leaderboard, positions, history, performance, bucket stats), Taiwan stock daily OHLCV, forward-adjusted prices, institutional investor buy/sell, margin trading data, shareholding distribution, and quarterly fundamental statements — income statement, balance sheet, cash flow (台股日K/向後調整/三大法人/融資融券/股權持股分級表/綜合損益表/資產負債表/現金流量表); (2) CME / ICE futures OHLCV — WTI crude oil (CL), gold (GC), Brent crude (BRN); daily/hourly/minute candles from 2010; (3) BitMart futures/contract trading — opening/closing positions, leverage, plan orders, TP/SL, trailing stops, account management, sub-account transfers; (4) BitMart spot trading — buy/sell, limit/market orders, account balance, order history, sub-account transfers; (5) OKX trading — spot and perpetual swap, order placement, positions, balance; (6) Bybit trading — spot and derivatives/perpetual swap, order placement, positions, balance, TP/SL; (7) BingX trading — spot and perpetual swap, order placement, position management, leverage, TWAP orders, OCO orders; (8) Bitget trading — spot and futures, order placement, position management, leverage, plan orders; (9) Binance trading — spot and USDS-M futures, order placement, positions, leverage, algo orders, OCO/OTO/OTOCO; (10) Bitfinex trading & funding — spot, margin, funding/lending (submit offers, loans, credits), wallet transfers; (11) KuCoin trading — spot and futures/perpetual contracts, order placement, position management, leverage, stop orders, account management; (12) TWSE/TPEX 台股查詢 — look up Taiwan stock codes and company names, query daily quotes (open/high/low/close, volume), PE ratio, dividend yield, PB ratio for listed (上市) and OTC (上櫃) stocks; no API key required; (13) TWSE BSR 分點資料 — query broker/dealer daily buy/sell breakdown for any Taiwan stock via CAPTCHA-protected form at bsr.twse.com.tw; agent solves CAPTCHA using its own vision."
 version: 1.8.0
 metadata:
   openclaw:
@@ -36,7 +36,7 @@ metadata:
 
 # Blave Quant Skill
 
-Thirteen capabilities: **Blave** market alpha data (including 台股日K), **BitMart** trading, **OKX** trading, **Bybit** trading, **BingX** trading, **Bitget** trading, **Binance** trading, **Bitfinex** trading & funding, **KuCoin** trading, **TWSE/TPEX** 台股查詢, **TWSE BSR** 分點資料.
+Fourteen capabilities: **Blave** market alpha data (including 台股日K), **CME / ICE Futures** OHLCV, **BitMart** trading, **OKX** trading, **Bybit** trading, **BingX** trading, **Bitget** trading, **Binance** trading, **Bitfinex** trading & funding, **KuCoin** trading, **TWSE/TPEX** 台股查詢, **TWSE BSR** 分點資料.
 
 ## Safety Mode (MANDATORY — applies to every exchange)
 
@@ -277,6 +277,26 @@ Receive TradingView alerts in real time via Server-Sent Events.
 `/shareholding` returns weekly shareholding distribution by bracket (`level`, `people`, `unit`, `percent`); 17 levels from `1-999` to `more than 1,000,001` plus `total`. Use for 大股東集中度追蹤、籌碼分散程度分析。
 
 `/monthly_revenue` returns monthly revenue per stock: `date` (YYYY-MM-01, month start), `revenue` (千元), `revenue_month` (1–12), `revenue_year`. Use for 營收動能選股、月增率/年增率分析。
+
+---
+
+---
+
+### CME / ICE Futures OHLCV — 原油/黃金/Brent 期貨
+
+`GET /studio/market/databento/ohlcv/<dataset>/<symbol>/<schema>`
+
+`start` / `end` optional. Data from 2010-06-06. ~4 h delay.
+
+| dataset | symbol | 商品 | schema |
+|---|---|---|---|
+| `GLBX.MDP3` | `CL` | WTI 原油 | `ohlcv-1d` / `ohlcv-1h` / `ohlcv-1m` |
+| `GLBX.MDP3` | `GC` | 黃金 | same |
+| `IFEU.IMPACT` | `BRN` | Brent 原油 | same |
+
+Response: `{data: [{ts (UTC ISO), open, high, low, close, volume}]}`
+
+> Full Python examples: `references/blave-api.md`
 
 ---
 

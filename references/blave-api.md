@@ -328,7 +328,7 @@ Use for 籌碼面分析 — tracking whether large holders are accumulating or d
 
 ## Taiwan Stock Financial Statements — 季報基本面
 
-Quarterly fundamental data from FinMind. All three endpoints share the same **long format** response (one row per financial item per quarter). `start` / `end` optional (default: 2013-01-01 to today). Redis-cached for 24 h.
+Quarterly fundamental data. All three endpoints share the same **long format** response (one row per financial item per quarter). `start` / `end` optional (default: 2013-01-01 to today). Redis-cached for 24 h.
 
 | Statement | Path |
 |---|---|
@@ -396,7 +396,7 @@ wide = df.pivot_table(index="date", columns="type", values="value", aggfunc="fir
 
 ## Taiwan Stock Monthly Revenue — 月營收
 
-Monthly revenue data from FinMind. One row per stock per month. `start` / `end` optional (default: 2000-01-01 to today). Redis-cached for 24 h.
+Monthly revenue data. One row per stock per month. `start` / `end` optional (default: 2000-01-01 to today). Redis-cached for 24 h.
 
 ```python
 params = {"start": "2024-01-01", "end": "2024-12-31"}
@@ -424,6 +424,61 @@ df = df.sort_values("date").reset_index(drop=True)
 df["mom_pct"] = df["revenue"].pct_change() * 100          # month-over-month %
 df["yoy_pct"] = df["revenue"].pct_change(periods=12) * 100  # year-over-year %
 ```
+
+---
+
+## CME / ICE Futures OHLCV — 原油/黃金/Brent 期貨
+
+```
+GET /studio/market/databento/ohlcv/<dataset>/<symbol>/<schema>
+```
+
+`start` / `end` optional (ISO 8601, e.g. `2024-01-01`). Data from 2010-06-06. Timestamps UTC.
+
+| `dataset` | `symbol` | 商品 |
+|---|---|---|
+| `GLBX.MDP3` | `CL` | WTI 原油期貨（CME NYMEX，近月連續） |
+| `GLBX.MDP3` | `GC` | 黃金期貨（CME COMEX，近月連續） |
+| `IFEU.IMPACT` | `BRN` | Brent 原油期貨（ICE，近月連續） |
+
+| `schema` | 週期 |
+|---|---|
+| `ohlcv-1d` | 日K |
+| `ohlcv-1h` | 小時K |
+| `ohlcv-1m` | 分K |
+
+```python
+# WTI 原油日K
+params = {"start": "2024-01-01", "end": "2024-12-31"}
+response = requests.get(
+    f"{BASE_URL}/studio/market/databento/ohlcv/GLBX.MDP3/CL/ohlcv-1d",
+    headers=headers, params=params, timeout=60,
+)
+data = response.json()["data"]
+# [{"ts": "2024-01-02 00:00:00+00:00", "open": 72.50, "high": 73.10,
+#   "low": 71.80, "close": 72.90, "volume": 180432}, ...]
+
+# Brent 原油小時K
+response = requests.get(
+    f"{BASE_URL}/studio/market/databento/ohlcv/IFEU.IMPACT/BRN/ohlcv-1h",
+    headers=headers, params={"start": "2024-01-01"}, timeout=60,
+)
+
+# 黃金期貨分K
+response = requests.get(
+    f"{BASE_URL}/studio/market/databento/ohlcv/GLBX.MDP3/GC/ohlcv-1m",
+    headers=headers, params={"start": "2026-05-10", "end": "2026-05-11"}, timeout=60,
+)
+```
+
+**Response fields:**
+| Field | Description |
+|---|---|
+| `ts` | Bar 開盤時間（UTC ISO 字串） |
+| `open` / `high` / `low` / `close` | 美元（原油單位：USD/桶；黃金：USD/oz） |
+| `volume` | 合約口數 |
+
+Note: 資料有約 4 小時延遲，最新幾小時不可用。
 
 ---
 
