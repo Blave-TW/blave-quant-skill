@@ -288,11 +288,13 @@ Receive TradingView alerts in real time via Server-Sent Events.
 
 `start` / `end` optional. Data from 2010-06-06. ~4 h delay.
 
-| dataset | symbol | 商品 | schema |
-|---|---|---|---|
-| `GLBX.MDP3` | `CL` | WTI 原油 | `ohlcv-1d` / `ohlcv-1h` / `ohlcv-1m` |
-| `GLBX.MDP3` | `GC` | 黃金 | same |
-| `IFEU.IMPACT` | `BRN` | Brent 原油 | same |
+| dataset | symbol | 商品 | schema | 單次上限 |
+|---|---|---|---|---|
+| `GLBX.MDP3` | `CL` | WTI 原油 | `ohlcv-1d` | 3650 天 |
+| `GLBX.MDP3` | `GC` | 黃金 | `ohlcv-1h` | 365 天 |
+| `IFEU.IMPACT` | `BRN` | Brent 原油 | `ohlcv-1m` | **30 天** |
+
+超出上限 → 400 `date_range_too_large`，需分段請求再拼接。
 
 Response: `{data: [{ts (UTC ISO), open, high, low, close, volume}]}`
 

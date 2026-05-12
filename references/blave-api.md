@@ -441,11 +441,14 @@ GET /studio/market/databento/ohlcv/<dataset>/<symbol>/<schema>
 | `GLBX.MDP3` | `GC` | 黃金期貨（CME COMEX，近月連續） |
 | `IFEU.IMPACT` | `BRN` | Brent 原油期貨（ICE，近月連續） |
 
-| `schema` | 週期 |
-|---|---|
-| `ohlcv-1d` | 日K |
-| `ohlcv-1h` | 小時K |
-| `ohlcv-1m` | 分K |
+| `schema` | 週期 | 單次最大範圍 |
+|---|---|---|
+| `ohlcv-1d` | 日K | 3650 天（10年） |
+| `ohlcv-1h` | 小時K | 365 天（1年） |
+| `ohlcv-1m` | 分K | **30 天** |
+
+超出限制回傳 400：`{"error": "date_range_too_large", "max_days": <n>}`
+→ 需拆分多次請求、分段拼接。
 
 ```python
 # WTI 原油日K
