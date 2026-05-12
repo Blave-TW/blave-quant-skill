@@ -394,6 +394,39 @@ wide = df.pivot_table(index="date", columns="type", values="value", aggfunc="fir
 
 ---
 
+## Taiwan Stock Monthly Revenue — 月營收
+
+Monthly revenue data from FinMind. One row per stock per month. `start` / `end` optional (default: 2000-01-01 to today). Redis-cached for 24 h.
+
+```python
+params = {"start": "2024-01-01", "end": "2024-12-31"}
+response = requests.get(f"{BASE_URL}/studio/market/twstock/monthly_revenue/2330", headers=headers, params=params, timeout=30)
+data = response.json()["data"]
+# [{"date": "2024-02-10", "stock_id": "2330", "country": "台灣", "revenue": 215274000, "revenue_month": 1, "revenue_year": 2024},
+#  {"date": "2024-03-08", "stock_id": "2330", "country": "台灣", "revenue": 195348000, "revenue_month": 2, "revenue_year": 2024}, ...]
+```
+
+**Response fields:**
+| Field | Description |
+|---|---|
+| `date` | 公告日期 (`YYYY-MM-DD`) — typically 7–10th of the following month |
+| `stock_id` | Stock code |
+| `country` | Listed market (e.g. `台灣`) |
+| `revenue` | Monthly revenue in thousands NTD (千元) |
+| `revenue_month` | Revenue month (1–12) |
+| `revenue_year` | Revenue year |
+
+**MoM / YoY analysis:**
+```python
+import pandas as pd
+df = pd.DataFrame(data)
+df = df.sort_values("date").reset_index(drop=True)
+df["mom_pct"] = df["revenue"].pct_change() * 100          # month-over-month %
+df["yoy_pct"] = df["revenue"].pct_change(periods=12) * 100  # year-over-year %
+```
+
+---
+
 ## alpha_table Field Reference
 
 Each symbol in `/alpha_table` contains:

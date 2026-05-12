@@ -89,6 +89,7 @@ Base URL: `https://api.blave.org`
 - `studio/market/twstock/financials/<stock_id>` — 綜合損益表 quarterly fundamental (long format: `date`, `type`, `value`, `origin_name`); `start`/`end` optional; Redis-cached 24 h
 - `studio/market/twstock/balance_sheet/<stock_id>` — 資產負債表 quarterly fundamental; same schema; `_per` suffix types are % of total assets
 - `studio/market/twstock/cashflow/<stock_id>` — 現金流量表 quarterly fundamental; same schema
+- `studio/market/twstock/monthly_revenue/<stock_id>` — 月營收 monthly revenue (`date`, `stock_id`, `country`, `revenue` in thousands NTD, `revenue_month`, `revenue_year`); `start`/`end` optional; data from 2000-01-01; Redis-cached 24 h
 - `screener/get_saved_conditions` — user's saved screener conditions
 - `screener/get_saved_condition_result` — symbols matching a saved condition (`condition_id` required)
 - `hyperliquid/leaderboard` — top 100 Hyperliquid traders (`sort_by` param)
