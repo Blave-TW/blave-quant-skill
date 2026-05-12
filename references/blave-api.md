@@ -409,7 +409,7 @@ data = response.json()["data"]
 **Response fields:**
 | Field | Description |
 |---|---|
-| `date` | 公告日期 (`YYYY-MM-DD`) — typically 7–10th of the following month |
+| `date` | 月份起始日 (`YYYY-MM-01`) — e.g. `2024-02-01` means the revenue is for `revenue_month=1` (January) |
 | `stock_id` | Stock code |
 | `country` | Listed market (e.g. `台灣`) |
 | `revenue` | Monthly revenue in thousands NTD (千元) |
