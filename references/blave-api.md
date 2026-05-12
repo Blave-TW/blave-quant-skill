@@ -448,7 +448,31 @@ GET /studio/market/databento/ohlcv/<dataset>/<symbol>/<schema>
 | `ohlcv-1m` | 分K | **30 天** |
 
 超出限制回傳 400：`{"error": "date_range_too_large", "max_days": <n>}`
-→ 需拆分多次請求、分段拼接。
+→ 需拆分多次請求、分段拼接。拉長歷史時每個 chunk 約 6 秒，年度分K 約 1.5 分鐘。
+
+```python
+# 分段拉取長歷史（以 ohlcv-1m 為例，chunk_days=30）
+from datetime import date, timedelta
+
+def fetch_ohlcv_chunked(dataset, symbol, schema, start, end, chunk_days=30):
+    result = []
+    cur = date.fromisoformat(start)
+    end_date = date.fromisoformat(end)
+    while cur < end_date:
+        chunk_end = min(cur + timedelta(days=chunk_days), end_date)
+        resp = requests.get(
+            f"{BASE_URL}/studio/market/databento/ohlcv/{dataset}/{symbol}/{schema}",
+            headers=headers,
+            params={"start": cur.isoformat(), "end": chunk_end.isoformat()},
+            timeout=30,
+        )
+        result.extend(resp.json().get("data", []))
+        cur = chunk_end
+    return result
+
+# 近一年 WTI 原油分K
+bars = fetch_ohlcv_chunked("GLBX.MDP3", "CL", "ohlcv-1m", "2025-05-01", "2026-05-01")
+```
 
 ```python
 # WTI 原油日K
