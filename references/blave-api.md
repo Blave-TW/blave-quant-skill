@@ -326,6 +326,74 @@ Use for 籌碼面分析 — tracking whether large holders are accumulating or d
 
 ---
 
+## Taiwan Stock Financial Statements — 季報基本面
+
+Quarterly fundamental data from FinMind. All three endpoints share the same **long format** response (one row per financial item per quarter). `start` / `end` optional (default: 2013-01-01 to today). Redis-cached for 24 h.
+
+| Statement | Path |
+|---|---|
+| 綜合損益表 Comprehensive Income | `/studio/market/twstock/financials/<stock_id>` |
+| 資產負債表 Balance Sheet | `/studio/market/twstock/balance_sheet/<stock_id>` |
+| 現金流量表 Cash Flow | `/studio/market/twstock/cashflow/<stock_id>` |
+
+```python
+params = {"start": "2022-01-01", "end": "2024-12-31"}
+response = requests.get(f"{BASE_URL}/studio/market/twstock/financials/2330", headers=headers, params=params, timeout=30)
+data = response.json()["data"]
+# [{"date": "2022-03-31", "stock_id": "2330", "type": "Revenue",     "value": 491075000000.0, "origin_name": "營業收入"},
+#  {"date": "2022-03-31", "stock_id": "2330", "type": "GrossProfit", "value": 258033000000.0, "origin_name": "毛利（損）"},
+#  {"date": "2022-03-31", "stock_id": "2330", "type": "NetIncome",   "value": 202730000000.0, "origin_name": "本期淨利（淨損）"},
+#  {"date": "2022-03-31", "stock_id": "2330", "type": "EPS",         "value": 7.82,           "origin_name": "每股盈餘（基本）"}, ...]
+```
+
+**Response fields:**
+| Field | Description |
+|---|---|
+| `date` | Quarter-end date (`YYYY-MM-DD`): Q1=03-31, Q2=06-30, Q3=09-30, Q4=12-31 |
+| `type` | Financial item code (English) |
+| `value` | Numeric value in TWD; balance sheet items with `_per` suffix are % of total assets |
+| `origin_name` | Chinese label — use this to identify unfamiliar `type` codes |
+
+**Key `type` codes — `/financials` (損益表):**
+| `type` | 中文 |
+|---|---|
+| `Revenue` | 營業收入 |
+| `GrossProfit` | 毛利（損） |
+| `OperatingIncome` | 營業利益（損失） |
+| `NetIncome` | 本期淨利（淨損） |
+| `EPS` | 每股盈餘（基本） |
+| `TAX` | 所得稅費用（利益） |
+| `OtherComprehensiveIncome` | 其他綜合損益（淨額） |
+
+**Key `type` codes — `/balance_sheet` (資產負債表):**
+| `type` | 中文 |
+|---|---|
+| `CashAndCashEquivalents` | 現金及約當現金 |
+| `TotalAssets` | 資產總計 |
+| `TotalLiabilities` | 負債總計 |
+| `TotalEquity` | 權益總計 |
+| `CashAndCashEquivalents_per` | 現金及約當現金（佔資產 %） |
+
+**Key `type` codes — `/cashflow` (現金流量表):**
+| `type` | 中文 |
+|---|---|
+| `OperatingActivities` | 營業活動之淨現金流入（出） |
+| `InvestingActivities` | 投資活動之淨現金流入（出） |
+| `FinancingActivities` | 籌資活動之淨現金流入（出） |
+| `CashBalancesEndOfPeriod` | 期末現金及約當現金餘額 |
+| `PropertyAndPlantAndEquipment` | 取得不動產、廠房及設備 |
+
+**Pivot long → wide for analysis:**
+```python
+import pandas as pd
+df = pd.DataFrame(data)
+wide = df.pivot_table(index="date", columns="type", values="value", aggfunc="first")
+# wide["NetIncome"]  → quarterly net income series
+# wide["EPS"]        → quarterly EPS series
+```
+
+---
+
 ## alpha_table Field Reference
 
 Each symbol in `/alpha_table` contains:
