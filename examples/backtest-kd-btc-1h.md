@@ -32,6 +32,7 @@ from pathlib import Path
 from dotenv import dotenv_values
 
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))  # → blaveclaw-config/
+from lib.data import fetch_kline
 
 # ── Config ────────────────────────────────────────────────────────────────────
 MODE             = "backtest"
@@ -57,14 +58,23 @@ _env  = dotenv_values(Path(__file__).parent.parent.parent / ".env")
 _HDRS = {"api-key": _env.get("blave_api_key", ""), "secret-key": _env.get("blave_secret_key", "")}
 
 
-# ── add_indicators ────────────────────────────────────────────────────────────
-def add_indicators(df):
+# ── fetch_data ────────────────────────────────────────────────────────────────
+def fetch_data(hdrs):
+    from datetime import datetime
+    today = datetime.utcnow().strftime('%Y-%m-%d')
+    df = fetch_kline(SYMBOL, INTERVAL, START, END if MODE == 'backtest' else today, hdrs)
+
     low_min  = df["Low"].rolling(K_PERIOD, min_periods=K_PERIOD).min()
     high_max = df["High"].rolling(K_PERIOD, min_periods=K_PERIOD).max()
     denom    = high_max - low_min
     raw_k    = np.where(denom > 0, (df["Close"] - low_min) / denom * 100, np.nan)
     df["K"]  = pd.Series(raw_k, index=df.index).rolling(K_SMOOTH, min_periods=K_SMOOTH).mean()
     df["D"]  = df["K"].rolling(D_SMOOTH, min_periods=D_SMOOTH).mean()
+
+    if VOL_TARGETING:
+        log_ret = np.log(df['Close'] / df['Close'].shift(1))
+        df['realized_vol'] = log_ret.rolling(VOL_LOOKBACK).std() * np.sqrt(PERIODS_PER_YEAR)
+
     return df
 
 
@@ -92,7 +102,8 @@ def compute_signals(df) -> pd.Series:
 # ── Run ───────────────────────────────────────────────────────────────────────
 if __name__ == "__main__":
     from lib.runner import run
-    run(locals(), add_indicators, compute_signals)
+    from lib.notify import make_sender
+    run(locals(), fetch_data, compute_signals, send_telegram_fn=make_sender())
 ```
 
 ---

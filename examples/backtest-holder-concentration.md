@@ -56,11 +56,21 @@ _env  = dotenv_values(Path(__file__).parent.parent.parent / ".env")
 _HDRS = {"api-key": _env.get("blave_api_key", ""), "secret-key": _env.get("blave_secret_key", "")}
 
 
-# ── add_indicators ────────────────────────────────────────────────────────────
-def add_indicators(df):
-    hc = fetch_holder_concentration(SYMBOL, INTERVAL, START, END, _HDRS)
+# ── fetch_data ────────────────────────────────────────────────────────────────
+def fetch_data(hdrs):
+    from datetime import datetime
+    from lib.data import fetch_kline
+    today = datetime.utcnow().strftime('%Y-%m-%d')
+    df = fetch_kline(SYMBOL, INTERVAL, START, END if MODE == 'backtest' else today, hdrs)
+
+    hc = fetch_holder_concentration(SYMBOL, INTERVAL, START, END, hdrs)
     df = df.join(hc.rename(columns={"alpha": "HC"}))
     df["HC"] = df["HC"].ffill()
+
+    if VOL_TARGETING:
+        log_ret = np.log(df['Close'] / df['Close'].shift(1))
+        df['realized_vol'] = log_ret.rolling(VOL_LOOKBACK).std() * np.sqrt(PERIODS_PER_YEAR)
+
     return df
 
 
@@ -88,7 +98,8 @@ def compute_signals(df) -> pd.Series:
 # ── Run ───────────────────────────────────────────────────────────────────────
 if __name__ == "__main__":
     from lib.runner import run
-    run(locals(), add_indicators, compute_signals)
+    from lib.notify import make_sender
+    run(locals(), fetch_data, compute_signals, send_telegram_fn=make_sender())
 ```
 
 ---
