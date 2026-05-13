@@ -1,5 +1,8 @@
 # Example: BTC Taker Intensity 24h — Parameter Scan & Plateau Chart
 
+Requires: `pip install vectorbt`
+
+
 Scan all entry × exit threshold combinations for a BTC 1h long-only strategy
 driven by the Taker Intensity 24h alpha, then select the most **robust** (plateau)
 parameters and plot the full backtest PnL.
@@ -23,9 +26,12 @@ from pathlib import Path
 from datetime import datetime, timedelta, timezone
 from dotenv import dotenv_values
 
-_env     = dotenv_values(Path(__file__).parent.parent.parent / ".env")
-HEADERS  = {"api-key": _env["blave_api_key"], "secret-key": _env["blave_secret_key"]}
-API_BASE = "https://api.blave.org"
+sys.path.insert(0, str(Path(__file__).parent.parent.parent))  # → blaveclaw-config/
+from lib.data import fetch_kline, fetch_taker_intensity
+from lib.param_scan import find_plateau, plot_heatmap
+
+_env    = dotenv_values(Path(__file__).parent.parent.parent / ".env")
+HEADERS = {"api-key": _env["blave_api_key"], "secret-key": _env["blave_secret_key"]}
 
 # ── Config ────────────────────────────────────────────────────────────────────
 SYMBOL      = "BTCUSDT"
@@ -45,237 +51,108 @@ PLATEAU_WINDOW   = 1        # neighbourhood radius for plateau detection
 
 
 # ── Fetch ─────────────────────────────────────────────────────────────────────
-def _fetch_chunks(endpoint, params, data_keys):
-    """Fetch in 365-day chunks; returns concatenated arrays for each key in data_keys."""
-    s = datetime.strptime(params["start_date"], "%Y-%m-%d")
-    e = datetime.strptime(params.get("end_date") or
-                          datetime.now(timezone.utc).strftime("%Y-%m-%d"), "%Y-%m-%d")
-    out = {k: [] for k in data_keys}
-    while s < e:
-        chunk_end = min(s + timedelta(days=365), e)
-        r = requests.get(
-            f"{API_BASE}/{endpoint}", headers=HEADERS,
-            params={**params,
-                    "start_date": s.strftime("%Y-%m-%d"),
-                    "end_date":   chunk_end.strftime("%Y-%m-%d")},
-            timeout=60,
-        )
-        r.raise_for_status()
-        payload = r.json()
-        # kline returns a list of dicts; alpha endpoints return {data: {key: [...]}}
-        if isinstance(payload, list):
-            out[data_keys[0]].extend(payload)
-        else:
-            data = payload.get("data", {})
-            for k in data_keys:
-                out[k].extend(data.get(k, []))
-        s = chunk_end
-    return out
-
-
-def load_kline(start, end):
-    raw = _fetch_chunks("kline",
-                        {"symbol": SYMBOL, "period": INTERVAL,
-                         "start_date": start, "end_date": end or ""},
-                        ["rows"])
-    rows = raw["rows"]
-    df = pd.DataFrame(rows)
-    df["time"] = pd.to_datetime(df["time"], unit="s", utc=True)
-    df = df.set_index("time").sort_index()
-    df = df[~df.index.duplicated(keep="first")]
-    for col in ["open", "high", "low", "close"]:
-        df[col] = df[col].astype(float)
-    return df
-
-
-def load_ti(start, end):
-    raw = _fetch_chunks("taker_intensity/get_alpha",
-                        {"symbol": SYMBOL, "period": INTERVAL, "timeframe": "24h",
-                         "start_date": start, "end_date": end or ""},
-                        ["timestamp", "alpha"])
-    df = pd.DataFrame({
-        "time":  pd.to_datetime(raw["timestamp"], unit="s", utc=True),
-        "ti":    pd.to_numeric(raw["alpha"], errors="coerce"),
-    }).set_index("time").sort_index()
-    return df[~df.index.duplicated(keep="first")]
+# lib.data handles annual chunking for both kline and alpha endpoints
 
 
 # ── Signal & backtest engine ───────────────────────────────────────────────────
-def _signals_to_position(sigs):
-    return pd.Series(sigs, dtype=float).ffill().fillna(0.0).values
+def _build_ti_signals(close_series, ti_series, entry_th, exit_th):
+    """Build vectorbt-compatible signal series for a TI threshold strategy."""
+    signal = pd.Series(np.nan, index=close_series.index)
+    signal[ti_series > entry_th] = 1.0
+    signal[ti_series < exit_th]  = 0.0
+    return signal
 
 
-def _build_ti_position(ti_arr, entry_th, exit_th):
-    def _sig(ti):
-        if np.isnan(ti):      return float("nan")
-        if ti > entry_th:     return 1.0
-        if ti < exit_th:      return 0.0
-        return float("nan")
-    return _signals_to_position([_sig(v) for v in ti_arr])
+def _run(close_series, ti_series, entry_th, exit_th):
+    import vectorbt as vbt
 
+    signals = _build_ti_signals(close_series, ti_series, entry_th, exit_th)
+    log_ret  = np.concatenate([[0.0], np.log(close_series.values[1:] / close_series.values[:-1])])
+    real_vol = pd.Series(log_ret, index=close_series.index).rolling(VOL_WINDOW).std() * np.sqrt(HOURS_PER_YEAR)
 
-def _run(close, position):
-    n       = len(close)
-    log_ret = np.concatenate([[0.0], np.log(close[1:] / close[:-1])])
-    fwd_ret = np.empty(n); fwd_ret[:-1] = np.diff(close) / close[:-1]; fwd_ret[-1] = 0.0
+    # Vol-targeting: scale size by vol at each entry bar
+    size = signals.where(signals > 0).copy()
+    size[signals > 0] = (TARGET_VOL / real_vol[signals > 0]).clip(upper=VOL_CAP).fillna(1.0)
+    size = size.ffill().fillna(1.0)
 
-    realized_vol = pd.Series(log_ret).rolling(VOL_WINDOW).std().values * np.sqrt(HOURS_PER_YEAR)
-    vol_scalar   = np.where(
-        (realized_vol > 0) & ~np.isnan(realized_vol),
-        np.clip(TARGET_VOL / realized_vol, 0, VOL_CAP), 1.0)
+    pos     = signals.ffill().fillna(0)
+    entries = (pos > 0) & (pos.shift(1, fill_value=0) == 0)
+    exits   = (pos == 0) & (pos.shift(1, fill_value=0) > 0)
 
-    sized     = position * vol_scalar
-    fee_cost  = np.abs(np.diff(sized, prepend=0)) * FEE
-    strat_ret = sized * fwd_ret - fee_cost
+    # Signal at bar i close → execute at bar i+1 (no look-ahead)
+    pf = vbt.Portfolio.from_signals(
+        close_series,
+        entries.shift(1).fillna(False),
+        exits.shift(1).fillna(False),
+        size=size.shift(1).fillna(1.0),
+        size_type='percent',
+        fees=FEE, freq='1h',
+        init_cash=100_000,
+    )
 
-    r   = strat_ret[~np.isnan(strat_ret)]
-    cum = np.cumprod(1 + r)
-    pk  = np.maximum.accumulate(cum)
-    yrs = len(r) / HOURS_PER_YEAR
+    stats     = pf.stats()
+    equity    = pf.value()
+    cum       = (equity / equity.iloc[0]).values
+    strat_ret = pf.returns().values
+    total_ret = float(stats.get('Total Return [%]', 0)) / 100
+    yrs       = len(close_series) / HOURS_PER_YEAR
+    ann_ret   = (1 + total_ret) ** (1 / yrs) - 1 if yrs > 0 else np.nan
+
     return dict(
-        sharpe   = (r.mean() / r.std()) * np.sqrt(HOURS_PER_YEAR) if r.std() > 0 else np.nan,
-        ann_ret  = (1 + cum[-1] - 1) ** (1 / yrs) - 1,
-        max_dd   = ((cum - pk) / pk).min(),
+        sharpe   = float(stats.get('Sharpe Ratio', np.nan)),
+        ann_ret  = ann_ret,
+        max_dd   = float(stats.get('Max Drawdown [%]', 0)) / -100,
         cum      = cum,
         strat_ret= strat_ret,
-        n_trades = int((np.diff(position, prepend=0) != 0).sum()),
+        n_trades = int(stats.get('Total Trades', 0)),
     )
 
 
 # ── Param scan ────────────────────────────────────────────────────────────────
-def param_scan(close, ti_arr):
+def param_scan(close_series, ti_series):
     n = len(THRESHOLDS)
     grid = np.full((n, n), np.nan)
     for i, entry in enumerate(THRESHOLDS):
         for j, exit_ in enumerate(THRESHOLDS):
             if exit_ > entry:
                 continue        # invalid: exit must be <= entry
-            pos = _build_ti_position(ti_arr, entry, exit_)
-            res = _run(close, pos)
+            res = _run(close_series, ti_series, entry, exit_)
             if not np.isnan(res["sharpe"]):
                 grid[i, j] = res["sharpe"]
     return grid
 
 
-# ── Plateau detection ─────────────────────────────────────────────────────────
-def find_plateau(grid, window=PLATEAU_WINDOW):
-    rows, cols = grid.shape
-    nbr_mean   = np.full((rows, cols), np.nan)
-    for i in range(rows):
-        for j in range(cols):
-            if np.isnan(grid[i, j]):
-                continue
-            nb = [grid[i+di, j+dj]
-                  for di in range(-window, window + 1)
-                  for dj in range(-window, window + 1)
-                  if 0 <= i+di < rows and 0 <= j+dj < cols
-                  and not np.isnan(grid[i+di, j+dj])]
-            if nb:
-                nbr_mean[i, j] = np.mean(nb)
-    best = np.unravel_index(np.nanargmax(nbr_mean), nbr_mean.shape)
-    return best, nbr_mean
-
-
-# ── Chart ─────────────────────────────────────────────────────────────────────
-def plot_all(grid, nbr_mean, best_idx, best_res, dates):
-    from matplotlib.patches import Rectangle
-
-    bi, bj     = best_idx
-    best_entry = THRESHOLDS[bi]
-    best_exit  = THRESHOLDS[bj]
-    labels     = [str(v) for v in THRESHOLDS]
-    n          = len(THRESHOLDS)
-
-    fig = plt.figure(figsize=(14, 12))
-    fig.suptitle(
-        f"{SYMBOL} Taker Intensity 24h — Parameter Scan (1h, vol-targeting 30%, fee {FEE*100:.2f}%)",
-        fontsize=13, fontweight="bold", y=0.99,
-    )
-    gs = fig.add_gridspec(2, 1, hspace=0.45, height_ratios=[1.1, 1])
-
-    # ── Heatmap: raw Sharpe, box on plateau cell ───────────────────────────────
-    ax1 = fig.add_subplot(gs[0])
-    masked = np.ma.masked_invalid(grid)
-    valid  = grid[~np.isnan(grid)]
-    vmax   = np.nanpercentile(valid, 95)
-    vmin   = np.nanpercentile(valid, 5)
-    im     = ax1.imshow(masked, aspect="auto", cmap="RdYlGn",
-                        origin="upper", vmin=vmin, vmax=vmax)
-    plt.colorbar(im, ax=ax1, label="Sharpe")
-    ax1.set_xticks(range(n)); ax1.set_xticklabels(labels, fontsize=8)
-    ax1.set_yticks(range(n)); ax1.set_yticklabels(labels, fontsize=8)
-    ax1.set_xlabel("EXIT_TH", fontsize=9)
-    ax1.set_ylabel("ENTRY_TH", fontsize=9)
-    for i in range(n):
-        for j in range(n):
-            v = grid[i, j]
-            if not np.isnan(v):
-                ax1.text(j, i, f"{v:.2f}", ha="center", va="center",
-                         fontsize=7, color="black")
-    # highlight the plateau cell with a white rectangle border
-    ax1.add_patch(Rectangle(
-        (bj - 0.5, bi - 0.5), 1, 1,
-        linewidth=2.5, edgecolor="white", facecolor="none",
-    ))
-    ax1.set_title(
-        f"Sharpe Heatmap — plateau selected: ENTRY_TH={best_entry}, EXIT_TH={best_exit}  "
-        f"(Sharpe={grid[bi, bj]:.2f})",
-        fontsize=10,
-    )
-
-    # ── PnL: best plateau params ───────────────────────────────────────────────
-    ax2 = fig.add_subplot(gs[1])
-    cum_pct = (best_res["cum"] - 1) * 100
-    ax2.plot(dates, cum_pct, color="#3498db", lw=1.5)
-    ax2.axhline(0, color="#888", lw=0.6, ls="--")
-    ax2.fill_between(dates, cum_pct, 0,
-                     where=(cum_pct >= 0), alpha=0.12, color="#2ecc71")
-    ax2.fill_between(dates, cum_pct, 0,
-                     where=(cum_pct < 0),  alpha=0.12, color="#e74c3c")
-    ax2.yaxis.set_major_formatter(mticker.FuncFormatter(lambda x, _: f"{x:.0f}%"))
-    ax2.set_ylabel("Cumulative Return (%)")
-    ax2.set_title(
-        f"Best Plateau Params — ENTRY_TH={best_entry}, EXIT_TH={best_exit}\n"
-        f"Sharpe={best_res['sharpe']:.2f}  "
-        f"Ann={best_res['ann_ret']*100:.1f}%  "
-        f"MDD={best_res['max_dd']*100:.1f}%  "
-        f"Trades={best_res['n_trades']}",
-        fontsize=10,
-    )
-
-    fname = f"{SYMBOL}_ti24h_param_scan.png"
-    plt.savefig(fname, dpi=150, bbox_inches="tight")
-    plt.close()
-    print(f"Saved: {fname}")
+# find_plateau and plot_heatmap imported from lib.param_scan
 
 
 # ── Main ──────────────────────────────────────────────────────────────────────
 if __name__ == "__main__":
-    end_str   = END or datetime.now(timezone.utc).strftime("%Y-%m-%d")
+    end_str = END or datetime.now(timezone.utc).strftime("%Y-%m-%d")
     print(f"Fetching {SYMBOL} kline {INTERVAL}  {START} → {end_str}")
-    df_kline  = load_kline(START, end_str)
+    df_kline = fetch_kline(SYMBOL, INTERVAL, START, end_str, HEADERS)
     print(f"  {len(df_kline)} bars")
 
     print(f"Fetching TI 24h  {START} → {end_str}")
-    df_ti     = load_ti(START, end_str)
+    df_ti = fetch_taker_intensity(SYMBOL, INTERVAL, START, end_str, HEADERS, timeframe="24h")
+    df_ti = df_ti.rename(columns={"alpha": "ti"})
     print(f"  {len(df_ti)} alpha points")
 
     # align: inner join on timestamp, forward-fill TI into kline index
-    df = df_kline[["close"]].join(df_ti[["ti"]], how="left")
+    df = df_kline[["Close"]].join(df_ti[["ti"]], how="left")
     df["ti"] = df["ti"].ffill()
-    df = df.dropna(subset=["close", "ti"])
-    close  = df["close"].values.astype(np.float64)
-    ti_arr = df["ti"].values.astype(np.float64)
+    df = df.dropna(subset=["Close", "ti"])
     print(f"  Aligned rows: {len(df)}")
 
+    close_series = df["Close"]
+    ti_series    = df["ti"]
+
     print("\nRunning param scan…")
-    grid = param_scan(close, ti_arr)
+    grid = param_scan(close_series, ti_series)
 
     print("Finding plateau…")
-    best_idx, nbr_mean = find_plateau(grid)
+    best_idx, nbr_mean, best_entry, best_exit = find_plateau(
+        grid, THRESHOLDS, THRESHOLDS, window=PLATEAU_WINDOW)
     bi, bj = best_idx
-    best_entry = THRESHOLDS[bi]
-    best_exit  = THRESHOLDS[bj]
     print(f"  Best plateau: ENTRY_TH={best_entry}, EXIT_TH={best_exit}  "
           f"Sharpe={grid[bi, bj]:.2f}  nbr-avg={nbr_mean[bi, bj]:.2f}")
 
@@ -290,13 +167,34 @@ if __name__ == "__main__":
             print(f"  {entry:>7.1f} {exit_:>7.1f} {grid[i,j]:>8.2f}{mark}")
     print(f"{'-'*30}")
 
-    # run backtest with best params and plot
-    best_pos = _build_ti_position(ti_arr, best_entry, best_exit)
-    best_res = _run(close, best_pos)
+    # heatmap
+    fname = f"{SYMBOL}_ti24h_param_scan.png"
+    plot_heatmap(grid, THRESHOLDS, THRESHOLDS, best_idx,
+                 row_label="ENTRY_TH", col_label="EXIT_TH",
+                 title=f"{SYMBOL} TI 24h — Sharpe Heatmap",
+                 output_path=fname)
+
+    # PnL chart with best params
+    best_res = _run(close_series, ti_series, best_entry, best_exit)
     valid    = ~np.isnan(best_res["strat_ret"])
     dates    = df.index[valid]
+    cum_pct  = (best_res["cum"] - 1) * 100
 
-    plot_all(grid, nbr_mean, best_idx, best_res, dates)
+    import matplotlib.pyplot as plt, matplotlib.ticker as mticker
+    fig, ax = plt.subplots(figsize=(14, 5))
+    ax.plot(dates, cum_pct, color="#3498db", lw=1.5)
+    ax.axhline(0, color="#888", lw=0.6, ls="--")
+    ax.fill_between(dates, cum_pct, 0, where=(cum_pct >= 0), alpha=0.12, color="#2ecc71")
+    ax.fill_between(dates, cum_pct, 0, where=(cum_pct < 0),  alpha=0.12, color="#e74c3c")
+    ax.yaxis.set_major_formatter(mticker.FuncFormatter(lambda x, _: f"{x:.0f}%"))
+    ax.set_title(f"ENTRY_TH={best_entry} EXIT_TH={best_exit}  "
+                 f"Sharpe={best_res['sharpe']:.2f}  Ann={best_res['ann_ret']*100:.1f}%  "
+                 f"MDD={best_res['max_dd']*100:.1f}%  Trades={best_res['n_trades']}")
+    pnl_fname = f"{SYMBOL}_ti24h_best_pnl.png"
+    plt.tight_layout()
+    plt.savefig(pnl_fname, dpi=150, bbox_inches="tight")
+    plt.close()
+    print(f"Saved: {pnl_fname}")
 ```
 
 ---

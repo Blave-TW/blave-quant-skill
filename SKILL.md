@@ -73,7 +73,7 @@ Workflow templates for common use cases. **When the user's request matches one o
 | `examples/truth-social-trump-monitor.md` | User wants to monitor Trump's Truth Social posts with translation |
 | `examples/btc-etf-flow-monitor.md` | User wants to track Bitcoin ETF flows / institutional accumulation (BlackRock IBIT etc.) |
 | `examples/bitfinex-auto-lending.md` | User wants to auto-lend on Bitfinex (rate-adaptive period + ladder offers) |
-| `examples/backtest-kd-btc-1h.md` | User wants to backtest KD stochastic (golden/death cross) on BTC 1h klines |
+| `examples/backtest-kd-btc-1h.md` | User wants to backtest KD stochastic (golden/death cross) on BTC 1h klines — uses vectorbt (`pip install vectorbt`) |
 | `examples/param-scan-btc-ti-24h.md` | User wants to find the best entry/exit thresholds for a Taker Intensity (or similar alpha-threshold) strategy — runs a full 2D parameter scan, plots raw Sharpe heatmap + plateau heatmap, and backtests the selected params |
 | `examples/backtest-validation-mcpt-oos.md` | User wants to validate a strategy with IS/OOS split and Monte Carlo Permutation Test (MCPT) |
 | `examples/backtest-twstock-foreign-zscore.md` | User wants to backtest a **multi-stock Taiwan equity portfolio** strategy — canonical pattern for multi-symbol data fetch (institutional + price_adj), TS Z-Score signal construction, weekly rebalancing loop with transaction costs, and random-weight benchmark simulation |

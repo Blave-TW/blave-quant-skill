@@ -35,16 +35,17 @@ IS: trailing 3 → 1 year ago | OOS: trailing 1 year → today
 ## Full Code
 
 ```python
-# NOTE: This is a validation-only research script. The MCPT algorithm requires raw
-# position and return arrays, so it uses a lightweight custom engine (_run) rather
-# than backtesting.py. For deployment, use strategies/TEMPLATE.py instead.
+# NOTE: This is a validation-only research script.
+# Requires: pip install vectorbt
 import sys
 from pathlib import Path
-sys.path.insert(0, str(Path(__file__).parent.parent))
+sys.path.insert(0, str(Path(__file__).parent.parent.parent))  # → blaveclaw-config/
+from lib.data import fetch_kline, fetch_taker_intensity
+from lib.param_scan import find_plateau, plot_heatmap
+from lib.validation import mcpt, plot_mcpt
 
 import numpy as np
 import pandas as pd
-import requests
 import matplotlib.pyplot as plt
 from datetime import datetime, timedelta, timezone
 from dotenv import dotenv_values
@@ -60,82 +61,41 @@ IS_START  = (_now - timedelta(days=3 * 365)).strftime("%Y-%m-%d")
 # OOS: [OOS_START, END_DATE)   — 1 year
 
 # ── Strategy Params ───────────────────────────────────────────────────────────
-# KD
+SYMBOL         = "DOGEUSDT"
+INTERVAL       = "1h"
+
 KD_PERIOD_SCAN = [5, 9, 14, 21, 34]
 KD_SMOOTH_SCAN = [2, 3, 5, 8]
 D_SMOOTH       = 3
 
-# TI (same threshold grid as HC example)
 TI_THRESHOLDS  = [-2, -1.5, -1, -0.5, 0, 0.5, 1, 1.5, 2]
 
-# Shared backtest settings
 TARGET_VOL     = 0.30
 MAX_LEV        = 2.0
-VOL_WINDOW     = 720        # 30 days × 24h
+VOL_WINDOW     = 720
 HOURS_PER_YEAR = 8760
 FEE            = 0.0005
 N_PERMUTATIONS = 2000
 
-API_BASE   = "https://api.blave.org"
-API_KEY    = _env["blave_api_key"]
-API_SECRET = _env["blave_secret_key"]
-HEADERS    = {"api-key": API_KEY, "secret-key": API_SECRET}
-
-
-# ── Fetch ─────────────────────────────────────────────────────────────────────
-def _fetch_year_chunks(endpoint, params):
-    s = datetime.strptime(params["start_date"], "%Y-%m-%d")
-    e = datetime.strptime(params["end_date"],   "%Y-%m-%d")
-    out = []
-    while s < e:
-        chunk_end = min(s + timedelta(days=365), e)
-        r = requests.get(f"{API_BASE}/{endpoint}", headers=HEADERS, params={
-            **params,
-            "start_date": s.strftime("%Y-%m-%d"),
-            "end_date":   chunk_end.strftime("%Y-%m-%d"),
-        }, timeout=20)
-        r.raise_for_status()
-        out.append(r.json())
-        s = chunk_end
-    return out
+HEADERS = {"api-key": _env["blave_api_key"], "secret-key": _env["blave_secret_key"]}
 
 
 def load_kline(start, end):
-    chunks = _fetch_year_chunks("kline", {"symbol": "DOGEUSDT", "period": "1h",
-                                           "start_date": start, "end_date": end})
-    rows = [row for chunk in chunks for row in chunk]
-    df = pd.DataFrame(rows)
-    df["time"] = pd.to_datetime(df["time"], unit="s", utc=True)
-    df = df.set_index("time").sort_index()
-    df = df[~df.index.duplicated(keep="first")]
-    for col in ["open", "high", "low", "close"]:
-        df[col] = df[col].astype(float)
-    return df
+    return fetch_kline(SYMBOL, INTERVAL, start, end, HEADERS)
 
 
 def load_ti(start, end):
-    chunks = _fetch_year_chunks("taker_intensity/get_alpha",
-                                {"symbol": "DOGEUSDT", "period": "1h", "timeframe": "24h",
-                                 "start_date": start, "end_date": end})
-    ts, alphas = [], []
-    for chunk in chunks:
-        data = chunk.get("data", {})
-        ts.extend(data.get("timestamp", []))
-        alphas.extend(data.get("alpha", []))
-    df = pd.DataFrame({"time": pd.to_datetime(ts, unit="s", utc=True), "ti": alphas})
-    df = df.set_index("time").sort_index()
-    df = df[~df.index.duplicated(keep="first")]
-    df["ti"] = pd.to_numeric(df["ti"], errors="coerce")
-    return df
+    df = fetch_taker_intensity(SYMBOL, INTERVAL, start, end, HEADERS, timeframe="24h")
+    return df.rename(columns={"alpha": "ti"})
 
 
 # ── Signal Computation ────────────────────────────────────────────────────────
 def compute_kd(df, k_period, k_smooth, d_smooth=D_SMOOTH):
-    low_min  = df["low"].rolling(k_period).min()
-    high_max = df["high"].rolling(k_period).max()
+    low_min  = df["Low"].rolling(k_period).min()
+    high_max = df["High"].rolling(k_period).max()
     denom    = high_max - low_min
     raw_k    = pd.Series(
-        np.where(denom > 0, (df["close"] - low_min) / denom * 100, 50.0),
+        np.where(denom > 0, (df["Close"] - low_min) / denom * 100, 50.0),
         index=df.index,
     )
     slow_k = raw_k.rolling(k_smooth).mean()
@@ -168,132 +128,107 @@ def _compute_ti_signal(ti: float, entry_th: float, exit_th: float) -> float:
     return float("nan")                        # dead zone: hold
 
 
-def _signals_to_position(sigs: list) -> np.ndarray:
-    """Third layer: nan=hold (ffill), default flat before first signal."""
-    return pd.Series(sigs, dtype=float).ffill().fillna(0.0).values
+def _build_kd_signals(k_series, d_series) -> pd.Series:
+    """Vectorized KD crossover signals: 1.0=long, 0.0=flat, nan=hold."""
+    golden = (k_series > d_series) & (k_series.shift(1) <= d_series.shift(1))
+    death  = (k_series < d_series) & (k_series.shift(1) >= d_series.shift(1))
+    signal = pd.Series(np.nan, index=k_series.index)
+    signal[golden] = 1.0
+    signal[death]  = 0.0
+    return signal
 
 
-def _build_kd_position(k_arr, d_arr) -> np.ndarray:
-    sigs = [float("nan")] + [
-        _compute_kd_signal(k_arr[i], k_arr[i - 1], d_arr[i], d_arr[i - 1])
-        for i in range(1, len(k_arr))
-    ]
-    return _signals_to_position(sigs)
+def _build_ti_signals(ti_series, entry_th, exit_th) -> pd.Series:
+    """Vectorized TI threshold signals: 1.0=long, 0.0=flat, nan=hold."""
+    signal = pd.Series(np.nan, index=ti_series.index)
+    signal[ti_series > entry_th] = 1.0
+    signal[ti_series < exit_th]  = 0.0
+    return signal
 
 
-def _build_ti_position(ti_arr, entry_th, exit_th) -> np.ndarray:
-    sigs = [_compute_ti_signal(ti_arr[i], entry_th, exit_th) for i in range(len(ti_arr))]
-    return _signals_to_position(sigs)
+def _signals_to_position(signals: pd.Series) -> np.ndarray:
+    return signals.ffill().fillna(0.0).values
 
 
 # ── Core Backtest Engine (shared) ─────────────────────────────────────────────
-def _run(close, position):
-    """Given close prices and a position array, return strategy metrics."""
-    n       = len(close)
-    log_ret = np.concatenate([[0.0], np.log(close[1:] / close[:-1])])
-    fwd_ret = np.empty(n)
-    fwd_ret[:-1] = np.diff(close) / close[:-1]
-    fwd_ret[-1]  = 0.0
+def _run(close_series, signals):
+    """Run vectorbt backtest; returns metrics dict compatible with mcpt()."""
+    import vectorbt as vbt
 
-    realized_vol = pd.Series(log_ret).rolling(VOL_WINDOW).std().values * np.sqrt(HOURS_PER_YEAR)
-    vol_scalar   = np.where(
-        (realized_vol > 0) & ~np.isnan(realized_vol),
-        np.clip(TARGET_VOL / realized_vol, 0, MAX_LEV),
-        1.0,
+    log_ret      = np.concatenate([[0.0], np.log(close_series.values[1:] / close_series.values[:-1])])
+    realized_vol = pd.Series(log_ret, index=close_series.index).rolling(VOL_WINDOW).std() * np.sqrt(HOURS_PER_YEAR)
+
+    size = signals.where(signals > 0).copy()
+    size[signals > 0] = (TARGET_VOL / realized_vol[signals > 0]).clip(upper=MAX_LEV).fillna(1.0)
+    size = size.ffill().fillna(1.0)
+
+    pos     = signals.ffill().fillna(0)
+    entries = (pos > 0) & (pos.shift(1, fill_value=0) == 0)
+    exits   = (pos == 0) & (pos.shift(1, fill_value=0) > 0)
+
+    # Signal at bar i close → execute at bar i+1 (no look-ahead)
+    pf = vbt.Portfolio.from_signals(
+        close_series,
+        entries.shift(1).fillna(False),
+        exits.shift(1).fillna(False),
+        size=size.shift(1).fillna(1.0),
+        size_type='percent',
+        fees=FEE, freq='1h',
+        init_cash=100_000,
     )
-    sized     = position * vol_scalar
-    fee_cost  = np.abs(np.diff(sized, prepend=0)) * FEE
-    strat_ret = sized * fwd_ret - fee_cost
 
-    r   = strat_ret[~np.isnan(strat_ret)]
-    cum = np.cumprod(1 + r)
-    pk  = np.maximum.accumulate(cum)
-    total_years  = len(r) / HOURS_PER_YEAR
-    total_return = cum[-1] - 1
-    ann_ret      = (1 + total_return) ** (1 / total_years) - 1
-    sharpe       = (r.mean() / r.std()) * np.sqrt(HOURS_PER_YEAR) if r.std() > 0 else np.nan
-    max_dd       = ((cum - pk) / pk).min()
-    return dict(sharpe=sharpe, ann_ret=ann_ret, max_dd=max_dd,
-                cum=cum, strat_ret=strat_ret, position=position)
+    stats     = pf.stats()
+    equity    = pf.value()
+    cum       = (equity / equity.iloc[0]).values
+    strat_ret = pf.returns().values
+    position  = _signals_to_position(signals)
+    total_ret = float(stats.get('Total Return [%]', 0)) / 100
+    yrs       = len(close_series) / HOURS_PER_YEAR
+    ann_ret   = (1 + total_ret) ** (1 / yrs) - 1 if yrs > 0 else np.nan
+
+    return dict(
+        sharpe   = float(stats.get('Sharpe Ratio', np.nan)),
+        ann_ret  = ann_ret,
+        max_dd   = float(stats.get('Max Drawdown [%]', 0)) / -100,
+        cum      = cum,
+        strat_ret= strat_ret,
+        position = position,
+    )
 
 
 # ── MCPT ──────────────────────────────────────────────────────────────────────
-def mcpt(close, position, n=N_PERMUTATIONS):
-    """
-    Permute the forward return series (not positions).
-    Position is held fixed, so fees and vol-scaling are identical for all permutations.
-    Null: the return periods selected by this strategy are no better than random.
-    p-value: fraction of permuted Sharpes >= actual OOS Sharpe.
-
-    Why not permute position?
-    A random shuffle of a binary 0/1 array produces ~N*p*(1-p) transitions vs the
-    strategy's much smaller number. With FEE=0.0005 that creates 30-40x more fee drag
-    on every permutation, forcing all permuted Sharpes deeply negative and producing
-    a biased p-value regardless of whether the strategy has real edge.
-    """
-    log_ret = np.concatenate([[0.0], np.log(close[1:] / close[:-1])])
-    fwd_ret = np.concatenate([np.diff(close) / close[:-1], [0.0]])
-
-    realized_vol = pd.Series(log_ret).rolling(VOL_WINDOW).std().values * np.sqrt(HOURS_PER_YEAR)
-    vol_scalar   = np.where(
-        (realized_vol > 0) & ~np.isnan(realized_vol),
-        np.clip(TARGET_VOL / realized_vol, 0, MAX_LEV),
-        1.0,
-    )
-    sized    = position * vol_scalar
-    fee_cost = np.abs(np.diff(sized, prepend=0)) * FEE  # identical for all permutations
-
-    def _sharpe_from_ret(ret):
-        sr = sized * ret - fee_cost
-        r  = sr[~np.isnan(sr)]
-        return (r.mean() / r.std()) * np.sqrt(HOURS_PER_YEAR) if r.std() > 0 else np.nan
-
-    actual  = _sharpe_from_ret(fwd_ret)
-    dist    = np.array([_sharpe_from_ret(np.random.permutation(fwd_ret)) for _ in range(n)])
-    p_value = float((dist >= actual).mean())
-    return actual, p_value, dist
+# mcpt() and plot_mcpt() imported from lib.validation
+# Call signature: mcpt(close, position, n=N_PERMUTATIONS, fee=FEE,
+#                      target_vol=TARGET_VOL, max_lev=MAX_LEV,
+#                      vol_window=VOL_WINDOW, periods_per_year=HOURS_PER_YEAR)
 
 
 # ── IS Param Scans ────────────────────────────────────────────────────────────
-def find_plateau(grid, row_vals, col_vals, window=1):
-    rows, cols  = grid.shape
-    nbr_mean    = np.full((rows, cols), np.nan)
-    for i in range(rows):
-        for j in range(cols):
-            if np.isnan(grid[i, j]): continue
-            nb = [grid[i+di, j+dj]
-                  for di in range(-window, window+1)
-                  for dj in range(-window, window+1)
-                  if 0 <= i+di < rows and 0 <= j+dj < cols
-                  and not np.isnan(grid[i+di, j+dj])]
-            if nb: nbr_mean[i, j] = np.mean(nb)
-    best = np.unravel_index(np.nanargmax(nbr_mean), nbr_mean.shape)
-    return best, nbr_mean, row_vals[best[0]], col_vals[best[1]]
+# find_plateau imported from lib.param_scan
 
 
 def kd_param_scan(df_kline):
     grid = np.full((len(KD_PERIOD_SCAN), len(KD_SMOOTH_SCAN)), np.nan)
-    close = df_kline["close"].values.astype(np.float64)
     for i, kp in enumerate(KD_PERIOD_SCAN):
         for j, ks in enumerate(KD_SMOOTH_SCAN):
             k_arr, d_arr = compute_kd(df_kline, kp, ks)
-            pos = _build_kd_position(k_arr, d_arr)
-            res = _run(close, pos)
+            k_s = pd.Series(k_arr, index=df_kline.index)
+            d_s = pd.Series(d_arr, index=df_kline.index)
+            sigs = _build_kd_signals(k_s, d_s)
+            res = _run(df_kline["Close"], sigs)
             if not np.isnan(res["sharpe"]): grid[i, j] = res["sharpe"]
     return grid
 
 
 def ti_param_scan(df_kline, df_ti):
-    df = df_kline[["close"]].join(df_ti[["ti"]], how="inner").dropna(subset=["close"])
-    close = df["close"].values.astype(np.float64)
-    ti    = df["ti"].values.astype(np.float64)
-    n     = len(TI_THRESHOLDS)
-    grid  = np.full((n, n), np.nan)
+    df = df_kline[["Close"]].join(df_ti[["ti"]], how="inner").dropna(subset=["Close"])
+    n  = len(TI_THRESHOLDS)
+    grid = np.full((n, n), np.nan)
     for i, entry in enumerate(TI_THRESHOLDS):
         for j, exit_ in enumerate(TI_THRESHOLDS):
             if exit_ > entry: continue
-            pos = _build_ti_position(ti, entry, exit_)
-            res = _run(close, pos)
+            sigs = _build_ti_signals(df["ti"], entry, exit_)
+            res = _run(df["Close"], sigs)
             if not np.isnan(res["sharpe"]): grid[i, j] = res["sharpe"]
     return grid, df
 
@@ -395,18 +330,26 @@ if __name__ == "__main__":
 
     # ── KD: IS full backtest ──────────────────────────────────────────────────
     kd_k_is, kd_d_is = compute_kd(kline_is, best_kp, best_ks)
-    kd_pos_is        = _build_kd_position(kd_k_is, kd_d_is)
-    kd_is_res        = _run(kline_is["close"].values.astype(np.float64), kd_pos_is)
+    kd_sigs_is = _build_kd_signals(
+        pd.Series(kd_k_is, index=kline_is.index),
+        pd.Series(kd_d_is, index=kline_is.index))
+    kd_is_res  = _run(kline_is["Close"], kd_sigs_is)
+    kd_pos_is  = kd_is_res["position"]
 
     # ── KD: OOS validation ────────────────────────────────────────────────────
     kd_k_oos, kd_d_oos = compute_kd(kline_oos, best_kp, best_ks)
-    kd_pos_oos         = _build_kd_position(kd_k_oos, kd_d_oos)
-    kd_oos_res         = _run(kline_oos["close"].values.astype(np.float64), kd_pos_oos)
+    kd_sigs_oos = _build_kd_signals(
+        pd.Series(kd_k_oos, index=kline_oos.index),
+        pd.Series(kd_d_oos, index=kline_oos.index))
+    kd_oos_res  = _run(kline_oos["Close"], kd_sigs_oos)
+    kd_pos_oos  = kd_oos_res["position"]
 
     # ── KD: MCPT on OOS ──────────────────────────────────────────────────────
     print("  Running MCPT (KD OOS)...")
     kd_actual, kd_pvalue, kd_dist = mcpt(
-        kline_oos["close"].values.astype(np.float64), kd_pos_oos)
+        kline_oos["Close"].values.astype(np.float64), kd_pos_oos,
+        n=N_PERMUTATIONS, fee=FEE, target_vol=TARGET_VOL, max_lev=MAX_LEV,
+        vol_window=VOL_WINDOW, periods_per_year=HOURS_PER_YEAR)
 
     # ── TI: IS param scan ────────────────────────────────────────────────────
     print("\n── TI: IS param scan ──")
@@ -417,21 +360,23 @@ if __name__ == "__main__":
           f"IS Sharpe={ti_grid[ti_idx]:.2f}")
 
     # ── TI: IS full backtest ──────────────────────────────────────────────────
-    ti_close_is  = df_ti_is["close"].values.astype(np.float64)
-    ti_signal_is = df_ti_is["ti"].values.astype(np.float64)
-    ti_pos_is    = _build_ti_position(ti_signal_is, best_entry, best_exit)
-    ti_is_res    = _run(ti_close_is, ti_pos_is)
+    df_ti_is_aligned = df_ti_is[["Close"]].join(df_ti_is[["ti"]], how="inner").dropna()
+    ti_sigs_is = _build_ti_signals(df_ti_is_aligned["ti"], best_entry, best_exit)
+    ti_is_res  = _run(df_ti_is_aligned["Close"], ti_sigs_is)
+    ti_pos_is  = ti_is_res["position"]
 
     # ── TI: OOS validation ────────────────────────────────────────────────────
-    df_ti_oos   = kline_oos[["close"]].join(ti_oos[["ti"]], how="inner").dropna(subset=["close"])
-    ti_close_oos  = df_ti_oos["close"].values.astype(np.float64)
-    ti_signal_oos = df_ti_oos["ti"].values.astype(np.float64)
-    ti_pos_oos    = _build_ti_position(ti_signal_oos, best_entry, best_exit)
-    ti_oos_res    = _run(ti_close_oos, ti_pos_oos)
+    df_ti_oos = kline_oos[["Close"]].join(ti_oos[["ti"]], how="inner").dropna(subset=["Close"])
+    ti_sigs_oos = _build_ti_signals(df_ti_oos["ti"], best_entry, best_exit)
+    ti_oos_res  = _run(df_ti_oos["Close"], ti_sigs_oos)
+    ti_pos_oos  = ti_oos_res["position"]
 
     # ── TI: MCPT on OOS ──────────────────────────────────────────────────────
     print("  Running MCPT (TI OOS)...")
-    ti_actual, ti_pvalue, ti_dist = mcpt(ti_close_oos, ti_pos_oos)
+    ti_actual, ti_pvalue, ti_dist = mcpt(
+        df_ti_oos["Close"].values.astype(np.float64), ti_pos_oos,
+        n=N_PERMUTATIONS, fee=FEE, target_vol=TARGET_VOL, max_lev=MAX_LEV,
+        vol_window=VOL_WINDOW, periods_per_year=HOURS_PER_YEAR)
 
     # ── Summary table ─────────────────────────────────────────────────────────
     kd_deg = kd_oos_res["sharpe"] / kd_is_res["sharpe"] if kd_is_res["sharpe"] != 0 else np.nan
@@ -512,4 +457,4 @@ if __name__ == "__main__":
 - **Why not permute position?** A random shuffle of a binary 0/1 array produces ~N×p×(1−p) transitions vs. the strategy's much smaller number. With FEE=0.0005 that creates 30–40× more fee drag on every permutation, forcing all permuted Sharpes deeply negative and producing a biased p-value regardless of whether the strategy has real edge.
 - **IS/OOS split is time-based, not random.** Shuffling time order for a financial backtest introduces look-ahead bias. The IS period always precedes OOS.
 - **Walk-forward extension:** for more rigorous validation, replace the single IS/OOS split with multiple expanding windows (e.g., 12-month IS → 3-month OOS, rolling forward). Not implemented here to keep the example readable.
-- **Both strategies use the same backtest engine** (`_run`), same vol-targeting, same fee model — the only difference is how `position` is computed.
+- **Both strategies use the same backtest engine** (`_run` via vectorbt), same vol-targeting, same fee model — the only difference is how signals are computed.

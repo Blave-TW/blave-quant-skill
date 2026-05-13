@@ -8,7 +8,9 @@ Go long when smart money is concentrating into a coin; exit when they distribute
 - **Long only** — no short positions
 
 This file shows the two functions you write for a Type A strategy.
-`lib/runner.py` handles everything else: `BlaveStrategy`, `Backtest`, stats output, PnL chart, live execution.
+`lib/runner.py` handles everything else: vectorbt backtest, stats output, PnL chart, live execution.
+
+Requires: `pip install vectorbt`
 
 ---
 
@@ -22,14 +24,14 @@ Align alpha timestamps to kline index with `.join()` + `.ffill()`.
 ## Code
 
 ```python
-import sys, requests
+import sys
 import numpy as np
 import pandas as pd
 from pathlib import Path
 from dotenv import dotenv_values
 
-sys.path.insert(0, str(Path(__file__).parent.parent.parent / "skills" / "blave-quant"))
-sys.path.insert(0, str(Path(__file__).parent.parent.parent))
+sys.path.insert(0, str(Path(__file__).parent.parent.parent))  # → blaveclaw-config/
+from lib.data import fetch_holder_concentration
 
 # ── Config ────────────────────────────────────────────────────────────────────
 MODE             = "backtest"
@@ -55,82 +57,49 @@ _HDRS = {"api-key": _env.get("blave_api_key", ""), "secret-key": _env.get("blave
 
 
 # ── add_indicators ────────────────────────────────────────────────────────────
-# Fetches HC alpha (annual chunking), aligns to df index, adds "HC" column.
-# df already has OHLCV — lib/runner.py fetches klines via lib/data.fetch_kline.
 def add_indicators(df):
-    from datetime import datetime, timedelta
-    s = datetime.strptime(START, "%Y-%m-%d")
-    e = datetime.utcnow() if not END else datetime.strptime(END, "%Y-%m-%d")
-
-    ts_list, alpha_list = [], []
-    cursor = s
-    while cursor < e:
-        chunk_end = min(cursor + timedelta(days=365), e)
-        r = requests.get(
-            "https://api.blave.org/holder_concentration/get_alpha",
-            headers=_HDRS,
-            params={"symbol": SYMBOL, "period": INTERVAL,
-                    "start_date": cursor.strftime("%Y-%m-%d"),
-                    "end_date":   chunk_end.strftime("%Y-%m-%d")},
-            timeout=60,
-        )
-        r.raise_for_status()
-        data = r.json().get("data", {})
-        ts_list.extend(data.get("timestamp", []))
-        alpha_list.extend(data.get("alpha", []))
-        cursor = chunk_end
-
-    hc = pd.DataFrame({
-        "time": pd.to_datetime(ts_list, unit="s", utc=True),
-        "HC":   pd.to_numeric(alpha_list, errors="coerce"),
-    }).set_index("time").sort_index()
-    hc = hc[~hc.index.duplicated(keep="first")]
-
-    df = df.join(hc["HC"], how="left")
+    hc = fetch_holder_concentration(SYMBOL, INTERVAL, START, END, _HDRS)
+    df = df.join(hc.rename(columns={"alpha": "HC"}))
     df["HC"] = df["HC"].ffill()
     return df
 
 
-# ── compute_signal ────────────────────────────────────────────────────────────
-# Pure function — reads "HC" (and "realized_vol" if VOL_TARGETING) from row.
-# Returns: 1.0 or fraction (long), 0.0 (flat), float("nan") (hold).
-def compute_signal(row) -> float:
-    hc = float(row["HC"])
-    if np.isnan(hc):
-        return float("nan")         # warmup / missing data: hold
+# ── compute_signals ───────────────────────────────────────────────────────────
+# Vectorized — receives the full df (with "HC" and "realized_vol" if VOL_TARGETING).
+# Returns pd.Series: positive float = long (size fraction), 0.0 = flat, nan = hold.
+def compute_signals(df) -> pd.Series:
+    hc     = df["HC"]
+    signal = pd.Series(np.nan, index=df.index)
 
-    if hc > ENTRY_TH:
-        if not VOL_TARGETING:
-            return 1.0
-        vol = float(row.get("realized_vol", float("nan")))
-        if np.isnan(vol) or vol <= 0:
-            return float("nan")     # vol not ready yet: hold
-        return min(TARGET_VOL / vol, VOL_CAP)
+    long_mask = hc > ENTRY_TH
+    flat_mask = hc < EXIT_TH
 
-    if hc < EXIT_TH:
-        return 0.0                  # below exit threshold: flat
+    if VOL_TARGETING and "realized_vol" in df.columns:
+        vol      = df["realized_vol"]
+        vol_size = (TARGET_VOL / vol).clip(upper=VOL_CAP)
+        signal[long_mask] = vol_size[long_mask]
+    else:
+        signal[long_mask] = 1.0
 
-    return float("nan")             # dead zone between thresholds: hold
+    signal[flat_mask] = 0.0
+    return signal
 
 
 # ── Run ───────────────────────────────────────────────────────────────────────
-# lib/runner.py provides BlaveStrategy(Strategy) with nan=hold logic,
-# Backtest(trade_on_close=False), stats print, PnL chart, and live/paper mode.
 if __name__ == "__main__":
     from lib.runner import run
-    run(locals(), add_indicators, compute_signal)
+    run(locals(), add_indicators, compute_signals)
 ```
 
 ---
 
 ## What lib/runner.py handles (you do NOT write these)
 
-- `BlaveStrategy(Strategy)` with `next()` that calls `compute_signal(row)` and interprets `nan` as hold
-- `Backtest(..., trade_on_close=False)` — signal at bar i close, fill at bar i+1 open
-- Stats output: Return, Sharpe, Max Drawdown, # Trades
+- Adds `realized_vol` column when `VOL_TARGETING = True`
+- Runs vectorbt `Portfolio.from_signals()` — signal at bar i, fill at bar i open
+- Stats output: Total Return, Sharpe, Max Drawdown, Win Rate, # Trades
 - PnL chart saved to `strategies/<name>/<name>_pnl.png`
-- Vol-targeting: adds `realized_vol` column to df when `VOL_TARGETING = True`
-- Bootstrap (live mode): replays history to find initial position before first cron tick
+- Live mode: calls `compute_signals(df).iloc[-1]` on each cron tick
 
 ---
 
@@ -151,17 +120,6 @@ if __name__ == "__main__":
 ## Notes
 
 - Entry threshold stricter than exit — gives the position room through short-term noise
-- With `VOL_TARGETING = True`, `compute_signal` returns a fraction (e.g. `0.4`) instead of `1.0`; the fraction scales position so annualized vol targets 30%
+- With `VOL_TARGETING = True`, `compute_signals` returns a vol-scaled fraction at each long bar
 - HC updates every 5 min; on `1h` interval each bar reflects the last finalized hourly value
-- To adjust thresholds: change `ENTRY_TH` / `EXIT_TH` in config and re-run backtest
-
-### Live Execution Timing
-
-`trade_on_close=False`: signal fires at bar i close → fill at bar i+1 open.
-
-```
-bar i closes
-  → compute_signal fires
-  → signal changed → place market order immediately
-  → fill at bar i+1 open
-```
+- Dead zone (between thresholds): position is held unchanged via `ffill()` in runner.py

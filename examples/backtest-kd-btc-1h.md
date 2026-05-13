@@ -8,7 +8,9 @@ Trade BTC on the 1-hour chart using the KD Stochastic Oscillator.
 - **Long only** — no short positions
 
 This file shows the two functions you write for a Type A strategy.
-`lib/runner.py` handles everything else: `BlaveStrategy`, `Backtest`, stats output, PnL chart, live execution.
+`lib/runner.py` handles everything else: vectorbt backtest, stats output, PnL chart, live execution.
+
+Requires: `pip install vectorbt`
 
 ---
 
@@ -17,9 +19,6 @@ This file shows the two functions you write for a Type A strategy.
 1. Raw %K = (Close − LowestLow_N) / (HighestHigh_N − LowestLow_N) × 100
 2. Slow %K = SMA(Raw %K, K_SMOOTH)
 3. %D = SMA(Slow %K, D_SMOOTH)
-
-All three are computed in `add_indicators()` and stored as df columns.
-`K_prev` / `D_prev` (previous bar) are also stored so `compute_signal` can detect crossovers from a single row.
 
 ---
 
@@ -32,8 +31,7 @@ import pandas as pd
 from pathlib import Path
 from dotenv import dotenv_values
 
-sys.path.insert(0, str(Path(__file__).parent.parent.parent / "skills" / "blave-quant"))
-sys.path.insert(0, str(Path(__file__).parent.parent.parent))
+sys.path.insert(0, str(Path(__file__).parent.parent.parent))  # → blaveclaw-config/
 
 # ── Config ────────────────────────────────────────────────────────────────────
 MODE             = "backtest"
@@ -60,82 +58,62 @@ _HDRS = {"api-key": _env.get("blave_api_key", ""), "secret-key": _env.get("blave
 
 
 # ── add_indicators ────────────────────────────────────────────────────────────
-# Computes %K, %D, and their previous-bar values.
-# K_prev / D_prev let compute_signal detect crossovers from a single row
-# without needing access to previous state — they are INDICATOR columns, not signal logic.
 def add_indicators(df):
     low_min  = df["Low"].rolling(K_PERIOD, min_periods=K_PERIOD).min()
     high_max = df["High"].rolling(K_PERIOD, min_periods=K_PERIOD).max()
     denom    = high_max - low_min
     raw_k    = np.where(denom > 0, (df["Close"] - low_min) / denom * 100, np.nan)
-    df["K"]      = pd.Series(raw_k, index=df.index).rolling(K_SMOOTH, min_periods=K_SMOOTH).mean()
-    df["D"]      = df["K"].rolling(D_SMOOTH, min_periods=D_SMOOTH).mean()
-    df["K_prev"] = df["K"].shift(1)
-    df["D_prev"] = df["D"].shift(1)
+    df["K"]  = pd.Series(raw_k, index=df.index).rolling(K_SMOOTH, min_periods=K_SMOOTH).mean()
+    df["D"]  = df["K"].rolling(D_SMOOTH, min_periods=D_SMOOTH).mean()
     return df
 
 
-# ── compute_signal ────────────────────────────────────────────────────────────
-# Pure function — reads K, D, K_prev, D_prev (and realized_vol) from row.
-# Returns: 1.0 or fraction (long), 0.0 (flat), float("nan") (hold).
-def compute_signal(row) -> float:
-    k  = float(row["K"])
-    d  = float(row["D"])
-    kp = float(row["K_prev"])
-    dp = float(row["D_prev"])
+# ── compute_signals ───────────────────────────────────────────────────────────
+# Vectorized — receives the full df (with indicators + realized_vol if VOL_TARGETING).
+# Returns pd.Series: positive float = long (size fraction), 0.0 = flat, nan = hold.
+def compute_signals(df) -> pd.Series:
+    k, d = df["K"], df["D"]
+    golden = (k > d) & (k.shift(1) <= d.shift(1))
+    death  = (k < d) & (k.shift(1) >= d.shift(1))
 
-    if any(np.isnan(v) for v in (k, d, kp, dp)):
-        return float("nan")         # warmup: hold
+    signal = pd.Series(np.nan, index=df.index)
 
-    if kp <= dp and k > d:          # golden cross → long
-        if not VOL_TARGETING:
-            return 1.0
-        vol = float(row.get("realized_vol", float("nan")))
-        if np.isnan(vol) or vol <= 0:
-            return float("nan")     # vol not ready: hold
-        return min(TARGET_VOL / vol, VOL_CAP)
+    if VOL_TARGETING and "realized_vol" in df.columns:
+        vol      = df["realized_vol"]
+        vol_size = (TARGET_VOL / vol).clip(upper=VOL_CAP)
+        signal[golden] = vol_size[golden]
+    else:
+        signal[golden] = 1.0
 
-    if kp >= dp and k < d:          # death cross → flat
-        return 0.0
-
-    return float("nan")             # between crossovers: hold
+    signal[death] = 0.0
+    return signal
 
 
 # ── Run ───────────────────────────────────────────────────────────────────────
-# lib/runner.py provides BlaveStrategy(Strategy) with nan=hold logic,
-# Backtest(trade_on_close=False), stats print, PnL chart, and live/paper mode.
 if __name__ == "__main__":
     from lib.runner import run
-    run(locals(), add_indicators, compute_signal)
+    run(locals(), add_indicators, compute_signals)
 ```
 
 ---
 
 ## What lib/runner.py handles (you do NOT write these)
 
-- `BlaveStrategy(Strategy)` with `next()` that calls `compute_signal(row)` and interprets `nan` as hold
-- `Backtest(..., trade_on_close=False)` — signal at bar i close, fill at bar i+1 open
-- Stats output: Return, Sharpe, Max Drawdown, # Trades
+- Adds `realized_vol` column when `VOL_TARGETING = True`
+- Runs vectorbt `Portfolio.from_signals()` — signal at bar i, fill at bar i open
+- Stats output: Total Return, Sharpe, Max Drawdown, Win Rate, # Trades
 - PnL chart saved to `strategies/<name>/<name>_pnl.png`
-- Vol-targeting: adds `realized_vol` column to df when `VOL_TARGETING = True`
-- Bootstrap (live mode): replays history to find initial position before first cron tick
+- Live mode: calls `compute_signals(df).iloc[-1]` on each cron tick
 
 ---
 
 ## Notes
 
 - **Long only** — no short positions
-- **K_prev / D_prev in add_indicators**: storing the previous bar's values as indicator columns is the correct pattern for crossover detection. It keeps `compute_signal` stateless (reads only from `row`) while still seeing two consecutive bars
-- **OB/OS filter (optional):** add `and k < 20` to the golden cross condition for oversold-only entries
-- **Smoothing method:** uses SMA for both %K and %D (classic formula). Swap `rolling().mean()` for `ewm(span=...)` if you prefer exponential weighting
+- **NaN = hold**: `ffill()` in runner.py propagates the last non-nan signal between crossovers
+- **OB/OS filter (optional):** add `& (k < 20)` to `golden` for oversold-only entries
+- **Smoothing method:** SMA for both %K and %D. Swap `.rolling().mean()` for `.ewm(span=...)` if preferred
 
 ### Live Execution Timing
 
-`trade_on_close=False`: signal fires at bar i close → fill at bar i+1 open.
-
-```
-bar i closes
-  → KD recomputes with new close
-  → crossover detected → place market order immediately
-  → fill at bar i+1 open
-```
+Signal fires at bar i close → `compute_signals(df).iloc[-1]` → place order → fill at bar i+1 open.
