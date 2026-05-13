@@ -61,28 +61,43 @@ If the user requests a mode like "auto-trade without prompts" / "run this loop w
 
 Not financial advice. Trading carries significant risk of loss.
 
-## Examples
+## Reference Guide
 
-Workflow templates for common use cases. **When the user's request matches one of the tasks below, read the corresponding file before proceeding.**
+This skill is a **data access layer**. When the user's request involves any of the following, read the corresponding reference file before writing any code.
 
-| File | When to read |
+**Blave market data**
+
+| Use case | Reference |
 |---|---|
-| `examples/hyperliquid-copy-trading.md` | User wants to find traders to follow / copy trade on Hyperliquid |
-| `examples/blave-alpha-screening.md` | User wants to screen or find high-conviction / small-cap tokens |
-| `examples/backtest-holder-concentration.md` | User wants to backtest a strategy using any Blave alpha signal (holder concentration, taker intensity, liquidation, whale hunter, etc.) — contains the canonical data-fetch pattern (parallel arrays `data.alpha` / `data.timestamp`, annual chunking) |
-| `examples/truth-social-trump-monitor.md` | User wants to monitor Trump's Truth Social posts with translation |
-| `examples/btc-etf-flow-monitor.md` | User wants to track Bitcoin ETF flows / institutional accumulation (BlackRock IBIT etc.) |
-| `examples/bitfinex-auto-lending.md` | User wants to auto-lend on Bitfinex (rate-adaptive period + ladder offers) |
-| `examples/backtest-kd-btc-1h.md` | User wants to backtest KD stochastic (golden/death cross) on BTC 1h klines — uses vectorbt (`pip install vectorbt`) |
-| `examples/param-scan-btc-ti-24h.md` | User wants to find the best entry/exit thresholds for a Taker Intensity (or similar alpha-threshold) strategy — runs a full 2D parameter scan, plots raw Sharpe heatmap + plateau heatmap, and backtests the selected params |
-| `examples/backtest-validation-mcpt-oos.md` | User wants to validate a strategy with IS/OOS split and Monte Carlo Permutation Test (MCPT) |
-| `examples/backtest-twstock-foreign-zscore.md` | User wants to backtest a **multi-stock Taiwan equity portfolio** strategy — canonical pattern for multi-symbol data fetch (institutional + price_adj), TS Z-Score signal construction, weekly rebalancing loop with transaction costs, and random-weight benchmark simulation |
-| `examples/liquidation-map.md` | User wants to visualize the liquidation heatmap or recent liquidation events (爆倉地圖) |
-| `references/marketplace.md` | User wants to browse, load, or submit strategies on the BlaveClaw Marketplace |
+| Alpha indicators — HC, TI, Whale Hunter, Squeeze, Liquidation, Market Direction, Capital Shortage, Market Sentiment, Top Trader Exposure | `references/blave-api.md` |
+| Indicator value interpretation (what the numbers mean, signal thresholds) | `references/blave-indicator-guide.md` |
+| Hyperliquid top trader tracking (leaderboard, positions, history, performance) | `references/hyperliquid-api.md` |
+| Screener saved conditions | `references/blave-api.md` |
+| TradingView alert stream (SSE) | `references/tradingview-stream.md` |
+| CME/ICE futures OHLCV (WTI crude, Gold, Brent) | `references/blave-api.md` |
+| Taiwan stock daily OHLCV, institutional flows, margin, shareholding, financials, monthly revenue | `references/twse-skill.md` + `references/twse-api-reference.md` |
+| TWSE BSR 分點資料 (broker daily breakdown, CAPTCHA) | `references/twse-bsr-reference.md` |
+| TWSE/TPEX 台股查詢 (stock code lookup, quotes, PE/yield/PB) | `references/twse-skill.md` |
 
-## Output Rule — Chart Auto-Send
+**Exchange trading**
 
-**Whenever you generate a chart or visualization, send it through the user's notification channel (e.g., Telegram) if and only if the user has explicitly configured one in their environment. Only send to the channel the user themselves set up — never infer or guess an endpoint. If no channel is configured, display the chart inline as usual.**
+| Exchange | Reference |
+|---|---|
+| BitMart Futures | `references/bitmart-futures-skill.md` · `references/bitmart-api-reference.md` |
+| BitMart Spot | `references/bitmart-spot-skill.md` · `references/bitmart-spot-api-reference.md` |
+| OKX | `references/okx-skill.md` · `references/okx-api-reference.md` |
+| Bybit | `references/bybit-skill.md` |
+| BingX | `references/bingx-skill.md` · `references/bingx-api-reference.md` |
+| Bitget | `references/bitget-skill.md` · `references/bitget-api-reference.md` |
+| Binance | `references/binance-skill.md` · `references/binance-api-reference.md` |
+| Bitfinex (spot / margin / lending) | `references/bitfinex-skill.md` |
+| KuCoin | `references/kucoin-skill.md` · `references/kucoin-api-reference.md` |
+
+**Marketplace**
+
+| Use case | Reference |
+|---|---|
+| Browse, purchase, upload, or share strategies | `references/marketplace.md` |
 
 ---
 

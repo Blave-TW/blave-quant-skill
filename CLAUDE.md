@@ -4,18 +4,20 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Overview
 
-This repo contains one skill covering ten capabilities:
-1. **Blave** — Agent calls the Blave REST API directly for crypto market alpha data
-2. **BitMart Futures** — Agent calls the BitMart API for perpetual futures trading
-3. **BitMart Spot** — Agent calls the BitMart API for spot trading
-4. **Bybit** — Agent calls the Bybit API for spot and derivatives/perpetual swap trading
-5. **BingX** — Agent calls the BingX API for spot and perpetual swap trading
-6. **Bitget** — Agent calls the Bitget API for spot and futures trading
-7. **Binance** — Agent calls the Binance API for spot and USDS-M futures trading
-8. **Bitfinex** — Agent calls the Bitfinex API for spot, margin, and funding/lending
-9. **KuCoin** — Agent calls the KuCoin API for spot and futures/perpetual contract trading
-10. **TWSE / TPEX（台股）** — Agent queries Taiwan stock market data (stock code lookup, quotes, PE/yield/PB) via public APIs; no API key required
-11. **TWSE BSR 分點資料** — Agent queries broker/dealer daily trading report via CAPTCHA-protected form; agent solves CAPTCHA using its own vision
+This repo contains one skill covering fourteen capabilities:
+1. **Blave** — Agent calls the Blave REST API directly for crypto market alpha data, Taiwan stock data, and Hyperliquid top trader tracking
+2. **CME / ICE Futures** — Agent fetches WTI crude (CL), gold (GC), and Brent crude (BRN) OHLCV from 2010 via Blave API
+3. **BitMart Futures** — Agent calls the BitMart API for perpetual futures trading
+4. **BitMart Spot** — Agent calls the BitMart API for spot trading
+5. **OKX** — Agent calls the OKX API for spot and perpetual swap trading
+6. **Bybit** — Agent calls the Bybit API for spot and derivatives/perpetual swap trading
+7. **BingX** — Agent calls the BingX API for spot and perpetual swap trading
+8. **Bitget** — Agent calls the Bitget API for spot and futures trading
+9. **Binance** — Agent calls the Binance API for spot and USDS-M futures trading
+10. **Bitfinex** — Agent calls the Bitfinex API for spot, margin, and funding/lending
+11. **KuCoin** — Agent calls the KuCoin API for spot and futures/perpetual contract trading
+12. **TWSE / TPEX（台股）** — Agent queries Taiwan stock market data (stock code lookup, quotes, PE/yield/PB) via public APIs; no API key required
+13. **TWSE BSR 分點資料** — Agent queries broker/dealer daily trading report via CAPTCHA-protected form; agent solves CAPTCHA using its own vision
 
 No CLI or wrapper involved. All API calls are made directly by the agent.
 
