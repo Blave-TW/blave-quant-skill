@@ -430,7 +430,7 @@ df["yoy_pct"] = df["revenue"].pct_change(periods=12) * 100  # year-over-year %
 ## CME / ICE Futures OHLCV — 原油/黃金/Brent 期貨
 
 ```
-GET /studio/market/databento/ohlcv/<dataset>/<symbol>/<schema>
+GET /studio/market/db/ohlcv/<dataset>/<symbol>/<schema>
 ```
 
 `start` / `end` optional (ISO 8601, e.g. `2024-01-01`). Data from 2010-06-06. Timestamps UTC.
@@ -461,7 +461,7 @@ def fetch_ohlcv_chunked(dataset, symbol, schema, start, end, chunk_days=30):
     while cur < end_date:
         chunk_end = min(cur + timedelta(days=chunk_days), end_date)
         resp = requests.get(
-            f"{BASE_URL}/studio/market/databento/ohlcv/{dataset}/{symbol}/{schema}",
+            f"{BASE_URL}/studio/market/db/ohlcv/{dataset}/{symbol}/{schema}",
             headers=headers,
             params={"start": cur.isoformat(), "end": chunk_end.isoformat()},
             timeout=30,
@@ -478,7 +478,7 @@ bars = fetch_ohlcv_chunked("GLBX.MDP3", "CL", "ohlcv-1m", "2025-05-01", "2026-05
 # WTI 原油日K
 params = {"start": "2024-01-01", "end": "2024-12-31"}
 response = requests.get(
-    f"{BASE_URL}/studio/market/databento/ohlcv/GLBX.MDP3/CL/ohlcv-1d",
+    f"{BASE_URL}/studio/market/db/ohlcv/GLBX.MDP3/CL/ohlcv-1d",
     headers=headers, params=params, timeout=60,
 )
 data = response.json()["data"]
@@ -487,13 +487,13 @@ data = response.json()["data"]
 
 # Brent 原油小時K
 response = requests.get(
-    f"{BASE_URL}/studio/market/databento/ohlcv/IFEU.IMPACT/BRN/ohlcv-1h",
+    f"{BASE_URL}/studio/market/db/ohlcv/IFEU.IMPACT/BRN/ohlcv-1h",
     headers=headers, params={"start": "2024-01-01"}, timeout=60,
 )
 
 # 黃金期貨分K
 response = requests.get(
-    f"{BASE_URL}/studio/market/databento/ohlcv/GLBX.MDP3/GC/ohlcv-1m",
+    f"{BASE_URL}/studio/market/db/ohlcv/GLBX.MDP3/GC/ohlcv-1m",
     headers=headers, params={"start": "2026-05-10", "end": "2026-05-11"}, timeout=60,
 )
 ```

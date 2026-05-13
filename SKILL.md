@@ -299,7 +299,7 @@ Receive TradingView alerts in real time via Server-Sent Events.
 
 ### CME / ICE Futures OHLCV — 原油/黃金/Brent 期貨
 
-`GET /studio/market/databento/ohlcv/<dataset>/<symbol>/<schema>`
+`GET /studio/market/db/ohlcv/<dataset>/<symbol>/<schema>`
 
 `start` / `end` optional. Data from 2010-06-06. ~4 h delay.
 
