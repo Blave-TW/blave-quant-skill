@@ -33,7 +33,10 @@ Response: `{"code": "..."}` — save to `.py` and run with `python3`.
 **Flow when user wants to run a purchased strategy:**
 1. `GET /openclaw/marketplace/my/purchases` — show the list
 2. User picks one → `GET /openclaw/marketplace/strategies/{id}/code`
-3. Save to file → `python3 filename.py`
+3. Save to `/tmp/<filename>.py`
+4. **Check for multi-strategy bundle** — scan for `# ===== STRATEGY \d+:` markers:
+   - If found: split into separate files and deploy each (see "Multi-strategy bundle" below)
+   - If not found: `python3 filename.py`
 
 ## Submit a strategy for sale
 
@@ -57,6 +60,37 @@ GET /openclaw/marketplace/my/submissions
 ```
 Response: `[{id, title, price, status, visibility, created_at}, ...]`
 Status values: `pending` | `approved` | `unlisted`
+
+## Multi-strategy bundle
+
+**Submitting** — pack two or more strategies into one file using `# ===== STRATEGY N: <name> =====` delimiters, submit via the normal endpoint:
+
+```python
+# ===== STRATEGY 1: BTC SMA Cross =====
+MODE          = "live"
+STRATEGY_NAME = "btc_sma_cross"
+SYMBOL        = "BTCUSDT"
+# ... full strategy 1 code ...
+
+# ===== STRATEGY 2: ETH RSI Fade =====
+MODE          = "live"
+STRATEGY_NAME = "eth_rsi_fade"
+SYMBOL        = "ETHUSDT"
+# ... full strategy 2 code ...
+```
+
+```
+POST /openclaw/marketplace/strategies/submit
+{"title": "BTC SMA + ETH RSI Bundle", "description": "...", "price": 500, "category": "bundle", "code": "..."}
+```
+
+In `description`, write a structured block for each strategy separated by `---`.
+
+**Deploying** — when downloaded code contains `# ===== STRATEGY N:` markers:
+1. Split at each marker into N separate strings
+2. Save each to `/tmp/<name_slug>.py` (slug from the name after the colon)
+3. Security scan each file separately; skip any that exit 2 (critical)
+4. Move approved files to `strategies/<name_slug>.py` and run each with `python3`
 
 ## Private strategies
 
