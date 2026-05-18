@@ -17,7 +17,7 @@ This repo contains one skill covering fourteen capabilities:
 10. **Bitfinex** — Agent calls the Bitfinex API for spot, margin, and funding/lending
 11. **KuCoin** — Agent calls the KuCoin API for spot and futures/perpetual contract trading
 12. **TWSE / TPEX（台股）** — Agent queries Taiwan stock market data (stock code lookup, quotes, PE/yield/PB) via public APIs; no API key required
-13. **TWSE BSR 分點資料** — Agent queries broker/dealer daily trading report via CAPTCHA-protected form; agent solves CAPTCHA using its own vision
+13. **台股分點買賣超** — Agent calls Blave API `GET /studio/market/twstock/broker/stock/<stock_id>` (by stock) or `GET /studio/market/twstock/broker/trader/<trader_id>` (by broker branch) for daily buy/sell data via FinMind; no CAPTCHA required
 
 No CLI or wrapper involved. All API calls are made directly by the agent.
 
@@ -61,7 +61,7 @@ No CLI or wrapper involved. All API calls are made directly by the agent.
 | `references/kucoin-bpp.md` | KuCoin Broker Pro Program — commission tiers, referral bonuses, dashboard guide |
 | `references/twse-skill.md` | TWSE/TPEX 台股查詢 — 快速參考：endpoints、欄位說明、Python 搜尋範例 |
 | `references/twse-api-reference.md` | TWSE/TPEX 完整 API 參考：上市/上櫃清單、行情、停復牌、民國年轉換 |
-| `references/twse-bsr-reference.md` | TWSE BSR 分點資料 — 表單結構、CAPTCHA vision 解碼流程、Python 範例 |
+| `references/twse-bsr-reference.md` | 台股分點買賣超 — Blave API endpoints（by stock / by trader）、欄位說明、Python 範例 |
 
 ## Blave API Endpoints
 
@@ -92,6 +92,8 @@ Base URL: `https://api.blave.org`
 - `studio/market/twstock/balance_sheet/<stock_id>` — 資產負債表 quarterly fundamental; same schema; `_per` suffix types are % of total assets
 - `studio/market/twstock/cashflow/<stock_id>` — 現金流量表 quarterly fundamental; same schema
 - `studio/market/twstock/monthly_revenue/<stock_id>` — 月營收 monthly revenue (`date`, `stock_id`, `country`, `revenue` in thousands NTD, `revenue_month`, `revenue_year`); `start`/`end` optional; data from 2000-01-01; Redis-cached 24 h
+- `studio/market/twstock/broker/stock/<stock_id>` — 分點買賣超 by stock: all broker branches for the given stock (`date`, `broker_id`, `broker_name`, `price`, `buy`, `sell`); `start`/`end` optional (YYYY-MM-DD, defaults to today)
+- `studio/market/twstock/broker/trader/<trader_id>` — 分點買賣超 by broker branch: all stocks traded by the given branch (`date`, `broker_id`, `broker_name`, `stock_id`, `price`, `buy`, `sell`); `start`/`end` optional (YYYY-MM-DD, defaults to today)
 - `screener/get_saved_conditions` — user's saved screener conditions
 - `screener/get_saved_condition_result` — symbols matching a saved condition (`condition_id` required)
 - `hyperliquid/leaderboard` — top 100 Hyperliquid traders (`sort_by` param)
