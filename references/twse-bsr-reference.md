@@ -22,7 +22,7 @@ GET /studio/market/twstock/broker/search?name=<name>
 
 ---
 
-## Endpoint 1 — 用股票代號查分點
+## Endpoint 1 — 用股票代號查分點（單日）
 
 ```
 GET /studio/market/twstock/broker/stock/<stock_id>
@@ -31,8 +31,7 @@ GET /studio/market/twstock/broker/stock/<stock_id>
 | 參數 | 類型 | 必填 | 說明 |
 |---|---|---|---|
 | `stock_id` | path | 是 | 股票代號，例如 `2330` |
-| `start` | query | 否 | 開始日期 `YYYY-MM-DD`（預設今天） |
-| `end` | query | 否 | 結束日期 `YYYY-MM-DD`（預設今天） |
+| `date` | query | 否 | 查詢日期 `YYYY-MM-DD`（預設今天） |
 
 **回傳：** `{"stock_id": "2330", "data": [...]}`
 
@@ -50,7 +49,7 @@ GET /studio/market/twstock/broker/stock/<stock_id>
 
 ---
 
-## Endpoint 2 — 用券商代號查分點
+## Endpoint 2 — 用券商代號查分點（單日）
 
 ```
 GET /studio/market/twstock/broker/trader/<trader_id>
@@ -58,9 +57,8 @@ GET /studio/market/twstock/broker/trader/<trader_id>
 
 | 參數 | 類型 | 必填 | 說明 |
 |---|---|---|---|
-| `trader_id` | path | 是 | 券商分點代碼，例如 `9898`（元大新莊） |
-| `start` | query | 否 | 開始日期 `YYYY-MM-DD`（預設今天） |
-| `end` | query | 否 | 結束日期 `YYYY-MM-DD`（預設今天） |
+| `trader_id` | path | 是 | 券商分點代碼，例如 `9217`（凱基-松山）。字母數字皆支援，如 `920A` |
+| `date` | query | 否 | 查詢日期 `YYYY-MM-DD`（預設今天） |
 
 **回傳：** `{"trader_id": "9898", "data": [...]}`
 
@@ -80,26 +78,26 @@ HEADERS = {
     "secret-key": os.environ["blave_secret_key"],
 }
 
-def get_broker_by_stock(stock_id, start=None, end=None):
-    params = {k: v for k, v in {"start": start, "end": end}.items() if v}
+def get_broker_by_stock(stock_id, date=None):
+    params = {"date": date} if date else {}
     r = requests.get(f"{BASE_URL}/studio/market/twstock/broker/stock/{stock_id}", headers=HEADERS, params=params)
     r.raise_for_status()
     return r.json()["data"]
 
-def get_broker_by_trader(trader_id, start=None, end=None):
-    params = {k: v for k, v in {"start": start, "end": end}.items() if v}
+def get_broker_by_trader(trader_id, date=None):
+    params = {"date": date} if date else {}
     r = requests.get(f"{BASE_URL}/studio/market/twstock/broker/trader/{trader_id}", headers=HEADERS, params=params)
     r.raise_for_status()
     return r.json()["data"]
 
 # 查台積電 2024-01-02 買賣超前10大分點
-rows = get_broker_by_stock("2330", start="2024-01-02", end="2024-01-02")
+rows = get_broker_by_stock("2330", date="2024-01-02")
 for row in sorted(rows, key=lambda x: x["buy"] - x["sell"], reverse=True)[:10]:
     net = row["buy"] - row["sell"]
     print(f"{row['broker_name']:20s}  買 {row['buy']:>8,}  賣 {row['sell']:>8,}  超 {net:>+8,}")
 
-# 查元大新莊 (9898) 2024-01-02 買了哪些股
-rows2 = get_broker_by_trader("9898", start="2024-01-02", end="2024-01-02")
+# 查凱基-松山 (9217) 2024-01-02 買了哪些股
+rows2 = get_broker_by_trader("9217", date="2024-01-02")
 for row in sorted(rows2, key=lambda x: x["buy"] - x["sell"], reverse=True)[:10]:
     net = row["buy"] - row["sell"]
     print(f"{row['stock_id']}  買 {row['buy']:>8,}  賣 {row['sell']:>8,}  超 {net:>+8,}")
