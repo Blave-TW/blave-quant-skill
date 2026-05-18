@@ -92,6 +92,7 @@ Base URL: `https://api.blave.org`
 - `studio/market/twstock/balance_sheet/<stock_id>` — 資產負債表 quarterly fundamental; same schema; `_per` suffix types are % of total assets
 - `studio/market/twstock/cashflow/<stock_id>` — 現金流量表 quarterly fundamental; same schema
 - `studio/market/twstock/monthly_revenue/<stock_id>` — 月營收 monthly revenue (`date`, `stock_id`, `country`, `revenue` in thousands NTD, `revenue_month`, `revenue_year`); `start`/`end` optional; data from 2000-01-01; Redis-cached 24 h
+- `studio/market/twstock/broker/search` — 券商分點代碼查詢: fuzzy search by `name` param; returns `[{broker_id, broker_name}]`; backed by FinMind TaiwanSecuritiesTraderInfo (1007 branches)
 - `studio/market/twstock/broker/stock/<stock_id>` — 分點買賣超 by stock: all broker branches for the given stock (`date`, `broker_id`, `broker_name`, `price`, `buy`, `sell`); `start`/`end` optional (YYYY-MM-DD, defaults to today)
 - `studio/market/twstock/broker/trader/<trader_id>` — 分點買賣超 by broker branch: all stocks traded by the given branch (`date`, `broker_id`, `broker_name`, `stock_id`, `price`, `buy`, `sell`); `start`/`end` optional (YYYY-MM-DD, defaults to today)
 - `screener/get_saved_conditions` — user's saved screener conditions

@@ -1,6 +1,6 @@
 ---
 name: blave-quant
-description: "Use for: (1) Blave market alpha data — 籌碼集中度 Holder Concentration, 多空力道 Taker Intensity, 巨鯨警報 Whale Hunter, 擠壓動能 Squeeze Momentum, 市場方向 Market Direction, 資金稀缺 Capital Shortage, 板塊輪動 Sector Rotation, Blave頂尖交易員 Top Trader Exposure, kline, alpha table, 市場情緒 Market Sentiment, screener saved conditions, Hyperliquid top trader tracking (leaderboard, positions, history, performance, bucket stats), Taiwan stock daily OHLCV, forward-adjusted prices, institutional investor buy/sell, margin trading data, shareholding distribution, quarterly fundamental statements — income statement, balance sheet, cash flow, and broker/dealer daily buy/sell by branch (台股日K/向後調整/三大法人/融資融券/股權持股分級表/綜合損益表/資產負債表/現金流量表/分點買賣超); (2) CME / ICE futures OHLCV — WTI crude oil (CL), gold (GC), Brent crude (BRN); daily/hourly/minute candles from 2010; (3) BitMart futures/contract trading — opening/closing positions, leverage, plan orders, TP/SL, trailing stops, account management, sub-account transfers; (4) BitMart spot trading — buy/sell, limit/market orders, account balance, order history, sub-account transfers; (5) OKX trading — spot and perpetual swap, order placement, positions, balance; (6) Bybit trading — spot and derivatives/perpetual swap, order placement, positions, balance, TP/SL; (7) BingX trading — spot and perpetual swap, order placement, position management, leverage, TWAP orders, OCO orders; (8) Bitget trading — spot and futures, order placement, position management, leverage, plan orders; (9) Binance trading — spot and USDS-M futures, order placement, positions, leverage, algo orders, OCO/OTO/OTOCO; (10) Bitfinex trading & funding — spot, margin, funding/lending (submit offers, loans, credits), wallet transfers; (11) KuCoin trading — spot and futures/perpetual contracts, order placement, position management, leverage, stop orders, account management; (12) TWSE/TPEX 台股查詢 — look up Taiwan stock codes and company names, query daily quotes (open/high/low/close, volume), PE ratio, dividend yield, PB ratio for listed (上市) and OTC (上櫃) stocks; no API key required; (13) 台股分點買賣超 — query broker/dealer daily buy/sell by stock (`broker/stock/<stock_id>`) or by broker branch (`broker/trader/<trader_id>`); `start`/`end` date range supported; via Blave API (FinMind data); no CAPTCHA required."
+description: "Use for: (1) Blave market alpha data — 籌碼集中度 Holder Concentration, 多空力道 Taker Intensity, 巨鯨警報 Whale Hunter, 擠壓動能 Squeeze Momentum, 市場方向 Market Direction, 資金稀缺 Capital Shortage, 板塊輪動 Sector Rotation, Blave頂尖交易員 Top Trader Exposure, kline, alpha table, 市場情緒 Market Sentiment, screener saved conditions, Hyperliquid top trader tracking (leaderboard, positions, history, performance, bucket stats), Taiwan stock daily OHLCV, forward-adjusted prices, institutional investor buy/sell, margin trading data, shareholding distribution, quarterly fundamental statements — income statement, balance sheet, cash flow, and broker/dealer daily buy/sell by branch (台股日K/向後調整/三大法人/融資融券/股權持股分級表/綜合損益表/資產負債表/現金流量表/分點買賣超); (2) CME / ICE futures OHLCV — WTI crude oil (CL), gold (GC), Brent crude (BRN); daily/hourly/minute candles from 2010; (3) BitMart futures/contract trading — opening/closing positions, leverage, plan orders, TP/SL, trailing stops, account management, sub-account transfers; (4) BitMart spot trading — buy/sell, limit/market orders, account balance, order history, sub-account transfers; (5) OKX trading — spot and perpetual swap, order placement, positions, balance; (6) Bybit trading — spot and derivatives/perpetual swap, order placement, positions, balance, TP/SL; (7) BingX trading — spot and perpetual swap, order placement, position management, leverage, TWAP orders, OCO orders; (8) Bitget trading — spot and futures, order placement, position management, leverage, plan orders; (9) Binance trading — spot and USDS-M futures, order placement, positions, leverage, algo orders, OCO/OTO/OTOCO; (10) Bitfinex trading & funding — spot, margin, funding/lending (submit offers, loans, credits), wallet transfers; (11) KuCoin trading — spot and futures/perpetual contracts, order placement, position management, leverage, stop orders, account management; (12) TWSE/TPEX 台股查詢 — look up Taiwan stock codes and company names, query daily quotes (open/high/low/close, volume), PE ratio, dividend yield, PB ratio for listed (上市) and OTC (上櫃) stocks; no API key required; (13) 台股分點買賣超 — search broker branch code by name (`broker/search?name=`), then query by stock (`broker/stock/<stock_id>`) or by broker branch (`broker/trader/<trader_id>`); `start`/`end` date range supported; via Blave API (FinMind data); no CAPTCHA required."
 version: 1.8.0
 metadata:
   openclaw:
@@ -282,6 +282,7 @@ Receive TradingView alerts in real time via Server-Sent Events.
 | `GET /studio/market/twstock/balance_sheet/<stock_id>` | 資產負債表 (季頻, long format); `start`/`end` optional (YYYY-MM-DD) |
 | `GET /studio/market/twstock/cashflow/<stock_id>` | 現金流量表 (季頻, long format); `start`/`end` optional (YYYY-MM-DD) |
 | `GET /studio/market/twstock/monthly_revenue/<stock_id>` | 月營收 (月頻); `start`/`end` optional (YYYY-MM-DD); data from 2000-01-01; Redis-cached 24 h |
+| `GET /studio/market/twstock/broker/search?name=<name>` | 券商分點查詢 — 用名稱（模糊比對）查 broker_id; 回傳 `[{broker_id, broker_name}]`; 1007 筆分點目錄 |
 | `GET /studio/market/twstock/broker/stock/<stock_id>` | 分點買賣超 — 查某股票所有券商分點; `start`/`end` optional (YYYY-MM-DD); fields: `broker_id`, `broker_name`, `price`, `buy`, `sell` |
 | `GET /studio/market/twstock/broker/trader/<trader_id>` | 分點買賣超 — 查某券商分點所有股票; `start`/`end` optional (YYYY-MM-DD); fields: `stock_id`, `broker_name`, `price`, `buy`, `sell` |
 
@@ -368,7 +369,14 @@ No API key required. Full reference: `references/twse-api-reference.md` | Quick 
 
 **Full reference: `references/twse-bsr-reference.md`**
 
-兩種查詢方式：
+**步驟 1 — 查 broker_id（若不知道代碼）：**
+
+```
+GET /studio/market/twstock/broker/search?name=松山
+→ [{"broker_id": "9217", "broker_name": "凱基-松山"}, ...]
+```
+
+**步驟 2 — 查分點資料（擇一）：**
 
 ```
 GET /studio/market/twstock/broker/stock/<stock_id>?start=YYYY-MM-DD&end=YYYY-MM-DD

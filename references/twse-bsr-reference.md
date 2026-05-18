@@ -4,6 +4,24 @@
 
 ---
 
+## Endpoint 0 — 查券商分點代碼（broker_id）
+
+**不知道 broker_id 時先用此端點查詢，再帶入 Endpoint 1/2。**
+
+```
+GET /studio/market/twstock/broker/search?name=<name>
+```
+
+| 參數 | 說明 |
+|---|---|
+| `name` | 分點名稱（模糊比對），例如 `松山`、`凱基` |
+
+**回傳：** `{"query": "松山", "data": [{"broker_id": "9217", "broker_name": "凱基-松山"}, ...]}`
+
+> FinMind 的分點名稱格式為「券商-分點」，例如 `凱基-松山`、`元大-松山`。搜尋時用分點地名即可。
+
+---
+
 ## Endpoint 1 — 用股票代號查分點
 
 ```
