@@ -105,9 +105,63 @@ for row in sorted(rows2, key=lambda x: x["buy"] - x["sell"], reverse=True)[:10]:
 
 ---
 
+## 多日聚合範例
+
+Endpoint 1/2 每次只查單日。需要多日範圍時，逐日迴圈再加總：
+
+```python
+import os, requests, pandas as pd
+from datetime import date, timedelta
+
+BASE_URL = "https://api.blave.org"
+HEADERS = {
+    "api-key": os.environ["blave_api_key"],
+    "secret-key": os.environ["blave_secret_key"],
+}
+
+def get_trader_flows(trader_id, start, end):
+    """回傳 DataFrame，欄位：date, stock_id, net（買超張數）"""
+    records = []
+    d = date.fromisoformat(start)
+    end_d = date.fromisoformat(end)
+    while d <= end_d:
+        r = requests.get(
+            f"{BASE_URL}/studio/market/twstock/broker/trader/{trader_id}",
+            headers=HEADERS, params={"date": d.isoformat()}
+        )
+        r.raise_for_status()
+        for row in r.json().get("data", []):
+            records.append({
+                "date": d,
+                "stock_id": row["stock_id"],
+                "net": row["buy"] - row["sell"],
+            })
+        d += timedelta(days=1)
+    return pd.DataFrame(records)
+
+# 凱基-松山 (9217) 近一個月買超排名
+flows = get_trader_flows("9217", "2026-04-01", "2026-05-01")
+net = flows.groupby("stock_id")["net"].sum().sort_values(ascending=False)
+print(net.head(10))
+```
+
+**CRITICAL — 用 trader flows 選股的 Lookahead Bias：**
+
+回測時若用 trader flows 建立候選池，**禁止**用全期累計 net 排名過濾：
+
+```python
+# ❌ 錯誤：用整段回測期累計排名篩選，洩漏未來資訊
+top50 = flows.groupby("stock_id")["net"].sum().nlargest(50).index
+
+# ✅ 正確：每個調倉日只用截至當日的 lookback 視窗內資料排名
+# 或預先定義固定宇宙（例如台灣50大型股），完全不依賴 flows 篩選
+```
+
+---
+
 ## 注意事項
 
 - 查詢為唯讀，**不需要 Safety Mode CONFIRM**
 - 非交易日回傳空 `data` 陣列
-- 建議使用 `start` / `end` 限制日期範圍；日期範圍每天呼叫一次 FinMind API，超過一週建議分段查詢
+- Endpoint 1/2 每次只查單日；多日需逐日迴圈（見上方範例）
 - 資料快取於 server 端 parquet，同一日期二次查詢不重打 FinMind
