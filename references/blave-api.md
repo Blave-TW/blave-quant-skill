@@ -427,6 +427,71 @@ df["yoy_pct"] = df["revenue"].pct_change(periods=12) * 100  # year-over-year %
 
 ---
 
+## Taiwan Futures OHLCV — 台灣期貨
+
+```
+GET /studio/market/twfutures/ohlcv/<symbol>/<schema>
+```
+
+`start` / `end` optional (YYYY-MM-DD). Data from 2020-03-22. Timestamps UTC. Requires API plan auth.
+
+| `symbol` | 商品 |
+|---|---|
+| `TXF` | 台指期（大台，近月連續） |
+
+| `schema` | 週期 | 單次最大範圍 |
+|---|---|---|
+| `1d` | 日K | 3650 天（10年） |
+| `1m` | 分K | 31 天 |
+| `5m` | 5分K | 31 天 |
+| `15m` | 15分K | 31 天 |
+| `30m` | 30分K | 31 天 |
+| `60m` | 小時K | 31 天 |
+
+超出限制回傳 400：`{"error": "date_range_too_large", "max_days": <n>}`
+
+```python
+# 台指期日K
+params = {"start": "2024-01-01", "end": "2024-12-31"}
+response = requests.get(
+    f"{BASE_URL}/studio/market/twfutures/ohlcv/TXF/1d",
+    headers=headers, params=params, timeout=60,
+)
+data = response.json()["data"]
+# [{"ts": "2024-01-02 00:00:00+00:00", "open": 17500.0, "high": 17620.0,
+#   "low": 17480.0, "close": 17610.0, "volume": 98234}, ...]
+
+# 分K（需拆分，每次最多 31 天）
+from datetime import date, timedelta
+
+def fetch_txf_chunked(schema, start, end, chunk_days=28):
+    result = []
+    cur = date.fromisoformat(start)
+    end_date = date.fromisoformat(end)
+    while cur < end_date:
+        chunk_end = min(cur + timedelta(days=chunk_days), end_date)
+        resp = requests.get(
+            f"{BASE_URL}/studio/market/twfutures/ohlcv/TXF/{schema}",
+            headers=headers,
+            params={"start": cur.isoformat(), "end": chunk_end.isoformat()},
+            timeout=60,
+        )
+        result.extend(resp.json().get("data", []))
+        cur = chunk_end
+    return result
+
+bars = fetch_txf_chunked("1m", "2026-05-01", "2026-05-25")
+```
+
+**Response fields:**
+| Field | Description |
+|---|---|
+| `ts` | Bar 開盤時間（UTC ISO 字串） |
+| `open` / `high` / `low` / `close` | 指數點數 |
+| `volume` | 成交口數 |
+
+---
+
 ## CME / ICE Futures OHLCV — 原油/黃金/Brent 期貨
 
 ```
