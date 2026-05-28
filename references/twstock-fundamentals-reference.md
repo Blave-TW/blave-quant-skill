@@ -41,8 +41,8 @@ Batch 回傳格式：`{"data_type": "financials", "data": {"2330": [...], "2317"
 ```json
 {
   "data": [
-    {"date": "2023-03-31", "stock_id": "2330", "type": "revenue", "value": 508630000000, "origin_name": "營業收入合計"},
-    {"date": "2023-03-31", "stock_id": "2330", "type": "gross_profit", "value": 267000000000, "origin_name": "營業毛利（毛損）淨額"},
+    {"date": "2023-03-31", "stock_id": "2330", "type": "Revenue", "value": 508630000000, "origin_name": "營業收入"},
+    {"date": "2023-03-31", "stock_id": "2330", "type": "GrossProfit", "value": 267000000000, "origin_name": "營業毛利（毛損）"},
     ...
   ]
 }
@@ -50,16 +50,31 @@ Batch 回傳格式：`{"data_type": "financials", "data": {"2330": [...], "2317"
 
 常見 `type` 值：
 
-| type | 說明 |
-|---|---|
-| `revenue` | 營業收入 |
-| `gross_profit` | 營業毛利 |
-| `operating_income` | 營業利益 |
-| `net_income` | 本期淨利 |
-| `eps` | 每股盈餘（元） |
-| `total_assets` | 資產總計（資產負債表） |
-| `total_equity` | 權益總計（資產負債表） |
-| `operating_cash_flow` | 營業活動現金流（現金流量表） |
+**綜合損益表 (financials)**
+
+| type | origin_name | 說明 |
+|---|---|---|
+| `Revenue` | 營業收入 | 營業收入合計 |
+| `GrossProfit` | 營業毛利（毛損） | |
+| `OperatingIncome` | 營業利益（損失） | |
+| `IncomeAfterTaxes` | 本期淨利（淨損） | ROE 分子用此 |
+| `EPS` | 基本每股盈餘 | 元 |
+| `PreTaxIncome` | 稅前淨利（淨損） | |
+| `OperatingExpenses` | 營業費用 | |
+| `CostOfGoodsSold` | 營業成本 | |
+
+**資產負債表 (balance_sheet)**
+
+| type | origin_name | 說明 |
+|---|---|---|
+| `TotalAssets` | 資產總額 | |
+| `Equity` | 權益總額 | ROE 分母用此 |
+| `Liabilities` | 負債總額 | |
+| `CashAndCashEquivalents` | 現金及約當現金 | |
+| `RetainedEarnings` | 保留盈餘合計 | |
+| `CapitalStock` | 股本合計 | |
+
+`_per` 結尾的 type 代表佔總資產百分比（例如 `Equity_per`）。
 
 ### 月營收
 
@@ -128,9 +143,9 @@ def compute_fundamental_scores(universe, hdrs):
             bs  = bs_all[sid].pivot_table(index='date', columns='type', values='value', aggfunc='last')
             rev = rev_all[sid]
 
-            roe          = fin['net_income'] / bs['total_equity']
-            gross_margin = fin['gross_profit'] / fin['revenue']
-            eps_yoy      = fin['eps'].pct_change(4)          # 同季比
+            roe          = fin['IncomeAfterTaxes'] / bs['Equity']
+            gross_margin = fin['GrossProfit'] / fin['Revenue']
+            eps_yoy      = fin['EPS'].pct_change(4)          # 同季比
             rev_yoy      = rev['revenue'].pct_change(12)     # 月營收年增率
 
             scores[sid] = {
