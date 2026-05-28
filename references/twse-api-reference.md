@@ -164,6 +164,78 @@ curl "https://www.tpex.org.tw/openapi/v1/tpex_mainboard_quotes"
 
 ---
 
+### `GET /v1/opendata/t187ap03_L` — 上市股票完整清單（含產業別、上市日期）
+
+**用途:** 取得全部 TWSE 上市股票的基本資料，最適合用來建立回測 universe
+
+**Request:**
+```bash
+curl "https://openapi.twse.com.tw/v1/opendata/t187ap03_L"
+```
+
+**Response:** JSON array（約 1,089 筆）
+
+| 欄位 | 說明 | 注意 |
+|---|---|---|
+| `公司代號` | 股票代號 | **需要 `.strip()`**，原始值可能含空白 |
+| `公司簡稱` | 股票簡稱 | |
+| `產業別` | 產業別代碼（見下表） | |
+| `上市日期` | 格式 `YYYYMMDD`（西元年） | |
+| `實收資本額` | 實收資本額（元） | |
+
+常見產業別代碼：
+
+| 代碼 | 產業 |
+|---|---|
+| `01` | 水泥 |
+| `02` | 食品 |
+| `05` | 紡織纖維 |
+| `11` | 化學 |
+| `13` | 玻璃陶瓷 |
+| `14` | 造紙 |
+| `17` | 電機機械 |
+| `18` | 電器電纜 |
+| `19` | 化學生技醫療 |
+| `20` | 半導體 |
+| `21` | 電腦及周邊設備 |
+| `22` | 光電 |
+| `23` | 通信網路 |
+| `24` | 電子零組件 |
+| `25` | 電子通路 |
+| `26` | 資訊服務 |
+| `27` | 其他電子 |
+| `29` | 建材營造 |
+| `31` | 航運 |
+| `32` | 觀光餐旅 |
+| `33` | 金融保險 |
+| `36` | 鋼鐵 |
+| `37` | 橡膠 |
+| `38` | 汽車 |
+
+**建立 universe 範例：**
+```python
+import requests
+
+r = requests.get('https://openapi.twse.com.tw/v1/opendata/t187ap03_L', timeout=15)
+stocks = r.json()
+
+# 全部上市普通股（排除 ETF、權證、優先股）
+universe = [
+    item['公司代號'].strip()
+    for item in stocks
+    if item['公司代號'].strip().isdigit() and len(item['公司代號'].strip()) == 4
+]
+
+# 只取半導體 + 電腦及周邊（產業別 20, 21）
+tech = [
+    item['公司代號'].strip()
+    for item in stocks
+    if item['產業別'] in ('20', '21') and item['公司代號'].strip().isdigit()
+]
+```
+
+---
+
 ## Python 完整範例
 
 ```python
