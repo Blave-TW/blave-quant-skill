@@ -219,19 +219,11 @@ import requests
 r = requests.get('https://openapi.twse.com.tw/v1/opendata/t187ap03_L', timeout=15)
 stocks = r.json()
 
-# 全部上市普通股（排除 ETF、權證、優先股）
-universe = [
-    item['公司代號'].strip()
-    for item in stocks
-    if item['公司代號'].strip().isdigit() and len(item['公司代號'].strip()) == 4
-]
+# 全部上市股票
+universe = [item['公司代號'].strip() for item in stocks]
 
 # 只取半導體 + 電腦及周邊（產業別 20, 21）
-tech = [
-    item['公司代號'].strip()
-    for item in stocks
-    if item['產業別'] in ('20', '21') and item['公司代號'].strip().isdigit()
-]
+tech = [item['公司代號'].strip() for item in stocks if item['產業別'] in ('20', '21')]
 ```
 
 ---
