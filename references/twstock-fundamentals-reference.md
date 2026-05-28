@@ -91,37 +91,25 @@ Batch 回傳格式：`{"data_type": "financials", "data": {"2330": [...], "2317"
 
 ## BlaveClaw lib 用法
 
+所有台股資料一律用 batch 函式（即使只有 1 支）：
+
 ```python
 from lib.data import (
-    fetch_twstock_financials,
-    fetch_twstock_balance_sheet,
-    fetch_twstock_monthly_revenue,
-    fetch_twstock_financials_batch,
-    fetch_twstock_balance_sheet_batch,
-    fetch_twstock_monthly_revenue_batch,
-    fetch_twstock_price_adj_batch,
-    fetch_twstock_institutional_batch,
+    fetch_twstock_price_adj_batch,       # (stock_ids, start, end, headers)
+    fetch_twstock_institutional_batch,   # (stock_ids, start, end, headers)
+    fetch_twstock_shareholding_batch,    # (stock_ids, start, end, headers)
+    fetch_twstock_financials_batch,      # (stock_ids, headers)
+    fetch_twstock_balance_sheet_batch,   # (stock_ids, headers)
+    fetch_twstock_monthly_revenue_batch, # (stock_ids, headers)
 )
-```
 
-### 單股（個別分析用）
+universe = ['2330', '2317', '2454', ...]  # 可達 500 支，超過 50 支自動切塊
 
-```python
-fin = fetch_twstock_financials('2330', hdrs)
-bs  = fetch_twstock_balance_sheet('2330', hdrs)
-rev = fetch_twstock_monthly_revenue('2330', hdrs)
-```
-
-### Batch（大型 universe 必用，> 50 支時自動切塊）
-
-```python
-universe = ['2330', '2317', '2454', ...]  # 可達 500 支
-
+prices      = fetch_twstock_price_adj_batch(universe, START, END, hdrs)
+inst        = fetch_twstock_institutional_batch(universe, START, END, hdrs)
 financials  = fetch_twstock_financials_batch(universe, hdrs)      # dict {sid: df}
 bal_sheets  = fetch_twstock_balance_sheet_batch(universe, hdrs)
 revenues    = fetch_twstock_monthly_revenue_batch(universe, hdrs)
-prices      = fetch_twstock_price_adj_batch(universe, START, END, hdrs)
-inst        = fetch_twstock_institutional_batch(universe, START, END, hdrs)
 ```
 
 ---
