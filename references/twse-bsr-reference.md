@@ -18,7 +18,7 @@ GET /studio/market/twstock/broker/search?name=<name>
 
 **回傳：** `{"query": "松山", "data": [{"broker_id": "9217", "broker_name": "凱基-松山"}, ...]}`
 
-> FinMind 的分點名稱格式為「券商-分點」，例如 `凱基-松山`、`元大-松山`。搜尋時用分點地名即可。
+> 分點名稱格式為「券商-分點」，例如 `凱基-松山`、`元大-松山`。搜尋時用分點地名即可。
 
 ---
 
@@ -164,4 +164,4 @@ top50 = flows.groupby("stock_id")["net"].sum().nlargest(50).index
 - 查詢為唯讀，**不需要 Safety Mode CONFIRM**
 - 非交易日回傳空 `data` 陣列
 - Endpoint 1/2 每次只查單日；多日需逐日迴圈（見上方範例）
-- 資料快取於 server 端 parquet，同一日期二次查詢不重打 FinMind
+- 資料快取於 server 端 parquet，同一日期二次查詢不重新抓取

@@ -18,7 +18,7 @@ This repo contains one skill covering fifteen capabilities:
 11. **Bitfinex** — Agent calls the Bitfinex API for spot, margin, and funding/lending
 12. **KuCoin** — Agent calls the KuCoin API for spot and futures/perpetual contract trading
 13. **TWSE / TPEX（台股）** — Agent queries Taiwan stock market data (stock code lookup, quotes, PE/yield/PB) via public APIs; no API key required
-14. **台股分點買賣超** — Agent calls Blave API `GET /studio/market/twstock/broker/stock/<stock_id>` (by stock) or `GET /studio/market/twstock/broker/trader/<trader_id>` (by broker branch) for daily buy/sell data via FinMind; no CAPTCHA required
+14. **台股分點買賣超** — Agent calls Blave API `GET /studio/market/twstock/broker/stock/<stock_id>` (by stock) or `GET /studio/market/twstock/broker/trader/<trader_id>` (by broker branch) for daily buy/sell data; no CAPTCHA required
 15. **Taiwan Futures** — Agent calls Blave API `GET /studio/market/twfutures/ohlcv/TXF/<schema>` for TXF OHLCV; schemas: 1d/1m/5m/15m/30m/60m; data from 2020-03-22
 
 No CLI or wrapper involved. All API calls are made directly by the agent.
@@ -94,7 +94,8 @@ Base URL: `https://api.blave.org`
 - `studio/market/twstock/balance_sheet/<stock_id>` — 資產負債表 quarterly fundamental; same schema; `_per` suffix types are % of total assets
 - `studio/market/twstock/cashflow/<stock_id>` — 現金流量表 quarterly fundamental; same schema
 - `studio/market/twstock/monthly_revenue/<stock_id>` — 月營收 monthly revenue (`date`, `stock_id`, `country`, `revenue` in thousands NTD, `revenue_month`, `revenue_year`); `start`/`end` optional; data from 2000-01-01; Redis-cached 24 h
-- `studio/market/twstock/broker/search` — 券商分點代碼查詢: fuzzy search by `name` param; returns `[{broker_id, broker_name}]`; backed by FinMind TaiwanSecuritiesTraderInfo (1007 branches)
+- `studio/market/twstock/batch/<data_type>` — **批次查詢（大型 universe 用）**: `data_type` ∈ {`price_adj`, `institutional`, `shareholding`, `financials`, `balance_sheet`, `monthly_revenue`}; `?stock_ids=2330,2317,...`（最多 50 支）+ `start`/`end`（視類型而定）; 回傳 `{"data_type": "...", "data": {"2330": [...], ...}}`; server-side 平行 fetch + Redis cache；在 BlaveClaw 中用對應 `_batch` lib 函式而非直接呼叫此 endpoint
+- `studio/market/twstock/broker/search` — 券商分點代碼查詢: fuzzy search by `name` param; returns `[{broker_id, broker_name}]`; 1007 branches
 - `studio/market/twstock/broker/stock/<stock_id>` — 分點買賣超 by stock (single day): all broker branches for the given stock (`broker_id`, `broker_name`, `price`, `buy`, `sell`); `date` optional (YYYY-MM-DD, defaults to today); for multi-day, call once per day
 - `studio/market/twstock/broker/trader/<trader_id>` — 分點買賣超 by broker branch (single day): all stocks traded by the given branch (`stock_id`, `broker_name`, `price`, `buy`, `sell`); `date` optional; trader_id supports alphanumeric (e.g. `920A`)
 - `studio/market/twfutures/ohlcv/<symbol>/<schema>` — Taiwan futures OHLCV (`ts` UTC ISO, `open`, `high`, `low`, `close` in index points, `volume` in contracts); symbol: `TXF`; schema: `1d`/`1m`/`5m`/`15m`/`30m`/`60m`; `start`/`end` optional (YYYY-MM-DD); max range: 1d→3650 days, others→31 days; data from 2020-03-22; requires API plan auth
