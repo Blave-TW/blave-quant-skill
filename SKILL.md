@@ -344,6 +344,16 @@ Fields: `date`, `option_id`, `call_put`（買權/賣權）, `institutional_inves
 
 ---
 
+### Taiwan Futures Large Traders — 期貨大額交易人
+
+`GET /studio/market/twfutures/large_traders/<futures_id>?start=YYYY-MM-DD&end=YYYY-MM-DD`
+
+Data from 1998-07-01. 3 rows per day (`contract_type`: week / current month / all).
+
+Fields: `date`, `futures_id`, `name`, `contract_type`, `buy_top5/top10_trader_open_interest`, `buy_top5/top10_trader_open_interest_per`, `sell_top5/top10_trader_open_interest`, `sell_top5/top10_trader_open_interest_per`, `market_open_interest`, `buy/sell_top5/top10_specific_open_interest`, `buy/sell_top5/top10_specific_open_interest_per`
+
+---
+
 ### CME / ICE Futures OHLCV — 原油/黃金/Brent 期貨
 
 `GET /studio/market/db/ohlcv/<dataset>/<symbol>/<schema>`
