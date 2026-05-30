@@ -288,6 +288,7 @@ Receive TradingView alerts in real time via Server-Sent Events.
 | `GET /studio/market/twstock/broker/stock/<stock_id>` | 分點買賣超 — 查某股票所有券商分點（單日）; `date` optional (YYYY-MM-DD, 預設今天); fields: `broker_id`, `broker_name`, `price`, `buy`, `sell` |
 | `GET /studio/market/twstock/broker/trader/<trader_id>` | 分點買賣超 — 查某券商分點所有股票（單日）; `date` optional (YYYY-MM-DD, 預設今天); fields: `stock_id`, `broker_name`, `price`, `buy`, `sell` |
 | `GET /studio/market/twstock/kbar/<stock_id>` | 分K（1分鐘 OHLCV）; `start`/`end` YYYY-MM-DD 必填; 最多 31 天; data from 2019-01-01; fields: `date`, `minute`, `open`, `high`, `low`, `close`, `volume` |
+| `GET /studio/market/twstock/per/<stock_id>` | PE/PB/殖利率（日頻）; `start`/`end` optional; data from 2005-10-01; fields: `date`, `dividend_yield`, `PER`, `PBR` |
 
 `/price_adj` adjusts for cash and stock dividends — historical prices unchanged, prices from each ex-dividend date onward multiplied by cumulative factor. Use for backtesting total return.
 

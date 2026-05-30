@@ -100,6 +100,7 @@ Base URL: `https://api.blave.org`
 - `studio/market/twstock/broker/stock/<stock_id>` — 分點買賣超 by stock (single day): all broker branches for the given stock (`broker_id`, `broker_name`, `price`, `buy`, `sell`); `date` optional (YYYY-MM-DD, defaults to today); for multi-day, call once per day
 - `studio/market/twstock/broker/trader/<trader_id>` — 分點買賣超 by broker branch (single day): all stocks traded by the given branch (`stock_id`, `broker_name`, `price`, `buy`, `sell`); `date` optional; trader_id supports alphanumeric (e.g. `920A`)
 - `studio/market/twstock/kbar/<stock_id>` — 分K（1分鐘 OHLCV）: `start`/`end` YYYY-MM-DD required; max 31 days per request; fields: `date`, `minute` (HH:MM:SS), `open`, `high`, `low`, `close`, `volume`; data from 2019-01-01; Sponsor only
+- `studio/market/twstock/per/<stock_id>` — PE/PB/殖利率（日頻）: `start`/`end` optional (YYYY-MM-DD); fields: `date`, `dividend_yield`, `PER`, `PBR`; data from 2005-10-01
 - `studio/market/twfutures/ohlcv/<symbol>/<schema>` — Taiwan futures OHLCV (`ts` UTC ISO, `open`, `high`, `low`, `close` in index points, `volume` in contracts); symbol: `TXF`; schema: `1d`/`1m`/`5m`/`15m`/`30m`/`60m`; `start`/`end` optional (YYYY-MM-DD); max range: 1d→3650 days, others→31 days; data from 2020-03-22; requires API plan auth
 - `screener/get_saved_conditions` — user's saved screener conditions
 - `screener/get_saved_condition_result` — symbols matching a saved condition (`condition_id` required)
