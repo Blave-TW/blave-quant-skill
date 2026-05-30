@@ -354,6 +354,16 @@ Fields: `date`, `futures_id`, `name`, `contract_type`, `buy_top5/top10_trader_op
 
 ---
 
+### Taiwan Option Large Traders — 選擇權大額交易人
+
+`GET /studio/market/twfutures/option/large_traders/<option_id>?start=YYYY-MM-DD&end=YYYY-MM-DD`
+
+Data from 1998-07-01. 6 rows per day (call/put × week/current month/all). `option_id`: `TXO`.
+
+Fields: `date`, `option_id`, `name`, `put_call`, `contract_type`, `buy/sell_top5/top10_trader_open_interest(_per)`, `market_open_interest`, `buy/sell_top5/top10_specific_open_interest(_per)`
+
+---
+
 ### CME / ICE Futures OHLCV — 原油/黃金/Brent 期貨
 
 `GET /studio/market/db/ohlcv/<dataset>/<symbol>/<schema>`
