@@ -270,6 +270,7 @@ Receive TradingView alerts in real time via Server-Sent Events.
 
 ### Taiwan Stock Daily Price — 台股日K
 
+> 台股資料（日K、三大法人、融資融券、股權分級、財報、月營收、分點買賣超）由 [FinMind](https://finmindtrade.com) 提供。
 > Full Python examples: `references/blave-api.md`
 
 | Endpoint | Description |

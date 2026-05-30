@@ -1,6 +1,6 @@
 # 台股財報資料 Taiwan Stock Fundamental Data
 
-**資料來源：** Blave API  
+**資料來源：** Blave API（台股資料由 [FinMind](https://finmindtrade.com) 提供）  
 **認證：** Bearer token（同其他 Blave API）  
 **Redis cache：** 24 小時
 
