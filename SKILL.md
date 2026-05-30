@@ -305,6 +305,23 @@ Receive TradingView alerts in real time via Server-Sent Events.
 
 ---
 
+### Taiwan Futures Daily — 台灣期貨日行情
+
+`GET /studio/market/twfutures/daily/<futures_id>?start=YYYY-MM-DD&end=YYYY-MM-DD`
+
+Data from 1998-07-01. Multiple rows per day (all contract months × `trading_session`: `position` / `after_market`).
+
+| futures_id | 商品 |
+|---|---|
+| `TX` | 台指期 |
+| `MTX` | 小台指 |
+| `TE` | 電子期 |
+| `TF` | 金融期 |
+
+Fields: `date`, `futures_id`, `contract_date`, `open`, `max`, `min`, `close`, `spread`, `spread_per`, `volume`, `settlement_price`, `open_interest`, `trading_session`
+
+---
+
 ### CME / ICE Futures OHLCV — 原油/黃金/Brent 期貨
 
 `GET /studio/market/db/ohlcv/<dataset>/<symbol>/<schema>`

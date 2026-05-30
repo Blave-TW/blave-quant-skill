@@ -103,6 +103,7 @@ Base URL: `https://api.blave.org`
 - `studio/market/twstock/per/<stock_id>` — PE/PB/殖利率（日頻）: `start`/`end` optional (YYYY-MM-DD); fields: `date`, `dividend_yield`, `PER`, `PBR`; data from 2005-10-01
 - `studio/market/twstock/lending/<stock_id>` — 借券成交明細（日頻，每天多筆）: `start`/`end` optional; fields: `date`, `transaction_type`（競價/議借）, `volume`, `fee_rate`, `close`, `original_return_date`, `original_lending_period`; data from 2001-05-01
 - `studio/market/twfutures/ohlcv/<symbol>/<schema>` — Taiwan futures OHLCV (`ts` UTC ISO, `open`, `high`, `low`, `close` in index points, `volume` in contracts); symbol: `TXF`; schema: `1d`/`1m`/`5m`/`15m`/`30m`/`60m`; `start`/`end` optional (YYYY-MM-DD); max range: 1d→3650 days, others→31 days; data from 2020-03-22; requires API plan auth
+- `studio/market/twfutures/daily/<futures_id>` — Taiwan futures daily OHLCV by contract (FinMind); `futures_id`: TX, MTX, TE, TF, etc.; `start`/`end` optional (YYYY-MM-DD); data from 1998-07-01; multiple rows/day (all contract months × trading_session: position/after_market); fields: `date`, `futures_id`, `contract_date`, `open`, `max`, `min`, `close`, `spread`, `spread_per`, `volume`, `settlement_price`, `open_interest`, `trading_session`
 - `screener/get_saved_conditions` — user's saved screener conditions
 - `screener/get_saved_condition_result` — symbols matching a saved condition (`condition_id` required)
 - `hyperliquid/leaderboard` — top 100 Hyperliquid traders (`sort_by` param)
