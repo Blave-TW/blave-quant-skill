@@ -101,6 +101,7 @@ Base URL: `https://api.blave.org`
 - `studio/market/twstock/broker/trader/<trader_id>` — 分點買賣超 by broker branch (single day): all stocks traded by the given branch (`stock_id`, `broker_name`, `price`, `buy`, `sell`); `date` optional; trader_id supports alphanumeric (e.g. `920A`)
 - `studio/market/twstock/kbar/<stock_id>` — 分K（1分鐘 OHLCV）: `start`/`end` YYYY-MM-DD required; max 31 days per request; fields: `date`, `minute` (HH:MM:SS), `open`, `high`, `low`, `close`, `volume`; data from 2019-01-01; Sponsor only
 - `studio/market/twstock/per/<stock_id>` — PE/PB/殖利率（日頻）: `start`/`end` optional (YYYY-MM-DD); fields: `date`, `dividend_yield`, `PER`, `PBR`; data from 2005-10-01
+- `studio/market/twstock/market_value/<stock_id>` — market capitalization (市值, NTD); `start`/`end` optional; data from 2004-01-01; fields: `date`, `market_value`
 - `studio/market/twstock/news/<stock_id>` — stock news (新聞): `start`/`end` YYYY-MM-DD; max 31 days; multiple articles per day; fields: `date` (datetime string), `title`, `source`, `link`
 - `studio/market/twstock/gov_bank/<stock_id>` — 八大行庫買賣超: `start`/`end` YYYY-MM-DD required; max 31 days; data from 2021-06-30; 8 rows/day (one per bank); fields: `date`, `bank_name`, `buy`, `buy_amount`, `sell`, `sell_amount`
 - `studio/market/twstock/lending/<stock_id>` — 借券成交明細（日頻，每天多筆）: `start`/`end` optional; fields: `date`, `transaction_type`（競價/議借）, `volume`, `fee_rate`, `close`, `original_return_date`, `original_lending_period`; data from 2001-05-01

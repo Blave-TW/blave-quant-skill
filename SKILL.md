@@ -290,6 +290,7 @@ Receive TradingView alerts in real time via Server-Sent Events.
 | `GET /studio/market/twstock/kbar/<stock_id>` | 1-minute OHLCV (分K); `start`/`end` YYYY-MM-DD required; max 31 days per request; data from 2019-01-01; fields: `date`, `minute`, `open`, `high`, `low`, `close`, `volume` |
 | `GET /studio/market/twstock/per/<stock_id>` | PE ratio / PB ratio / dividend yield (daily); `start`/`end` optional; data from 2005-10-01; fields: `date`, `dividend_yield`, `PER`, `PBR` |
 | `GET /studio/market/twstock/lending/<stock_id>` | Securities lending transactions (daily, multiple rows/day); `start`/`end` optional; data from 2001-05-01; fields: `date`, `transaction_type` (競價/議借), `volume`, `fee_rate`, `close`, `original_return_date`, `original_lending_period` |
+| `GET /studio/market/twstock/market_value/<stock_id>` | Market capitalization (市值, NTD); `start`/`end` optional; data from 2004-01-01; fields: `date`, `market_value` |
 | `GET /studio/market/twstock/gov_bank/<stock_id>` | 8 government bank buy/sell (八大行庫); `start`/`end` YYYY-MM-DD; max 31 days; data from 2021-06-30; 8 rows/day; fields: `date`, `bank_name`, `buy`, `buy_amount`, `sell`, `sell_amount` |
 | `GET /studio/market/twstock/news/<stock_id>` | Stock news (新聞); `start`/`end` YYYY-MM-DD; max 31 days; multiple articles/day; fields: `date` (datetime), `title`, `source`, `link` |
 
