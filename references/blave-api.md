@@ -412,7 +412,7 @@ data = response.json()["data"]
 | `date` | 月份起始日 (`YYYY-MM-01`) — e.g. `2024-02-01` means the revenue is for `revenue_month=1` (January) |
 | `stock_id` | Stock code |
 | `country` | Listed market (e.g. `台灣`) |
-| `revenue` | Monthly revenue in thousands NTD (千元) |
+| `revenue` | Monthly revenue (NTD 元, full amount — not thousands) |
 | `revenue_month` | Revenue month (1–12) |
 | `revenue_year` | Revenue year |
 

@@ -302,7 +302,7 @@ Receive TradingView alerts in real time via Server-Sent Events.
 
 `/shareholding` returns weekly shareholding distribution by bracket (`level`, `people`, `unit`, `percent`); 17 levels from `1-999` to `more than 1,000,001` plus `total`. Use for 大股東集中度追蹤、籌碼分散程度分析。
 
-`/monthly_revenue` returns monthly revenue per stock: `date` (YYYY-MM-01, month start), `revenue` (千元), `revenue_month` (1–12), `revenue_year`. Use for 營收動能選股、月增率/年增率分析。
+`/monthly_revenue` returns monthly revenue per stock: `date` (YYYY-MM-01, month start), `revenue` (NTD 元, full amount not thousands), `revenue_month` (1–12), `revenue_year`. Use for 營收動能選股、月增率/年增率分析。
 
 ---
 
