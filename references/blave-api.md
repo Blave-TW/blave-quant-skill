@@ -492,6 +492,58 @@ bars = fetch_txf_chunked("1m", "2026-05-01", "2026-05-25")
 
 ---
 
+## Taiwan Futures Bid/Ask Volume — 台指期內外盤
+
+```
+GET /studio/market/twfutures/bid_ask_vol/<symbol>
+```
+
+`start` / `end` optional (YYYY-MM-DD). Data from 2022-01-04. Timestamps UTC. Max 31 days per request. Requires API plan auth.
+
+1-minute bars aggregated from tick data. Day session (08:45–13:45 Taipei) and night session (15:00–next day 05:00 Taipei) are both included.
+
+| `symbol` | 商品 |
+|---|---|
+| `TXF` | 台指期（大台，近月連續） |
+
+```python
+# 台指期內外盤（單日，含日盤+夜盤）
+params = {"start": "2026-05-29", "end": "2026-05-29"}
+response = requests.get(
+    f"{BASE_URL}/studio/market/twfutures/bid_ask_vol/TXF",
+    headers=headers, params=params, timeout=60,
+)
+data = response.json()["data"]
+# [{"ts": "2026-05-29 00:45:00+00:00", "bid_vol": 669, "ask_vol": 447, "total_vol": 1156}, ...]
+
+# 跨多天需拆分（每次最多 31 天）
+def fetch_bid_ask_vol_chunked(start, end, chunk_days=28):
+    result = []
+    cur = date.fromisoformat(start)
+    end_date = date.fromisoformat(end)
+    while cur < end_date:
+        chunk_end = min(cur + timedelta(days=chunk_days), end_date)
+        resp = requests.get(
+            f"{BASE_URL}/studio/market/twfutures/bid_ask_vol/TXF",
+            headers=headers,
+            params={"start": cur.isoformat(), "end": chunk_end.isoformat()},
+            timeout=60,
+        )
+        result.extend(resp.json().get("data", []))
+        cur = chunk_end
+    return result
+```
+
+**Response fields:**
+| Field | Description |
+|---|---|
+| `ts` | Bar 開盤時間（UTC ISO 字串） |
+| `bid_vol` | 內盤成交量（tick 打到 bid，賣方主動） |
+| `ask_vol` | 外盤成交量（tick 打到 ask，買方主動） |
+| `total_vol` | 總成交量（含無法分類的 tick） |
+
+---
+
 ## CME / ICE Futures OHLCV — 原油/黃金/Brent 期貨
 
 ```

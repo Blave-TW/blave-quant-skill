@@ -308,6 +308,16 @@ Receive TradingView alerts in real time via Server-Sent Events.
 
 ---
 
+### Taiwan Futures Bid/Ask Volume — 台指期內外盤
+
+`GET /studio/market/twfutures/bid_ask_vol/TXF?start=YYYY-MM-DD&end=YYYY-MM-DD`
+
+1-minute bid/ask volume aggregated from tick data. Data from 2022-01-04. Max 31 days per request. Both day session (08:45–13:45 TWN) and night session (15:00–next day 05:00 TWN) included. Requires API plan auth.
+
+Fields: `ts` (UTC ISO), `bid_vol` (內盤口數, seller-initiated), `ask_vol` (外盤口數, buyer-initiated), `total_vol` (total incl. unclassified)
+
+---
+
 ### Taiwan Futures Daily — 台灣期貨日行情
 
 `GET /studio/market/twfutures/daily/<futures_id>?start=YYYY-MM-DD&end=YYYY-MM-DD`
