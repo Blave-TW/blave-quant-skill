@@ -312,7 +312,7 @@ Receive TradingView alerts in real time via Server-Sent Events.
 
 `GET /studio/market/twfutures/bid_ask_vol/TXF?start=YYYY-MM-DD&end=YYYY-MM-DD`
 
-1-minute bid/ask volume aggregated from tick data. Data from 2022-01-04. Max 31 days per request. Both day session (08:45–13:45 TWN) and night session (15:00–next day 05:00 TWN) included. Requires API plan auth.
+1-minute bid/ask volume aggregated from tick data. Data from 2018-02-22. Max 31 days per request. Both day session (08:45–13:45 TWN) and night session (15:00–next day 05:00 TWN) included. Requires API plan auth.
 
 Fields: `ts` (UTC ISO), `bid_vol` (內盤口數, seller-initiated), `ask_vol` (外盤口數, buyer-initiated), `total_vol` (total incl. unclassified)
 
@@ -372,6 +372,16 @@ Fields: `date`, `futures_id`, `name`, `contract_type`, `buy_top5/top10_trader_op
 Data from 1998-07-01. 6 rows per day (call/put × week/current month/all). `option_id`: `TXO`.
 
 Fields: `date`, `option_id`, `name`, `put_call`, `contract_type`, `buy/sell_top5/top10_trader_open_interest(_per)`, `market_open_interest`, `buy/sell_top5/top10_specific_open_interest(_per)`
+
+---
+
+### Taiwan Option Put/Call Ratio — 台指選擇權買賣權未平倉量比率
+
+`GET /studio/market/twfutures/option/pcr?start=YYYY-MM-DD&end=YYYY-MM-DD`
+
+Official TAIFEX put/call ratio (買賣權未平倉量比率, OI-based). Daily, trading days only. Data from 2001-12-24. `start`/`end` optional. Requires API plan auth. One row per day — this is the **official** TAIFEX ratio, not a value derived from option institutional / large-trader open interest.
+
+Fields: `date` (YYYY-MM-DD), `pcr` (買賣權未平倉量比率%, float)
 
 ---
 

@@ -492,13 +492,39 @@ bars = fetch_txf_chunked("1m", "2026-05-01", "2026-05-25")
 
 ---
 
+## Taiwan Option Put/Call Ratio — 台指選擇權買賣權未平倉量比率
+
+```
+GET /studio/market/twfutures/option/pcr
+```
+
+`start` / `end` optional (YYYY-MM-DD). Data from 2001-12-24. Daily, trading days only. Requires API plan auth. Official TAIFEX 買賣權未平倉量比率% (OI-based) — **not** derived from option institutional / large-trader data.
+
+```python
+params = {"start": "2024-01-01", "end": "2024-12-31"}
+response = requests.get(
+    f"{BASE_URL}/studio/market/twfutures/option/pcr",
+    headers=headers, params=params, timeout=60,
+)
+data = response.json()["data"]
+# [{"date": "2024-01-02", "pcr": 78.5}, {"date": "2024-01-03", "pcr": 81.2}, ...]
+```
+
+**Response fields:**
+| Field | Description |
+|---|---|
+| `date` | 交易日（YYYY-MM-DD） |
+| `pcr` | 買賣權未平倉量比率%（float） |
+
+---
+
 ## Taiwan Futures Bid/Ask Volume — 台指期內外盤
 
 ```
 GET /studio/market/twfutures/bid_ask_vol/<symbol>
 ```
 
-`start` / `end` optional (YYYY-MM-DD). Data from 2022-01-04. Timestamps UTC. Max 31 days per request. Requires API plan auth.
+`start` / `end` optional (YYYY-MM-DD). Data from 2018-02-22. Timestamps UTC. Max 31 days per request. Requires API plan auth.
 
 1-minute bars aggregated from tick data. Day session (08:45–13:45 Taipei) and night session (15:00–next day 05:00 Taipei) are both included.
 
