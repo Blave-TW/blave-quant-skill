@@ -7,7 +7,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 This repo contains one skill covering fifteen capabilities:
 1. **Blave** — Agent calls the Blave REST API directly for crypto market alpha data, Taiwan stock data, and Hyperliquid top trader tracking
 2. **CME / ICE Futures** — Agent fetches WTI crude (CL), gold (GC), and Brent crude (BRN) OHLCV from 2010 via Blave API
-3. **Taiwan Futures** — Agent fetches TXF (台指期近月連續) OHLCV from 2020-03-22 via Blave API; schemas 1d/1m/5m/15m/30m/60m
+3. **Taiwan Futures** — Agent fetches TXF (台指期近月連續) OHLCV (1d from 2013-12-30, intraday from 2014-01-02) via Blave API; schemas 1d/1m/5m/15m/30m/60m
 4. **BitMart Futures** — Agent calls the BitMart API for perpetual futures trading
 5. **BitMart Spot** — Agent calls the BitMart API for spot trading
 6. **OKX** — Agent calls the OKX API for spot and perpetual swap trading
@@ -19,7 +19,7 @@ This repo contains one skill covering fifteen capabilities:
 12. **KuCoin** — Agent calls the KuCoin API for spot and futures/perpetual contract trading
 13. **TWSE / TPEX（台股）** — Agent queries Taiwan stock market data (stock code lookup, quotes, PE/yield/PB) via public APIs; no API key required
 14. **台股分點買賣超** — Agent calls Blave API `GET /studio/market/twstock/broker/stock/<stock_id>` (by stock) or `GET /studio/market/twstock/broker/trader/<trader_id>` (by broker branch) for daily buy/sell data; no CAPTCHA required
-15. **Taiwan Futures** — Agent calls Blave API `GET /studio/market/twfutures/ohlcv/TXF/<schema>` for TXF OHLCV; schemas: 1d/1m/5m/15m/30m/60m; data from 2020-03-22
+15. **Taiwan Futures** — Agent calls Blave API `GET /studio/market/twfutures/ohlcv/TXF/<schema>` for TXF OHLCV; schemas: 1d/1m/5m/15m/30m/60m; 1d from 2013-12-30, intraday from 2014-01-02
 
 No CLI or wrapper involved. All API calls are made directly by the agent.
 
@@ -105,13 +105,13 @@ Base URL: `https://api.blave.org`
 - `studio/market/twstock/news/<stock_id>` — stock news (新聞): `start`/`end` YYYY-MM-DD; max 31 days; multiple articles per day; fields: `date` (datetime string), `title`, `source`, `link`
 - `studio/market/twstock/gov_bank/<stock_id>` — 八大行庫買賣超: `start`/`end` YYYY-MM-DD required; max 31 days; data from 2021-06-30; 8 rows/day (one per bank); fields: `date`, `bank_name`, `buy`, `buy_amount`, `sell`, `sell_amount`
 - `studio/market/twstock/lending/<stock_id>` — 借券成交明細（日頻，每天多筆）: `start`/`end` optional; fields: `date`, `transaction_type`（競價/議借）, `volume`, `fee_rate`, `close`, `original_return_date`, `original_lending_period`; data from 2001-05-01
-- `studio/market/twfutures/ohlcv/<symbol>/<schema>` — Taiwan futures OHLCV (`ts` UTC ISO, `open`, `high`, `low`, `close` in index points, `volume` in contracts); symbol: `TXF`; schema: `1d`/`1m`/`5m`/`15m`/`30m`/`60m`; `start`/`end` optional (YYYY-MM-DD); max range: 1d→3650 days, others→31 days; data from 2020-03-22; requires API plan auth
+- `studio/market/twfutures/ohlcv/<symbol>/<schema>` — Taiwan futures OHLCV (`ts` UTC ISO, `open`, `high`, `low`, `close` in index points, `volume` in contracts); symbol: `TXF`; schema: `1d`/`1m`/`5m`/`15m`/`30m`/`60m`; `start`/`end` optional (YYYY-MM-DD); max range: 1d→3650 days, others→31 days; data from 2013-12-30 (1d) / 2014-01-02 (intraday; pre-2017-05-15 day-session only, no night session); requires API plan auth
 - `studio/market/twfutures/bid_ask_vol/<symbol>` — TXF 1-minute bid/ask volume aggregated from tick data; `bid_vol` = 內盤 (seller-initiated), `ask_vol` = 外盤 (buyer-initiated), `total_vol` = total incl. unclassified; symbol: `TXF`; `start`/`end` optional (YYYY-MM-DD); max 31 days; data from 2018-02-22; includes both day + night sessions; requires API plan auth
-- `studio/market/twfutures/option/large_traders/<option_id>` — Taiwan option large traders (選擇權大額交易人); 6 rows/day (call/put × week/current month/all); `option_id`: TXO; `start`/`end` optional; data from 1998-07-01; fields: `date`, `option_id`, `put_call`, `contract_type`, `buy/sell_top5/top10_trader_open_interest(_per)`, `market_open_interest`
-- `studio/market/twfutures/large_traders/<futures_id>` — Taiwan futures large traders open interest (大額交易人); 3 rows/day (week/current month/all); `start`/`end` optional; data from 1998-07-01; fields: `date`, `futures_id`, `contract_type`, `buy/sell_top5/top10_trader_open_interest(_per)`, `market_open_interest`, `buy/sell_top5/top10_specific_open_interest(_per)`
+- `studio/market/twfutures/option/large_traders/<option_id>` — Taiwan option large traders (選擇權大額交易人); 6 rows/day (call/put × week/current month/all); `option_id`: TXO; `start`/`end` optional; data from 2007-01-02; fields: `date`, `option_id`, `put_call`, `contract_type`, `buy/sell_top5/top10_trader_open_interest(_per)`, `market_open_interest`
+- `studio/market/twfutures/large_traders/<futures_id>` — Taiwan futures large traders open interest (大額交易人); 3 rows/day (week/current month/all); `start`/`end` optional; data from 2007-01-02; fields: `date`, `futures_id`, `contract_type`, `buy/sell_top5/top10_trader_open_interest(_per)`, `market_open_interest`, `buy/sell_top5/top10_specific_open_interest(_per)`
 - `studio/market/twfutures/option/institutional/<option_id>` — Taiwan option institutional investors (6 rows/day: 3 investors × call/put); `option_id`: TXO; `start`/`end` optional; data from 2018-06-05; fields: `date`, `option_id`, `call_put`, `institutional_investors`, `long/short_deal_volume/amount`, `long/short_open_interest_balance_volume/amount`
 - `studio/market/twfutures/institutional/<futures_id>` — Taiwan futures institutional investors (3 rows/day: 自營商/投信/外資); `start`/`end` optional; data from 2018-06-05; fields: `date`, `futures_id`, `institutional_investors`, `long/short_deal_volume/amount`, `long/short_open_interest_balance_volume/amount`
-- `studio/market/twfutures/daily/<futures_id>` — Taiwan futures daily OHLCV by contract (FinMind); `futures_id`: TX, MTX, TE, TF, etc.; `start`/`end` optional (YYYY-MM-DD); data from 1998-07-01; multiple rows/day (all contract months × trading_session: position/after_market); fields: `date`, `futures_id`, `contract_date`, `open`, `max`, `min`, `close`, `spread`, `spread_per`, `volume`, `settlement_price`, `open_interest`, `trading_session`
+- `studio/market/twfutures/daily/<futures_id>` — Taiwan futures daily OHLCV by contract (FinMind); `futures_id`: TX, MTX, TE, TF, etc.; `start`/`end` optional (YYYY-MM-DD); data from 1998-07-21; multiple rows/day (all contract months × trading_session: position/after_market); fields: `date`, `futures_id`, `contract_date`, `open`, `max`, `min`, `close`, `spread`, `spread_per`, `volume`, `settlement_price`, `open_interest`, `trading_session`
 - `studio/market/twfutures/option/pcr` — official TAIFEX 台指選擇權買賣權未平倉量比率 (OI-based put/call ratio); one row/day (trading days only); `start`/`end` optional (YYYY-MM-DD); data from 2001-12-24; fields: `date`, `pcr` (買賣權未平倉量比率%); NOT derived from option institutional / large-trader data
 - `screener/get_saved_conditions` — user's saved screener conditions
 - `screener/get_saved_condition_result` — symbols matching a saved condition (`condition_id` required)

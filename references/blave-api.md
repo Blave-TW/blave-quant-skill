@@ -433,7 +433,7 @@ df["yoy_pct"] = df["revenue"].pct_change(periods=12) * 100  # year-over-year %
 GET /studio/market/twfutures/ohlcv/<symbol>/<schema>
 ```
 
-`start` / `end` optional (YYYY-MM-DD). Data from 2020-03-22. Timestamps UTC. Requires API plan auth.
+`start` / `end` optional (YYYY-MM-DD). Data from 2013-12-30 (`1d`) and 2014-01-02 (intraday: `1m`/`5m`/`15m`/`30m`/`60m`). Intraday bars before 2017-05-15 cover the day session only — the night session (15:00–next day 05:00 Taipei) launched 2017-05-15, so bars-per-day jumps from ~300 to ~1140 at that boundary. Timestamps UTC. Requires API plan auth.
 
 | `symbol` | 商品 |
 |---|---|
