@@ -99,6 +99,18 @@ print(response.json())
 
 ---
 
+## Funding Rate
+
+```python
+# Binance only. alpha = funding rate × 100 (percent); positive = longs pay shorts.
+params = {"symbol": "BTCUSDT", "period": "1h", "start_date": "2025-01-01", "end_date": "2025-03-01"}
+response = requests.get(f"{BASE_URL}/funding_rate/get_alpha", headers=headers, params=params, timeout=60)
+print(response.json())
+# → {"data": {"timestamp": [1735689600.0, ...], "alpha": [0.01, ...], "close": [93000.0, ...], "stat": {...}}}
+```
+
+---
+
 ## Taker Intensity
 
 ```python

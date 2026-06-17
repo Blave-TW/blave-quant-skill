@@ -170,6 +170,10 @@ Per-symbol: indicator values + `statistics` (up_prob, exp_value, is_data_suffici
 
 `symbol`✓, `period`✓, `start_date`, `end_date` → `{data: {alpha, timestamp, stat}}`
 
+### `GET /funding_rate/get_alpha` — 資金費率 Funding Rate (Binance only; + = longs pay shorts)
+
+`symbol`✓, `period`✓, `start_date`, `end_date` → `{data: {alpha, close, timestamp, stat}}` — `alpha` = funding rate × 100 (percent); `close` = perp price
+
 ### `GET /taker_intensity/get_alpha` — 多空力道 Taker Intensity (positive = buying, negative = selling)
 
 `symbol`✓, `period`✓, `timeframe` (`15min`/`1h`/`4h`/`8h`/`24h`/`3d`), `start_date`, `end_date`

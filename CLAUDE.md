@@ -77,6 +77,7 @@ Base URL: `https://api.blave.org`
 - `capital_shortage/get_alpha` — 資金稀缺 Capital Shortage (market-wide)
 - `sector_rotation/get_history_data` — 板塊輪動 Sector Rotation history
 - `holder_concentration/get_symbols` / `get_alpha` — 籌碼集中度 Holder Concentration time series + stat
+- `funding_rate/get_alpha` — 資金費率 Funding Rate time series (Binance) + close + stat; `alpha` = funding rate × 100 (percent)
 - `taker_intensity/get_symbols` / `get_alpha` — 多空力道 Taker Intensity time series + stat
 - `whale_hunter/get_symbols` / `get_alpha` — 巨鯨警報 Whale Hunter; supports `score_type`
 - `squeeze_momentum/get_symbols` / `get_alpha` — 擠壓動能 Squeeze Momentum + scolor; period fixed to `1d`
