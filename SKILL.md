@@ -272,9 +272,9 @@ Receive TradingView alerts in real time via Server-Sent Events.
 
 ---
 
-### Taiwan Stock Daily Price — 台股日K
+### Taiwan Stock Daily Price — 台股日K (+ real-time quote snapshot, no history)
 
-> 台股資料（日K、三大法人、融資融券、股權分級、財報、月營收、分點買賣超）由 [FinMind](https://finmindtrade.com) 提供。
+> 台股資料（日K、三大法人、融資融券、股權分級、財報、月營收、分點買賣超、即時報價）由 [FinMind](https://finmindtrade.com) 提供。
 > Full Python examples: `references/blave-api.md`
 
 | Endpoint | Description |
@@ -292,6 +292,9 @@ Receive TradingView alerts in real time via Server-Sent Events.
 | `GET /studio/market/twstock/broker/stock/<stock_id>` | 分點買賣超 — 查某股票所有券商分點（單日）; `date` optional (YYYY-MM-DD, 預設今天); fields: `broker_id`, `broker_name`, `price`, `buy`, `sell` |
 | `GET /studio/market/twstock/broker/trader/<trader_id>` | 分點買賣超 — 查某券商分點所有股票（單日）; `date` optional (YYYY-MM-DD, 預設今天); fields: `stock_id`, `broker_name`, `price`, `buy`, `sell` |
 | `GET /studio/market/twstock/kbar/<stock_id>` | 1-minute OHLCV (分K); `start`/`end` YYYY-MM-DD required; max 31 days per request; data from 2019-01-01; fields: `date`, `minute`, `open`, `high`, `low`, `close`, `volume` |
+| `GET /studio/market/twstock/quote/<stock_id>` | 即時報價 real-time last-quote snapshot (~10s refresh, no history — always "now"); no `start`/`end`; returns a flat object, NOT a list, unlike every other endpoint above |
+| `GET /studio/market/twstock/quote?stock_ids=<a>,<b>` | Batch real-time quote; max 50 ids; returns `{"data": {"<id>": {...}, ...}}` |
+| `GET /studio/market/twstock/quote/all` | Real-time quote for the entire market (~2839 stocks) in one call; returns `{"data": [{...}, ...]}` |
 | `GET /studio/market/twstock/per/<stock_id>` | PE ratio / PB ratio / dividend yield (daily); `start`/`end` optional; data from 2005-10-01; fields: `date`, `dividend_yield`, `PER`, `PBR` |
 | `GET /studio/market/twstock/lending/<stock_id>` | Securities lending transactions (daily, multiple rows/day); `start`/`end` optional; data from 2001-05-01; fields: `date`, `transaction_type` (競價/議借), `volume`, `fee_rate`, `close`, `original_return_date`, `original_lending_period` |
 | `GET /studio/market/twstock/market_value/<stock_id>` | Market capitalization (市值, NTD); `start`/`end` optional; data from 2004-01-01; fields: `date`, `market_value` |
@@ -307,6 +310,8 @@ Receive TradingView alerts in real time via Server-Sent Events.
 `/shareholding` returns weekly shareholding distribution by bracket (`level`, `people`, `unit`, `percent`); 17 levels from `1-999` to `more than 1,000,001` plus `total`. Use for 大股東集中度追蹤、籌碼分散程度分析。
 
 `/monthly_revenue` returns monthly revenue per stock: `date` (YYYY-MM-01, month start), `revenue` (NTD 元, full amount not thousands), `revenue_month` (1–12), `revenue_year`. Use for 營收動能選股、月增率/年增率分析。
+
+`/quote` (single, batch, and `/all`) returns a real-time last-quote snapshot: `open`/`high`/`low`/`close` (today so far), `change_price`, `change_rate`, `average_price`, `volume` (latest tick), `total_volume` (day cumulative), `amount`, `total_amount`, `yesterday_volume`, `buy_price`/`buy_volume` (best bid), `sell_price`/`sell_volume` (best ask), `volume_ratio`, `quote_time` (full timestamp `YYYY-MM-DD HH:MM:SS` — unlike every other endpoint's `date`, which is a bare calendar day), `stock_id`, `tick_type` (0=indeterminate, 1=sell-initiated/賣盤成交, 2=buy-initiated/買盤成交). Use for 盤中報價查詢、多檔持股即時檢查 — not for backtesting (no history, single point in time only).
 
 ---
 

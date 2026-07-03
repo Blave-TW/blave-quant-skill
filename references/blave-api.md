@@ -205,6 +205,57 @@ data = response.json()["data"]
 
 ---
 
+## Taiwan Stock Real-Time Quote — 即時報價
+
+Real-time last-quote snapshot: current price, best bid/ask, and today's OHLC so far.
+Refreshes approximately every 10 seconds during market and post-market sessions. **No
+history** — every call returns the current moment only, no `start`/`end` params exist.
+Unlike every other Taiwan stock endpoint, `"data"` is a flat object (single query) or a
+dict/list (batch/all), never a list of daily records.
+
+**Single stock:**
+```python
+response = requests.get(f"{BASE_URL}/studio/market/twstock/quote/2330", headers=headers, timeout=30)
+data = response.json()["data"]
+# {"open": 2415.0, "high": 2465.0, "low": 2415.0, "close": 2445.0,
+#  "change_price": -20.0, "change_rate": -0.81, "average_price": 2432.58,
+#  "volume": 4245, "total_volume": 26403, "amount": 10379025000, "total_amount": 64227410000,
+#  "yesterday_volume": 27390, "buy_price": 2445.0, "buy_volume": 17,
+#  "sell_price": 2450.0, "sell_volume": 11, "volume_ratio": 0.96,
+#  "quote_time": "2026-07-03 14:30:00", "stock_id": "2330", "tick_type": 2}
+```
+
+**Batch (max 50 ids):**
+```python
+params = {"stock_ids": "2330,2317"}
+response = requests.get(f"{BASE_URL}/studio/market/twstock/quote", headers=headers, params=params, timeout=30)
+data = response.json()["data"]
+# {"2330": {...quote fields...}, "2317": {...quote fields...}}
+```
+
+**Entire market in one call (~2839 stocks):**
+```python
+response = requests.get(f"{BASE_URL}/studio/market/twstock/quote/all", headers=headers, timeout=30)
+data = response.json()["data"]
+# [{...quote fields...}, {...quote fields...}, ...]
+```
+
+**Field meanings:**
+| Field | Meaning |
+|---|---|
+| `open`/`high`/`low`/`close` | Today's OHLC so far (not a full-day final close until after market close) |
+| `buy_price` / `buy_volume` | Best bid price / volume |
+| `sell_price` / `sell_volume` | Best ask price / volume |
+| `volume` | Latest tick's trade volume |
+| `total_volume` | Cumulative volume for the day so far |
+| `quote_time` | Full timestamp (`YYYY-MM-DD HH:MM:SS`) — NOT a bare date like other endpoints' `date` field |
+| `tick_type` | `0` = indeterminate, `1` = sell-initiated (賣盤成交), `2` = buy-initiated (買盤成交) |
+
+Use for 盤中報價查詢、下單前確認現價、多檔持股即時檢查. Do **not** use for backtesting —
+there is no history, only the current snapshot.
+
+---
+
 ## Taiwan Stock Institutional Investors — 三大法人
 
 Daily buy/sell shares by institutional investor type (wide format, one row per trading day).
