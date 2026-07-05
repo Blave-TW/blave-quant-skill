@@ -125,6 +125,20 @@ print(response.json())
 
 ---
 
+## Unusual Movement
+
+```python
+# Get symbols
+response = requests.get(f"{BASE_URL}/unusual_movement/get_symbols", headers=headers, timeout=60)
+
+# Get alpha
+params = {"symbol": "BTCUSDT", "period": "1h", "timeframe": "24h"}
+response = requests.get(f"{BASE_URL}/unusual_movement/get_alpha", headers=headers, params=params, timeout=60)
+print(response.json())
+```
+
+---
+
 ## Whale Hunter
 
 ```python

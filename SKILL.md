@@ -182,6 +182,10 @@ Per-symbol: indicator values + `statistics` (up_prob, exp_value, is_data_suffici
 
 `symbol`✓, `period`✓, `timeframe`, `score_type` (`score_oi`/`score_volume`), `start_date`, `end_date`
 
+### `GET /unusual_movement/get_alpha` — 異常漲跌 Unusual Movement (momentum outlier vs. historical volatility)
+
+`symbol`✓, `period`✓, `timeframe` (`15min`/`1h`/`4h`/`8h`/`24h`/`3d`/`7d`), `start_date`, `end_date`
+
 ### `GET /squeeze_momentum/get_alpha` — 擠壓動能 Squeeze Momentum (period fixed to `1d`)
 
 `symbol`✓, `start_date`, `end_date` → includes `scolor` (momentum direction label)

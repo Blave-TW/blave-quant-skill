@@ -80,6 +80,7 @@ Base URL: `https://api.blave.org`
 - `funding_rate/get_alpha` — 資金費率 Funding Rate time series (Binance) + close + stat; `alpha` = funding rate × 100 (percent)
 - `taker_intensity/get_symbols` / `get_alpha` — 多空力道 Taker Intensity time series + stat
 - `whale_hunter/get_symbols` / `get_alpha` — 巨鯨警報 Whale Hunter; supports `score_type`
+- `unusual_movement/get_symbols` / `get_alpha` — 異常漲跌 Unusual Movement time series + stat
 - `squeeze_momentum/get_symbols` / `get_alpha` — 擠壓動能 Squeeze Momentum + scolor; period fixed to `1d`
 - `blave_top_trader/get_exposure` — Blave頂尖交易員 Top Trader Exposure (BTCUSDT)
 - `liquidation/get_symbols` — list of symbols with liquidation data
