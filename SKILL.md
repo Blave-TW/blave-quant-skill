@@ -346,6 +346,39 @@ Data from 1998-07-21 (TX; MTX/TE/TF etc. start later). Multiple rows per day (al
 
 Fields: `date`, `futures_id`, `contract_date`, `open`, `max`, `min`, `close`, `spread`, `spread_per`, `volume`, `settlement_price`, `open_interest`, `trading_session`
 
+> `futures_id` also accepts any of the 231 individual stock futures ids (股票期貨, e.g. `CDF`) — not just the index products `TX`/`MTX`/`TE`/`TF`.
+
+---
+
+### Taiwan Stock Futures Batch Daily — 股票期貨批次日行情
+
+`GET /studio/market/twfutures/stock_futures/batch/daily`
+
+`futures_ids`✓ (comma-separated, max 250, must be valid stock futures ids — 400 on any invalid id), `start`, `end` (optional, YYYY-MM-DD)
+
+Parallel batch form of `daily/<futures_id>` above, scoped to stock futures ids only. Same fields.
+
+**Response:**
+```json
+{"data": {"CDF": [{"date": "2025-01-02", "futures_id": "CDF", "...": "..."}]}, "failed": []}
+```
+`failed`: ids dropped after persistent upstream rate-limiting — a genuinely empty dataset for a valid id is not a failure.
+
+> ⚠️ **Intraday coverage is NOT all 231.** `GET /studio/market/twfutures/ohlcv/<symbol>/<schema>` (schemas `1d`/`1m`/`5m`/`15m`/`30m`/`60m`; symbol defaults to `TXF`) also accepts stock futures symbols, but only a dynamically-growing subset that already has backfilled minute-line data — most of the 231 do not have it. An unsupported symbol returns 400. Daily OHLCV (this section) has no such restriction. Use the endpoint below to check current coverage.
+
+---
+
+### Taiwan Futures OHLCV Symbols — 分線覆蓋清單
+
+`GET /studio/market/twfutures/ohlcv/symbols`
+
+No params. Currently-allowed symbols for `GET /studio/market/twfutures/ohlcv/<symbol>/<schema>` — always includes `TXF` plus whatever individual stock futures ids currently have backfilled minute-line data. Check this before calling the OHLCV endpoint on a stock future, instead of trial-and-erroring against the 400.
+
+**Response:**
+```json
+{"data": ["CDF", "DHF", "TXF"]}
+```
+
 ---
 
 ### Taiwan Futures Institutional Investors — 期貨三大法人
