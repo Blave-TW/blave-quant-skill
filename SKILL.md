@@ -1,7 +1,7 @@
 ---
 name: blave-quant
 description: "Use for: (1) Blave market alpha data — 籌碼集中度 Holder Concentration, 多空力道 Taker Intensity, 巨鯨警報 Whale Hunter, 擠壓動能 Squeeze Momentum, 市場方向 Market Direction, 資金稀缺 Capital Shortage, 板塊輪動 Sector Rotation, Blave頂尖交易員 Top Trader Exposure, kline, alpha table, 市場情緒 Market Sentiment, screener saved conditions, Hyperliquid top trader tracking (leaderboard, positions, history, performance, bucket stats), Taiwan stock daily OHLCV, forward-adjusted prices, institutional investor buy/sell, margin trading data, shareholding distribution, quarterly fundamental statements — income statement, balance sheet, cash flow, and broker/dealer daily buy/sell by branch (台股日K/向後調整/三大法人/融資融券/股權持股分級表/綜合損益表/資產負債表/現金流量表/分點買賣超); (2) CME / ICE futures OHLCV — WTI crude oil (CL), gold (GC), Brent crude (BRN); daily/hourly/minute candles from 2010; (3) Taiwan Futures OHLCV — TXF (台指期近月連續); daily/intraday candles (1d/1m/5m/15m/30m/60m), 1d from 2013-12-30 and intraday from 2014-01-02; (4) BitMart futures/contract trading — opening/closing positions, leverage, plan orders, TP/SL, trailing stops, account management, sub-account transfers; (5) BitMart spot trading — buy/sell, limit/market orders, account balance, order history, sub-account transfers; (6) OKX trading — spot and perpetual swap, order placement, positions, balance; (7) Bybit trading — spot and derivatives/perpetual swap, order placement, positions, balance, TP/SL; (8) BingX trading — spot and perpetual swap, order placement, position management, leverage, TWAP orders, OCO orders; (9) Bitget trading — spot and futures, order placement, position management, leverage, plan orders; (10) Binance trading — spot and USDS-M futures, order placement, positions, leverage, algo orders, OCO/OTO/OTOCO; (11) Bitfinex trading & funding — spot, margin, funding/lending (submit offers, loans, credits), wallet transfers; (12) KuCoin trading — spot and futures/perpetual contracts, order placement, position management, leverage, stop orders, account management; (13) TWSE/TPEX 台股查詢 — look up Taiwan stock codes and company names, query daily quotes (open/high/low/close, volume), PE ratio, dividend yield, PB ratio for listed (上市) and OTC (上櫃) stocks; no API key required; (14) 台股分點買賣超 — search broker branch code by name (`broker/search?name=`), then query by stock (`broker/stock/<stock_id>?date=`) or by broker branch (`broker/trader/<trader_id>?date=`); single-day per request, loop for multi-day; via Blave API; no CAPTCHA required."
-version: 1.8.0
+version: 1.9.0
 metadata:
   openclaw:
     emoji: "📊"
@@ -364,7 +364,7 @@ Parallel batch form of `daily/<futures_id>` above, scoped to stock futures ids o
 ```
 `failed`: ids dropped after persistent upstream rate-limiting — a genuinely empty dataset for a valid id is not a failure.
 
-> ⚠️ **Intraday coverage is NOT all 231.** `GET /studio/market/twfutures/ohlcv/<symbol>/<schema>` (schemas `1d`/`1m`/`5m`/`15m`/`30m`/`60m`; symbol defaults to `TXF`) also accepts stock futures symbols, but only a dynamically-growing subset that already has backfilled minute-line data — most of the 231 do not have it. An unsupported symbol returns 400. Daily OHLCV (this section) has no such restriction. Use the endpoint below to check current coverage.
+> ⚠️ **Intraday coverage is NOT all 231.** `GET /studio/market/twfutures/ohlcv/<symbol>/<schema>` (schemas `1d`/`1m`/`5m`/`15m`/`30m`/`60m`; per-request caps 3650/31/62/93/186/365 days respectively; symbol defaults to `TXF`) also accepts stock futures symbols, but only a dynamically-growing subset that already has backfilled minute-line data — most of the 231 do not have it. An unsupported symbol returns 400. Daily OHLCV (this section) has no such restriction. Use the endpoint below to check current coverage.
 
 ---
 
@@ -378,6 +378,16 @@ No params. Currently-allowed symbols for `GET /studio/market/twfutures/ohlcv/<sy
 ```json
 {"data": ["CDF", "DHF", "TXF"]}
 ```
+
+---
+
+### Taiwan Futures OHLCV Bulk Export — 分線年檔下載
+
+`GET /studio/market/twfutures/ohlcv/<symbol>/export/<year>`
+
+Streams the raw 1m year parquet file for the symbol (`application/octet-stream`; columns `ts`/`open`/`high`/`low`/`close`/`volume`). One request per calendar year, zero server-side computation — resample locally to the timeframe you need. Use this for long-history backtest fetches instead of chunked JSON requests (7 years = 7 requests). `year`: 2014 ≤ year ≤ current year, else 400. No data for that symbol/year → 404 `{"error": "no_data"}`. Requires API plan auth.
+
+> Full Python example (download + local resample matching server semantics): `references/blave-api.md` § Taiwan Futures OHLCV
 
 ---
 
@@ -440,7 +450,7 @@ Fields: `date` (YYYY-MM-DD), `pcr` (買賣權未平倉量比率%, float)
 | dataset | symbol | 商品 | schema | 單次上限 |
 |---|---|---|---|---|
 | `GLBX.MDP3` | `CL` | WTI 原油 | `ohlcv-1d` | 3650 天 |
-| `GLBX.MDP3` | `GC` | 黃金 | `ohlcv-1h` | 365 天 |
+| `GLBX.MDP3` | `GC` | 黃金 | `ohlcv-1h` | 730 天 |
 | `IFEU.IMPACT` | `BRN` | Brent 原油 | `ohlcv-1m` | **30 天** |
 
 超出上限 → 400 `date_range_too_large`，需分段請求再拼接。

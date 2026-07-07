@@ -520,12 +520,40 @@ GET /studio/market/twfutures/ohlcv/<symbol>/<schema>
 |---|---|---|
 | `1d` | 日K | 3650 天（10年） |
 | `1m` | 分K | 31 天 |
-| `5m` | 5分K | 31 天 |
-| `15m` | 15分K | 31 天 |
-| `30m` | 30分K | 31 天 |
-| `60m` | 小時K | 31 天 |
+| `5m` | 5分K | 62 天 |
+| `15m` | 15分K | 93 天 |
+| `30m` | 30分K | 186 天 |
+| `60m` | 小時K | 365 天 |
 
 超出限制回傳 400：`{"error": "date_range_too_large", "max_days": <n>}`
+
+**大量歷史分線（回測）請改用 bulk export** — 直接下載該 symbol 該年的原始 1m parquet 檔（零伺服器運算），自行 resample 成需要的週期：
+
+```
+GET /studio/market/twfutures/ohlcv/<symbol>/export/<year>
+```
+
+- `year`：2014 ≤ year ≤ 當年，超出回 400
+- 回傳 `application/octet-stream`（parquet 檔，欄位 `ts`/`open`/`high`/`low`/`close`/`volume`，1m bars）
+- 該 symbol 該年無資料 → 404 `{"error": "no_data"}`
+- 一年一請求：抓 7 年只要 7 次請求，取代分段 JSON 的近百次
+
+```python
+import io
+import pandas as pd
+
+r = requests.get(
+    f"{BASE_URL}/studio/market/twfutures/ohlcv/TXF/export/2024",
+    headers=headers, timeout=120,
+)
+raw = pd.read_parquet(io.BytesIO(r.content))          # 1m bars
+raw.index = pd.to_datetime(raw["ts"], utc=True)
+bars_60m = (raw[["open", "high", "low", "close", "volume"]]
+            .resample("60min")
+            .agg(open=("open", "first"), high=("high", "max"), low=("low", "min"),
+                 close=("close", "last"), volume=("volume", "sum"))
+            .dropna(subset=["open"]))                  # 與伺服器 resample 語義一致
+```
 
 ```python
 # 台指期日K
@@ -664,7 +692,7 @@ GET /studio/market/db/ohlcv/<dataset>/<symbol>/<schema>
 | `schema` | 週期 | 單次最大範圍 |
 |---|---|---|
 | `ohlcv-1d` | 日K | 3650 天（10年） |
-| `ohlcv-1h` | 小時K | 365 天（1年） |
+| `ohlcv-1h` | 小時K | 730 天（2年） |
 | `ohlcv-1m` | 分K | **30 天** |
 
 超出限制回傳 400：`{"error": "date_range_too_large", "max_days": <n>}`
