@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Overview
 
-This repo contains one skill covering fifteen capabilities:
+This repo contains one skill covering sixteen capabilities:
 1. **Blave** — Agent calls the Blave REST API directly for crypto market alpha data, Taiwan stock data, and Hyperliquid top trader tracking
 2. **CME / ICE Futures** — Agent fetches WTI crude (CL), gold (GC), and Brent crude (BRN) OHLCV from 2010 via Blave API
 3. **Taiwan Futures** — Agent fetches TXF (台指期近月連續) OHLCV (1d from 2013-12-30, intraday from 2014-01-02) via Blave API; schemas 1d/1m/5m/15m/30m/60m
@@ -20,6 +20,7 @@ This repo contains one skill covering fifteen capabilities:
 13. **TWSE / TPEX（台股）** — Agent queries Taiwan stock market data (stock code lookup, quotes, PE/yield/PB) via public APIs; no API key required
 14. **台股分點買賣超** — Agent calls Blave API `GET /studio/market/twstock/broker/stock/<stock_id>` (by stock) or `GET /studio/market/twstock/broker/trader/<trader_id>` (by broker branch) for daily buy/sell data; no CAPTCHA required
 15. **Taiwan Futures** — Agent calls Blave API `GET /studio/market/twfutures/ohlcv/TXF/<schema>` for TXF OHLCV; schemas: 1d/1m/5m/15m/30m/60m; 1d from 2013-12-30, intraday from 2014-01-02
+16. **Gate.io** — Agent calls the Gate.io APIv4 for spot and USDT-settled perpetual futures trading
 
 No CLI or wrapper involved. All API calls are made directly by the agent.
 
@@ -34,6 +35,7 @@ No CLI or wrapper involved. All API calls are made directly by the agent.
 - `BINANCE_API_KEY`, `BINANCE_SECRET_KEY` — Binance API auth
 - `BITFINEX_API_KEY`, `BITFINEX_API_SECRET` — Bitfinex API auth
 - `KUCOIN_API_KEY`, `KUCOIN_API_SECRET`, `KUCOIN_API_PASSPHRASE` — KuCoin API auth
+- `GATE_API_KEY`, `GATE_SECRET_KEY` — Gate.io API auth
 
 ## Files
 
@@ -61,6 +63,8 @@ No CLI or wrapper involved. All API calls are made directly by the agent.
 | `references/kucoin-skill.md` | KuCoin spot + futures overview — auth, broker headers, operation flow, quick reference |
 | `references/kucoin-api-reference.md` | KuCoin spot + futures full endpoints, Python signature + broker sign helper |
 | `references/kucoin-bpp.md` | KuCoin Broker Pro Program — commission tiers, referral bonuses, dashboard guide |
+| `references/gateio-skill.md` | Gate.io spot + futures overview — auth, broker channel header, operation flow, quick reference |
+| `references/gateio-api-reference.md` | Gate.io spot + futures full endpoints, Python signature + broker channel header |
 | `references/twse-skill.md` | TWSE/TPEX 台股查詢 — 快速參考：endpoints、欄位說明、Python 搜尋範例 |
 | `references/twse-api-reference.md` | TWSE/TPEX 完整 API 參考：上市/上櫃清單、行情、停復牌、民國年轉換 |
 | `references/twse-bsr-reference.md` | 台股分點買賣超 — Blave API endpoints（by stock / by trader）、欄位說明、Python 範例 |
@@ -211,6 +215,19 @@ Spot Base URL: `https://api.kucoin.com` | Futures Base URL: `https://api-futures
 Symbol format: Spot `BTC-USDT` | Futures `XBTUSDTM` (BTC uses `XBT`, append `USDTM` for linear perpetual)
 
 Signature: `Base64(HMAC-SHA256(secret, timestamp + METHOD + path + body))` → headers: `KC-API-KEY`, `KC-API-SIGN`, `KC-API-TIMESTAMP`, `KC-API-PASSPHRASE` (signed), `KC-API-KEY-VERSION: 3`
+
+## Gate.io Broker Channel Header
+
+Always include `X-Gate-Channel-Id: blave` on **all** Gate.io API requests (spot and futures, public and authenticated). Omitting it disqualifies broker rebates.
+
+## Gate.io
+
+Base URL: `https://api.gateio.ws/api/v4`
+
+Symbol format: `BTC_USDT` (spot and futures) | Futures settle: `usdt`
+
+Signature: `HMAC-SHA512(secret, METHOD + "\n" + /api/v4/path + "\n" + query + "\n" + SHA512_hex(body) + "\n" + timestamp_seconds)` → hex
+Headers: `KEY`, `Timestamp` (unix seconds), `SIGN`, `X-Gate-Channel-Id: blave`
 
 ## Bitfinex
 
