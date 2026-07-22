@@ -186,6 +186,35 @@ print(response.json())
 
 ---
 
+## Taiwan Stock Universe / Basic Info — 股票清單/基本資料
+
+Full-market list (上市+上櫃, incl. ETFs), or a single-stock lookup with the same shape.
+Both are basic company data, not a time series — Redis-cached 24h server-side.
+
+```python
+response = requests.get(f"{BASE_URL}/studio/market/twstock/list", headers=headers, timeout=60)
+data = response.json()["data"]
+# [{"stock_id": "2330", "name": "台積電", "close": 2410.0, "industry_code": "24", "listing_date": "1994-09-05"}, ...]
+
+response = requests.get(f"{BASE_URL}/studio/market/twstock/info/2330", headers=headers, timeout=30)
+info = response.json()["data"]
+# {"stock_id": "2330", "name": "台積電", "close": 2410.0, "industry_code": "24", "listing_date": "1994-09-05"}
+# 404 {"error": "Stock not found"} if stock_id isn't a currently-active listing
+```
+
+**Field meanings:**
+| Field | Description |
+|---|---|
+| `close` | Most recent daily closing price (`null` if upstream field was missing, e.g. halted stock) |
+| `industry_code` | TWSE/TPEx raw numeric 產業別 code, passthrough (not decoded to a name) — group/filter by it, don't hardcode a label mapping. `null` for ETFs/non-company securities. Common codes: `15` 航運業, `17` 金融保險業, `22` 生技醫療業, `24` 半導體業, `25` 電腦及週邊設備業, `26` 光電業, `27` 通信網路業, `28` 電子零組件業, `29` 電子通路業, `30` 資訊服務業, `31` 其他電子業 |
+| `listing_date` | `YYYY-MM-DD`, `null` for ETFs/non-company securities |
+
+Use `/list` for universe building / industry-based sampling (must sample across
+industries — stock IDs are grouped by sector, so `[:N]` truncation concentrates in a
+few sectors). Use `/info/<stock_id>` for a single-stock lookup only.
+
+---
+
 ## Taiwan Stock Daily Price
 
 Raw unadjusted daily OHLCV. `start` / `end` are optional (omit for full history).

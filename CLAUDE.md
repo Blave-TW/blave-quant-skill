@@ -91,6 +91,8 @@ Base URL: `https://api.blave.org`
 - `liquidation/get_alpha` — 爆倉指標 Liquidation alpha time series + stat; `timeframe` default `24h`
 - `liquidation/get_map` — liquidation heatmap: price levels vs USD exposure (`labels`, `liquidation`, `cumsum`, `oi_value`, `price`)
 - `liquidation/get_map_change` — recent liquidation events by time window (`hist_0_1h`, `hist_1_8h`, `hist_8_24h`)
+- `studio/market/twstock/list` — Taiwan stock universe (上市+上櫃, incl. ETFs): `[{stock_id, name, close, industry_code, listing_date}, ...]`; `industry_code` is TWSE/TPEx's raw numeric 產業別 code (e.g. `24`=半導體業), not a decoded name; `listing_date` is `YYYY-MM-DD`; ETFs/non-company securities have both as `null`; Redis-cached 24h — use for universe building / industry-based sampling, not for per-stock lookups
+- `studio/market/twstock/info/<stock_id>` — single-stock basic info, same shape as one row of `/list`; 404 if not a currently-active listing
 - `studio/market/twstock/price/<stock_id>` — Taiwan stock raw daily OHLCV; `start`/`end` optional (YYYY-MM-DD); data from 2000-01-04
 - `studio/market/twstock/price_adj/<stock_id>` — Taiwan stock forward-adjusted (向後調整/後復權) daily OHLCV; same params; use for backtesting total return
 - `studio/market/twstock/institutional/<stock_id>` — Taiwan stock 三大法人每日買賣超 (wide format: foreign / investment trust / dealer self / dealer hedging × buy / sell, in shares); `start`/`end` optional
