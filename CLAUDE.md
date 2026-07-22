@@ -17,7 +17,7 @@ This repo contains one skill covering sixteen capabilities:
 10. **Binance** — Agent calls the Binance API for spot and USDS-M futures trading
 11. **Bitfinex** — Agent calls the Bitfinex API for spot, margin, and funding/lending
 12. **KuCoin** — Agent calls the KuCoin API for spot and futures/perpetual contract trading
-13. **TWSE / TPEX（台股）** — Agent queries Taiwan stock market data (stock code lookup, quotes, PE/yield/PB) via public APIs; no API key required
+13. **Taiwan stock lookup/quote/PE** — Agent queries stock code/name lookup, daily quotes, PE/yield/PB via **Blave API** (`studio/market/twstock/list`, `/info`, `/price`, `/quote`, `/per`), NOT the raw TWSE/TPEX public API. That public API (no key required) is used only as a fallback for the two things Blave has no endpoint for: trading-halt status and a one-shot full-market PE/yield/PB scan
 14. **台股分點買賣超** — Agent calls Blave API `GET /studio/market/twstock/broker/stock/<stock_id>` (by stock) or `GET /studio/market/twstock/broker/trader/<trader_id>` (by broker branch) for daily buy/sell data; no CAPTCHA required
 15. **Taiwan Futures** — Agent calls Blave API `GET /studio/market/twfutures/ohlcv/TXF/<schema>` for TXF OHLCV; schemas: 1d/1m/5m/15m/30m/60m; 1d from 2013-12-30, intraday from 2014-01-02
 16. **Gate.io** — Agent calls the Gate.io APIv4 for spot and USDT-settled perpetual futures trading
@@ -65,8 +65,8 @@ No CLI or wrapper involved. All API calls are made directly by the agent.
 | `references/kucoin-bpp.md` | KuCoin Broker Pro Program — commission tiers, referral bonuses, dashboard guide |
 | `references/gateio-skill.md` | Gate.io spot + futures overview — auth, broker channel header, operation flow, quick reference |
 | `references/gateio-api-reference.md` | Gate.io spot + futures full endpoints, Python signature + broker channel header |
-| `references/twse-skill.md` | TWSE/TPEX 台股查詢 — 快速參考：endpoints、欄位說明、Python 搜尋範例 |
-| `references/twse-api-reference.md` | TWSE/TPEX 完整 API 參考：上市/上櫃清單、行情、停復牌、民國年轉換 |
+| `references/twse-skill.md` | 停復牌狀態 + 全市場 PE 批次掃描（Blave API 沒有對應端點時才用）— 快速參考 |
+| `references/twse-api-reference.md` | 同上，完整 API 參考：欄位說明、Python 範例、民國年轉換 |
 | `references/twse-bsr-reference.md` | 台股分點買賣超 — Blave API endpoints（by stock / by trader）、欄位說明、Python 範例 |
 
 ## Blave API Endpoints
@@ -241,20 +241,15 @@ Affiliate code: `"meta": {"aff_code": "ZZDLtrXMF"}` on every order
 
 ## TWSE / TPEX — 台股市場查詢
 
-**No API key required.** Public data, no authentication.
+**Blave API first.** Stock code/name lookup (`studio/market/twstock/list`, `/info/<stock_id>`), daily
+quote/price (`/price/<stock_id>`, `/quote/<stock_id>`), and single-stock PE/yield/PB (`/per/<stock_id>`)
+all go through Blave API — see `references/blave-api.md`. The raw TWSE/TPEX public API below (no key
+required) is a fallback for only two things Blave has no endpoint for:
 
-| Market | Base URL |
+| Need | Base URL / endpoint |
 |---|---|
-| TWSE 上市 | `https://openapi.twse.com.tw` |
-| TPEX 上櫃 | `https://www.tpex.org.tw` |
-
-Key endpoints:
-- `GET /v1/exchangeReport/BWIBBU_ALL` — all listed stocks: `Code`, `Name`, `PEratio`, `DividendYield`, `PBratio`
-- `GET /v1/exchangeReport/STOCK_DAY_ALL` — all listed stocks daily quote: open/high/low/close, volume
-- `GET https://www.tpex.org.tw/openapi/v1/tpex_mainboard_quotes` — all OTC stocks: `SecuritiesCompanyCode`, `CompanyName`, quote data
-
-**Lookup flow:** Download full list → filter locally by `Code` or `Name` keyword.
-When market is unknown, query both TWSE and TPEX and merge results.
+| Trading-halt status | `GET https://openapi.twse.com.tw/v1/exchangeReport/TWTB4U` |
+| One-shot full-market PE/yield/PB scan (not per-stock) | `GET https://openapi.twse.com.tw/v1/exchangeReport/BWIBBU_ALL` (TWSE) / `GET https://www.tpex.org.tw/openapi/v1/tpex_mainboard_quotes` (TPEX) |
 
 Date format: ROC calendar — `1150507` = 2026/05/07 (民國115年05月07日)
 

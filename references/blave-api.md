@@ -299,6 +299,24 @@ there is no history, only the current snapshot.
 
 ---
 
+## Taiwan Stock PE / PB / Dividend Yield — 本益比/淨值比/殖利率
+
+Single-stock daily PE ratio, PB ratio, and dividend yield. `start`/`end` optional (omit for
+full history); data from 2005-10-01. For a one-shot scan across the **whole market** at once
+(not per-stock), Blave has no batch endpoint — that's the one case where the raw TWSE/TPEX
+`BWIBBU_ALL` / `tpex_mainboard_quotes` open API is still the right tool (see `twse-skill.md`).
+
+```python
+response = requests.get(
+    f"{BASE_URL}/studio/market/twstock/per/2330",
+    headers=headers, params={"start": "2026-01-01", "end": "2026-07-22"}, timeout=60,
+)
+data = response.json()["data"]
+# [{"date": "2026-07-21", "dividend_yield": 0.95, "PER": 34.87, "PBR": 11.05}, ...]
+```
+
+---
+
 ## Taiwan Stock Institutional Investors — 三大法人
 
 Daily buy/sell shares by institutional investor type (wide format, one row per trading day).

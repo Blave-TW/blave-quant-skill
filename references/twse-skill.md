@@ -1,116 +1,66 @@
 # 台股查詢 Taiwan Stock Market Data
 
-**資料來源 / Data Sources:**
-- **TWSE（台灣證券交易所）上市** Base URL: `https://openapi.twse.com.tw`
-- **TPEX（證券櫃檯買賣中心）上櫃** Base URL: `https://www.tpex.org.tw`
+**⚠️ Blave API 優先，不是這份文件裡的原始 TWSE/TPEX API。** 這份文件裡的原始 TWSE/TPEX 端點**只在
+Blave API 沒有對應資料時**才使用（目前只剩「停復牌狀態」+「全市場 PE/殖利率/PB 一次性掃描」兩種情況）。
+股票代號/名稱查詢、收盤價、單支 PE/殖利率/PB，一律先走 Blave API：
 
-**Authentication:** 無需 API Key — 公開資料，無需認證
-
-**日期格式 / Date Format:** 民國年 (ROC calendar) — 例如 `1150507` = 民國115年05月07日 = 2026/05/07
-
----
-
-## 查詢流程 — 依名稱或代號查股票
-
-1. 根據交易所類型選擇 endpoint：
-   - 上市（TWSE）→ `GET /v1/exchangeReport/BWIBBU_ALL`
-   - 上櫃（TPEX）→ `GET https://www.tpex.org.tw/openapi/v1/tpex_mainboard_quotes`
-   - 不確定在哪一市場 → 兩個都查，合併搜尋結果
-
-2. 下載完整清單，在本地端按 `Code`（上市）或 `SecuritiesCompanyCode`（上櫃）/ `Name` / `CompanyName` 進行篩選
-
-3. 顯示代號、名稱，以及基本數據（殖利率、PE、PB 等）
-
----
-
-## Key Endpoints
-
-| 用途 | Method | URL |
+| 需求 | 用 Blave API | 端點 |
 |---|---|---|
-| 上市股票清單 + PE/殖利率/PB | GET | `https://openapi.twse.com.tw/v1/exchangeReport/BWIBBU_ALL` |
-| 上市股票全日收盤行情 | GET | `https://openapi.twse.com.tw/v1/exchangeReport/STOCK_DAY_ALL` |
-| 上市股票停復牌狀態 | GET | `https://openapi.twse.com.tw/v1/exchangeReport/TWTB4U` |
-| 上櫃股票清單 + 行情 | GET | `https://www.tpex.org.tw/openapi/v1/tpex_mainboard_quotes` |
+| 股票代號/名稱查詢、建 universe | ✅ Blave | `GET /studio/market/twstock/list`（含 industry_code、listing_date）或 `/info/<stock_id>` |
+| 收盤價 / 今天收盤 / 走勢 | ✅ Blave | `GET /studio/market/twstock/price/<stock_id>`（日K）或 `/quote/<stock_id>`（即時） |
+| 單支 PE / 殖利率 / PB | ✅ Blave | `GET /studio/market/twstock/per/<stock_id>` |
+| 停復牌狀態 | ❌ Blave 沒有 | 見下方 TWSE `TWTB4U`（唯一沒有 Blave 對應的查詢） |
+| 全市場 PE/殖利率/PB 一次性掃描（非單支） | ❌ Blave 沒有批次版 | 見下方 TWSE `BWIBBU_ALL` |
+
+不要為了「查代號/收盤價」去打 `STOCK_DAY_ALL`、`t187ap03_L`、`tpex_mainboard_quotes`——這些原始
+API 的資料時效落後 Blave API（Blave 是 official-first + fallback + cache，原始 API 沒有這層保護），
+且 Blave 的 `/list`/`/info` 已經把兩個交易所（上市+上櫃，含 ETF）合併好了，不需要自己分別打 TWSE + TPEX
+再合併。
 
 ---
 
-## Response 欄位
+## 停復牌狀態（Blave 沒有對應端點，唯一合法的原始 API 用途之一）
 
-### TWSE `BWIBBU_ALL`（上市清單，最常用）
-| 欄位 | 說明 |
-|---|---|
-| `Code` | 股票代號 |
-| `Name` | 股票簡稱 |
-| `Date` | 資料日期（民國年，如 `1150507`） |
-| `PEratio` | 本益比 |
-| `DividendYield` | 殖利率（%） |
-| `PBratio` | 股價淨值比 |
+**資料來源:** TWSE `https://openapi.twse.com.tw`，無需認證
 
-### TPEX `tpex_mainboard_quotes`（上櫃清單）
-| 欄位 | 說明 |
-|---|---|
-| `SecuritiesCompanyCode` | 股票代號 |
-| `CompanyName` | 公司名稱 |
-| `Close` | 收盤價 |
-| `Change` | 漲跌 |
-| `Open` | 開盤價 |
-| `High` | 最高價 |
-| `Low` | 最低價 |
-| `TradingShares` | 成交股數 |
-| `TransactionAmount` | 成交金額 |
+**日期格式:** 民國年 (ROC calendar) — 例如 `1150507` = 民國115年05月07日 = 2026/05/07
 
----
-
-## Python 範例
-
-```python
-import requests
-
-# 查詢上市股票，依名稱搜尋
-res = requests.get("https://openapi.twse.com.tw/v1/exchangeReport/BWIBBU_ALL")
-stocks = res.json()
-
-# 依代號搜尋
-def find_by_code(code):
-    return [s for s in stocks if s["Code"] == code]
-
-# 依名稱關鍵字搜尋
-def find_by_name(keyword):
-    return [s for s in stocks if keyword in s["Name"]]
-
-# 範例：查台積電
-results = find_by_code("2330")
-# 或
-results = find_by_name("台積")
-# → [{"Code": "2330", "Name": "台積電", "PEratio": "34.87", "DividendYield": "0.95", "PBratio": "11.05", ...}]
-
-# 查詢上櫃股票
-res_otc = requests.get("https://www.tpex.org.tw/openapi/v1/tpex_mainboard_quotes")
-otc_stocks = res_otc.json()
-
-def find_otc_by_code(code):
-    return [s for s in otc_stocks if s["SecuritiesCompanyCode"] == code]
-
-def find_otc_by_name(keyword):
-    return [s for s in otc_stocks if keyword in s["CompanyName"]]
 ```
+GET https://openapi.twse.com.tw/v1/exchangeReport/TWTB4U
+```
+
+回傳全部上市股票的停牌狀態：
+```json
+[{"Date": "1150508", "Code": "0050", "Name": "元大台灣50", "Suspension": ""}, ...]
+```
+`Suspension` 為空字串 = 正常交易；有值 = 停牌。
+
+---
+
+## 全市場 PE/殖利率/PB 一次性掃描（Blave 沒有批次版，唯一合法的原始 API 用途之二）
+
+單支股票的 PE/殖利率/PB 用 Blave `/studio/market/twstock/per/<stock_id>`；但如果要**一次掃描全市場**
+（例如篩選低本益比股票），Blave 目前沒有批次端點，才用這個：
+
+```
+GET https://openapi.twse.com.tw/v1/exchangeReport/BWIBBU_ALL   （上市）
+GET https://www.tpex.org.tw/openapi/v1/tpex_mainboard_quotes   （上櫃，含行情非只 PE/PB）
+```
+
+上市回傳欄位：`Date`、`Code`、`Name`、`PEratio`、`DividendYield`、`PBratio`。
+詳細欄位與 Python 範例：`references/twse-api-reference.md`。
 
 ---
 
 ## 注意事項
 
-- TWSE API 資料約每個交易日收盤後更新；非交易日回傳前一交易日資料
-- 資料免費、無需 API Key、無 rate limit 限制（合理使用）
+- 上面兩個原始 API 都是唯讀查詢，不需要 Safety Mode CONFIRM
+- 資料約每個交易日收盤後更新；非交易日回傳前一交易日資料
 - 台股代號格式：一般股票為 4 位數字（如 `2330`）、ETF 以 `00` 開頭（如 `0050`）、債券 ETF 含英文字母（如 `00679B`）
-- 查詢不確定在上市或上櫃時，兩個 API 都下載後合併搜尋
-- 全部為唯讀查詢，不需要 Safety Mode CONFIRM
 
 ---
 
 ## 分點資料（BSR 買賣日報表）
 
-查詢各券商對特定股票的當日買賣明細，需通過 CAPTCHA 驗證。
-
-**流程：** GET 頁面取表單欄位 → 下載 CAPTCHA 圖片 → 用自己的 vision 讀取答案 → POST 表單 → 解析結果表格
-
-詳細流程與 Python 程式碼：`references/twse-bsr-reference.md`
+查詢各券商對特定股票的當日買賣明細——這個一律走 Blave API（`/studio/market/twstock/broker/stock/<stock_id>`
+或 `/broker/trader/<trader_id>`），不需要 CAPTCHA。詳見 `references/twse-bsr-reference.md`。
