@@ -551,6 +551,52 @@ df["yoy_pct"] = df["revenue"].pct_change(periods=12) * 100  # year-over-year %
 
 ---
 
+## Taiwan Market-Wide — 大盤
+
+Whole-market series (no `stock_id` dimension). Four endpoints, all daily, all with optional
+`start` / `end` (omit for full history) and all returning `{"data": [...]}` sorted by date.
+Do **not** sum the per-stock endpoints above as a substitute — coverage and units differ.
+
+```python
+params = {"start": "2024-01-01", "end": "2024-12-31"}
+
+# 加權指數 TAIEX 日 OHLC — from 1999-01-05. TAIEX is the only supported index id (else 400).
+r = requests.get(f"{BASE_URL}/studio/market/twmarket/index/TAIEX", headers=headers, params=params, timeout=60)
+# {"index_id": "TAIEX", "data": [{"date": "2024-01-02", "open": 17939.79, "high": 17956.74,
+#                                 "low": 17784.97, "close": 17853.76}, ...]}
+
+# 全市場成交量值 — from 1990-01-04
+r = requests.get(f"{BASE_URL}/studio/market/twmarket/turnover", headers=headers, params=params, timeout=60)
+# [{"date": "2024-01-02", "volume": 6411778806.0, "value": 301290668897.0, "trades": 2267660.0}, ...]
+
+# 全市場三大法人買賣超 — from 2004-04-07
+r = requests.get(f"{BASE_URL}/studio/market/twmarket/institutional", headers=headers, params=params, timeout=60)
+# [{"date": "2024-01-02", "foreign": 1047078183.0, "investment_trust": 189637635.0,
+#   "dealer": -4447440583.0, "total": -3211404085.0}, ...]
+
+# 全市場融資融券餘額 — from 2001-01-03
+r = requests.get(f"{BASE_URL}/studio/market/twmarket/margin", headers=headers, params=params, timeout=60)
+# [{"date": "2024-01-02", "margin_balance": 8012561, "margin_balance_prev": 7999081,
+#   "margin_balance_value": 248424271000, "short_balance": 369678,
+#   "short_balance_prev": 359738}, ...]
+```
+
+**Field meanings:**
+| Endpoint | Field | Unit |
+|---|---|---|
+| `index/TAIEX` | `open` `high` `low` `close` | index points (no volume — use `turnover`) |
+| `turnover` | `volume` / `value` / `trades` | 成交股數 shares / 成交金額 TWD 元 / 成交筆數 count |
+| `institutional` | `foreign` `investment_trust` `dealer` `total` | TWD 元, **net** (buy − sell) |
+| `margin` | `margin_balance` `margin_balance_prev` `short_balance` `short_balance_prev` | 張 (lots) |
+| `margin` | `margin_balance_value` | TWD 元 |
+
+外資自營商 (foreign dealers' own account) is bucketed into `dealer`, not `foreign` — same
+convention FinMind uses, so `foreign` here is 外資及陸資(不含外資自營商).
+
+TXO put/call ratio is a futures/options dataset — see *Taiwan Option Put/Call Ratio* below.
+
+---
+
 ## Taiwan Futures OHLCV — 台灣期貨
 
 ```
@@ -801,6 +847,53 @@ response = requests.get(
 | `volume` | 合約口數 |
 
 Note: 資料有約 4 小時延遲，最新幾小時不可用。
+
+---
+
+## Economic Calendar — 總經事件行事曆
+
+```
+GET /studio/market/anue/economic_calendar
+```
+
+全球總經事件的發布時間、市場預期值、前值與實際值（授權資料源）。所有參數皆選填；不帶參數時回傳完整清單（約 1,400 筆），**務必用參數篩選**。
+
+| Param | Description |
+|---|---|
+| `start` / `end` | `YYYY-MM-DD`，台北日期，含頭含尾 |
+| `country` | ISO 兩碼，逗號分隔，如 `US,CN,TW` |
+| `max_priority` | 只回 `priority <=` 此值。**1 最重要、3 最不重要**，所以「只要大事件」是 `max_priority=1` |
+| `limit` | 筆數上限（依事件時間排序後截斷） |
+| `lang` | `zh` / `en`，指標與國名的顯示語言；伺服器只換掉對照表裡有的名稱，`en` 會拿到中英混雜 |
+
+資料是**滾動約五週的窗口**（前一個月加未來數週），不是歷史庫；區間落在窗外會回空陣列而非錯誤。
+
+```python
+params = {"start": "2026-07-28", "end": "2026-07-31", "country": "US,CN", "max_priority": 2}
+response = requests.get(
+    f"{BASE_URL}/studio/market/anue/economic_calendar",
+    headers=headers, params=params, timeout=60,
+)
+data = response.json()
+# [{"startDate": 1785715200, "time": "20:30", "countryId": "US", "countryName": "美國",
+#   "subjectTitle": "<2季>", "subject": "GDP成長率(QoQ)初值", "unit": "%",
+#   "predict": 1.6, "last": 2.1, "real": None, "priority": 3}, ...]
+```
+
+**Response fields:**
+| Field | Description |
+|---|---|
+| `startDate` | 事件當天（台北日期）的 epoch 秒 |
+| `time` | `HH:MM`，**台北時間**；部分事件未公布時間，為 `null` |
+| `countryId` / `countryName` | ISO 兩碼 / 中文國名 |
+| `subject` / `subjectTitle` | 指標名稱 / 期別（如 `<7月>`、`<2季>`） |
+| `predict` | 市場預期值（consensus）；未提供為 `null` |
+| `last` | 前值 |
+| `real` | 實際值；尚未公布為 `null` |
+| `unit` | 單位（`%`、`point`、`億USD` …） |
+| `priority` | 1–3，**1 最重要**（1 = 非農/利率決議，3 = 鑽機數這類） |
+
+**這是總經事件與其數字的唯一來源——不要改用網路搜尋，也不要憑記憶填數字。** 泛用搜尋會撿到行事曆聚合站,那些表格本身就有錯（實測有站把已公布的實際值當成預期值），沒被頁面涵蓋的欄位則會被訓練資料填空：連「前值」這種唯一解的數字都寫錯過。這支查不到的就說查不到。
 
 ---
 
