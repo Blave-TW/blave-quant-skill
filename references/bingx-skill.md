@@ -66,6 +66,6 @@ After order → query order status. After close → query positions.
 - "Not financial advice. Trading carries significant risk of loss."
 
 ## References
-- `references/bingx-api-reference.md` — 59 endpoints, Python signature, full params
+- `references/bingx-api-reference.md` — 63 endpoints, Python signature, full params
 
 ---

@@ -56,7 +56,7 @@ No CLI or wrapper involved. All API calls are made directly by the agent.
 | `references/bitmart-signature.md` | Python HMAC-SHA256 signature implementation + common mistakes |
 | `references/hyperliquid-api.md` | Hyperliquid API — all 9 endpoints with params, response format, cache times |
 | `references/tradingview-stream.md` | TradingView SSE stream — webhook setup, Python streaming client with reconnect |
-| `references/bingx-api-reference.md` | BingX 59 endpoints, Python signature, spot + perpetual swap |
+| `references/bingx-api-reference.md` | BingX 63 endpoints, Python signature, public market data + spot + perpetual swap |
 | `references/bitget-api-reference.md` | Bitget spot + futures endpoints, Python signature |
 | `references/binance-api-reference.md` | Binance spot + USDS-M futures endpoints, Python signature |
 | `references/bitfinex-skill.md` | Bitfinex spot, margin, funding/lending endpoints, HMAC-SHA384 signature |
