@@ -170,8 +170,34 @@ print(response.json())
 ## Sector Rotation
 
 ```python
+# Rolling alpha history per sector (time series)
 response = requests.get(f"{BASE_URL}/sector_rotation/get_history_data", headers=headers, timeout=60)
 print(response.json())
+
+# Heat-map snapshot: per-sector % change over 7 timeframes, with per-token breakdown
+response = requests.get(f"{BASE_URL}/sector_rotation/get_overview_data", headers=headers, timeout=60)
+data = response.json()["data"]
+# {"AI": {"name_en": "AI", "name_zh": "人工智能",
+#         "data": {"1h": {"pct_change": ...}, "8h": ..., "24h": ..., "3d": ..., "7d": ..., "30d": ..., "90d": ...},
+#         "symbols": {"0G": {"id": 38337, "data": {"1h": {"pct_change": ...}, ...}}, ...}},
+#  ...}  # ~48 sectors; pct_change is a decimal (0.0061 = +0.61%)
+```
+
+---
+
+## OI Imbalance
+
+Open-interest-to-market-cap ranking across all listed tokens (snapshot, sorted by
+`alpha` descending). `alpha = oi_total / market_cap`; `oi_total` sums Binance/OKX/BingX
+futures OI in USD. High alpha = OI crowded relative to size — squeeze/volatility risk.
+The `/alpha_table` field `oi_imbalance` carries only the final `alpha`; this endpoint
+returns the full detail table.
+
+```python
+response = requests.get(f"{BASE_URL}/oi_imbalance/get_overview_data", headers=headers, timeout=60)
+data = response.json()["data"]
+# [{"token": "TSLA", "token_id": 39618, "token_price": 313.33, "token_chg": 0.031,
+#   "market_cap": 40415.98, "oi_total": 59916616.78, "alpha": 1482.5}, ...]
 ```
 
 ---
@@ -909,7 +935,7 @@ Each symbol in `/alpha_table` contains:
 | `market_cap` | `{"-": 1234567890}` — USD market cap |
 | `market_cap_percentile` | `{"-": 85.3}` — percentile among all listed coins |
 | `funding_rate` | `{"binance": -0.01, ...}` — per exchange |
-| `oi_imbalance` | `{"-": 0.12}` — OI imbalance |
+| `oi_imbalance` | `{"-": 0.12}` — OI imbalance (full detail table: `/oi_imbalance/get_overview_data`) |
 
 `fields` = indicator metadata. `note` = color ranges. `""` = insufficient data.
 
