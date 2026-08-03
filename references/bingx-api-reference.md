@@ -148,7 +148,7 @@ if body['code'] != 0:
 # body['data'] → [{'open','high','low','close','volume','time'}, ...] newest-first
 ```
 
-Blave's own `GET /kline` serves **Binance USDT-M perps only**, so a BingX-listed contract that Binance does not carry has to come from here. Do not substitute a similarly-named Binance symbol — that backtests a different instrument than the one the orders go to. In BlaveClaw, use `lib/data.py` `fetch_bingx_kline()` rather than calling this endpoint by hand.
+Blave's own `GET /kline` serves **Binance USDT-M perps only**, so a BingX-listed contract that Binance does not carry has to come from here. Do not substitute a similarly-named Binance symbol — that backtests a different instrument than the one the orders go to. In Blave Agent, use `lib/data.py` `fetch_bingx_kline()` rather than calling this endpoint by hand.
 
 ### Order Management
 

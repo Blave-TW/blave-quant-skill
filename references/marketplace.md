@@ -1,4 +1,4 @@
-# BlaveClaw Strategy Marketplace API
+# Blave Agent Strategy Marketplace API
 
 Use Blave API credentials for all requests.
 Base URL: `https://api.blave.org`

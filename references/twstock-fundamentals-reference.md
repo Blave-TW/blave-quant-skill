@@ -89,7 +89,7 @@ Batch 回傳格式：`{"data_type": "financials", "data": {"2330": [...], "2317"
 
 ---
 
-## BlaveClaw lib 用法
+## Blave Agent lib 用法
 
 所有台股資料一律用 batch 函式（即使只有 1 支）：
 
