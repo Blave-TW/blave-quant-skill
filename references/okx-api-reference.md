@@ -64,6 +64,26 @@ Not applicable on: GET queries, `POST /api/v5/trade/cancel-order`, `POST /api/v5
 
 ---
 
+## Account Structure & Balances
+
+OKX is a **unified-account** venue: one TRADING account shared by spot and
+derivatives, plus a separate FUNDING wallet. Deposits land in funding; money in
+funding cannot trade until transferred to the trading account.
+
+| Method | Path | Description |
+|---|---|---|
+| GET | `/api/v5/account/balance` | Trading account. `data[i].totalEq` = USD-denominated total equity across all currencies; `data[i].details[]` = per-currency (`ccy`, `eq`, …) |
+| GET | `/api/v5/asset/balances` | Funding wallet. `data[]` rows: `{ccy, bal, frozenBal, availBal}` (strings) |
+
+Both shapes verified against live responses (2026-08). For "how much money does
+this account have", query BOTH and present them separately — `totalEq` alone
+hides funding-wallet money, and summing without labels misleads the other way.
+
+**Demo trading:** header `x-simulated-trading: 1` on every request routes to
+OKX's simulated environment — requires API keys created in demo mode.
+
+---
+
 ## Instrument ID Format
 
 | Type | Format | Example |
