@@ -262,6 +262,13 @@ Blave's own `GET /kline` serves **Binance USDT-M perps only**, so a BingX-listed
 
 **Spot order types:** `MARKET`, `LIMIT`, `TAKE_STOP_LIMIT`, `TAKE_STOP_MARKET`, `TRIGGER_LIMIT`, `TRIGGER_MARKET`
 
+**Spot order facts (measured live 2026-08-04):**
+- Client-id param is `newClientOrderId` (the swap API uses `clientOrderID` — different name AND casing)
+- Market BUYs size in quote currency via `quoteOrderQty`; SELLs in base `quantity`
+- Trading rules from public `GET /openApi/spot/v1/common/symbols`: `stepSize`/`tickSize` are SIZES (0.000001), unlike swap's digit counts; gate on `apiStateBuy` + `apiStateSell` + `status == "1"`
+- **Asymmetric minimums**: BTC-USDT buy minimum is 0.5 USDT notional but sell minimum is `minQty` 0.0001826 BTC (~$12) — a small buy can create inventory unsellable on its own
+- Placement response may return `status: PENDING` even for market orders — poll `GET /openApi/spot/v1/trade/query` (symbol + orderId) to a terminal state (`FILLED`/`CANCELED`/`FAILED`)
+
 ### Query Orders
 
 | Method | Path | Description |

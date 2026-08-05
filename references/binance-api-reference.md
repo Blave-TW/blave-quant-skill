@@ -184,9 +184,23 @@ def fapi_put(path, params=None):    return bn_put(FAPI_URL, path, params)
 
 | Method | Path | Description |
 |---|---|---|
-| POST | `/fapi/v1/order` | Place order |
+| POST | `/fapi/v1/order` | Place order (LIMIT/MARKET only — see below) |
 | POST | `/fapi/v1/batchOrders` | Batch place (max 5) |
-| POST | `/fapi/v1/algoOrder` | Algo/conditional order (STOP/TP/TRAILING) |
+| POST | `/fapi/v1/algoOrder` | Conditional order (STOP/STOP_MARKET/TP/TP_MARKET/TRAILING) |
+
+**Conditional orders MUST use the Algo Order API** — `/fapi/v1/order` rejects
+`STOP_MARKET` etc. with `-4120: Order type not supported for this endpoint`
+(measured live 2026-08-04). The Algo API has its own vocabulary:
+
+- Request: `algoType=CONDITIONAL` (required), `triggerPrice` (NOT `stopPrice`),
+  `clientAlgoId` (NOT `newClientOrderId` — broker prefix `x-52DDFAFN` still applies,
+  same ≤36-char limit), plus the usual `symbol`/`side`/`positionSide`/`type`/
+  `quantity` or `closePosition=true`/`workingType`
+- Response: `algoId` (int, keep as string) + `algoStatus` (NEW/TRIGGERED/CANCELED/EXPIRED)
+- Conditional orders do NOT appear in `GET /fapi/v1/openOrders` — query
+  `GET /fapi/v1/openAlgoOrders`; cancel one via `DELETE /fapi/v1/algoOrder`
+  (`algoId` or `clientAlgoId`); cancel all via `DELETE /fapi/v1/algoOpenOrders?symbol=`
+  (`DELETE /fapi/v1/allOpenOrders` only clears regular orders)
 
 **Futures order params:** `symbol`, `side` (BUY/SELL), `positionSide` (BOTH/LONG/SHORT), `type` (LIMIT/MARKET/STOP/STOP_MARKET/TAKE_PROFIT/TAKE_PROFIT_MARKET/TRAILING_STOP_MARKET), `quantity`, `price`, `stopPrice`, `timeInForce`, `reduceOnly`, **`newClientOrderId` (REQUIRED: must start with `x-52DDFAFN`, ≤36 chars)**
 

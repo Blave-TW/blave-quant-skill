@@ -39,6 +39,7 @@ Rules:
 - Prefix starts with literal `x-` (lowercase), then the broker ID
 - Total length ≤ 36 chars; append a unique suffix (timestamp/uuid fragment) to keep each ID unique
 - Applies to: `/api/v3/order`, `/api/v3/order/cancelReplace`, `/api/v3/sor/order`, `/api/v3/orderList/oco|oto|otoco`, `/fapi/v1/order`, `/fapi/v1/batchOrders`, `/fapi/v1/algoOrder`, and their test/modify variants
+- On `/fapi/v1/algoOrder` the parameter is named `clientAlgoId` (not `newClientOrderId`) — same prefix, same ≤36-char limit
 - Batch orders: **every** order in the batch needs its own qualifying `newClientOrderId`
 - If user supplies a custom `newClientOrderId`, reject it or prepend the broker prefix — never strip the prefix
 
@@ -104,10 +105,13 @@ After order → query order status. After close → query positions.
 | Account balance | GET | `/fapi/v2/balance` |
 | Account info | GET | `/fapi/v2/account` |
 | Positions | GET | `/fapi/v2/positionRisk` |
-| Place order | POST | `/fapi/v1/order` |
+| Place order (LIMIT/MARKET) | POST | `/fapi/v1/order` |
+| Conditional order (SL/TP) | POST | `/fapi/v1/algoOrder` — `algoType=CONDITIONAL`, `triggerPrice`, `clientAlgoId`; `/fapi/v1/order` rejects STOP types with -4120 |
+| Open conditional orders | GET | `/fapi/v1/openAlgoOrders` — NOT listed in `openOrders` |
+| Cancel conditional | DELETE | `/fapi/v1/algoOrder` (algoId) / `/fapi/v1/algoOpenOrders` (all) |
 | Batch place | POST | `/fapi/v1/batchOrders` |
 | Cancel order | DELETE | `/fapi/v1/order` |
-| Cancel all | DELETE | `/fapi/v1/allOpenOrders` |
+| Cancel all (regular only) | DELETE | `/fapi/v1/allOpenOrders` |
 | Modify order | PUT | `/fapi/v1/order` |
 | Open orders | GET | `/fapi/v1/openOrders` |
 | Order history | GET | `/fapi/v1/allOrders` |
