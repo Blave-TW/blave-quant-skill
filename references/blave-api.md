@@ -336,6 +336,74 @@ there is no history, only the current snapshot.
 
 ---
 
+## Taiwan Stock Minute-Line OHLCV — 台股現股分線
+
+```
+GET /studio/market/twstock/minute/ohlcv/<stock_id>/<schema>
+GET /studio/market/twstock/minute/ohlcv/symbols
+```
+
+`schema` ∈ `1m` / `5m` / `15m` / `30m` / `60m` / `1d`. `start` / `end` optional
+(YYYY-MM-DD; default `end` = today, default `start` = `end` minus the schema's max
+range). `adjust` optional (`0`/`1`/`true`/`false`, default `0` = raw traded prices):
+`adjust=1` returns forward-adjusted (後復權) OHLC — same factor pipeline as the
+Studio daily adjusted series (`/twstock/price_adj`), numbers match exactly; `volume`
+is never adjusted. If the factor source is unavailable the API returns 503 — it
+never silently serves unadjusted prices as adjusted. History from 2019-01 (FinMind
+official data, backfilled per stock).
+Timestamps are UTC ISO, minute-START labels — the 13:30 Taipei bar is the closing
+auction. **`volume` is in lots (張), not shares.** Requires API plan auth.
+
+| `schema` | max range per request |
+|---|---|
+| `1d` | 3650 days |
+| `1m` | 31 days |
+| `5m` | 62 days |
+| `15m` | 93 days |
+| `30m` | 186 days |
+| `60m` | 365 days |
+
+Beyond the cap → 400 `{"error": "date_range_too_large", "max_days": <n>}`. Split
+longer spans into chunks (same pattern as `fetch_txf_chunked` below).
+
+**Coverage is demand-driven.** `/ohlcv/symbols` lists the stock_ids that already have
+minute-line data. Any listed TWSE/TPEx stock_id can be queried though — the first-ever
+query auto-seeds recent data (~30 days) and enrolls the stock for ongoing tracking:
+from the next day onward it gets intraday real-time bars plus a daily official
+correction after market close. Deep history (2019-01 →) backfills server-side after
+first touch, so check `/ohlcv/symbols` before requesting years of history.
+
+```python
+response = requests.get(f"{BASE_URL}/studio/market/twstock/minute/ohlcv/symbols", headers=headers, timeout=30)
+print(response.json())
+# {"data": ["2330"]}
+
+params = {"start": "2026-08-06", "end": "2026-08-06"}
+response = requests.get(
+    f"{BASE_URL}/studio/market/twstock/minute/ohlcv/2330/1m",
+    headers=headers, params=params, timeout=60,
+)
+body = response.json()
+# {"stock_id": "2330", "schema": "1m", "data": [
+#   {"close": 2385.0, "high": 2395.0, "low": 2385.0, "open": 2395.0, "ts": "2026-08-06 01:00:00+00:00", "volume": 2540},
+#   {"close": 2385.0, "high": 2385.0, "low": 2380.0, "open": 2380.0, "ts": "2026-08-06 01:01:00+00:00", "volume": 204},
+#   ...
+#   {"close": 2365.0, "high": 2365.0, "low": 2365.0, "open": 2365.0, "ts": "2026-08-06 05:30:00+00:00", "volume": 4217}]}
+```
+
+**Response fields:**
+| Field | Description |
+|---|---|
+| `ts` | Bar open time (UTC ISO string, minute-start label) |
+| `open` / `high` / `low` / `close` | Price (TWD) |
+| `volume` | Lots (張) |
+
+A still-forming bar is never returned — the last bar of the current interval is
+dropped until it closes. Use `/studio/market/twstock/quote/<stock_id>` for the live
+tick instead.
+
+---
+
 ## Taiwan Stock PE / PB / Dividend Yield — 本益比/淨值比/殖利率
 
 Single-stock daily PE ratio, PB ratio, and dividend yield. `start`/`end` optional (omit for
