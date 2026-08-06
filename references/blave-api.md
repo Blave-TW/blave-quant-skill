@@ -41,12 +41,23 @@ print(response.json())
 ## Kline
 
 ```python
-params = {"symbol": "BTCUSDT", "period": "1h", "start_date": "2025-01-01", "end_date": "2025-03-01"}
+params = {"symbol": "BTCUSDT", "period": "1h", "start_date": "2026-08-04", "end_date": "2026-08-07"}
 response = requests.get(f"{BASE_URL}/kline", headers=headers, params=params, timeout=60)
 raw = response.json()
 # returns a list directly (NOT {"data": [...]}):
-# [{"date": "2025-01-01 00:00:00", "open": 94000.0, "high": 95500.0, "low": 93200.0, "close": 95000.0, "volume": 1234.5}, ...]
+# [{"time": 1785801600.0, "open": 63497.1, "high": 63558.8, "low": 63290.2, "close": 63337.6, "volume": 4583.87}, ...]
+# time is Unix seconds UTC+0; volume is base-asset volume
 data = raw if isinstance(raw, list) else raw.get("data", [])
+```
+
+Sub-5min periods (`1min`/`2min`/`3min`/`4min`) are supported with tighter limits:
+max 30 days per request, and data only goes back 45 days (400 with an explanatory
+error beyond either). 5min and above keep the normal 1-year-per-request limit.
+
+```python
+params = {"symbol": "BTCUSDT", "period": "1min", "start_date": "2026-08-04", "end_date": "2026-08-07"}
+response = requests.get(f"{BASE_URL}/kline", headers=headers, params=params, timeout=60)
+# [{"time": 1785801600.0, "open": 63497.1, "high": 63513.1, "low": 63458.5, "close": 63464.4, "volume": 94.226}, ...]
 ```
 
 ---
