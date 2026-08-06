@@ -77,6 +77,16 @@ After order → query order status. After close → query positions.
 - Always show liquidation price before opening leveraged positions
 - "Not financial advice. Trading carries significant risk of loss."
 
+## Field-Verified Lessons (live account, 2026-08-05)
+
+- **A futures account does not exist until the first transfer into it.** `GET /futures/usdt/accounts` (and positions) returns `USER_NOT_FOUND: please transfer funds first to create futures account` on a fresh account — that is a state, not a broken key. Transfer via `POST /wallet/transfers` `{"currency": "USDT", "from": "spot", "to": "futures", "amount": "...", "settle": "usdt"}` (needs **wallet** permission on the key; `GET /wallet/total_balance` needs it too).
+- **`text` custom order ids have NO idempotency.** Two orders with the identical `t-...` text both filled — there is no duplicate rejection at all (unlike Binance/OKX's un-filled-window dedup). Before any resubmit, re-query open/finished orders; a blind resubmit doubles the position.
+- **Spot market-buy fees are deducted from the received BASE asset** (bought 0.000093 BTC, fee 9.3e-8 BTC). The filled amount is not what lands in the wallet — to sell inventory, size from `GET /spot/accounts` balances, never from the buy's filled amount (`BALANCE_NOT_ENOUGH` otherwise). Futures fees are charged in USDT and appear on `GET /futures/usdt/my_trades` (order responses carry no fee); spot fees ride the order response (`fee` / `fee_currency`).
+- **Spot minimums are explicit per pair**: `GET /spot/currency_pairs/{pair}` → `min_quote_amount` (BTC_USDT: 3 USDT — market buys check against it), `min_base_amount`, `amount_precision` (sell qty step).
+- **Dual (hedge) position mode**: switch with `POST /futures/usdt/dual_mode?dual_mode=true|false` (requires a flat account). Orders need no posSide field — `reduce_only` + the order's sign uniquely addresses the side (a reduce-only sell can only reduce the long side). Whole-position close: `size 0` + `close true` (single mode) / `auto_size "close_long"|"close_short"` (dual mode). An untouched contract's single-position query returns `POSITION_NOT_FOUND`.
+- **Conditional (SL/TP) orders** live on `/futures/usdt/price_orders`: body `{"initial": {contract, size, price "0", tif "ioc", close/auto_size/reduce_only}, "trigger": {"strategy_type": 0, "price_type": 1 (mark), "price": "...", "rule": 1 (trigger when ≥) | 2 (≤)}}` — own id namespace with separate open/cancel endpoints; regular order queries never see them.
+- **Attribution lands verifiably**: with the `X-Gate-Channel-Id: blave` header, fills carry `biz_info: "ch:blave"` and price orders carry `broker: "blave"` — check these fields to confirm broker tracking.
+
 ## References
 - `references/gateio-api-reference.md` — spot + futures endpoints, Python signature
 
