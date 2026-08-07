@@ -118,6 +118,24 @@ BingX has three separate accounts: Fund, Spot, Swap. Assets don't auto-transfer 
 | GET | `/openApi/swap/v3/user/balance` | Swap/futures account (USDT + USDC) |
 | GET | `/openApi/account/v1/allAccountBalance` | All accounts overview |
 
+## Asset Transfer (between wallets)
+
+`POST /openApi/api/asset/v1/transfer` — signed like any private endpoint (sorted
+query-string HMAC, params in the URL even on POST, no JSON body). API key needs the
+**Universal Transfer** permission. Live-verified 2026-08 (fund↔spot↔USDTMPerp round
+trip, balances reflected immediately).
+
+| Param | Required | Notes |
+|---|---|---|
+| `fromAccount` / `toAccount` | yes | `fund` \| `spot` \| `USDTMPerp` (USDT-M perp) \| `stdFutures` \| `coinMPerp` |
+| `asset` | yes | e.g. `USDT` |
+| `amount` | yes | decimal |
+
+Success: `code == 0`, response carries `transferId` (and usually `tranId`).
+Do NOT use the legacy `type`-enum transfer endpoint — it has no fund↔spot direction
+(spot split from fund in 2025) and current docs no longer list it.
+`GET /openApi/api/asset/v1/transfer/supportCoins` lists transferable coins/amounts per direction.
+
 ---
 
 ## Perpetual Futures (Swap) Endpoints

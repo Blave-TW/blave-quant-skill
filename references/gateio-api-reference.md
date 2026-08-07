@@ -153,6 +153,24 @@ close_order = {"contract": "BTC_USDT", "size": 0, "close": True, "price": "0", "
 
 **Dual-position (hedge) mode:** close one side with `size: 0` + `auto_size: "close_long"` / `"close_short"`.
 
+## Asset Transfer (between accounts)
+
+`POST /wallet/transfers` — same HMAC-SHA512 five-line signature as any private endpoint;
+JSON body. Live-verified 2026-08 (spot↔futures round trip, `tx_id` returned, balances
+reflected within seconds).
+
+| Field | Required | Notes |
+|---|---|---|
+| `currency` | yes | e.g. `USDT` |
+| `from` / `to` | yes | `spot` \| `futures` \| `delivery` \| `margin` \| `options` — futures↔margin has no direct route, hop via `spot` |
+| `amount` | yes | STRING, not a number |
+| `settle` | when futures/delivery | lowercase settle currency, e.g. `usdt` |
+| `currency_pair` | when margin | isolated-margin pair, e.g. `BTC_USDT` |
+
+Example spot→futures: `{"currency":"USDT","from":"spot","to":"futures","amount":"3","settle":"usdt"}`.
+Success = HTTP 2xx (response carries `tx_id`; older API versions returned an empty
+body, so judge by status code first). Status lookup: `GET /wallet/order_status?tx_id=...`.
+
 ## Sources
 
 Verified 2026-07-14 against the official Gate.io Python SDK (`gateio/gateapi-python`: `api_client.py` `gen_sign`, `docs/Order.md`, `docs/FuturesOrder.md`, `docs/SpotApi.md`, `docs/FuturesApi.md`) and cross-checked with CCXT `gate.ts` (`X-Gate-Channel-Id` header) and Gate.io official WebSocket SDK `gateio/gatews` (same header).

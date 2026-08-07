@@ -114,6 +114,23 @@ def fapi_put(path, params=None):    return bn_put(FAPI_URL, path, params)
 
 ---
 
+## Asset Transfer (between wallets)
+
+`POST /sapi/v1/asset/transfer` — universal transfer, signed like any sapi USER_DATA
+endpoint (HMAC query-string, `X-MBX-APIKEY`). API key must have the **Permits
+Universal Transfer** option enabled. Live-verified 2026-08 (futures↔funding↔spot,
+`tranId` returned, balances reflected within seconds).
+
+| Param | Required | Notes |
+|---|---|---|
+| `type` | yes | `{FROM}_{TO}` enum: `MAIN`(spot) / `FUNDING` / `UMFUTURE`(USDT-M) / `CMFUTURE` / `MARGIN` …, e.g. `FUNDING_UMFUTURE`, `UMFUTURE_MAIN`, `MAIN_FUNDING` |
+| `asset` | yes | e.g. `USDT` |
+| `amount` | yes | decimal |
+
+Success: `{"tranId": <int>}`. `-5013 insufficient balance` means the SPECIFIC asset
+is short in the source wallet — wallet totals in account overviews are USD-valued
+across all assets, not transferable USDT, so check the asset's own balance first.
+
 ## Spot Endpoints
 
 ### Account
