@@ -27,10 +27,14 @@ Query params: `start` / `end`（YYYY-MM-DD，可省略）
 | `GET /studio/market/twstock/batch/balance_sheet?stock_ids=...` | 資產負債表 |
 | `GET /studio/market/twstock/batch/monthly_revenue?stock_ids=...` | 月營收 |
 | `GET /studio/market/twstock/batch/price_adj?stock_ids=...&start=...&end=...` | 向後調整日K |
+| `GET /studio/market/twstock/batch/price?stock_ids=...&start=...&end=...` | 原始日K OHLCV（含 High/Low） |
+| `GET /studio/market/twstock/batch/per?stock_ids=...&start=...&end=...` | PER／PBR／殖利率 |
 | `GET /studio/market/twstock/batch/institutional?stock_ids=...&start=...&end=...` | 三大法人 |
 | `GET /studio/market/twstock/batch/shareholding?stock_ids=...&start=...&end=...` | 股東人數 |
 
-Batch 回傳格式：`{"data_type": "financials", "data": {"2330": [...], "2317": [...]}}`
+Batch 回傳格式：`{"data_type": "financials", "data": {"2330": [...], "2317": [...]}, "failed": []}`——
+`failed` 為 server 端抓取失敗（rate limit 或上游錯誤）的股票，應重試；不在 `data` 也不在 `failed`
+才是真的沒資料。每型 `data` 內欄位與對應單檔 endpoint 完全一致。
 
 ---
 

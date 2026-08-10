@@ -407,9 +407,8 @@ tick instead.
 ## Taiwan Stock PE / PB / Dividend Yield — 本益比/淨值比/殖利率
 
 Single-stock daily PE ratio, PB ratio, and dividend yield. `start`/`end` optional (omit for
-full history); data from 2005-10-01. For a one-shot scan across the **whole market** at once
-(not per-stock), Blave has no batch endpoint — that's the one case where the raw TWSE/TPEX
-`BWIBBU_ALL` / `tpex_mainboard_quotes` open API is still the right tool (see `twse-skill.md`).
+full history); data from 2005-10-01. For value screens across many stocks use
+`batch/per` (see *Taiwan Stock Batch Fetch* below) — the whole market is ~40 batch calls.
 
 ```python
 response = requests.get(
@@ -419,6 +418,40 @@ response = requests.get(
 data = response.json()["data"]
 # [{"date": "2026-07-21", "dividend_yield": 0.95, "PER": 34.87, "PBR": 11.05}, ...]
 ```
+
+---
+
+## Taiwan Stock Batch Fetch — 批次查詢（選股/大型 universe）
+
+One call fetches up to **50 stocks** of the same data type — the right tool for any
+multi-stock screen. Never fan out per-stock endpoints across a universe (rate limits);
+the whole market (~2,000 stocks) is ~40 batch calls.
+
+`data_type` ∈ `price` (raw daily OHLCV incl. High/Low — KD/breakout screens) /
+`price_adj` / `per` (value screens) / `institutional` / `shareholding` /
+`foreign_shareholding` / `financials` / `balance_sheet` / `monthly_revenue`.
+Per-id rows are identical to the corresponding single-stock endpoint; `start`/`end`
+as per type.
+
+```python
+response = requests.get(
+    f"{BASE_URL}/studio/market/twstock/batch/per",
+    headers=headers,
+    params={"stock_ids": "2330,6182", "start": "2026-08-04", "end": "2026-08-08"},
+    timeout=120,
+)
+payload = response.json()
+# {"data_type": "per",
+#  "data": {"2330": [{"date": "2026-08-04", "dividend_yield": 0.95, "PER": 31.19,
+#                     "PBR": 10.21, "stock_id": "2330"}, ...],
+#           "6182": [...]},
+#  "failed": []}
+```
+
+`failed` lists stock_ids whose server-side fetch failed (rate limit or upstream error) —
+retry those. A stock absent from both `data` and `failed` genuinely has no data in the
+range. `batch/price` rows carry `open/high/low/close/volume` plus `spread`,
+`turnover_count`, `turnover_value` — same as `/twstock/price/<stock_id>`.
 
 ---
 
