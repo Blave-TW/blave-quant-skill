@@ -421,6 +421,72 @@ data = response.json()["data"]
 
 ---
 
+## Taiwan Stock Dividend Events — 台股股利事件
+
+Full per-stock dividend event history (cash + stock dividends), one row per announcement
+row. `start` / `end` optional (omit for full history), strict `YYYY-MM-DD` — anything else
+(e.g. `2025-6-01`) is a 400. Range filtering uses a three-tier effective date:
+`cash_ex_date` when set, else `stock_ex_date`, else `record_date` — so freshly announced
+events whose ex date is not yet decided still show up in range queries.
+
+```python
+response = requests.get(
+    f"{BASE_URL}/studio/market/twstock/dividend/2330",
+    headers=headers, params={"start": "2025-01-01", "end": "2025-12-31"}, timeout=30,
+)
+data = response.json()["data"]
+# [{"record_date": "2025-03-24", "period": "113年第3季", "announce_date": "2025-03-03",
+#   "cash_ex_date": "2025-03-18", "stock_ex_date": "", "pay_date": "2025-04-10",
+#   "cash": 4.50002042, "stock": 0.0, "stock_ratio": 0.0}, ...]
+```
+
+**Response fields:**
+| Field | Description |
+|---|---|
+| `record_date` | 權利分派基準日 (`YYYY-MM-DD`) |
+| `period` | 股利所屬期間 — an **opaque label** (`114年第3季`, `113`, `不適用`, …). Do NOT parse it into a Western calendar year; compare/group by string only |
+| `announce_date` | 董事會/股東會公告日 — empty string when unknown |
+| `cash_ex_date` | 除息交易日 — empty string when not yet decided / no cash dividend |
+| `stock_ex_date` | 除權交易日 — empty string when none |
+| `pay_date` | 現金股利發放日 — empty string when unknown |
+| `cash` | 現金股利 per share (盈餘+公積 combined, NTD) |
+| `stock` | 股票股利 per share (盈餘+公積 combined, 元面額) |
+| `stock_ratio` | `stock / 10` — the split-style adjustment ratio |
+
+Notes:
+- **Zero-value rows are kept**: `cash == 0 and stock == 0` means the company announced a
+  no-distribution decision — a real, tradeable piece of information, not noise.
+- Empty date fields are empty strings `""`, never null.
+- Universe is **currently-listed 上市/上櫃 stocks only** — a delisted or unknown id is 404.
+- `404` = unknown stock_id OR the stock has no dividend history at all. A valid stock with
+  history but no events in your range returns `200` + `[]` (the two are distinguishable).
+- Quota exhaustion upstream → `503` (retry shortly).
+
+**Batch form** (up to **50** ids — use this for screens, never fan out the single endpoint):
+
+```python
+response = requests.get(
+    f"{BASE_URL}/studio/market/twstock/batch/dividend",
+    headers=headers,
+    params={"stock_ids": "2330,1101", "start": "2026-01-01"}, timeout=120,
+)
+payload = response.json()
+# {"data_type": "dividend",
+#  "data": {"2330": [{"record_date": "2026-03-23", "period": "114年第3季",
+#                     "announce_date": "2026-03-02", "cash_ex_date": "2026-03-17",
+#                     "stock_ex_date": "", "pay_date": "2026-04-09",
+#                     "cash": 6.00003573, "stock": 0.0, "stock_ratio": 0.0}, ...],
+#           "1101": [...]},
+#  "failed": []}
+```
+
+The batch contract is deliberately **asymmetric** with the single endpoint: an unknown id
+or a stock with no dividend history is **silently absent** from both `data` and `failed`
+(no 404); `failed` only lists server-side fetch failures (retry those). Quota exhaustion
+in batch is `200` + the affected ids in `failed`, not a 503.
+
+---
+
 ## Taiwan Stock Batch Fetch — 批次查詢（選股/大型 universe）
 
 One call fetches up to **50 stocks** of the same data type — the right tool for any
@@ -429,9 +495,10 @@ the whole market (~2,000 stocks) is ~40 batch calls.
 
 `data_type` ∈ `price` (raw daily OHLCV incl. High/Low — KD/breakout screens) /
 `price_adj` / `per` (value screens) / `institutional` / `shareholding` /
-`foreign_shareholding` / `financials` / `balance_sheet` / `monthly_revenue`.
-Per-id rows are identical to the corresponding single-stock endpoint; `start`/`end`
-as per type.
+`foreign_shareholding` / `financials` / `balance_sheet` / `monthly_revenue` /
+`dividend` (stricter date validation + silent-absence contract — see *Taiwan Stock
+Dividend Events* above). Per-id rows are identical to the corresponding single-stock
+endpoint; `start`/`end` as per type.
 
 ```python
 response = requests.get(
@@ -732,6 +799,54 @@ r = requests.get(f"{BASE_URL}/studio/market/twmarket/margin", headers=headers, p
 convention FinMind uses, so `foreign` here is 外資及陸資(不含外資自營商).
 
 TXO put/call ratio is a futures/options dataset — see *Taiwan Option Put/Call Ratio* below.
+
+---
+
+## Taiwan Index Dividend Points — 台股加權指數每日除息點數
+
+Daily dividend points removed from TAIEX by constituent ex-dividend events — the series
+you subtract when computing the fair basis of index futures (正逆價差). One row per day,
+`{date, points, estimated}` plus a response-level `meta`.
+
+- `estimated: false` — **realized** value, derived exactly from the total-return index vs
+  price index spread (data from 2003). Non-ex days are ~0 (numerical noise ≤ 0.01 pt).
+- `estimated: true` — **forecast** for future dates: announced-but-not-yet-ex dividends
+  synthesized from per-stock weights, plus a last-year template for periods not announced
+  yet. Future weekdays with no expected event are zero-filled, so cumulative sums over any
+  window need no gap handling.
+- `start` / `end` optional, strict `YYYY-MM-DD` (else 400). `end` is silently clamped to
+  **today + 120 days** (two settlement cycles).
+- The realized leg updates each trading day **~17:00 Taipei** (the total-return index
+  publishes ~16:50); before that the latest realized row is the previous trading day.
+
+```python
+response = requests.get(
+    f"{BASE_URL}/studio/market/twmarket/dividend_points",
+    headers=headers, params={"start": "2026-08-01"}, timeout=60,
+)
+payload = response.json()
+# {"data": [{"date": "2026-08-03", "points": 2.853, "estimated": false}, ...,
+#           {"date": "2026-08-28", "points": 3.846, "estimated": true}, ...],
+#  "meta": {"estimated_coverage": 0.9999, "degraded": false}}
+```
+
+`meta.estimated_coverage` is the fraction of TAIEX market-value weight whose inputs were
+readable when synthesizing the estimated leg (`null` when the range has no estimated
+rows); `meta.degraded: true` flags a materially under-covered estimate — treat the
+estimated leg as a lower bound in that case. Coverage below 90% is refused outright
+(`503`) rather than served silently low.
+
+Typical use (fair basis of TXF):
+```python
+import pandas as pd
+df = pd.DataFrame(payload["data"])
+future_div = df[df["estimated"]].set_index("date")["points"]
+# fair basis at date t for settlement date T:
+#   futures_price - (spot_index - future_div.loc[t_plus_1:T].sum())
+```
+
+Estimates far from settlement lean on the last-year template — more than ~2 weeks out,
+expect part of the sum to be template-based rather than announced.
 
 ---
 
