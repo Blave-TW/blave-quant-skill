@@ -421,6 +421,47 @@ data = response.json()["data"]
 
 ---
 
+## Taiwan Stock Market Value — 市值 / 市值排名
+
+Two endpoints. `/market_value/<stock_id>` is the single-stock daily market-cap time series
+(`start`/`end` optional; data from 2004-01-01; fields `date`, `market_value`).
+`/market_value/all` is the **whole-market ranking snapshot** — every stock's latest market
+cap, sorted desc, in one call. Use `/all` for "前十大權值股" / "市值前 N 檔當股池" type
+questions instead of fanning out to `/market_value/<stock_id>` per stock.
+
+`/all` params: `top` optional int 1–3000 — keep only the top N by market cap (omit for the
+full list, ~2,400 rows). Out-of-range / non-integer → 400
+`{"error": "top must be an integer between 1 and 3000"}`; 404 = no recent data; 503 =
+upstream rate limit (retry later).
+
+Universe = 上市 + 上櫃 + ETF (興櫃 excluded; ETNs have no data). `market_value` is NTD 元
+(integer); `rank` is 1-based. `date` is the as-of date actually used — the latest published
+day of the upstream source (FinMind TaiwanStockMarketValue, EOD daily), so it can lag today
+by a day. Server-cached 30 min. ETFs such as 0050 rank among the large caps — to drop ETFs,
+filter out `stock_id` starting with `00`.
+
+```python
+# Single stock — daily time series
+params = {"start": "2026-01-01", "end": "2026-08-20"}
+response = requests.get(f"{BASE_URL}/studio/market/twstock/market_value/2330", headers=headers, params=params, timeout=60)
+data = response.json()["data"]
+# [{"date": "...", "market_value": ...}, ...]
+
+# Whole market ranking — top 10
+response = requests.get(f"{BASE_URL}/studio/market/twstock/market_value/all", headers=headers, params={"top": 10}, timeout=60)
+body = response.json()
+# {"date": "2026-08-20",
+#  "data": [{"rank": 1, "stock_id": "2330", "name": "台積電",   "market_value": 61589378909125},
+#           {"rank": 2, "stock_id": "2454", "name": "聯發科",   "market_value": 5934413005900},
+#           {"rank": 3, "stock_id": "2308", "name": "台達電",   "market_value": 4532713109105}, ...]}
+
+# Top-50 non-ETF stock pool (ETFs are ranked too, so over-fetch then filter)
+response = requests.get(f"{BASE_URL}/studio/market/twstock/market_value/all", headers=headers, params={"top": 100}, timeout=60)
+top50 = [r["stock_id"] for r in response.json()["data"] if not r["stock_id"].startswith("00")][:50]
+```
+
+---
+
 ## Taiwan Stock Dividend Events — 台股股利事件
 
 Full per-stock dividend event history (cash + stock dividends), one row per announcement
