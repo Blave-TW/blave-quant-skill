@@ -157,7 +157,7 @@ Per-symbol: indicator values + `statistics` (up_prob, exp_value, is_data_suffici
 
 **`period` format:** `{number}{unit}` — unit: `min` / `h` / `d`. Examples: `1min`, `15min`, `1h`, `4h`, `1d`, `7d`, `30d`.
 
-**Sub-5min periods** (`1min`–`4min`): max 30 days per request, history goes back 45 days only, near-realtime updates (served live from Binance). Requests beyond either limit get a 400 with an explanatory error.
+**Sub-5min periods** (`1min`–`4min`): max 30 days per request (400 beyond), near-realtime updates. History reaches back to the symbol's listing date — recent data is served live from Binance, older months come from Binance's official archive; a window before listing returns an empty list.
 
 **Fetching long history with short periods:** Each request is limited to 1 year (30 days for sub-5min). For short periods (e.g. `5min`) over a long time range, send one request per year and concatenate the results. Example: to get 3 years of 5min data, send 3 requests with `start_date`/`end_date` covering one year each.
 

@@ -50,9 +50,11 @@ raw = response.json()
 data = raw if isinstance(raw, list) else raw.get("data", [])
 ```
 
-Sub-5min periods (`1min`/`2min`/`3min`/`4min`) are supported with tighter limits:
-max 30 days per request, and data only goes back 45 days (400 with an explanatory
-error beyond either). 5min and above keep the normal 1-year-per-request limit.
+Sub-5min periods (`1min`/`2min`/`3min`/`4min`) are supported with a tighter
+per-request window: max 30 days per request (400 with an explanatory error
+beyond). History reaches back to the symbol's listing date; a window before
+listing returns an empty list. 5min and above keep the normal
+1-year-per-request limit.
 
 ```python
 params = {"symbol": "BTCUSDT", "period": "1min", "start_date": "2026-08-04", "end_date": "2026-08-07"}
