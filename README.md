@@ -146,7 +146,7 @@ Add the following to your `.env` file:
 
 ```
 BYBIT_API_KEY=YOUR_API_KEY
-BYBIT_API_SECRET=YOUR_API_SECRET
+BYBIT_SECRET_KEY=YOUR_API_SECRET
 ```
 
 ---

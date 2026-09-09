@@ -19,7 +19,7 @@ metadata:
         - OKX_SECRET_KEY
         - OKX_PASSPHRASE
         - BYBIT_API_KEY
-        - BYBIT_API_SECRET
+        - BYBIT_SECRET_KEY
         - BINGX_API_KEY
         - BINGX_SECRET_KEY
         - BITGET_API_KEY
@@ -519,7 +519,7 @@ When the user wants to trade, **ask which exchange** if not specified, then **re
 | BitMart (Futures) | `BITMART_API_KEY`, `BITMART_API_SECRET`, `BITMART_API_MEMO` | `references/bitmart-futures-skill.md` |
 | BitMart (Spot) | same as above | `references/bitmart-spot-skill.md` |
 | OKX | `OKX_API_KEY`, `OKX_SECRET_KEY`, `OKX_PASSPHRASE` | `references/okx-skill.md` |
-| Bybit | `BYBIT_API_KEY`, `BYBIT_API_SECRET` | `references/bybit-skill.md` |
+| Bybit | `BYBIT_API_KEY`, `BYBIT_SECRET_KEY` | `references/bybit-skill.md` |
 | BingX | `BINGX_API_KEY`, `BINGX_SECRET_KEY` | `references/bingx-skill.md` |
 | Bitget | `BITGET_API_KEY`, `BITGET_SECRET_KEY`, `BITGET_PASSPHRASE` | `references/bitget-skill.md` |
 | Binance | `BINANCE_API_KEY`, `BINANCE_SECRET_KEY` | `references/binance-skill.md` |

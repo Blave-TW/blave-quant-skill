@@ -29,7 +29,7 @@ No CLI or wrapper involved. All API calls are made directly by the agent.
 - `blave_api_key`, `blave_secret_key` — Blave API auth
 - `BITMART_API_KEY`, `BITMART_API_SECRET`, `BITMART_API_MEMO` — BitMart API auth
 - `OKX_API_KEY`, `OKX_SECRET_KEY`, `OKX_PASSPHRASE` — OKX API auth
-- `BYBIT_API_KEY`, `BYBIT_API_SECRET` — Bybit API auth
+- `BYBIT_API_KEY`, `BYBIT_SECRET_KEY` — Bybit API auth
 - `BINGX_API_KEY`, `BINGX_SECRET_KEY` — BingX API auth
 - `BITGET_API_KEY`, `BITGET_SECRET_KEY`, `BITGET_PASSPHRASE` — Bitget API auth
 - `BINANCE_API_KEY`, `BINANCE_SECRET_KEY` — Binance API auth
