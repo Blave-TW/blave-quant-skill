@@ -308,8 +308,8 @@ Receive TradingView alerts in real time via Server-Sent Events.
 | `GET /studio/market/twstock/cashflow/<stock_id>` | 現金流量表 (季頻, long format); `start`/`end` optional (YYYY-MM-DD) |
 | `GET /studio/market/twstock/monthly_revenue/<stock_id>` | 月營收 (月頻); `start`/`end` optional (YYYY-MM-DD); data from 2000-01-01; Redis-cached 24 h |
 | `GET /studio/market/twstock/broker/search?name=<name>` | 券商分點查詢 — 用名稱（模糊比對）查 broker_id; 回傳 `[{broker_id, broker_name}]`; 1007 筆分點目錄 |
-| `GET /studio/market/twstock/broker/stock/<stock_id>` | 分點買賣超 — 查某股票所有券商分點（單日）; `date` optional (YYYY-MM-DD, 預設今天); 資料起始 2021-06-30，當日資料台灣時間約 21:30 後才有; fields: `broker_id`, `broker_name`, `price`, `buy`, `sell` |
-| `GET /studio/market/twstock/broker/trader/<trader_id>` | 分點買賣超 — 查某券商分點所有股票（單日）; `date` optional (YYYY-MM-DD, 預設今天); 資料起始 2021-06-30，當日資料台灣時間約 21:30 後才有; fields: `stock_id`, `broker_name`, `price`, `buy`, `sell` |
+| `GET /studio/market/twstock/broker/stock/<stock_id>` | 分點買賣超 — 查某股票所有券商分點; `date` optional (YYYY-MM-DD, 預設今天) 查單日，或 `start`/`end` (YYYY-MM-DD) 查區間，區間最多 366 天（超過回 400）; 資料起始 2021-06-30，當日資料台灣時間約 21:30 後才有; 503 = 資料暫不可用，稍後重試，不要當成沒資料; fields: `broker_id`, `broker_name`, `price`, `buy`, `sell` |
+| `GET /studio/market/twstock/broker/trader/<trader_id>` | 分點買賣超 — 查某券商分點所有股票; `date` optional (YYYY-MM-DD, 預設今天) 查單日，或 `start`/`end` (YYYY-MM-DD) 查區間，區間最多 366 天（超過回 400）; 資料起始 2021-06-30，當日資料台灣時間約 21:30 後才有; 503 = 資料暫不可用，稍後重試，不要當成沒資料; fields: `stock_id`, `broker_name`, `price`, `buy`, `sell` |
 | `GET /studio/market/twstock/kbar/<stock_id>` | **Legacy — prefer `minute/ohlcv/<stock_id>/1m` below.** 1-minute OHLCV (分K) served from the same on-disk minute store as `minute/ohlcv` (no upstream call); `start`/`end` YYYY-MM-DD required; max 31 days per request; data from 2019-01-01 for ids listed by `minute/ohlcv/symbols` (unknown / delisted id → 400); today's bars are provisional intraday and replaced by official bars after 16:10 Taipei; fields: `date`, `minute` (HH:MM:SS, bar start, 09:00–13:30), `stock_id`, `open`, `high`, `low`, `close`, `volume` |
 | `GET /studio/market/twstock/minute/ohlcv/<stock_id>/<schema>` | 現股分線 minute-line OHLCV; `schema` ∈ `1m`/`5m`/`15m`/`30m`/`60m`/`1d`; `start`/`end` optional (YYYY-MM-DD); `adjust` optional (`0`/`1`, default `0` = raw; `1` = forward-adjusted 後復權 OHLC, volume unchanged, 503 if factors unavailable); max range per request: 1m 31d / 5m 62d / 15m 93d / 30m 186d / 60m 365d / 1d 3650d; data from 2019-01; `ts` UTC minute-start label (13:30 Taipei bar = closing auction); `volume` in lots (張); coverage is demand-driven — first query of a stock seeds recent data + starts tracking |
 | `GET /studio/market/twstock/minute/ohlcv/symbols` | Stock ids that currently have minute-line data (the covered set for the endpoint above) |
@@ -566,7 +566,7 @@ GET /studio/market/twstock/broker/stock/<stock_id>?date=YYYY-MM-DD
 GET /studio/market/twstock/broker/trader/<trader_id>?date=YYYY-MM-DD
 ```
 
-`date` 預設今天。資料起始 2021-06-30；當日資料台灣時間約 21:30 後才有，之前查當日回空陣列。多日查詢請逐日呼叫。
+`date` 預設今天。多日可改用 `start=YYYY-MM-DD&end=YYYY-MM-DD` 一次查區間，區間最多 366 天（超過回 400），更長請分段。資料起始 2021-06-30；當日資料台灣時間約 21:30 後才有，之前查當日回空陣列。回 503 代表資料暫不可用，稍後重試，不要當成沒有交易。
 
 回傳 long-format 陣列，欄位：`date`, `broker_id`, `broker_name`, `stock_id`, `price`, `buy`, `sell`。
 

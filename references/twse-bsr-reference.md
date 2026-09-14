@@ -2,7 +2,7 @@
 
 > 資料來源：[FinMind](https://finmindtrade.com)
 >
-> 資料起始 **2021-06-30**。每個交易日的資料在台灣時間約 21:30 後才有，之前查當日回空陣列；假日同樣回空陣列。
+> 資料起始 **2021-06-30**。每個交易日的資料在台灣時間約 21:30 後才有，之前查當日回空陣列；假日同樣回空陣列。 回 503 代表資料暫不可用，稍後重試，不要當成沒有交易。
 
 兩種查詢方式：**用股票代號**查哪些券商買賣該股，或**用券商代號**查該券商當天買賣哪些股票。
 
@@ -36,6 +36,7 @@ GET /studio/market/twstock/broker/stock/<stock_id>
 |---|---|---|---|
 | `stock_id` | path | 是 | 股票代號，例如 `2330` |
 | `date` | query | 否 | 查詢日期 `YYYY-MM-DD`（預設今天） |
+| `start` / `end` | query | 否 | 查區間（`YYYY-MM-DD`，含頭尾），最多 366 天，超過回 400；有 `start` 時忽略 `date` |
 
 **回傳：** `{"stock_id": "2330", "data": [...]}`
 
@@ -63,6 +64,7 @@ GET /studio/market/twstock/broker/trader/<trader_id>
 |---|---|---|---|
 | `trader_id` | path | 是 | 券商分點代碼，例如 `9217`（凱基-松山）。字母數字皆支援，如 `920A` |
 | `date` | query | 否 | 查詢日期 `YYYY-MM-DD`（預設今天） |
+| `start` / `end` | query | 否 | 查區間（`YYYY-MM-DD`，含頭尾），最多 366 天，超過回 400；有 `start` 時忽略 `date` |
 
 **回傳：** `{"trader_id": "9898", "data": [...]}`
 
