@@ -48,10 +48,12 @@ Content-Type: application/json
   "title": "Strategy Name",
   "description": "What it does and how",
   "price": 300,
-  "category": "trend",
+  "category": "Crypto",
   "code": "...full source code..."
 }
 ```
+`category` must be exactly `Crypto` or `TW Stock` (anything else is rejected with 400). Private uploads (`/strategies/private`) accept any category.
+
 Status starts as `pending`. Blave reviews and publishes it.
 
 Check submission status:
@@ -81,7 +83,7 @@ SYMBOL        = "ETHUSDT"
 
 ```
 POST /openclaw/marketplace/strategies/submit
-{"title": "BTC SMA + ETH RSI Bundle", "description": "...", "price": 500, "category": "bundle", "code": "..."}
+{"title": "BTC SMA + ETH RSI Bundle", "description": "...", "price": 500, "category": "Crypto", "code": "..."}
 ```
 
 In `description`, write a structured block for each strategy separated by `---`.
