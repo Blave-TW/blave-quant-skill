@@ -4,7 +4,11 @@
 >
 > 資料起始 **2021-06-30**。每個交易日的資料在台灣時間約 21:30 後才有，之前查當日回空陣列；假日同樣回空陣列。 回 503 代表資料暫不可用，稍後重試，不要當成沒有交易。
 
-兩種查詢方式：**用股票代號**查哪些券商買賣該股，或**用券商代號**查該券商當天買賣哪些股票。
+兩種查詢方式：**用股票代號**查哪些券商買賣該股，或**用券商代號**查該券商買賣哪些股票。每種都可查單日（`date`）或區間（`start`/`end`）。
+
+> 端點規格以 `references/blave-api.md` › `broker/*` 為準，本檔只放工作流程與範例。
+>
+> 區間查詢（待確認：對應 api commit `d32f1c4`、`bea1507` 尚未確認已部署）。部署前帶 `start`/`end` 可能被忽略、只回單日——檢查回傳每筆的 `date` 是否跨日，若沒有，退回逐日帶 `date` 查詢。
 
 ---
 
@@ -26,7 +30,7 @@ GET /studio/market/twstock/broker/search?name=<name>
 
 ---
 
-## Endpoint 1 — 用股票代號查分點（單日）
+## Endpoint 1 — 用股票代號查分點（單日或區間）
 
 ```
 GET /studio/market/twstock/broker/stock/<stock_id>
@@ -35,12 +39,13 @@ GET /studio/market/twstock/broker/stock/<stock_id>
 | 參數 | 類型 | 必填 | 說明 |
 |---|---|---|---|
 | `stock_id` | path | 是 | 股票代號，例如 `2330` |
-| `date` | query | 否 | 查詢日期 `YYYY-MM-DD`（預設今天） |
-| `start` / `end` | query | 否 | 查區間（`YYYY-MM-DD`，含頭尾），最多 366 天，超過回 400；有 `start` 時忽略 `date` |
+| `date` | query | 否 | 單日 `YYYY-MM-DD`（預設今天） |
+| `start` | query | 否 | 區間起日 `YYYY-MM-DD`；與 `date` 同送時以 `start` 為準 |
+| `end` | query | 否 | 區間迄日 `YYYY-MM-DD`（預設 = `start`）；含頭尾最多 366 天，超過回 400 `{"error": "start/end range is <n> days; max 366 (inclusive) — split into smaller ranges"}` |
 
 **回傳：** `{"stock_id": "2330", "data": [...]}`
 
-每筆為一個券商分點在當天的交易紀錄：
+每筆為一個券商分點在某一天的交易紀錄（區間查詢時每天各一組）：
 
 | 欄位 | 型別 | 說明 |
 |---|---|---|
@@ -54,7 +59,7 @@ GET /studio/market/twstock/broker/stock/<stock_id>
 
 ---
 
-## Endpoint 2 — 用券商代號查分點（單日）
+## Endpoint 2 — 用券商代號查分點（單日或區間）
 
 ```
 GET /studio/market/twstock/broker/trader/<trader_id>
@@ -63,12 +68,13 @@ GET /studio/market/twstock/broker/trader/<trader_id>
 | 參數 | 類型 | 必填 | 說明 |
 |---|---|---|---|
 | `trader_id` | path | 是 | 券商分點代碼，例如 `9217`（凱基-松山）。字母數字皆支援，如 `920A` |
-| `date` | query | 否 | 查詢日期 `YYYY-MM-DD`（預設今天） |
-| `start` / `end` | query | 否 | 查區間（`YYYY-MM-DD`，含頭尾），最多 366 天，超過回 400；有 `start` 時忽略 `date` |
+| `date` | query | 否 | 單日 `YYYY-MM-DD`（預設今天） |
+| `start` | query | 否 | 區間起日 `YYYY-MM-DD`；與 `date` 同送時以 `start` 為準 |
+| `end` | query | 否 | 區間迄日 `YYYY-MM-DD`（預設 = `start`）；含頭尾最多 366 天，超過回 400 `{"error": "start/end range is <n> days; max 366 (inclusive) — split into smaller ranges"}` |
 
 **回傳：** `{"trader_id": "9898", "data": [...]}`
 
-每筆為該券商分點在當天對某支股票的交易紀錄（欄位同上，`stock_id` 為查到的股票）。
+每筆為該券商分點在某一天對某支股票的交易紀錄（欄位同上，`stock_id` 為查到的股票）。
 
 ---
 
@@ -113,7 +119,7 @@ for row in sorted(rows2, key=lambda x: x["buy"] - x["sell"], reverse=True)[:10]:
 
 ## 多日聚合範例
 
-Endpoint 1/2 每次只查單日。需要多日範圍時，逐日迴圈再加總：
+多日範圍用 `start`/`end` 一次查（每次含頭尾最多 366 天，更長就切段）。每筆回傳自帶 `date`：
 
 ```python
 import os, requests, pandas as pd
@@ -126,23 +132,24 @@ HEADERS = {
 }
 
 def get_trader_flows(trader_id, start, end):
-    """回傳 DataFrame，欄位：date, stock_id, net（買超張數）"""
+    """回傳 DataFrame，欄位：date, stock_id, net（買超股數）"""
     records = []
-    d = date.fromisoformat(start)
-    end_d = date.fromisoformat(end)
-    while d <= end_d:
+    cur, end_d = date.fromisoformat(start), date.fromisoformat(end)
+    while cur <= end_d:
+        chunk_end = min(cur + timedelta(days=365), end_d)
         r = requests.get(
             f"{BASE_URL}/studio/market/twstock/broker/trader/{trader_id}",
-            headers=HEADERS, params={"date": d.isoformat()}
+            headers=HEADERS, params={"start": cur.isoformat(), "end": chunk_end.isoformat()},
+            timeout=60,
         )
         r.raise_for_status()
         for row in r.json().get("data", []):
             records.append({
-                "date": d,
+                "date": row["date"],
                 "stock_id": row["stock_id"],
                 "net": row["buy"] - row["sell"],
             })
-        d += timedelta(days=1)
+        cur = chunk_end + timedelta(days=1)
     return pd.DataFrame(records)
 
 # 凱基-松山 (9217) 近一個月買超排名
@@ -169,5 +176,5 @@ top50 = flows.groupby("stock_id")["net"].sum().nlargest(50).index
 
 - 查詢為唯讀，**不需要 Safety Mode CONFIRM**
 - 非交易日回傳空 `data` 陣列
-- Endpoint 1/2 每次只查單日；多日需逐日迴圈（見上方範例）
+- Endpoint 1/2 單日帶 `date`，多日帶 `start`/`end`（含頭尾 ≤ 366 天，見上方範例；區間查詢待確認已部署，見檔頭）
 - 資料快取於 server 端 parquet，同一日期二次查詢不重新抓取

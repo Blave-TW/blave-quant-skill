@@ -11,7 +11,7 @@ A skill that gives your agent eight capabilities:
 7. **Bitget** — Spot and futures trading on Bitget
 8. **Binance** — Spot and USDS-M futures trading on Binance
 
-Official website: [https://blave.org](https://blave.org) | For more details, visit the [Blave Academy](https://blave.notion.site/Blave-Academy-c13a8a9ca8824319baa685a769686ac8)
+Official website: [https://blave.org](https://blave.org) | For more details, visit the [Blave Docs](https://blave.org/docs/en)
 
 ## Security
 
