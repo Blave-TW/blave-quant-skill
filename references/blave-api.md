@@ -1081,7 +1081,7 @@ symbols = requests.get(f"{BASE_URL}/liquidation/get_symbols", headers=headers, t
 | Group | Crypto › Alpha › Liquidation |
 | Access | API plan or data fee |
 | Rate limit | 500 / 5 min per key + per IP |
-| Data from | 待確認 |
+| Data from | 2023-01-01 for BTC/ETH; other symbols may start later |
 | Update | Every 5 minutes |
 | Source | Blave (exchange liquidation feeds) |
 
@@ -1100,7 +1100,7 @@ symbols = requests.get(f"{BASE_URL}/liquidation/get_symbols", headers=headers, t
 | Field | Type | Description |
 |---|---|---|
 | `timestamp` | float[] | Unix seconds (UTC) |
-| `alpha` | float[] | Higher = more long-liquidation pressure |
+| `alpha` | float[] | (short − long liquidations, in coins) summed over `timeframe` ÷ its 30-day rolling std; mean not subtracted. > 0 = more shorts than longs liquidated, < 0 = more longs |
 | `stat` | object | See *`stat` object* |
 
 **Errors**
@@ -1144,9 +1144,9 @@ response = requests.get(f"{BASE_URL}/liquidation/get_alpha", headers=headers, pa
 |---|---|---|---|
 | `price` | float | USDT | Current price |
 | `labels` | float[] | USDT | 200 price buckets |
-| `oi_value` | float[] | USD | Open-interest value at each bucket |
+| `oi_value` | float[] | USD | Estimated allocation of Binance open interest to each bucket (model estimate, not real positions) |
 | `cumsum` | float[] | USD | Cumulative liquidation exposure across buckets |
-| `liquidation` | object | USD | `{"24h": {"buy_liq": [...], "sell_liq": [...]}}` — long / short liquidation exposure per bucket |
+| `liquidation` | object | USD | `{"24h": {"buy_liq": [...], "sell_liq": [...]}}` — actual Binance force-order liquidations over the last 24 h per bucket, each divided by a fixed 0.3 Binance-share assumption: `buy_liq` = short liquidations, `sell_liq` = long liquidations |
 
 **Errors**
 
@@ -1190,7 +1190,7 @@ response = requests.get(f"{BASE_URL}/liquidation/get_map", headers=headers, para
 |---|---|---|---|
 | `price` | float | USDT | Current price |
 | `labels` | float[] | USDT | 200 price buckets (lower edges) |
-| `hist_0_1h` | float[] | USD | Actual liquidations in the last 0–1 h, per bucket |
+| `hist_0_1h` | float[] | USD | New estimated liquidation exposure over the last 0–1 h, per bucket: positive difference between model map snapshots, not actual liquidations |
 | `hist_1_8h` | float[] | USD | Last 1–8 h |
 | `hist_8_24h` | float[] | USD | Last 8–24 h |
 
