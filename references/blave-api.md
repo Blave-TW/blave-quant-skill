@@ -2172,16 +2172,18 @@ data = requests.get(f"{BASE_URL}/studio/market/twstock/institutional/2330", head
 | `end` | query | string | no | latest | `YYYY-MM-DD` | Last date |
 
 **Response** — `{"stock_id", "data": [...]}`, one row per day. Values are lots (張), not shares —
-**inferred from magnitude, not stated upstream**: `2330` returned `margin_balance: 29282` for
-2026-09-15 and a `margin_limit` of `2922341`, and read as shares those are orders of magnitude too
-small for a stock of that size.
+**verified against TWSE MI_MARGN**: for 2026-09-15 `2330` returned `margin_balance: 29282` and
+`margin_limit: 6483092`, matching TWSE's own 今日餘額 29,282 and 次一營業日限額 6,483,092 for
+that date exactly. Every row carries its own `date` and `stock_id`; when reading full history
+(no `start` / `end`) take every figure from the same row — `margin_limit` is re-published per
+day and changes over time.
 
 | Field | Description |
 |---|---|
 | `margin_buy` / `margin_sell` | 融資買進 / 賣出 |
 | `margin_cash_repay` | 融資現金償還 |
 | `margin_balance` / `margin_prev_balance` | 融資今日 / 前日餘額 |
-| `margin_limit` | 融資限額 |
+| `margin_limit` | 融資限額 — TWSE's 次一營業日限額 as published on that row's date, i.e. the cap that applies to the NEXT business day (`2330` on 2026-09-15: 6,483,092 lots) |
 | `short_buy` / `short_sell` | 融券買進 / 賣出 |
 | `short_cash_repay` | 融券現金償還 |
 | `short_balance` / `short_prev_balance` | 融券今日 / 前日餘額 |
