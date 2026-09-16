@@ -272,9 +272,11 @@ data = response.json()
 | Rate limit | 500 / 5 min per key + per IP |
 | Data from | 待確認 |
 | Update | Every 5 minutes |
-| Source | Blave (computed on BTCUSDT) |
+| Source | Blave — one market-wide series (composite of Blave's crypto indicator overviews, no symbol dimension) |
 
-**Parameters** — no `symbol`; always BTCUSDT. See *Crypto indicator conventions*.
+**Parameters** — no `symbol`: `alpha` is a single market-wide series, not a per-coin one.
+BTCUSDT is used internally only to align the bars; it is not returned and does not change
+`alpha`. See *Crypto indicator conventions*.
 
 | Name | In | Type | Required | Default | Allowed / format | Description |
 |---|---|---|---|---|---|---|
@@ -1012,11 +1014,13 @@ response = requests.get(f"{BASE_URL}/squeeze_momentum/get_alpha", headers=header
 | Group | Crypto › Alpha › Blave Top Trader |
 | Access | API plan or data fee |
 | Rate limit | 500 / 5 min per key + per IP |
-| Data from | 待確認 |
+| Data from | 2025-03-03 |
 | Update | Every 5 minutes |
-| Source | Blave (BTCUSDT) |
+| Source | Blave — one market-wide series (all coins these traders hold, no symbol dimension) |
 
-**Parameters** — no `symbol`; always BTCUSDT. See *Crypto indicator conventions*.
+**Parameters** — no `symbol`: `alpha` is a single market-wide series, not a per-coin one.
+BTCUSDT is used internally only to align the bars; it is not returned and does not change
+`alpha`. See *Crypto indicator conventions*.
 
 | Name | In | Type | Required | Default | Allowed / format | Description |
 |---|---|---|---|---|---|---|
@@ -1029,7 +1033,7 @@ response = requests.get(f"{BASE_URL}/squeeze_momentum/get_alpha", headers=header
 | Field | Type | Description |
 |---|---|---|
 | `timestamp` | float[] | Unix seconds (UTC) |
-| `alpha` | float[] | Net exposure of Blave's top traders (top 10% by account assets) |
+| `alpha` | float[] | Net exposure of Blave's top traders (top 10% by account assets) — the median, across those traders, of each trader's net notional position ÷ own assets, ×100 (positive = net long). A raw ratio, not a z-score |
 
 **Errors**
 
@@ -1040,7 +1044,7 @@ response = requests.get(f"{BASE_URL}/squeeze_momentum/get_alpha", headers=header
 **Example**
 
 ```python
-params = {"period": "1h", "start_date": "2025-01-01", "end_date": "2025-03-01"}
+params = {"period": "1h", "start_date": "2025-05-01", "end_date": "2025-07-01"}
 response = requests.get(f"{BASE_URL}/blave_top_trader/get_exposure", headers=headers, params=params, timeout=60)
 # {"data": {"alpha": [34.32, 40.52, ...], "timestamp": [1747130400.0, ...]}}
 ```
