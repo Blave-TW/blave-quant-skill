@@ -7,8 +7,6 @@
 兩種查詢方式：**用股票代號**查哪些券商買賣該股，或**用券商代號**查該券商買賣哪些股票。每種都可查單日（`date`）或區間（`start`/`end`）。
 
 > 端點規格以 `references/blave-api.md` › `broker/*` 為準，本檔只放工作流程與範例。
->
-> 區間查詢（待確認：對應 api commit `d32f1c4`、`bea1507` 尚未確認已部署）。部署前帶 `start`/`end` 可能被忽略、只回單日——檢查回傳每筆的 `date` 是否跨日，若沒有，退回逐日帶 `date` 查詢。
 
 ---
 
@@ -176,5 +174,5 @@ top50 = flows.groupby("stock_id")["net"].sum().nlargest(50).index
 
 - 查詢為唯讀，**不需要 Safety Mode CONFIRM**
 - 非交易日回傳空 `data` 陣列
-- Endpoint 1/2 單日帶 `date`，多日帶 `start`/`end`（含頭尾 ≤ 366 天，見上方範例；區間查詢待確認已部署，見檔頭）
+- Endpoint 1/2 單日帶 `date`，多日帶 `start`/`end`（含頭尾 ≤ 366 天，見上方範例）
 - 資料快取於 server 端 parquet，同一日期二次查詢不重新抓取

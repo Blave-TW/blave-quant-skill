@@ -139,7 +139,7 @@ These Blave services have their own reference files and are not duplicated here:
 ```python
 response = requests.get(f"{BASE_URL}/price", headers=headers, params={"symbol": "BTCUSDT"}, timeout=30)
 print(response.json())
-# {"symbol": "BTC", "price": 95000.0, "change_24h": 0.025}   ← 待確認：未實抓
+# {"symbol": "BTC", "price": 75838.2, "change_24h": -0.01739}
 ```
 
 ---
@@ -186,9 +186,14 @@ name or `null`), `name_en`, `name_zh`.
 ```python
 response = requests.get(f"{BASE_URL}/alpha_table", headers=headers, timeout=60)
 body = response.json()
-btc = body["data"]["BTC"]
-# {"holder_concentration": {"-": -2.35}, "holder_concentration_chg": {"15min": -0.001, ...},
-#  "funding_rate": {"binance": 0.01, ...}, "statistics": {...}, ...}   ← 待確認：未實抓
+row = body["data"]["0G"]   # one token out of the 716 keys this response carried
+# {"holder_concentration": {"-": 0.9267}, "holder_concentration_chg": {"15min": -0.0118, "1h": 0.0075, "24h": 0.4723, "3d": -0.1852, "30d": "", ...},
+#  "funding_rate": {"binance": 0.005, "bybit": 0.005, "okx": 0.005, "pionex": "", ...},
+#  "liquidation": {"15min": 0.0, "1h": -0.2665, "24h": -0.5637, "1min": "", ...},
+#  "market_cap": {"-": 42204386.29}, "market_cap_percentile": {"-": 56.55},
+#  "price": {"-": 0.1832}, "price_change": {"15min": -0.00215, "24h": -0.05792, ...},
+#  "statistics": {"up_prob": 0.4277, "exp_value": -0.00478, "is_data_sufficient": false, ...}, ...}
+# (shape captured from a live response; `""` marks insufficient data)
 ```
 
 **Notes**
@@ -270,7 +275,7 @@ data = response.json()
 | Group | Crypto › Tool |
 | Access | API plan or data fee |
 | Rate limit | 500 / 5 min per key + per IP |
-| Data from | 待確認 |
+| Data from | 2024-12-27 (earliest `1d` bar returned; market-wide series, no symbol dimension) |
 | Update | Every 5 minutes |
 | Source | Blave — one market-wide series (composite of Blave's crypto indicator overviews, no symbol dimension) |
 
@@ -300,9 +305,10 @@ BTCUSDT is used internally only to align the bars; it is not returned and does n
 **Example**
 
 ```python
-params = {"period": "1h", "start_date": "2025-01-01", "end_date": "2025-03-01"}
+params = {"period": "1h", "start_date": "2026-09-13", "end_date": "2026-09-15"}
 response = requests.get(f"{BASE_URL}/market_direction/get_alpha", headers=headers, params=params, timeout=60)
-# {"data": {"alpha": [-0.233, -0.234, ...], "timestamp": [1735803900.0, ...]}}   ← 待確認：未實抓
+# {"data": {"alpha": [-0.5195979478976323, -0.5223392571665055, -0.5612490182062327, ...],
+#           "timestamp": [1789257600.0, 1789261200.0, 1789264800.0, ...]}}   # 72 bars
 ```
 
 ---
@@ -415,7 +421,7 @@ symbols = requests.get(f"{BASE_URL}/holder_concentration/get_symbols", headers=h
 | Group | Crypto › Alpha › Holder Concentration |
 | Access | API plan or data fee |
 | Rate limit | 500 / 5 min per key + per IP |
-| Data from | 待確認 |
+| Data from | 2021-05-11 (BTCUSDT `1d`; other symbols can start later) |
 | Update | Every 5 minutes |
 | Source | Blave (Binance global long/short account ratio) |
 
@@ -445,10 +451,13 @@ symbols = requests.get(f"{BASE_URL}/holder_concentration/get_symbols", headers=h
 **Example**
 
 ```python
-params = {"symbol": "BTCUSDT", "period": "1h", "start_date": "2025-01-01", "end_date": "2025-03-01"}
+params = {"symbol": "BTCUSDT", "period": "1h", "start_date": "2026-09-13", "end_date": "2026-09-15"}
 response = requests.get(f"{BASE_URL}/holder_concentration/get_alpha", headers=headers, params=params, timeout=60)
-# {"data": {"alpha": [-0.233, ...], "timestamp": [1735803900.0, ...],
-#           "stat": {"up_prob": 0.46, "exp_value": -0.0012, "is_data_sufficient": true, ...}}}   ← 待確認：未實抓
+# {"data": {"alpha": [-1.1931909718306861, -1.2035898186867282, -1.2037004015202886, ...],
+#           "timestamp": [1789257600.0, 1789261200.0, 1789264800.0, ...],
+#           "stat": {"up_prob": 0.509739818557561, "exp_value": -0.00051954905018229,
+#                    "avg_up_return": 0.015512131150026753, "avg_down_return": -0.017188220228787618,
+#                    "return_ratio": 0.9024861762037658, "is_data_sufficient": true}}}   # 72 bars
 ```
 
 ---
@@ -461,7 +470,7 @@ response = requests.get(f"{BASE_URL}/holder_concentration/get_alpha", headers=he
 | Group | Crypto › Alpha › Funding Rate |
 | Access | API plan or data fee |
 | Rate limit | 500 / 5 min per key + per IP |
-| Data from | 待確認 |
+| Data from | 2025-09-30 (BTCUSDT `1d`; other symbols can start later) |
 | Update | Every 5 minutes |
 | Source | Binance USDT-M funding rate |
 
@@ -492,9 +501,13 @@ response = requests.get(f"{BASE_URL}/holder_concentration/get_alpha", headers=he
 **Example**
 
 ```python
-params = {"symbol": "BTCUSDT", "period": "1h", "start_date": "2025-01-01", "end_date": "2025-03-01"}
+params = {"symbol": "BTCUSDT", "period": "1h", "start_date": "2026-09-13", "end_date": "2026-09-15"}
 response = requests.get(f"{BASE_URL}/funding_rate/get_alpha", headers=headers, params=params, timeout=60)
-# {"data": {"timestamp": [1735689600.0, ...], "alpha": [0.01, ...], "close": [93000.0, ...], "stat": {...}}}   ← 待確認：未實抓
+# {"data": {"timestamp": [1789257600.0, 1789261200.0, 1789264800.0, ...],
+#           "alpha": [0.005064, 0.006165, 0.007765, ...],
+#           "close": [77239.5, 77285.5, 77263.9, ...],
+#           "stat": {"up_prob": 0.5009438427095587, "exp_value": -0.0008769555139270298,
+#                    "is_data_sufficient": false, ...}}}   # 72 bars
 ```
 
 ---
@@ -533,7 +546,7 @@ symbols = requests.get(f"{BASE_URL}/market_sentiment/get_symbols", headers=heade
 | Group | Crypto › Alpha › Market Sentiment |
 | Access | API plan or data fee |
 | Rate limit | 500 / 5 min per key + per IP |
-| Data from | 待確認 |
+| Data from | 2020-01-01 (BTCUSDT `1d`; other symbols can start later) |
 | Update | Every 5 minutes |
 | Source | Blave |
 
@@ -577,7 +590,7 @@ response = requests.get(f"{BASE_URL}/market_sentiment/get_alpha", headers=header
 | Group | Crypto › Alpha › Capital Shortage |
 | Access | API plan or data fee |
 | Rate limit | 500 / 5 min per key + per IP |
-| Data from | 待確認 |
+| Data from | 2023-12-09 (`1d`; market-wide series, no symbol dimension) |
 | Update | Every 5 minutes |
 | Source | Blave (market-wide, Binance USDT lending APR) |
 
@@ -585,7 +598,7 @@ response = requests.get(f"{BASE_URL}/market_sentiment/get_alpha", headers=header
 
 | Name | In | Type | Required | Default | Allowed / format | Description |
 |---|---|---|---|---|---|---|
-| `period` | query | string | yes | — | `1h`, `4h`, `8h`, `1d`（待確認：最小週期） | Bar size |
+| `period` | query | string | yes | — | `5min`, `15min`, `1h`, `4h`, `8h`, `1d` | Bar size — `5min` and `15min` both return data |
 | `start_date` | query | string | no | `end_date` − 365 days | `YYYY-MM-DD` | First day |
 | `end_date` | query | string | no | today | `YYYY-MM-DD` | Last day |
 
@@ -620,14 +633,21 @@ response = requests.get(f"{BASE_URL}/capital_shortage/get_alpha", headers=header
 | Group | Crypto › Alpha › Sector Rotation |
 | Access | API plan or data fee |
 | Rate limit | 500 / 5 min per key + per IP |
-| Data from | 待確認 |
+| Data from | Trailing one-year daily window — a call returned 366 daily points, 2025-09-16 → 2026-09-16, each sector seen starting at `0.0`. There are no parameters, so a longer history is not reachable through this endpoint; whether one exists upstream is 待確認 |
 | Update | 待確認 |
 | Source | Blave |
 
 **Parameters** — none.
 
-**Response** — `{"data": {"alpha": {<sector>: {"data": [...], "name_en": ..., "name_zh": ...}}}}`
-（待確認：`data` 陣列對應的時間軸欄位）.
+**Response** — `{"data": {"alpha": {<sector>: {"data": [...], "name_en": ..., "name_zh": ...}},
+"timestamp": [...]}}`. `timestamp` sits next to `alpha` at the top of `data`, not inside each
+sector; it is the shared time axis for every sector series.
+
+| Field | Type | Description |
+|---|---|---|
+| `timestamp` | float[] | Unix seconds (UTC), one per point — 366 daily points in the observed response |
+| `alpha.<sector>.data` | float[] | The sector series, same length and order as `timestamp` (366); the first element is `0.0` |
+| `alpha.<sector>.name_en` / `name_zh` | string | Sector display name |
 
 **Errors** — shared errors only.
 
@@ -635,7 +655,11 @@ response = requests.get(f"{BASE_URL}/capital_shortage/get_alpha", headers=header
 
 ```python
 response = requests.get(f"{BASE_URL}/sector_rotation/get_history_data", headers=headers, timeout=60)
-# {"data": {"alpha": {"AI": {"data": [0.0, -0.0113, ...], "name_en": "AI", "name_zh": "人工智能"}, ...}}}
+# {"data": {"alpha": {"AI": {"data": [0.0, 0.04377017039444864, 0.04922749428543449, ...],
+#                           "name_en": "AI", "name_zh": "人工智能"},
+#                     "BNB Eco": {"data": [0.0, 0.008847752133756215, ...],
+#                                 "name_en": "BNB Eco", "name_zh": "BNB 生態"}, ...},
+#           "timestamp": [1757980800.0, 1758067200.0, 1758153600.0, ...]}}   # 51 sectors, 366 points
 ```
 
 ---
@@ -749,7 +773,7 @@ symbols = requests.get(f"{BASE_URL}/whale_hunter/get_symbols", headers=headers, 
 | Group | Crypto › Alpha › Whale Hunter |
 | Access | API plan or data fee |
 | Rate limit | 500 / 5 min per key + per IP |
-| Data from | 待確認 |
+| Data from | 2021-12-01 (BTCUSDT `1d`; other symbols can start later) |
 | Update | Every 5 minutes |
 | Source | Blave (Binance USDT-M open interest and volume) |
 
@@ -787,7 +811,9 @@ response = requests.get(f"{BASE_URL}/whale_hunter/get_alpha", headers=headers, p
 ```
 
 **Notes**
-- `timeframe` is not validated server-side; values outside the list are 待確認.
+- `timeframe` is not validated server-side. One value outside the list was tried, `2h`, and it
+  returned `200` with data. That is a single observation — it does **not** establish that any
+  `{n}h` works. Stay on the listed values unless you verify the one you need.
 
 ---
 
@@ -825,7 +851,7 @@ symbols = requests.get(f"{BASE_URL}/taker_intensity/get_symbols", headers=header
 | Group | Crypto › Alpha › Taker Intensity |
 | Access | API plan or data fee |
 | Rate limit | 500 / 5 min per key + per IP |
-| Data from | 待確認 |
+| Data from | 2020-01-01 (BTCUSDT `1d`; other symbols can start later) |
 | Update | Every 5 minutes |
 | Source | Blave (Binance USDT-M taker buy/sell volume) |
 
@@ -896,7 +922,7 @@ symbols = requests.get(f"{BASE_URL}/unusual_movement/get_symbols", headers=heade
 | Group | Crypto › Alpha › Unusual Movement |
 | Access | API plan or data fee |
 | Rate limit | 500 / 5 min per key + per IP |
-| Data from | 待確認 |
+| Data from | 2020-01-02 (BTCUSDT `1d`; other symbols can start later) |
 | Update | Every 5 minutes |
 | Source | Blave (Binance USDT-M price) |
 
@@ -969,7 +995,7 @@ symbols = requests.get(f"{BASE_URL}/squeeze_momentum/get_symbols", headers=heade
 | Group | Crypto › Alpha › Squeeze Momentum |
 | Access | API plan or data fee |
 | Rate limit | 500 / 5 min per key + per IP |
-| Data from | 待確認 |
+| Data from | 2020-02-09 — first non-zero `alpha` for BTCUSDT (other symbols can start later) |
 | Update | Daily bars |
 | Source | Blave (Binance USDT-M price) |
 
@@ -1003,6 +1029,11 @@ params = {"symbol": "BTCUSDT", "start_date": "2025-01-01", "end_date": "2025-03-
 response = requests.get(f"{BASE_URL}/squeeze_momentum/get_alpha", headers=headers, params=params, timeout=60)
 # {"data": {"alpha": [-0.2256, ...], "scolor": ["black", ...], "timestamp": [...], "stat": {...}}}
 ```
+
+**Notes**
+- The series is padded: BTCUSDT rows exist from 2020-01-01, but `alpha` is `0.0` until
+  2020-02-09. A request starting earlier than the *Data from* date returns those padded rows —
+  they are filler, not signal. Drop leading zeros, or start at the *Data from* date.
 
 ---
 
@@ -1119,6 +1150,12 @@ symbols = requests.get(f"{BASE_URL}/liquidation/get_symbols", headers=headers, t
 params = {"symbol": "BTCUSDT", "period": "1h", "timeframe": "24h"}
 response = requests.get(f"{BASE_URL}/liquidation/get_alpha", headers=headers, params=params, timeout=60)
 ```
+
+**Notes**
+- The series is padded: BTCUSDT rows exist from 2020-01-01, but `alpha` is `0.0` until
+  2023-01-01. A request starting earlier than the *Data from* date returns those padded rows —
+  they are filler, not signal. Drop leading zeros, or start at the *Data from* date. Symbols
+  other than BTC/ETH turn non-zero later still, so check per symbol.
 
 ---
 
@@ -1245,7 +1282,7 @@ Conventions for this category:
 | `stock_id` | string | Code |
 | `name` | string | Name |
 | `close` | float \| null | Latest daily close (`null` when upstream had none, e.g. halted) |
-| `market` | string | `TWSE` (上市) or `TPEx` (上櫃)（待確認：此欄位的 commit 尚未確認已部署） |
+| `market` | string | `TWSE` (上市) or `TPEx` (上櫃) |
 | `industry_code` | string \| null | TWSE/TPEx raw numeric 產業別 code, passthrough (not decoded). `null` for ETFs / non-company securities. Common codes: `15` 航運業, `17` 金融保險業, `22` 生技醫療業, `24` 半導體業, `25` 電腦及週邊設備業, `26` 光電業, `27` 通信網路業, `28` 電子零組件業, `29` 電子通路業, `30` 資訊服務業, `31` 其他電子業 |
 | `listing_date` | string \| null | `YYYY-MM-DD`; `null` for ETFs / non-company securities |
 
@@ -1255,7 +1292,8 @@ Conventions for this category:
 
 ```python
 data = requests.get(f"{BASE_URL}/studio/market/twstock/list", headers=headers, timeout=60).json()["data"]
-# [{"stock_id": "2330", "name": "台積電", "close": 2410.0, "industry_code": "24", "listing_date": "1994-09-05"}, ...]
+# [{"stock_id": "00400A", "name": "主動國泰動能高息", "close": 14.72, "market": "TWSE",
+#   "industry_code": None, "listing_date": None}, ...]   # 2,392 rows in this response
 ```
 
 **Notes**
@@ -1310,7 +1348,7 @@ info = requests.get(f"{BASE_URL}/studio/market/twstock/info/2330", headers=heade
 | Group | Taiwan Stock › Market Data |
 | Access | API plan or data fee |
 | Rate limit | 500 / 5 min per key + per IP |
-| Data from | 2000-01-04（待確認：出自 Notion；伺服器向上游要 1994-10-01 起，實際最早一筆取決於上游） |
+| Data from | 1994-10-01 — the floor the server asks upstream from. `2330` with no `start` / `end` returned 8,069 rows starting at exactly that floor. Codes listed later start later |
 | Update | Daily. Same-day row after the official TWSE/TPEx close publication (~14:00 Taipei); server cache 5 min |
 | Source | FinMind (history); TWSE / TPEx official daily quotes (same-day row) |
 
@@ -1345,12 +1383,14 @@ info = requests.get(f"{BASE_URL}/studio/market/twstock/info/2330", headers=heade
 **Example**
 
 ```python
-params = {"start": "2020-01-01", "end": "2024-12-31"}
-response = requests.get(f"{BASE_URL}/studio/market/twstock/price/2330", headers=headers, params=params, timeout=60)
-data = response.json()["data"]
-# [{"date": "2020-01-02", "stock_id": "2330", "open": 335.0, "high": 338.5,
-#   "low": 334.0, "close": 337.0, "spread": 2.0,
-#   "volume": 33282120, "turnover_value": 11224165450, "turnover_count": 17160}, ...]   ← 待確認：未實抓
+response = requests.get(f"{BASE_URL}/studio/market/twstock/price/2330", headers=headers, timeout=60)
+data = response.json()["data"]   # no start/end → full history, 8,069 rows
+# [{"date": "1994-10-01", "stock_id": "2330", "open": 171.0, "high": 172.0,
+#   "low": 171.0, "close": 172.0, "spread": 1.0,
+#   "volume": 1660506, "turnover_value": 284858008, "turnover_count": 684},
+#  {"date": "1994-10-03", "stock_id": "2330", "open": 172.0, "high": 173.0,
+#   "low": 171.0, "close": 172.0, "spread": 0.0,
+#   "volume": 1560000, "turnover_value": 268084000, "turnover_count": 711}, ...]
 ```
 
 **Notes**
@@ -1369,7 +1409,7 @@ data = response.json()["data"]
 | Group | Taiwan Stock › Market Data |
 | Access | API plan or data fee |
 | Rate limit | 500 / 5 min per key + per IP |
-| Data from | Same as `/price`（待確認） |
+| Data from | Same as `/price` — 1994-10-01 for `2330`, same 8,069 rows |
 | Update | Daily, rebuilt when the raw series advances; server cache 5 min |
 | Source | `/price` series adjusted with FinMind dividend data |
 
@@ -1556,7 +1596,7 @@ Max range per request (`end` − `start`): `1m` 31 d · `5m` 62 d · `15m` 93 d 
 |---|---|---|---|
 | `ts` | string | UTC ISO | Bar open time (minute-start label); the 13:30 Taipei bar is the closing auction |
 | `open` / `high` / `low` / `close` | float | TWD | Prices |
-| `volume` | int | lots (張), not shares | Volume（待確認：`TAIEX` 的 volume 單位） |
+| `volume` | int | lots (張), not shares | Volume. Every `TAIEX` `1d` bar observed carried `volume: 0`, so index volume is effectively unavailable here — do not read it as a turnover figure（待確認：`TAIEX` 的 volume 單位） |
 
 **Errors**
 
@@ -1807,7 +1847,7 @@ data = requests.get(f"{BASE_URL}/studio/market/twstock/per/2330", headers=header
 | Group | Taiwan Stock › Fundamentals |
 | Access | API plan or data fee |
 | Rate limit | 500 / 5 min per key + per IP |
-| Data from | 2013-01-01 (default lower bound)（待確認：更早資料是否可用） |
+| Data from | 2013-01-01 is only the **default** `start`. Send an earlier `start` and earlier rows come back — `2330` with `start=2000-01-01` returned rows from 2000-06-30 |
 | Update | Quarterly; server cache 24 h |
 | Source | FinMind TaiwanStockFinancialStatements |
 
@@ -1851,7 +1891,7 @@ wide = pd.DataFrame(data).pivot_table(index="date", columns="type", values="valu
 | Group | Taiwan Stock › Fundamentals |
 | Access | API plan or data fee |
 | Rate limit | 500 / 5 min per key + per IP |
-| Data from | 2013-01-01 (default lower bound)（待確認：更早資料是否可用） |
+| Data from | 2013-01-01 is only the **default** `start`. Send an earlier `start` and earlier rows come back — `2330` with `start=2000-01-01` returned rows from 2012-12-31 |
 | Update | Quarterly; server cache 24 h |
 | Source | FinMind TaiwanStockBalanceSheet |
 
@@ -1880,7 +1920,7 @@ data = requests.get(f"{BASE_URL}/studio/market/twstock/balance_sheet/2330", head
 | Group | Taiwan Stock › Fundamentals |
 | Access | API plan or data fee |
 | Rate limit | 500 / 5 min per key + per IP |
-| Data from | 2013-01-01 (default lower bound)（待確認：更早資料是否可用） |
+| Data from | 2013-01-01 is only the **default** `start`. Send an earlier `start` and earlier rows come back — `2330` with `start=2000-01-01` returned rows from 2012-03-31 |
 | Update | Quarterly; server cache 24 h |
 | Source | FinMind TaiwanStockCashFlowsStatement |
 
@@ -1925,10 +1965,11 @@ data = requests.get(f"{BASE_URL}/studio/market/twstock/cashflow/2330", headers=h
 
 | Field | Type | Description |
 |---|---|---|
-| `date` | string | 待確認：月初（`YYYY-MM-01`）還是申報日，來源說法互相矛盾 |
+| `date` | string | First day of the month **after** the revenue month — `2024-01-01` carries `revenue_year: 2023`, `revenue_month: 12`. Never use it as the period |
 | `stock_id` | string | Code |
-| `country` | string | Market, e.g. `台灣` |
-| `revenue` | int | Monthly revenue — 待確認：單位是元還是千元，來源說法互相矛盾 |
+| `country` | string | Market — observed value is `Taiwan` |
+| `create_time` | string | Observed empty (`""`) on every row |
+| `revenue` | int | Monthly revenue in TWD (元), not thousands — **inferred from magnitude, not stated upstream**: `2330` for `revenue_year 2024, revenue_month 1` returned `215785127000`, which is only a sane figure read as 元 (NT$215.8bn) |
 | `revenue_month` | int | Revenue month (1–12) — use this, not `date`, for the period |
 | `revenue_year` | int | Revenue year |
 
@@ -1942,7 +1983,10 @@ data = requests.get(f"{BASE_URL}/studio/market/twstock/monthly_revenue/2330", he
                     params={"start": "2024-01-01", "end": "2024-12-31"}, timeout=30).json()["data"]
 df = pd.DataFrame(data).sort_values(["revenue_year", "revenue_month"])
 df["yoy_pct"] = df["revenue"].pct_change(periods=12) * 100
-# example rows: 待確認（未實抓）
+# [{"date": "2024-01-01", "stock_id": "2330", "country": "Taiwan", "create_time": "",
+#   "revenue": 176299866000, "revenue_year": 2023, "revenue_month": 12},
+#  {"date": "2024-02-01", "stock_id": "2330", "country": "Taiwan", "create_time": "",
+#   "revenue": 215785127000, "revenue_year": 2024, "revenue_month": 1}, ...]
 ```
 
 ---
@@ -1955,7 +1999,7 @@ df["yoy_pct"] = df["revenue"].pct_change(periods=12) * 100
 | Group | Taiwan Stock › Fundamentals |
 | Access | API plan or data fee |
 | Rate limit | 500 / 5 min per key + per IP |
-| Data from | 1994（待確認：出自 Notion） |
+| Data from | Per stock — `2330` with no `start` / `end` returned 43 rows, earliest effective date 2005-06-19 |
 | Update | Refreshed on request when stale |
 | Source | FinMind dividend data |
 
@@ -2005,6 +2049,8 @@ data = requests.get(f"{BASE_URL}/studio/market/twstock/dividend/2330", headers=h
 
 **Notes**
 - Zero-value rows (`cash == 0` and `stock == 0`) are kept — an announced no-distribution decision.
+- Effective dates can be in the future (announced but not yet ex) — the `2330` full-history call
+  ran to a date a week ahead of the request. Filter by date yourself if you need past events only.
 - A valid stock with history but no events in range returns `200` + `[]` (distinct from `404`).
 - Delisted stocks are `404`.
 
@@ -2064,7 +2110,7 @@ data = requests.get(f"{BASE_URL}/studio/market/twstock/news/2330", headers=heade
 | Group | Taiwan Stock › Institutional Flow |
 | Access | API plan or data fee |
 | Rate limit | 500 / 5 min per key + per IP |
-| Data from | 待確認 |
+| Data from | Per stock — `2330` with no `start` / `end` returned 3,523 daily rows from 2012-05-02 |
 | Update | Daily; same-day row from TWSE / TPEx when available; server cache 5 min |
 | Source | FinMind TaiwanStockInstitutionalInvestorsBuySell; TWSE / TPEx official (same day) |
 
@@ -2113,7 +2159,7 @@ data = requests.get(f"{BASE_URL}/studio/market/twstock/institutional/2330", head
 | Group | Taiwan Stock › Institutional Flow |
 | Access | API plan or data fee |
 | Rate limit | 500 / 5 min per key + per IP |
-| Data from | 1994-10-01（待確認：出自 Notion，程式向上游要此日起） |
+| Data from | Per stock — `2330` with no `start` / `end` returned 6,323 daily rows from 2001-01-05 |
 | Update | Daily; server cache 5 min |
 | Source | FinMind TaiwanStockMarginPurchaseShortSale |
 
@@ -2125,7 +2171,10 @@ data = requests.get(f"{BASE_URL}/studio/market/twstock/institutional/2330", head
 | `start` | query | string | no | full history | `YYYY-MM-DD` | First date |
 | `end` | query | string | no | latest | `YYYY-MM-DD` | Last date |
 
-**Response** — `{"stock_id", "data": [...]}`, one row per day. Values in shares（待確認：股或張）.
+**Response** — `{"stock_id", "data": [...]}`, one row per day. Values are lots (張), not shares —
+**inferred from magnitude, not stated upstream**: `2330` returned `margin_balance: 29282` for
+2026-09-15 and a `margin_limit` of `2922341`, and read as shares those are orders of magnitude too
+small for a stock of that size.
 
 | Field | Description |
 |---|---|
@@ -2161,7 +2210,7 @@ df["margin_util"] = df["margin_balance"] / df["margin_limit"]   # 融資使用�
 | Group | Taiwan Stock › Institutional Flow |
 | Access | API plan or data fee |
 | Rate limit | 500 / 5 min per key + per IP |
-| Data from | 待確認 |
+| Data from | Per stock — `2330` with no `start` / `end` returned 10,656 rows across 649 weekly dates, earliest 2010-01-29 |
 | Update | Weekly (TDCC, Fridays); server cache 5 min |
 | Source | FinMind TaiwanStockHoldingSharesPer |
 
@@ -2203,7 +2252,7 @@ data = requests.get(f"{BASE_URL}/studio/market/twstock/shareholding/2330", heade
 | Group | Taiwan Stock › Institutional Flow |
 | Access | API plan or data fee |
 | Rate limit | 500 / 5 min per key + per IP |
-| Data from | 2013-01-01 (default lower bound)（待確認：更早資料是否可用） |
+| Data from | 2013-01-01 is only the **default** `start`. Send an earlier `start` and earlier rows come back — `2330` with `start=2000-01-01` returned rows from 2004-02-12 |
 | Update | Daily; server cache 24 h |
 | Source | FinMind TaiwanStockShareholding |
 
@@ -2414,7 +2463,8 @@ rows = requests.get(f"{BASE_URL}/studio/market/twstock/broker/stock/2330", heade
 
 **Notes**
 - A day with no data (holiday, before 2021-06-28, or today before ~21:30) is `200` + `[]`.
-- Range queries（待確認：start/end 區間讀取的 commit 尚未確認已部署）.
+- Range queries are live: `start` / `end` over 2026-09-06 → 2026-09-13 returned rows spanning
+  five distinct trading days, for both `broker/stock/<stock_id>` and `broker/trader/<trader_id>`.
 
 ---
 
@@ -2744,7 +2794,7 @@ future_div = df[df["estimated"]].set_index("date")["points"]
 | Group | Taiwan Futures & Options |
 | Access | API plan or data fee |
 | Rate limit | 500 / 5 min per key + per IP |
-| Data from | TXF: 2013-12-30 (`1d`), 2014-01-02 (intraday). Other symbols: 待確認 |
+| Data from | TXF: 2013-12-30 (`1d`), 2014-01-02 (intraday). MXF: 2020-03-22 (`1d`). Stock futures start per contract — `CAF` returned `1d` bars at least as early as 2016-09-18 (the probe window began there, so it may reach further back) |
 | Update | Near-real-time from the on-disk 1m store, refreshed on request |
 | Source | Sinopac Shioaji (near-month continuous series) |
 
@@ -2785,7 +2835,8 @@ from datetime import date, timedelta
 
 data = requests.get(f"{BASE_URL}/studio/market/twfutures/ohlcv/TXF/1d", headers=headers,
                     params={"start": "2024-01-01", "end": "2024-12-31"}, timeout=60).json()["data"]
-# [{"ts": "2024-01-02 00:00:00+00:00", "open": 17500.0, "high": 17620.0, "low": 17480.0, "close": 17610.0, "volume": 98234}, ...]   ← 待確認：未實抓
+# [{"ts": "2024-01-01 16:00:00+00:00", "open": 17838.0, "high": 17920.0, "low": 17751.0, "close": 17798.0, "volume": 82820},
+#  {"ts": "2024-01-02 16:00:00+00:00", "open": 17793.0, "high": 17817.0, "low": 17507.0, "close": 17546.0, "volume": 149638}, ...]
 
 def fetch_txf_chunked(schema, start, end, chunk_days=28):
     result, cur, end_date = [], date.fromisoformat(start), date.fromisoformat(end)
@@ -2805,6 +2856,10 @@ def fetch_txf_chunked(schema, start, end, chunk_days=28):
   backtests.
 - For years of history use `ohlcv/<symbol>/export/<year>` instead of chunked JSON.
 - A range with no data returns `200` with `[]`.
+- Do not assume the series runs to the last trading day — `MXF` and `CAF` asked for everything up
+  to the request date both came back with a last bar months old. Read `data[-1]["ts"]`.
+- `1d` bars carry a `16:00:00+00:00` time component (00:00 Taipei), not midnight UTC — take the
+  date from `ts` rather than assuming the timestamp is date-aligned.
 
 ---
 
@@ -2903,7 +2958,7 @@ bars_60m = (raw[["open", "high", "low", "close", "volume"]]
 
 | Name | In | Type | Required | Default | Allowed / format | Description |
 |---|---|---|---|---|---|---|
-| `symbol` | path | string | yes | — | `TXF`（待確認：其他 `ohlcv/symbols` 代號是否有資料） | Symbol |
+| `symbol` | path | string | yes | — | `TXF`, `MXF` (both verified to return data); other `ohlcv/symbols` ids untested | Symbol |
 | `start` | query | string | no | `end` − 31 days | `YYYY-MM-DD` | First day |
 | `end` | query | string | no | today (UTC) | `YYYY-MM-DD` | Last day; `end` − `start` ≤ 31 days |
 
@@ -2943,7 +2998,7 @@ data = requests.get(f"{BASE_URL}/studio/market/twfutures/bid_ask_vol/TXF", heade
 | Group | Taiwan Futures & Options |
 | Access | API plan or data fee |
 | Rate limit | 500 / 5 min per key + per IP |
-| Data from | 1998-07-21 for TX; other products start later（待確認：出自 Notion） |
+| Data from | 1998-07-21 for `TX`; other products start later — `MTX` from 2001-04-09, `CDF` (stock futures) from 2010-01-25 |
 | Update | Daily after ~15:00 Taipei (TAIFEX direct before FinMind catches up); server cache 5 min |
 | Source | FinMind TaiwanFuturesDaily; TAIFEX (latest day for TX / MTX / TMF) |
 
@@ -2994,7 +3049,7 @@ data = requests.get(f"{BASE_URL}/studio/market/twfutures/daily/TX", headers=head
 | Group | Taiwan Futures & Options |
 | Access | API plan or data fee |
 | Rate limit | 500 / 5 min per key + per IP |
-| Data from | Per contract listing（待確認） |
+| Data from | Per contract listing — `CDF` asked from 1998-07-01 returned rows starting 2010-01-25 |
 | Update | As `/daily/<futures_id>` |
 | Source | As `/daily/<futures_id>` |
 
@@ -3043,7 +3098,7 @@ body = requests.get(f"{BASE_URL}/studio/market/twfutures/stock_futures/batch/dai
 
 | Name | In | Type | Required | Default | Allowed / format | Description |
 |---|---|---|---|---|---|---|
-| `futures_id` | path | string | yes | — | Index futures, e.g. `TX`, `MTX`, `TMF`（待確認：`TE` / `TF`）; stock futures not supported | Product |
+| `futures_id` | path | string | yes | — | Index futures — `TX`, `MTX`, `TMF`, `TE`, `TF` (all verified to return data); stock futures not supported | Product |
 | `start` | query | string | no | `2018-06-05` | `YYYY-MM-DD` | First date |
 | `end` | query | string | no | today | `YYYY-MM-DD` | Last date |
 
@@ -3053,7 +3108,7 @@ body = requests.get(f"{BASE_URL}/studio/market/twfutures/stock_futures/batch/dai
 |---|---|
 | `date`, `futures_id` | Day, product |
 | `institutional_investors` | Investor type |
-| `long_deal_volume` / `long_deal_amount` | Long trades (contracts / TWD thousand（待確認：金額單位）) |
+| `long_deal_volume` / `long_deal_amount` | Long trades (contracts / TWD thousand) |
 | `short_deal_volume` / `short_deal_amount` | Short trades |
 | `long_open_interest_balance_volume` / `long_open_interest_balance_amount` | Long OI |
 | `short_open_interest_balance_volume` / `short_open_interest_balance_amount` | Short OI |
@@ -3074,6 +3129,13 @@ data = requests.get(f"{BASE_URL}/studio/market/twfutures/institutional/TX", head
                     params={"start": "2026-08-01"}, timeout=60).json()["data"]
 ```
 
+**Notes**
+- `*_amount` is TWD thousand — **inferred from magnitude, not stated upstream**, but the
+  arithmetic backs it: a `TX` row with `long_open_interest_balance_amount 722870036` over
+  `..._volume 78292` is 9,233 per contract, and a `TX` contract is index × 200, so 9,233 thousand
+  ÷ 200 ≈ 46,160 index points, which is where the index was trading that day. Read as TWD it
+  would be 1,000× too small.
+
 ---
 
 ## `GET /studio/market/twfutures/large_traders/<futures_id>`
@@ -3084,7 +3146,7 @@ data = requests.get(f"{BASE_URL}/studio/market/twfutures/institutional/TX", head
 | Group | Taiwan Futures & Options |
 | Access | API plan or data fee |
 | Rate limit | 500 / 5 min per key + per IP |
-| Data from | 2007-01-02（待確認：出自 Notion；程式向上游要 1998-07-01 起） |
+| Data from | 2007-01-02 — `TX` asked from 1998-07-01 returned nothing before that date |
 | Update | Daily; server cache 5 min |
 | Source | FinMind TaiwanFuturesOpenInterestLargeTraders |
 
@@ -3168,7 +3230,7 @@ data = requests.get(f"{BASE_URL}/studio/market/twfutures/option/institutional/TX
 | Group | Taiwan Futures & Options |
 | Access | API plan or data fee |
 | Rate limit | 500 / 5 min per key + per IP |
-| Data from | 2007-01-02（待確認：出自 Notion；程式向上游要 1998-07-01 起） |
+| Data from | 2007-01-02 — `TXO` asked from 1998-07-01 returned nothing before that date |
 | Update | Daily; server cache 5 min |
 | Source | FinMind |
 
@@ -3233,8 +3295,10 @@ data = requests.get(f"{BASE_URL}/studio/market/twfutures/option/large_traders/TX
 ```python
 data = requests.get(f"{BASE_URL}/studio/market/twfutures/option/pcr", headers=headers,
                     params={"start": "2024-01-01", "end": "2024-12-31"}, timeout=60).json()["data"]
-# [{"date": "2024-01-02", "put_volume": ..., "call_volume": ..., "volume_pcr": ..., "put_oi": ...,
-#   "call_oi": ..., "oi_pcr": 78.5, "pcr": 78.5}, ...]   ← 待確認：未實抓
+# [{"date": "2024-01-02", "put_volume": 309583, "call_volume": 404231, "volume_pcr": 76.59,
+#   "put_oi": 263673, "call_oi": 246495, "oi_pcr": 106.97, "pcr": 106.97},
+#  {"date": "2024-01-03", "put_volume": 622854, "call_volume": 729547, "volume_pcr": 85.38,
+#   "put_oi": 177203, "call_oi": 178062, "oi_pcr": 99.52, "pcr": 99.52}, ...]
 ```
 
 **Notes**
@@ -3275,6 +3339,7 @@ Max range per request (`end` − `start`): `ohlcv-1d` 3650 d · `ohlcv-1h` 730 d
 | `ts` | string | UTC ISO | Bar open time |
 | `open` / `high` / `low` / `close` | float | USD (crude: per barrel; gold: per oz) | Prices |
 | `volume` | int | contracts | Volume |
+| `instrument_id` | int | — | Databento instrument id carried through from the source bar |
 
 **Errors**
 
@@ -3291,7 +3356,10 @@ Max range per request (`end` − `start`): `ohlcv-1d` 3650 d · `ohlcv-1h` 730 d
 ```python
 data = requests.get(f"{BASE_URL}/studio/market/db/ohlcv/GLBX.MDP3/CL/ohlcv-1d", headers=headers,
                     params={"start": "2024-01-01", "end": "2024-12-31"}, timeout=60).json()["data"]
-# [{"ts": "2024-01-02 00:00:00+00:00", "open": 72.50, "high": 73.10, "low": 71.80, "close": 72.90, "volume": 180432}, ...]   ← 待確認：未實抓
+# [{"ts": "2024-01-02 00:00:00+00:00", "open": 71.95, "high": 73.64, "low": 70.06, "close": 70.5,
+#   "volume": 263594, "instrument_id": 686071},
+#  {"ts": "2024-01-03 00:00:00+00:00", "open": 70.49, "high": 73.23, "low": 69.28, "close": 73.05,
+#   "volume": 253755, "instrument_id": 686071}, ...]
 ```
 
 **Notes**
@@ -3342,7 +3410,19 @@ order unless `limit` is set (then sorted by `startDate`, `time`).
 | `unit` | string | — | e.g. `%`, `point`, `億USD` |
 | `priority` | int | 1–3 | 1 = most important (non-farm payrolls, rate decisions), 3 = least (rig counts) |
 
-The feed carries more upstream fields than listed; only the fields above are documented（待確認：完整欄位需以真實回應核對）.
+A live response carried these further fields, passed through from the upstream feed. Only what was
+observed is stated; do not read more into them than that.
+
+| Field | Type | Observed |
+|---|---|---|
+| `id` | int | Upstream event id, e.g. `79382` |
+| `date` | int | Epoch seconds for the **period the reading covers**, not the release — rows labelled `subjectTitle: "<9月>"` carried `date` = 2026-09-01 while `startDate` was 2026-09-23 |
+| `dateUnit` | string | `month` |
+| `type` | int | `2` |
+| `areaId` | string | `"4"` |
+| `place` | string \| null | `null` |
+| `correct` | number \| null | `null` |
+| `correctMark` | string | `"N"` |
 
 **Errors**
 
@@ -3356,15 +3436,17 @@ The feed carries more upstream fields than listed; only the fields above are doc
 **Example**
 
 ```python
-params = {"start": "2026-07-28", "end": "2026-07-31", "country": "US,CN", "max_priority": 2, "lang": "zh"}
+params = {"start": "2026-09-16", "end": "2026-09-23", "max_priority": 1, "lang": "zh"}
 response = requests.get(
     f"{BASE_URL}/studio/market/anue/economic_calendar",
     headers=headers, params=params, timeout=60,
 )
 data = response.json()
-# [{"startDate": 1785715200, "time": "20:30", "countryId": "US", "countryName": "美國",
-#   "subjectTitle": "<2季>", "subject": "GDP成長率(QoQ)初值", "unit": "%",
-#   "predict": 1.6, "last": 2.1, "real": None, "priority": 3}, ...]   ← 待確認：未實抓
+# [{"id": 79382, "startDate": 1790121600, "date": 1788220800, "dateUnit": "month", "time": "16:30",
+#   "countryId": "GB", "countryName": "英國", "areaId": "4",
+#   "subject": "S&P Global Manufacturing PMI - 初值", "subjectTitle": "<9月>", "unit": "point",
+#   "predict": 51.7, "last": 51.7, "real": None, "correct": None, "correctMark": "N",
+#   "place": None, "priority": 1, "type": 2}, ...]
 ```
 
 **Notes**
