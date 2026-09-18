@@ -1758,15 +1758,18 @@ data = requests.get(f"{BASE_URL}/studio/market/twstock/market_value/2330", heade
 |---|---|---|---|---|---|---|
 | `top` | query | int | no | all (~2,400) | 1–3000 | Keep only the top N by market value |
 
-**Response** — `{"date": "YYYY-MM-DD", "data": [...]}`, sorted by market value descending.
+**Response** — `{"date": "YYYY-MM-DD", "twse_ex_etf_market_value": int, "data": [...]}`, sorted by market value descending.
 
 | Field | Type | Description |
 |---|---|---|
 | `date` | string | As-of day actually used (latest published; can lag today by a day) |
+| `twse_ex_etf_market_value` | int | TWD. Sum of the `market == "TWSE"` rows that are not ETFs, on the same as-of day. Whole-market denominator — **not** reduced by `top` |
 | `data[].rank` | int | 1-based rank |
 | `data[].stock_id` | string | Code |
 | `data[].name` | string | Name |
+| `data[].market` | string | `"TWSE"` (上市) or `"TPEx"` (上櫃), from the TWSE / TPEx listing rosters |
 | `data[].market_value` | int | TWD |
+| `data[].is_etf` | bool | `true` for the ETFs in the ranking (359 of 2,370 rows on 2026-09-17). `false` means "not in the ETF set", **not** "confirmed not an ETF": a security FinMind publishes no `industry_category` for — e.g. REIT `01010T` — is `false`, and it stays inside `twse_ex_etf_market_value` |
 
 **Errors**
 
@@ -1780,17 +1783,40 @@ data = requests.get(f"{BASE_URL}/studio/market/twstock/market_value/2330", heade
 
 ```python
 body = requests.get(f"{BASE_URL}/studio/market/twstock/market_value/all", headers=headers, params={"top": 10}, timeout=60).json()
-# {"date": "2026-08-20",
-#  "data": [{"rank": 1, "stock_id": "2330", "name": "台積電", "market_value": 61589378909125}, ...]}
+# {"date": "2026-09-17", "twse_ex_etf_market_value": 150952470507848,
+#  "data": [{"is_etf": false, "market": "TWSE", "market_value": 62885997412475,
+#            "name": "台積電", "rank": 1, "stock_id": "2330"},
+#           ...,
+#           {"is_etf": true, "market": "TWSE", "market_value": 2383312875000,
+#            "name": "元大台灣50", "rank": 6, "stock_id": "0050"}, ...]}
 
-# Top-50 non-ETF pool: ETFs rank too, so over-fetch then drop ids starting with "00"
+# Index weight of a 上市 non-ETF stock (works with any `top`, the denominator is whole-market)
+row = body["data"][0]                                    # 2330 — market "TWSE", is_etf false
+share = row["market_value"] / body["twse_ex_etf_market_value"]
+
+# ETFs rank alongside stocks (0050 is rank 6) — filter them with `is_etf`. Never by code prefix,
+# and never by re-fetching a classification: `is_etf` already IS that classification.
 rows = requests.get(f"{BASE_URL}/studio/market/twstock/market_value/all", headers=headers, params={"top": 100}, timeout=60).json()["data"]
-top50 = [r["stock_id"] for r in rows if not r["stock_id"].startswith("00")][:50]
+top50 = [r["stock_id"] for r in rows if not r["is_etf"]][:50]       # ETF-free market-cap top 50
+tpex_only = [r["stock_id"] for r in rows if r["market"] == "TPEx"]   # board filter is exact
 ```
 
 **Notes**
 - Universe is 上市 + 上櫃 + ETF (興櫃 excluded; ETNs have no data). Use this instead of looping
   `/market_value/<stock_id>` for "top N by market cap" questions.
+- **`rank` and `twse_ex_etf_market_value` are different universes.** `rank` is whole-market —
+  上市 + 上櫃, ETFs included — and did not change when the denominator was added. The
+  denominator is 上市 only and excludes ETFs (FinMind `industry_category` in
+  `{ETF, 上櫃ETF, 上櫃指數股票型基金(ETF)}`); REITs and preferred shares are **not**
+  excluded from it. So `market_value / twse_ex_etf_market_value` is an index weight only for a
+  row whose `market` is `"TWSE"` and which is not an ETF — a TPEx or ETF row over this
+  denominator is not a weight — while `rank` stays a whole-market rank. Don't read the two as
+  one ranking.
+- `market` is a listing-board tag, not an ETF flag — **`is_etf` is the ETF flag.** Use it for an
+  ETF-free universe. Don't infer ETFs from the `stock_id` prefix (`00` is a market convention
+  rather than a contract, and it misses REITs `01xxxT`) and don't re-fetch a classification from
+  FinMind. `is_etf` is exactly the criterion `twse_ex_etf_market_value` is computed on, so an
+  `is_etf` filter and the denominator can never disagree.
 
 ---
 
