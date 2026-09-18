@@ -2174,6 +2174,10 @@ data = requests.get(f"{BASE_URL}/studio/market/twstock/institutional/2330", head
 
 **Notes**
 - Net buy = `*_buy − *_sell`.
+- **Per-stock layer — no bucketing.** These are the raw per-category columns; how you group them is
+  your call. Blave's own per-stock surfaces (web, app, AI chat) count 外資自營商 as part of 外資,
+  matching the exchanges' own column naming, and treat 自營商 as 自行買賣 plus 避險. The whole-market
+  endpoint (`GET /studio/market/twmarket/institutional`) groups it differently — see that section.
 
 ---
 
@@ -2708,7 +2712,16 @@ data = requests.get(f"{BASE_URL}/studio/market/twmarket/institutional", headers=
 ```
 
 **Notes**
-- Foreign dealers' own-account trading (外資自營商) is bucketed into `dealer`, not `foreign`.
+- **Whole-market layer.** Here foreign dealers' own-account trading (外資自營商) is bucketed into
+  `dealer`, not `foreign`. The per-stock endpoint
+  (`GET /studio/market/twstock/institutional/<stock_id>`) is a different layer: it returns the raw
+  per-category columns and buckets nothing. Don't mix the two.
+- `foreign + investment_trust + dealer` does **not** equal `total`. `total` is the exchange's
+  published 三大法人合計 figure, which excludes 外資自營商 — the three columns include it, so the
+  difference is that day's 外資自營商 net. That activity sits entirely on warrants/ETNs, which Blave
+  does not serve, and has been 0 every day since 2024-08-16 (verified across 38,605 TWSE T86 rows on
+  2018-04-09, 2022-03-15 and 2024-08-16). **To match official or press numbers read `total`
+  directly — never sum the three columns.**
 
 ---
 
