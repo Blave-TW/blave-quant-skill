@@ -470,16 +470,17 @@ response = requests.get(f"{BASE_URL}/holder_concentration/get_alpha", headers=he
 | Group | Crypto › Alpha › Funding Rate |
 | Access | API plan or data fee |
 | Rate limit | 500 / 5 min per key + per IP |
-| Data from | 2025-09-30 (BTCUSDT `1d`; other symbols can start later) |
+| Data from | 2025-09-30 (BTCUSDT `1d`; other symbols can start later; `exchange=bybit` starts later — read the first timestamp) |
 | Update | Every 5 minutes |
-| Source | Binance USDT-M funding rate |
+| Source | USDT-M perpetual funding rate of the chosen `exchange` (Binance by default); `close` is always the Binance perp |
 
 **Parameters** — see *Crypto indicator conventions*.
 
 | Name | In | Type | Required | Default | Allowed / format | Description |
 |---|---|---|---|---|---|---|
-| `symbol` | query | string | yes | — | e.g. `BTCUSDT` | Symbol |
+| `symbol` | query | string | yes | — | e.g. `BTCUSDT` | Symbol (Binance form, whichever exchange) |
 | `period` | query | string | yes | — | `5min`, `15min`, `1h`, `4h`, `8h`, `1d` | Bar size |
+| `exchange` | query | string | no | `binance` | `binance`, `okx`, `bingx`, `bybit` | Whose perp funding rate to read; any other value is `400` |
 | `start_date` | query | string | no | `end_date` − 365 days | `YYYY-MM-DD` | First day |
 | `end_date` | query | string | no | today | `YYYY-MM-DD` | Last day |
 
@@ -497,6 +498,7 @@ response = requests.get(f"{BASE_URL}/holder_concentration/get_alpha", headers=he
 | Status | Body | When |
 |---|---|---|
 | 403 | `{"error": "symbol is required"}` / `{"error": "period is required"}` | Missing parameter |
+| 400 | `{"error": "exchange must be one of binance, okx, bingx, bybit"}` | `exchange` outside the list |
 
 **Example**
 
