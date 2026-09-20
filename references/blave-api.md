@@ -1252,6 +1252,93 @@ response = requests.get(f"{BASE_URL}/liquidation/get_map_change", headers=header
 
 ---
 
+## `GET /liquidation/get_coin`
+
+| | |
+|---|---|
+| Name | 每幣爆倉 Liquidation by Coin |
+| Group | Crypto › Alpha › Liquidation |
+| Access | API plan or data fee |
+| Rate limit | 500 / 5 min per key + per IP |
+| Data from | Snapshot (last 24 h) |
+| Update | Every 5 minutes (server cache 5 min) |
+| Source | Blave (Binance, Bybit, Gate.io, OKX, HTX, Bitfinex liquidation feeds; USD notional converted at collection time, so exchanges can be summed) |
+
+One coin's forced liquidations across every exchange feed Blave collects: four rolling
+windows with the per-exchange split, an hourly 24-point series, and each feed's coverage
+notes. This is real liquidation flow (like `get_alpha`'s input), not the model estimate
+behind `get_map`.
+
+**Parameters**
+
+| Name | In | Type | Required | Default | Allowed / format | Description |
+|---|---|---|---|---|---|---|
+| `symbol` | query | string | yes | — | `BTC`, `BTCUSDT`, `btc`, `BTC-USDT-SWAP`, `BTC_USDT` (≤ 32 chars) | Coin. The quote suffix is stripped; the response `symbol` is the normalised coin name |
+
+**Response** — `{"data": {"symbol", "rank", "updated_at", "windows", "exchanges", "detail_complete", "series"}}`.
+
+| Field | Type | Unit | Description |
+|---|---|---|---|
+| `symbol` | string | — | Normalised coin name, e.g. `BTC` |
+| `rank` | int / null | — | Position among the top 50 coins by 24 h total across exchanges; `null` outside the top 50 or with no event |
+| `updated_at` | string / null | ISO 8601 UTC | Time of the latest 5-minute bucket used |
+| `windows` | object | — | Keys are the strings `"1"`, `"4"`, `"12"`, `"24"` (hours). Each is a **rolling** window ending at the latest 5-minute bucket, with the fields below |
+| `windows.<h>.total_liq_usd` / `long_liq_usd` / `short_liq_usd` | float | USD | Summed across exchanges; `long` = long positions liquidated (price fell), `short` = shorts liquidated (price rose) |
+| `windows.<h>.long_pct` / `short_pct` | float / null | ratio 0–1 | Share of the window total; `null` when the window total is 0 |
+| `windows.<h>.covered_hours` | float | h | How many hours of the window actually have buckets (< `h` right after a collector restart) |
+| `windows.<h>.by_exchange` | object | USD | `{exchange: {total_liq_usd, long_liq_usd, short_liq_usd}}`. An exchange with **no event** in the window has **no key** — read `exchanges[]` to tell "feed alive, this coin quiet" from "feed absent" |
+| `exchanges[]` | object[] | — | One row per feed (six today, present even with no event), sorted by 24 h total desc, then roster order |
+| `exchanges[].exchange` | string | — | `binance`, `bybit`, `gate`, `okx`, `htx`, `bitfinex` |
+| `exchanges[].listed` | bool / null | — | Whether that exchange lists a USDT-margined perpetual for the coin; `null` when the contract list could not be fetched (Bitfinex always `null`) |
+| `exchanges[].last_event_at` | string / null | ISO 8601 UTC | Latest bucket seen from that feed (any coin); `null` if never seen |
+| `exchanges[].price_basis` | string | — | Price used for USD conversion: `trade_avg`, `bankruptcy`, `unverified` |
+| `exchanges[].coverage` | string | — | Feed completeness: `full`, `full_unstated`, `sampled_1s`, `aggregated_1s`, `sampled_undisclosed` |
+| `exchanges[].time_basis` | string | — | `event` — bucketed by the event's own timestamp |
+| `detail_complete` | bool | — | `false` when the coin may have been cut from a full per-bucket detail list (feeds keep the top 100 coins per 5-minute bucket): `windows` can then under-count. Top-50 coins are almost always `true` |
+| `series.bucket_seconds` | int | s | Always `3600` |
+| `series.points` | object[] | — | **Always 24** entries, oldest → newest, on clock hours; the last is the current hour up to `updated_at` (the snapshot is rebuilt every 5 min, so it can trail the request by a few minutes). Each `{ts, long_liq_usd, short_liq_usd}`; hours with no event are `0`, never missing |
+
+`windows["24"]` is the same rolling frame as the exchange matrix, so the same coin shows the
+same 24 h number there. `series` is on clock hours, so Σ `points` ≠ `windows["24"]` by design:
+take totals from `windows`, timing from `series`.
+
+**Errors**
+
+| Status | Body | When |
+|---|---|---|
+| 400 | `{"error": "symbol is required"}` | `symbol` missing, blank, longer than 32 chars, or nothing left after the quote suffix is stripped (e.g. `symbol=USDT`) |
+| 404 | `{"error": "<SYMBOL> is not a collected symbol"}` | No exchange lists the coin and no feed reported it in the last 24 h — an answer, not a transient |
+| 503 | `{"error": "liquidation data unavailable"}` | Upstream buckets did not answer — retry later; never read as "0 liquidations" |
+
+**Example**
+
+```python
+response = requests.get(f"{BASE_URL}/liquidation/get_coin", headers=headers, params={"symbol": "BTC"}, timeout=30)
+data = response.json()["data"]
+day = data["windows"]["24"]
+print(data["symbol"], data["rank"], day["total_liq_usd"], day["long_pct"])
+peak = max(data["series"]["points"], key=lambda p: p["long_liq_usd"] + p["short_liq_usd"])
+# Live capture 2026-09-20 (abridged with ...; same payload the studio page serves):
+# {"data": {"symbol": "BTC", "rank": 1, "updated_at": "2026-09-20T17:15:00+00:00",
+#           "windows": {"1": {"covered_hours": 1.0, "total_liq_usd": 3429619.97, "long_liq_usd": 129200.73, "short_liq_usd": 3300419.23,
+#                             "long_pct": 0.0377, "short_pct": 0.9623, "by_exchange": {...}},
+#                       "4": {...}, "12": {...},
+#                       "24": {"covered_hours": 24.0, "total_liq_usd": 58723607.89, "long_liq_usd": 38063430.51, "short_liq_usd": 20660177.37,
+#                              "long_pct": 0.6482, "short_pct": 0.3518,
+#                              "by_exchange": {"binance": {"long_liq_usd": 17075740.21, "short_liq_usd": 6697256.41, "total_liq_usd": 23772996.62}, ...}}},
+#           "exchanges": [{"coverage": "sampled_1s", "exchange": "binance", "last_event_at": "2026-09-20T17:15:00+00:00", "listed": true, "price_basis": "trade_avg", "time_basis": "event"}, ... 6 rows],
+#           "detail_complete": true,
+#           "series": {"bucket_seconds": 3600, "points": [..., {"long_liq_usd": 60660.74, "short_liq_usd": 6129662.69, "ts": "2026-09-20T16:00:00+00:00"}, {"long_liq_usd": 95373.53, "short_liq_usd": 5473.13, "ts": "2026-09-20T17:00:00+00:00"}]}}}
+```
+
+**Notes**
+- Snapshot only: no `start_date` / `end_date`, and nothing older than 24 h. For history use
+  `get_alpha` (a normalised long/short imbalance, not USD amounts).
+- Symbol handling differs from the other liquidation endpoints: `get_alpha` / `get_map` need the
+  Binance perp form (`BTCUSDT`); here `BTC` and `BTCUSDT` are the same coin.
+
+---
+
 # Taiwan Stock
 
 Conventions for this category:
