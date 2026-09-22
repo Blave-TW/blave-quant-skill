@@ -69,13 +69,11 @@ Status values: `pending` | `approved` | `unlisted`
 
 ```python
 # ===== STRATEGY 1: BTC SMA Cross =====
-MODE          = "live"
 STRATEGY_NAME = "btc_sma_cross"
 SYMBOL        = "BTCUSDT"
 # ... full strategy 1 code ...
 
 # ===== STRATEGY 2: ETH RSI Fade =====
-MODE          = "live"
 STRATEGY_NAME = "eth_rsi_fade"
 SYMBOL        = "ETHUSDT"
 # ... full strategy 2 code ...
