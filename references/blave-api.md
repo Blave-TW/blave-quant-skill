@@ -93,7 +93,6 @@ BASE_URL = "https://api.blave.org"
 These Blave services have their own reference files and are not duplicated here:
 
 - Hyperliquid top-trader tracking (`/hyperliquid/*`) → `references/hyperliquid-api.md`
-- TradingView alert stream (`/sse/tradingview/stream`) → `references/tradingview-stream.md`
 - Strategy marketplace (`/openclaw/marketplace/*`) → `references/marketplace.md`
 - Indicator interpretation (what alpha values mean) → `references/blave-indicator-guide.md`
 
@@ -1338,6 +1337,552 @@ peak = max(data["series"]["points"], key=lambda p: p["long_liq_usd"] + p["short_
   Binance perp form (`BTCUSDT`); here `BTC` and `BTCUSDT` are the same coin.
 
 ---
+
+## `GET /liquidation/get_exchanges`
+
+| | |
+|---|---|
+| Name | 爆倉矩陣 Liquidation Exchange Matrix |
+| Group | Crypto › Alpha › Liquidation |
+| Access | API plan or data fee |
+| Rate limit | 500 / 5 min per key + per IP |
+| Data from | Rolling window, 5-minute aligned (default last 24 h) |
+| Update | Every 5 minutes (server cache 5 min) |
+| Source | Blave (Binance, Bybit, Gate.io, OKX, HTX, Bitfinex liquidation feeds; USD notional converted at collection time, so exchanges can be summed) |
+
+Whole-market forced liquidations, aggregated per exchange and as a coin × exchange matrix —
+the market-wide companion to `/liquidation/get_coin`. Same rolling 5-minute-aligned frame,
+so a coin's 24 h total is the same number on both.
+
+**Parameters**
+
+| Name | In | Type | Required | Default | Allowed / format | Description |
+|---|---|---|---|---|---|---|
+| `hours` | query | int | no | `24` | 1–168 | Window length. Outside the range → `400` (it is not clamped); a non-integer value silently falls back to the default |
+| `top_n` | query | int | no | `10` | 1–50 | How many coins to list individually; the rest go to `others`. Same range / non-integer rules as `hours` |
+
+**Response** — `{"data": {"exchanges", "coins", "others", "total", "buckets", "covered_hours", "window_hours", "window_start", "window_end", "updated_at"}}`.
+
+| Field | Type | Unit | Description |
+|---|---|---|---|
+| `exchanges[]` | object[] | — | One row per feed, sorted by total desc: `exchange`, `total_liq_usd`, `long_liq_usd`, `short_liq_usd`, `long_pct`, `short_pct`, `events`, `last_event_at`. Every feed is always listed: amounts `null` = no data received from that feed in the window (sorted last), `0.0` = connected but no liquidations |
+| `exchanges[].price_basis` / `.coverage` / `.time_basis` | string | — | How comparable that row is: `trade_avg` / `bankruptcy` / `unverified`; `full`, `full_unstated`, `sampled_1s`, `aggregated_1s`, `sampled_undisclosed`; `event`. **Keep them when re-publishing the numbers** — a sampled feed is not a full one |
+| `coins[]` | object[] | — | The top `top_n` by cross-exchange total: `token`, `token_id` (`0` when the symbol has no CoinMarketCap id), `total_liq_usd`, `long_liq_usd`, `short_liq_usd`, `by_exchange{name: {total/long/short_liq_usd}}`. `by_exchange` is sparse — a feed with nothing for that coin has no key; read it as `0` when that feed's `exchanges[]` total is not `null` |
+| `others` | object | — | Everything `top_n` cut off, same fields plus `coin_count`, so `coins[] + others` adds back to each exchange's total |
+| `total` | object | USD / ratio | `total_liq_usd`, `long_liq_usd`, `short_liq_usd`, `long_pct`, `short_pct` |
+| `covered_hours` | float | h | Hours of the window that actually have buckets (< `hours` right after a collector restart) |
+| `buckets` | int | — | Number of 5-minute buckets aggregated |
+| `window_hours` / `window_start` / `window_end` | int / string | h / ISO 8601 UTC | The window as the server resolved it |
+| `updated_at` | string | ISO 8601 UTC | Latest bucket used |
+
+`long_liq_usd` = long positions liquidated (price fell); `short_liq_usd` = shorts liquidated
+(price rose).
+
+**Errors**
+
+| Status | Body | When |
+|---|---|---|
+| 400 | `{"error": "hours must be between 1 and 168"}` / `{"error": "top_n must be between 1 and 50"}` | Out-of-range parameter |
+
+**Example**
+
+```python
+params = {"hours": 24, "top_n": 10}
+data = requests.get(f"{BASE_URL}/liquidation/get_exchanges", headers=headers, params=params, timeout=30).json()["data"]
+print(data["total"]["total_liq_usd"], data["total"]["short_pct"])
+print([(e["exchange"], e["total_liq_usd"], e["coverage"]) for e in data["exchanges"]])
+# Live capture 2026-09-22 (abridged with ...; anonymous studio twin /studio/charts/liquidation/exchanges,
+# same inner shape — the API-key response wraps it in "data" and allows top_n up to 50):
+# {"exchanges": [{"exchange": "binance", "total_liq_usd": 390250999.16, "long_liq_usd": 69367041.38,
+#                 "short_liq_usd": 320883957.78, "long_pct": 0.1777, "short_pct": 0.8223, "events": 46200,
+#                 "last_event_at": "2026-09-22T05:50:00+00:00", "price_basis": "trade_avg",
+#                 "coverage": "sampled_1s", "time_basis": "event"}, ... 6 rows],
+#  "coins": [{"token": "BTC", "token_id": 1, "total_liq_usd": 397165128.6, "long_liq_usd": 68908479.16,
+#             "short_liq_usd": 328256649.44,
+#             "by_exchange": {"binance": {"long_liq_usd": 17994806.07, "short_liq_usd": 173732353.71,
+#                                         "total_liq_usd": 191727159.78}, ... 6 exchanges}}, ... 10 coins],
+#  "others": {"coin_count": 835, "total_liq_usd": 82658628.27, "long_liq_usd": 34622797.57,
+#             "short_liq_usd": 48035830.7, "by_exchange": {...}},
+#  "total": {"total_liq_usd": 743631889.64, "long_liq_usd": 175240866.53, "short_liq_usd": 568391023.1,
+#            "long_pct": 0.2357, "short_pct": 0.7643},
+#  "buckets": 1846, "covered_hours": 24.0, "window_hours": 24,
+#  "window_start": "2026-09-21T05:55:00+00:00", "window_end": "2026-09-22T05:55:00+00:00",
+#  "updated_at": "2026-09-22T05:50:00+00:00"}
+```
+
+**Notes**
+- No data at all (feeds down, or the data source unreachable) is still a `200` with the same
+  shape and every amount `null`, `buckets: 0` — never a table of zeros. Check `total.total_liq_usd`
+  before using the numbers.
+- Totals only — no time series. Hourly shape for one coin is `/liquidation/get_coin`; a
+  normalised long-history signal is `/liquidation/get_alpha`.
+- The window is rolling, not a calendar day, and it is the same frame `/liquidation/get_coin`
+  uses for `windows["24"]`.
+
+---
+## `GET /long_short_ratio/get_table`
+
+| | |
+|---|---|
+| Name | 多空比總表 Long/Short Ratio Table |
+| Group | Crypto › Raw data › Long/short ratio |
+| Access | API plan or data fee |
+| Rate limit | 500 / 5 min per key + per IP |
+| Data from | Snapshot (latest cross-section) |
+| Update | 5-minute buckets; the snapshot is the latest bucket each source published (Gate / OKX land ≈ 10 min late) |
+| Source | Blave (Binance, OKX, Gate.io, Bybit long/short-ratio feeds) |
+
+Every collected coin × every long/short-ratio source, as of now. **Ten sources:** Binance,
+OKX and Gate.io each publish three kinds — all accounts, top-trader accounts, top-trader
+positions — and Bybit publishes accounts only. Rows are ordered by Binance open-interest
+notional. Only coins that resolve to a CoinMarketCap crypto are listed; the API-key
+response is the full table (`full: true`), the anonymous studio twin only the rows of its
+30-coin whitelist.
+
+**Parameters** — none.
+
+**Response** — `{"data": {"coins", "sources", "summary", "tokens_shown", "tokens_total", "full", "updated_at"}}`.
+
+| Field | Type | Unit | Description |
+|---|---|---|---|
+| `coins[]` | object[] | — | One row per coin: `token`, `token_id`, plus one value per source key |
+| `coins[].<source key>` | float / null | ratio | Long accounts (or positions) ÷ short. `null` = that exchange has no such feed for the coin. Long share = `r / (1 + r)` — the API does not precompute it |
+| `sources[]` | object[] | — | The ten feeds, in column order. **Read this, never a hard-coded key list** |
+| `sources[].key` | string | — | `<exchange>_<type>`, e.g. `binance_top_position` — the key used in `coins[]` |
+| `sources[].exchange` / `.type` | string | — | `binance` / `okx` / `gate` / `bybit`; `account` / `top_account` / `top_position` |
+| `sources[].last_at` | string | ISO 8601 UTC | Newest sample from that feed |
+| `sources[].stale` | bool | — | That feed's newest sample is over 1 hour old (measured against now). Top-level `updated_at` is the newest source and says nothing about any single one — judge a source by its own `last_at` / `stale` |
+| `summary.binance_tokens` / `.binance_long_majority` | int | — | Coins with a Binance account ratio / of those, how many are above 1. Computed over the whole table, not the rows shown |
+| `tokens_shown` / `tokens_total` | int | — | Rows returned / rows in the table. Equal on an API key |
+| `full` | bool | — | `true` on an API key; `false` on the anonymous studio twin |
+| `updated_at` | string | ISO 8601 UTC | Newest bucket across sources |
+
+**"Top trader" is a different population at each exchange — do not compare the levels across exchanges.**
+
+| Exchange | Who counts as a top trader (official wording) |
+|---|---|
+| Binance | "the top 20% users with the highest margin balance" |
+| OKX | "the top 5% of traders with the largest open position value" |
+| Gate.io | Never published — the docs only name the fields |
+
+So `binance_top_account` above `okx_top_account` says nothing about which venue's big
+traders are more long. Compare each source against **its own** history instead.
+
+**Errors**
+
+| Status | Body | When |
+|---|---|---|
+| 503 | `{"error": "long short ratio data unavailable"}` | No fresh snapshot — retry later; never read as an empty market |
+
+**Example**
+
+```python
+data = requests.get(f"{BASE_URL}/long_short_ratio/get_table", headers=headers, timeout=30).json()["data"]
+keys = [s["key"] for s in data["sources"] if not s["stale"]]
+btc = next(c for c in data["coins"] if c["token"] == "BTC")
+print({k: btc[k] for k in keys if btc[k] is not None})
+# Live capture 2026-09-22 via the anonymous studio twin (/studio/charts/long_short_ratio/table) —
+# same inner shape; the API-key response wraps it in "data" and has full: true with every row.
+# {"coins": [{"binance_account": 0.8818, "binance_top_account": 1.0149, "binance_top_position": 2.2666,
+#             "bybit_account": 1.0375, "gate_account": 0.7294, "gate_top_account": 0.6944,
+#             "gate_top_position": 1.6436, "okx_account": 0.9084, "okx_top_account": 0.8655,
+#             "okx_top_position": 1.0222, "token": "BTC", "token_id": 1}, ...],
+#  "sources": [{"exchange": "binance", "key": "binance_account", "last_at": "2026-09-22T05:50:00+00:00",
+#               "stale": false, "type": "account"}, ...,
+#              {"exchange": "bybit", "key": "bybit_account", "last_at": "2026-09-22T05:50:00+00:00",
+#               "stale": false, "type": "account"}],
+#  "summary": {"binance_long_majority": 436, "binance_tokens": 509},
+#  "tokens_shown": 30, "tokens_total": 611, "full": false, "updated_at": "2026-09-22T05:50:00+00:00"}
+```
+
+**Collection start** (first stored bucket, measured on BTC 2026-09-22)
+
+| Source key | Collecting since |
+|---|---|
+| `binance_account` | 2021-05-11 |
+| `binance_top_account` / `binance_top_position` | 2026-08-22 |
+| `okx_account` / `okx_top_account` / `okx_top_position` | 2025-02-18 |
+| `gate_account` / `gate_top_account` / `gate_top_position` | 2026-08-12 |
+| `bybit_account` | 2026-08-12 |
+
+Every source is now older than the 7 days this dataset serves, so none of them limits a query —
+the dates matter only if you are told a source "has no history".
+
+**Notes**
+- A cross-section, not history. For a series use `/long_short_ratio/get_coin` (7 days) — there
+  is no long-history endpoint for this dataset.
+- Granularity is 5 minutes, but each source publishes on its own clock — do not describe it as
+  "updates every 5 minutes".
+
+---
+
+## `GET /long_short_ratio/get_coin`
+
+| | |
+|---|---|
+| Name | 每幣多空比 Long/Short Ratio by Coin |
+| Group | Crypto › Raw data › Long/short ratio |
+| Access | API plan or data fee |
+| Rate limit | 500 / 5 min per key + per IP |
+| Data from | Last 7 days, hourly + the latest 5-minute point |
+| Update | 5-minute buckets (Gate / OKX land ≈ 10 min late) |
+| Source | Blave (Binance, OKX, Gate.io, Bybit long/short-ratio feeds) |
+
+One coin, all ten sources: the latest 5-minute value of each, a 7-day hourly series per
+source, and the Binance perp close on the same frame.
+
+**Parameters**
+
+| Name | In | Type | Required | Default | Allowed / format | Description |
+|---|---|---|---|---|---|---|
+| `symbol` | query | string | yes | — | `BTC`, `BTCUSDT`, `btc` (≤ 32 chars) | Coin. The quote suffix is stripped; the response `symbol` is the normalised coin name |
+
+**Response** — `{"data": {"latest", "series", "sources", "symbol", "token_id", "updated_at"}}`.
+
+| Field | Type | Unit | Description |
+|---|---|---|---|
+| `latest.<source key>` | object / null | — | `{value, ts}` — that source's newest 5-minute sample; `null` when the source does not list the coin |
+| `series.bucket_seconds` / `.days` | int | s / d | `3600` / `7` |
+| `series.timestamp` | int[] | epoch s | **168 slots**, oldest → newest, one per hour |
+| `series.<source key>` | float[] / null | ratio | Last sample of each hour; `null` for an hour with no sample. The whole field is a single `null` (not an array) for a source that does not list the coin |
+| `series.price` | float[] / null | USD | Binance perp close on the same frame. A single `null` (with `price_symbol` / `price_multiplier` also `null`) when the coin has no Binance perp |
+| `series.price_symbol` / `.price_multiplier` | string / int | — | Which perp the price came from and its contract multiplier (`1000PEPEUSDT` → `1000`; `price ÷ price_multiplier` = price per coin) |
+| `series.provisional_from` | int / null | epoch s | First slot that can still change (sources finalise up to ~10 min late); `null` when no source has data |
+| `sources[]` | object[] | — | The full roster, same fields as the table plus `listed` |
+| `sources[].listed` | bool | — | `false` = that exchange has no such feed for this coin; its `latest` and `series` entries are `null` |
+| `symbol` / `token_id` / `updated_at` | — | — | As in the table |
+
+**Errors**
+
+| Status | Body | When |
+|---|---|---|
+| 400 | `{"error": "symbol is required"}` | `symbol` missing, blank, over 32 chars, or nothing left after the quote suffix is stripped |
+| 404 | `{"error": "<SYMBOL> is not a collected symbol"}` | No source collects the coin — an answer, not a transient |
+| 503 | `{"error": "long short ratio data unavailable"}` | A listed source could not be read. `null` only ever means "that venue does not list it" |
+
+**Example**
+
+```python
+params = {"symbol": "BTC"}
+data = requests.get(f"{BASE_URL}/long_short_ratio/get_coin", headers=headers, params=params, timeout=30).json()["data"]
+latest = data["latest"]["binance_top_position"]  # null when Binance does not list the coin
+if latest is not None:
+    r = latest["value"]
+    print("top-trader long share:", round(r / (1 + r), 4))
+# Live capture 2026-09-22 (abridged with ...; anonymous studio twin, same inner shape):
+# {"latest": {"binance_account": {"ts": "2026-09-22T05:50:00+00:00", "value": 0.8818},
+#             "binance_top_account": {"ts": "2026-09-22T05:50:00+00:00", "value": 1.0149}, ... 10 keys},
+#  "series": {"bucket_seconds": 3600, "days": 7, "price_symbol": "BTCUSDT", "price_multiplier": 1,
+#             "provisional_from": 1790053200,
+#             "timestamp": [..., 1790049600, 1790053200],
+#             "binance_account": [..., 0.8699, 0.8818], "price": [..., 85424.7, 85495.8], ... one array per source},
+#  "sources": [{"exchange": "binance", "key": "binance_account", "last_at": "2026-09-22T05:50:00+00:00",
+#               "listed": true, "stale": false, "type": "account"}, ... 10 rows],
+#  "symbol": "BTC", "token_id": 1, "updated_at": "2026-09-22T05:50:00+00:00"}
+```
+
+**Notes**
+- The cross-exchange "top trader" caveat on `/long_short_ratio/get_table` applies here too.
+- 7 days is the whole history this endpoint serves; there is no `start_date` / `end_date`.
+- **About the "anonymous studio twin" in every capture on this page's raw-data endpoints:** the
+  studio pages (`/studio/charts/...`) serve the same payload from the same builder without a key,
+  which is where these examples were taken. They are not a substitute for the API-key endpoints:
+  the tables are cut to 30 coins (`full: false`), and a coin outside the studio whitelist answers
+  `403 {"error_code": "ERR001", ..., "anon_whitelist": [...]}` instead of data. The API-key
+  endpoints documented here have no whitelist and no row cut.
+
+---
+
+## `GET /oi_imbalance/get_table`
+
+| | |
+|---|---|
+| Name | 未平倉量總表 Open Interest Table |
+| Group | Crypto › Raw data › Open interest |
+| Access | API plan or data fee |
+| Rate limit | 500 / 5 min per key + per IP |
+| Data from | Snapshot (latest cross-section, with 1 h / 4 h / 24 h changes) |
+| Update | Built by a scheduled job, ≈ every 15 minutes (5-minute source buckets; Gate / OKX land ≈ 10 min late) |
+| Source | Blave (Binance, OKX, BingX, Bybit, Gate.io open-interest feeds) |
+
+Every collected coin × five exchanges, in USD notional. **Basis: USDT-margined
+perpetuals only, USD notional, one side.** An exchange that reports both sides is halved
+(`exchanges[].side_factor`, Gate.io = 0.5). Because every value is already USD notional,
+multiplied contracts (`1000PEPE` and friends) add across exchanges with no rescaling.
+
+**Parameters** — none.
+
+**Response** — `{"data": {"coins", "exchanges", "total", "summary", "tokens_shown", "tokens_total", "full", "updated_at"}}`.
+
+| Field | Type | Unit | Description |
+|---|---|---|---|
+| `coins[].token` / `.token_id` | string / int | — | Coin |
+| `coins[].oi_total` | float | USD | Summed across the five exchanges |
+| `coins[].chg_1h` / `.chg_4h` / `.chg_24h` | float / null | fraction | Decimal change (`0.0675` = +6.75 %). Each window counts **only the exchanges that have a baseline at that window's start**, numerator and denominator over the same set; `null` when none does |
+| `coins[].market_cap` | float / null | USD | CoinMarketCap market cap; `null` when there is no usable one |
+| `coins[].oi_mcap` | float / null | ratio | `oi_total ÷ market_cap`; `null` when `market_cap` is |
+| `coins[].by_exchange` | object | — | `{exchange: {oi, chg_1h, chg_4h, chg_24h}}`, one key per exchange; `null` when the coin is not listed there. A per-window `null` means that exchange had no baseline that far back — a feed younger than the window |
+| `exchanges[]` | object[] | — | `binance`, `okx`, `bingx`, `bybit`, `gate` — whole-market `oi`, `side_factor`, `since`, `full_7d`, `last_at`, `stale` |
+| `exchanges[].since` / `.full_7d` | string / bool | date | The feed's first day when it has under 7 days of history (`full_7d: false`), else `null` / `true`. Informational on this table (it has no 7-day window); on `/oi_imbalance/get_coin` such a feed has no 7 d baseline and is left out of `series.total` |
+| `total` | object | — | Whole-market `oi`, `chg_1h/4h/24h`, `n_exchanges`, `n_full_7d` |
+| `summary.oi_mcap_leader` / `_value` | string / float | — | Highest OI ÷ market cap among the top 100 coins by OI |
+| `tokens_shown` / `tokens_total` / `full` / `updated_at` | — | — | As in the long/short-ratio table |
+
+**Not the same number as the OI 失衡 indicator.** `/oi_imbalance/get_overview_data` (and the
+`oi_imbalance` alpha behind screener conditions and alerts) is a **three-exchange**
+aggregate — Binance + OKX + BingX. This table is five exchanges on the basis above. The two
+`oi_total` values differ, so a threshold tuned on one does not carry over to the other.
+
+**Errors**
+
+| Status | Body | When |
+|---|---|---|
+| 503 | `{"error": "open interest data unavailable"}` | The job has no fresh result (missing or over an hour old) — never a table of zeros |
+
+**Example**
+
+```python
+data = requests.get(f"{BASE_URL}/oi_imbalance/get_table", headers=headers, timeout=30).json()["data"]
+crowded = sorted((c for c in data["coins"] if c["oi_mcap"] is not None), key=lambda c: -c["oi_mcap"])[:10]
+print(data["total"]["oi"], [(c["token"], round(c["oi_mcap"], 4)) for c in crowded])
+# Live capture 2026-09-22 (abridged with ...; anonymous studio twin, same inner shape):
+# {"coins": [{"token": "BTC", "token_id": 1, "oi_total": 18645450917.48, "chg_1h": -0.001775,
+#             "chg_4h": -0.001046, "chg_24h": 0.128725, "market_cap": 1629947967503.241, "oi_mcap": 0.011439,
+#             "by_exchange": {"binance": {"oi": 9417422808.02, "chg_1h": 2e-05, "chg_4h": 0.010203, "chg_24h": 0.067527},
+#                             "bingx": {"oi": 1328003926.8, ...},
+#                             "bybit": {"oi": 2569097877.96, "chg_1h": -0.008636, "chg_4h": -0.030159, "chg_24h": null},
+#                             "gate": {...}, "okx": {"oi": 2575361192.92, ..., "chg_24h": null}}}, ...],
+#  "exchanges": [{"key": "binance", "oi": 24712717530.01, "side_factor": 1.0, "since": null, "full_7d": true,
+#                 "last_at": "2026-09-22T05:25:00+00:00", "stale": false}, ... 5 rows],
+#  "total": {"oi": 47428938620.05, "chg_1h": -0.008919, "chg_4h": -0.010508, "chg_24h": 0.073881,
+#            "n_exchanges": 5, "n_full_7d": 3},
+#  "summary": {"oi_mcap_leader": "SAGA", "oi_mcap_leader_value": 1.718336},
+#  "tokens_shown": 30, "tokens_total": 622, "full": false, "updated_at": "2026-09-22T05:30:00+00:00"}
+```
+
+**Collection start** (first stored bucket, measured on BTC 2026-09-22)
+
+| Exchange | Collecting since |
+|---|---|
+| `binance` | 2021-12-01 |
+| `bingx` | 2025-04-15 |
+| `gate` | 2026-08-12 |
+| `okx` | 2026-09-21 |
+| `bybit` | 2026-09-21 |
+
+OKX and Bybit are why `n_full_7d` is 3 of 5 and why their `chg_24h` was still `null` on
+2026-09-22 — read `exchanges[].since` / `full_7d` rather than these dates, which age out.
+
+**Notes**
+- `chg_24h: null` on OKX / Bybit in the capture above is the young-feed rule, not a gap in the
+  market: those two started on 2026-09-21, so they had no 24 h baseline yet.
+- A cross-section, not history. Per-coin history (7 days, hourly) is `/oi_imbalance/get_coin`.
+
+---
+
+## `GET /oi_imbalance/get_coin`
+
+| | |
+|---|---|
+| Name | 每幣未平倉量 Open Interest by Coin |
+| Group | Crypto › Raw data › Open interest |
+| Access | API plan or data fee |
+| Rate limit | 500 / 5 min per key + per IP |
+| Data from | Last 7 days, hourly + current values |
+| Update | 5-minute buckets (Gate / OKX land ≈ 10 min late) |
+| Source | Blave (Binance, OKX, BingX, Bybit, Gate.io open-interest feeds) |
+
+One coin's open interest per exchange, on the same basis as the table: current value and
+share, four change windows with the exchanges each counted, and a 7-day hourly total line.
+
+**Parameters** — `symbol`, exactly as in `/long_short_ratio/get_coin`.
+
+**Response** — `{"data": {"exchanges", "windows", "series", "oi_total", "market_cap", "oi_mcap", "oi_mcap_rank", "tokens_total", "symbol", "token_id", "updated_at"}}`.
+
+| Field | Type | Unit | Description |
+|---|---|---|---|
+| `exchanges[]` | object[] | — | The full five-exchange roster: `key`, `oi` (USD), `share` (of `oi_total`), `chg_1h/4h/24h/7d`, `side_factor`, `listed`, `since`, `full_7d`, `last_at`, `stale` |
+| `exchanges[].listed` | bool | — | `false` = the coin is not listed there; its values are `null` |
+| `oi_total` / `market_cap` / `oi_mcap` | float | USD / ratio | As in the table |
+| `oi_mcap_rank` / `tokens_total` | int / null | — | Rank by `oi_mcap` in the table job's last round; `null` when that job has no fresh result |
+| `windows.<1h\|4h\|24h\|7d>.chg` / `.chg_usd` | float / null | fraction / USD | Change of the counted exchanges' total |
+| `windows.<w>.exchanges` | string[] | — | **Which exchanges were counted in that window** — a young feed is absent, so 24 h / 7 d can count fewer exchanges than 1 h |
+| `series.timestamp` | int[] | epoch s | 168 hourly slots, oldest → newest |
+| `series.total` | float[] / null | USD | Total OI per slot — **only the `series.total_exchanges` (the `full_7d` feeds) are in this line**, so it is not comparable in level to `oi_total`. A slot is `null` when any of those exchanges has no sample that hour; the whole field is `null` when no exchange is `full_7d` for the coin |
+| `series.total_exchanges` | string[] | — | Which exchanges the line adds up |
+| `series.price` / `.price_symbol` / `.price_multiplier` / `.provisional_from` | — | — | As in `/long_short_ratio/get_coin` |
+
+**Errors** — `400` / `404` / `503` exactly as `/long_short_ratio/get_coin`, with
+`{"error": "open interest data unavailable"}` on 503.
+
+**Example**
+
+```python
+data = requests.get(f"{BASE_URL}/oi_imbalance/get_coin", headers=headers, params={"symbol": "BTC"}, timeout=30).json()["data"]
+day = data["windows"]["24h"]
+print(data["oi_total"], day["chg"], "counted:", day["exchanges"])
+# Live capture 2026-09-22 (abridged with ...; anonymous studio twin, same inner shape):
+# {"exchanges": [{"key": "binance", "oi": 9454606424.48, "share": 0.5055, "chg_1h": 0.00037, "chg_4h": 0.014471,
+#                 "chg_24h": 0.064607, "chg_7d": 0.17205, "side_factor": 1.0, "listed": true, "since": null,
+#                 "full_7d": true, "last_at": "2026-09-22T05:50:00+00:00", "stale": false},
+#                {"key": "okx", ..., "since": "2026-09-21", "full_7d": false}, ... 5 rows],
+#  "windows": {"1h": {"chg": -0.000462, "chg_usd": -8636171.48, "exchanges": ["binance", "okx", "bingx", "bybit", "gate"]},
+#              "4h": {...},
+#              "24h": {"chg": 0.12231, "chg_usd": 1474912315.85, "exchanges": ["binance", "bingx", "gate"]},
+#              "7d": {"chg": 0.212184, "chg_usd": 2368974857.56, "exchanges": ["binance", "bingx", "gate"]}},
+#  "series": {"bucket_seconds": 3600, "days": 7, "timestamp": [1789452000, 1789455600, ...],
+#             "total": [11171863169.89, 11167043101.84, ...], "total_exchanges": ["binance", "bingx", "gate"],
+#             "price": [...], "price_symbol": "BTCUSDT", "price_multiplier": 1, "provisional_from": 1790053200},
+#  "oi_total": 18704068031.08, "market_cap": 1629947967503.241, "oi_mcap": 0.011475, "oi_mcap_rank": 580,
+#  "tokens_total": 622, "symbol": "BTC", "token_id": 1, "updated_at": "2026-09-22T05:55:00+00:00"}
+```
+
+**Notes**
+- `windows["1h"]["exchanges"]` having five entries while `windows["24h"]` has three is the
+  young-feed rule, not missing data — read that list before comparing windows.
+- The OI 失衡 caveat from `/oi_imbalance/get_table` applies to this `oi_total` too.
+
+---
+
+## `GET /taker_intensity/get_cvd_table`
+
+| | |
+|---|---|
+| Name | 主動買賣淨額總表 CVD Table |
+| Group | Crypto › Raw data › CVD |
+| Access | API plan or data fee |
+| Rate limit | 500 / 5 min per key + per IP |
+| Data from | Snapshot (rolling 1 h / 4 h / 24 h windows) |
+| Update | Built by a scheduled job, ≈ every 15 minutes (5-minute source buckets; Gate / OKX land ≈ 10 min late) |
+| Source | Blave (Binance, OKX, Gate.io taker-flow feeds) |
+
+Taker (market-order) buy and sell turnover per coin, in USD, across **three exchanges**:
+Binance from the 5-minute kline's taker-buy quote volume (sell = the bar's total minus it),
+OKX from its USD taker volume, Gate.io from taker contracts × the same row's multiplier and
+mark price. **Perpetuals only — no spot — and aggregated from 5-minute bars, not from
+trade-by-trade prints.** Each exchange's own reported turnover is used; volume is never
+multiplied by a price borrowed from another venue.
+
+**Parameters** — none.
+
+**Response** — `{"data": {"coins", "exchanges", "total", "tokens_shown", "tokens_total", "full", "updated_at"}}`.
+
+| Field | Type | Unit | Description |
+|---|---|---|---|
+| `coins[].token` / `.token_id` | string / int | — | Coin |
+| `coins[].buy_24h` / `.sell_24h` | float / null | USD | Taker buy / sell turnover over the rolling 24 h, summed over the coin's non-stale exchanges; `null` when all of them are stale |
+| `coins[].net_1h` / `.net_4h` / `.net_24h` | float / null | USD | `buy − sell` over each rolling window (same `null` rule) |
+| `coins[].by_exchange` | object | — | `{exchange: {buy_24h, sell_24h, net_1h, net_4h, net_24h}}`, one key per exchange; `null` when the coin is not listed there or that exchange's data for it is stale |
+| `exchanges[]` | object[] | — | `binance`, `okx`, `gate` — whole-market `buy_24h`, `sell_24h`, `net_24h`, `last_at`, `stale` |
+| `exchanges[].stale` | bool | — | That feed's last bar is over an hour old: its windows come back `null` and it is **left out of the totals** rather than contributing a sum that silently covers less than the window |
+| `total` | object | USD | Whole-market `buy_24h`, `sell_24h`, `net_24h` over the fresh exchanges |
+| `tokens_shown` / `tokens_total` / `full` / `updated_at` | — | — | As in the other raw tables |
+
+**Errors**
+
+| Status | Body | When |
+|---|---|---|
+| 503 | `{"error": "cvd data unavailable"}` | The job has no fresh result — never zeros |
+
+**Example**
+
+```python
+data = requests.get(f"{BASE_URL}/taker_intensity/get_cvd_table", headers=headers, timeout=30).json()["data"]
+buying = sorted((c for c in data["coins"] if c["net_24h"] is not None), key=lambda c: -c["net_24h"])[:10]
+print(data["total"]["net_24h"], [(c["token"], c["net_24h"]) for c in buying])
+# Live capture 2026-09-22 (abridged with ...; anonymous studio twin, same inner shape):
+# {"coins": [{"token": "BTC", "token_id": 1, "buy_24h": 24607245298.03, "sell_24h": 23128502231.73,
+#             "net_1h": -212647361.27, "net_4h": -207128163.51, "net_24h": 1478743066.31,
+#             "by_exchange": {"binance": {"buy_24h": 12663681424.94, "sell_24h": 12135756153.44,
+#                                         "net_1h": -191133129.94, "net_4h": -217337267.5, "net_24h": 527925271.5},
+#                             "gate": {...}, "okx": {...}}}, ...],
+#  "exchanges": [{"key": "binance", "buy_24h": 34978603608.55, "sell_24h": 35112588381.38,
+#                 "net_24h": -133984772.74, "last_at": "2026-09-22T05:25:00+00:00", "stale": false}, ... 3 rows],
+#  "total": {"buy_24h": 63543431942.93, "sell_24h": 62491177680.21, "net_24h": 1052254262.8},
+#  "tokens_shown": 30, "tokens_total": 591, "full": false, "updated_at": "2026-09-22T05:25:00+00:00"}
+```
+
+**Collection start** (first stored bucket, measured on BTC 2026-09-22)
+
+| Exchange | Source field | Collecting since |
+|---|---|---|
+| `binance` | 5-minute `kline` (taker-buy quote volume) | 2020-01-01 |
+| `gate` | `contract_stats` | 2026-08-12 |
+| `okx` | `taker_volume_usd` | 2026-09-21 |
+
+OKX is additionally capped by the venue keeping only 5 days, so it stays `full_7d: false`
+until a week after that date. This table carries no `since` / `full_7d` (it has no 7-day
+window) — read them per coin from `/taker_intensity/get_cvd_coin`'s `exchanges[]`, not from these dates.
+
+**Notes**
+- Not the same as the `taker_intensity` alpha (`/taker_intensity/get_alpha`), which is a
+  normalised z-score-like signal with years of history. This is raw USD turnover, now.
+- Windows are rolling and end at the last closed 5-minute bar, so `net_24h` is not a calendar day.
+
+---
+
+## `GET /taker_intensity/get_cvd_coin`
+
+| | |
+|---|---|
+| Name | 每幣主動買賣淨額 CVD by Coin |
+| Group | Crypto › Raw data › CVD |
+| Access | API plan or data fee |
+| Rate limit | 500 / 5 min per key + per IP |
+| Data from | Last 7 days, hourly + rolling windows |
+| Update | 5-minute buckets (Gate / OKX land ≈ 10 min late) |
+| Source | Blave (Binance, OKX, Gate.io taker-flow feeds) |
+
+One coin's taker buy / sell / net per exchange (same basis as the table) plus a 7-day
+hourly net and its running cumulative — the CVD line itself.
+
+**Parameters** — `symbol`, exactly as in `/long_short_ratio/get_coin`.
+
+**Response** — `{"data": {"exchanges", "windows", "series", "symbol", "token_id", "updated_at"}}`.
+
+| Field | Type | Unit | Description |
+|---|---|---|---|
+| `windows.<1h\|4h\|24h\|7d>` | object | USD | `{buy, sell, net}` summed over the fresh exchanges |
+| `exchanges[]` | object[] | — | The full roster: `key`, `listed`, `windows` (same four, per exchange), `since`, `full_7d`, `last_at`, `stale` |
+| `exchanges[].full_7d` | bool | — | `false` = under 7 days of history for this coin there: its 7 d window is `null` and it is excluded from the 7 d total **and from the series**. OKX keeps only 5 days, so it is `false` until a week after the feed's start |
+| `series.timestamp` | int[] | epoch s | 168 hourly slots, oldest → newest |
+| `series.net` | float[] | USD | Net taker flow per clock hour, summed over `series.exchanges`; `null` for an hour with no data. When `series.exchanges` is empty every slot is `null` and `cvd` stays flat at 0 — the line carries no information then |
+| `series.cvd` | float[] | USD | Running total of `net`; **`cvd[0] = 0`** — the line is a shape, not an absolute level |
+| `series.exchanges` | string[] | — | Which exchanges the line adds up |
+| `series.price` / `.price_symbol` / `.price_multiplier` / `.provisional_from` | — | — | As in `/long_short_ratio/get_coin` |
+
+**Errors** — `400` / `404` / `503` exactly as `/long_short_ratio/get_coin`, with
+`{"error": "cvd data unavailable"}` on 503.
+
+**Example**
+
+```python
+data = requests.get(f"{BASE_URL}/taker_intensity/get_cvd_coin", headers=headers, params={"symbol": "BTC"}, timeout=30).json()["data"]
+print(data["windows"]["24h"]["net"], "line covers:", data["series"]["exchanges"], "last cvd:", data["series"]["cvd"][-1])
+# Live capture 2026-09-22 (abridged with ...; anonymous studio twin, same inner shape):
+# {"exchanges": [{"key": "binance", "listed": true, "since": null, "full_7d": true, "stale": false,
+#                 "last_at": "2026-09-22T05:50:00+00:00",
+#                 "windows": {"1h": {"buy": 334079345.8, "sell": 432484304.99, "net": -98404959.2},
+#                             "4h": {...}, "24h": {"buy": 12764594401.23, "sell": 12156150828.71, "net": 608443572.52},
+#                             "7d": {"buy": 48395824125.78, "sell": 48033568140.24, "net": 362255985.54}}},
+#                {"key": "okx", "full_7d": false, "since": "2026-09-21", ...}, {"key": "gate", ...}],
+#  "windows": {"1h": {"buy": 661443769.03, "sell": 760343818.66, "net": -98900049.65}, "4h": {...},
+#              "24h": {"buy": 24795988390.84, "sell": 23206873390.07, "net": 1589115000.77},
+#              "7d": {"buy": 69832361511.62, "sell": 68794205279.31, "net": 1038156232.31}},
+#  "series": {"bucket_seconds": 3600, "days": 7, "timestamp": [1789452000, 1789455600, ...],
+#             "net": [-53629060.26, -75636445.35, ...], "cvd": [0.0, -75636445.35, ...],
+#             "exchanges": ["binance", "gate"], "price": [...], "price_symbol": "BTCUSDT",
+#             "price_multiplier": 1, "provisional_from": 1790053200},
+#  "symbol": "BTC", "token_id": 1, "updated_at": "2026-09-22T05:50:00+00:00"}
+```
+
+**Notes**
+- `series.exchanges` being shorter than `exchanges[]` is the `full_7d` rule — compare the series
+  against itself, not against `windows["24h"]`, which counts more venues.
+- `cvd[0] = 0` by construction: only the slope and the turning points carry information.
+
+---
+
 
 # Taiwan Stock
 

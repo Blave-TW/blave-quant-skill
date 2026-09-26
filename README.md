@@ -1,15 +1,20 @@
 # Blave Quant Skill
 
-A skill that gives your agent eight capabilities:
+Quant infrastructure for AI agents — the data layer and exchange-trading references your agent needs to research, backtest, and execute strategies. It gives your agent:
 
-1. **Blave** — Fetch crypto market alpha data (holder concentration, whale hunter, taker intensity, and more)
-2. **BitMart Futures** — Trade perpetual futures contracts on BitMart
-3. **BitMart Spot** — Buy and sell spot assets on BitMart
-4. **OKX** — Spot and perpetual swap trading on OKX
-5. **Bybit** — Spot and derivatives/perpetual swap trading on Bybit
-6. **BingX** — Spot and perpetual swap trading on BingX
-7. **Bitget** — Spot and futures trading on Bitget
-8. **Binance** — Spot and USDS-M futures trading on Binance
+1. **Blave market data** — Crypto alpha indicators (holder concentration, whale hunter, taker intensity, and more), raw cross-exchange base data, Hyperliquid top trader tracking
+2. **Taiwan stock data** — Daily and minute OHLCV, institutional flows, margin, shareholding, fundamentals, dividends, broker branch buy/sell (分點), market-wide TAIEX series
+3. **Futures OHLCV** — CME / ICE (WTI, gold, Brent) and Taiwan Futures (TXF)
+4. **BitMart Futures** — Trade perpetual futures contracts on BitMart
+5. **BitMart Spot** — Buy and sell spot assets on BitMart
+6. **OKX** — Spot and perpetual swap trading on OKX
+7. **Bybit** — Spot and derivatives/perpetual swap trading on Bybit
+8. **BingX** — Spot and perpetual swap trading on BingX
+9. **Bitget** — Spot and futures trading on Bitget
+10. **Binance** — Spot and USDS-M futures trading on Binance
+11. **Bitfinex** — Spot, margin, and funding/lending on Bitfinex
+12. **KuCoin** — Spot and futures trading on KuCoin
+13. **Gate.io** — Spot and USDT-settled perpetual futures trading on Gate.io
 
 Official website: [https://blave.org](https://blave.org) | For more details, visit the [Blave Docs](https://blave.org/docs/en)
 
