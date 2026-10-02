@@ -1676,7 +1676,9 @@ OKX and Bybit are why `n_full_7d` is 3 of 5 and why their `chg_24h` was still `n
 **Notes**
 - `chg_24h: null` on OKX / Bybit in the capture above is the young-feed rule, not a gap in the
   market: those two started on 2026-09-21, so they had no 24 h baseline yet.
-- A cross-section, not history. Per-coin history (7 days, hourly) is `/oi_imbalance/get_coin`.
+- A cross-section, not history. One coin's last 7 days (hourly, all five exchanges) is
+  `/oi_imbalance/get_coin`; backtest-length history for one coin on one exchange is
+  `/oi_imbalance/get_history`.
 
 ---
 
@@ -1741,6 +1743,98 @@ print(data["oi_total"], day["chg"], "counted:", day["exchanges"])
 - `windows["1h"]["exchanges"]` having five entries while `windows["24h"]` has three is the
   young-feed rule, not missing data — read that list before comparing windows.
 - The OI 失衡 caveat from `/oi_imbalance/get_table` applies to this `oi_total` too.
+- Seven days only. For a longer series to backtest on, use `/oi_imbalance/get_history` (one
+  exchange, coins rather than USD — a different basis from `oi_total`).
+
+---
+
+## `GET /oi_imbalance/get_history`
+
+| | |
+|---|---|
+| Name | 未平倉量歷史 Open Interest History |
+| Group | Crypto › Raw data › Open interest |
+| Access | API plan or data fee |
+| Rate limit | 500 / 5 min per key + per IP |
+| Data from | 5-minute resolution — `binance` 2021-12-01, `bybit` 2025-08-21, `gate` 2026-03-28 (each: or the coin's listing date there, if later). Currently listed contracts only |
+| Update | 5-minute buckets |
+| Source | Blave (Binance, Bybit, Gate.io open-interest feeds; `close` from the Binance USDT-M perpetual) |
+
+One coin's open interest on **one exchange**, as a time series you can backtest on — the same
+basis as the Studio dashboard 未平倉量 card. **`alpha` is one-sided open interest in coins, not
+USD.** Multiplied contracts are converted back to coins (`1000PEPE` returns a PEPE count).
+Each bucket is the last reading of its period — open interest is a stock, never summed.
+
+**Parameters**
+
+| Name | In | Type | Required | Default | Allowed / format | Description |
+|---|---|---|---|---|---|---|
+| `symbol` | query | string | yes | — | `BTC`, `BTCUSDT`, `btc` | Coin, same rule as `/oi_imbalance/get_coin` |
+| `period` | query | string | yes | — | `{n}min` / `{n}h` / `{n}d`, minimum `5min` (e.g. `5min`, `1h`, `4h`, `1d`) | Bucket size. `1w` is a `400` (unit not supported); `1m` is read as `1min`, so it is a `400` for being below `5min` |
+| `start_date` | query | string | no | `end_date` − 365 days | `YYYY-MM-DD` (UTC) | First day, inclusive |
+| `end_date` | query | string | no | today | `YYYY-MM-DD` (UTC) | Last day, inclusive |
+| `oi_exchange` | query | string | no | `binance` | `binance`, `bybit`, `gate` (case-insensitive) | Whose open interest to read |
+
+Per-request window: at most 365 days; a longer range is **silently clamped** (`start_date`
+moved to `end_date` − 365 days, no error), as in `/kline`.
+
+**Response** — `{"data": {"timestamp", "alpha", "close", "exchanges"}}`, parallel arrays, oldest → newest.
+
+| Field | Type | Unit | Description |
+|---|---|---|---|
+| `timestamp` | float[] | Unix seconds (UTC) | Bucket start |
+| `alpha` | float[] | coins | One-sided open interest on `oi_exchange`, last reading of the bucket |
+| `close` | float[] | USDT | Binance USDT-M perpetual price — per contract unit, so per 1000 coins for `1000PEPE` |
+| `exchanges` | string[] | — | The exchange actually read, e.g. `["binance"]` |
+
+**`alpha × close` is not USD open interest on a multiplied contract.** `close` there is the
+price per contract unit (per 1000 coins for `1000PEPE`) while `alpha` is in single coins — divide `close` by the multiplier
+first. For non-multiplied contracts such as BTC, `alpha × close` ≈ USD open interest.
+
+**Gate.io: always send `start_date` ≥ `2026-03-28`** — the default window (`end_date` − 365 days)
+starts before Gate's history and is a `400`.
+
+**Not the same number as `/oi_imbalance/get_table` / `get_coin`** (five exchanges summed, USD)
+**and not the OI 失衡 indicator** (`/oi_imbalance/get_overview_data`).
+
+**Errors**
+
+| Status | Body | When |
+|---|---|---|
+| 400 | `{"error": "symbol is required"}` / `{"error": "period is required"}` | Missing (a `400` here, not the `403` of the indicator endpoints) |
+| 400 | `{"error": "period must be at least 5min, in min / h / d units"}` | `period` below `5min` (including `1m`, read as `1min`) or in a unit other than min / h / d (`1w`) |
+| 400 | `{"error": "invalid date format, expected YYYY-MM-DD"}` | Malformed `start_date` / `end_date` |
+| 400 | `{"error": "start_date must not be after end_date"}` | `start_date` > `end_date` |
+| 400 | `{"error": "oi_exchange must be one of binance, bybit, gate"}` | `oi_exchange` outside the list |
+| 400 | `{"error": "no <exchange> open interest for <TOKEN> at start_date; this exchange's history may start later — try a later start_date"}` | The window starts before that exchange's history (see *Data from*). **Without `start_date`, `oi_exchange=gate` always hits this** until its history passes 365 days (≈ 2027-03) — for Gate always send `start_date` ≥ `2026-03-28` |
+| 404 | `{"error": "<TOKEN> is not a collected symbol on <exchange>"}` | That exchange does not list the coin, the coin has no Binance perpetual, or it is delisted — an answer, not a transient |
+| 503 | `{"error": "<exchange> open interest data unavailable for <TOKEN>"}` | Data could not be read right now — retry |
+
+**Example**
+
+```python
+params = {"symbol": "BTC", "period": "1d", "start_date": "2022-01-01", "end_date": "2022-01-03"}
+data = requests.get(f"{BASE_URL}/oi_imbalance/get_history", headers=headers, params=params, timeout=120).json()["data"]
+# Live capture 2026-10-02:
+# {"data": {"alpha": [72913.725, 73310.482, 79515.424], "close": [47704.35, 47280.0, 46445.81],
+#           "exchanges": ["binance"], "timestamp": [1640995200.0, 1641081600.0, 1641168000.0]}}
+
+params = {"symbol": "SOL", "period": "4h", "oi_exchange": "bybit", "start_date": "2026-09-30", "end_date": "2026-09-30"}
+# {"data": {"alpha": [3443506.2, 3344470.1, 3269534.6, 3108222.6, 3082040.9, 3042368.1],
+#           "close": [119.08, 118.41, 119.47, 119.25, 117.17, 118.05], "exchanges": ["bybit"],
+#           "timestamp": [1790726400.0, 1790740800.0, 1790755200.0, 1790769600.0, 1790784000.0, 1790798400.0]}}
+
+params = {"symbol": "1000PEPE", "period": "1d", "start_date": "2026-09-01", "end_date": "2026-09-02"}
+# alpha is PEPE coins; close is per 1000 PEPE, so USD OI = alpha × close / 1000
+# {"data": {"alpha": [19073240707000.0, 17615934147000.0], "close": [0.0034752, 0.0034306],
+#           "exchanges": ["binance"], "timestamp": [1788220800.0, 1788307200.0]}}
+```
+
+**Notes**
+- `200` with empty arrays means no bucket in that window (e.g. the coin listed after it) — do
+  not cache it as a permanent "no data".
+- The last bucket keeps moving until its period closes when `end_date` is today.
+- For history beyond 365 days, send one request per year and concatenate.
 
 ---
 
