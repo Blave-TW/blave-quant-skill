@@ -7,7 +7,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 This repo contains one skill covering sixteen capabilities:
 1. **Blave** — Agent calls the Blave REST API directly for crypto market alpha data, Taiwan stock data, and Hyperliquid top trader tracking
 2. **CME / ICE Futures** — Agent fetches WTI crude (CL), gold (GC), and Brent crude (BRN) OHLCV from 2010 via Blave API
-3. **Taiwan Futures** — Agent fetches TXF (台指期近月連續) OHLCV (1d from 2013-12-30, intraday from 2014-01-02) via Blave API; schemas 1d/1m/5m/15m/30m/60m
+3. **Taiwan Futures** — Agent fetches TXF (台指期近月連續) OHLCV (1d and intraday from 2011-01-03) via Blave API; schemas 1d/1m/5m/15m/30m/60m
 4. **BitMart Futures** — Agent calls the BitMart API for perpetual futures trading
 5. **BitMart Spot** — Agent calls the BitMart API for spot trading
 6. **OKX** — Agent calls the OKX API for spot and perpetual swap trading
@@ -19,7 +19,7 @@ This repo contains one skill covering sixteen capabilities:
 12. **KuCoin** — Agent calls the KuCoin API for spot and futures/perpetual contract trading
 13. **Taiwan stock lookup/quote/PE** — Agent queries stock code/name lookup, daily quotes, PE/yield/PB via **Blave API** (`studio/market/twstock/list`, `/info`, `/price`, `/quote`, `/per`), NOT the raw TWSE/TPEX public API. That public API (no key required) is used only as a fallback for the two things Blave has no endpoint for: trading-halt status and a one-shot full-market PE/yield/PB scan
 14. **台股分點買賣超** — Agent calls Blave API `GET /studio/market/twstock/broker/stock/<stock_id>` (by stock) or `GET /studio/market/twstock/broker/trader/<trader_id>` (by broker branch) for daily buy/sell data; no CAPTCHA required
-15. **Taiwan Futures** — Agent calls Blave API `GET /studio/market/twfutures/ohlcv/TXF/<schema>` for TXF OHLCV; schemas: 1d/1m/5m/15m/30m/60m; 1d from 2013-12-30, intraday from 2014-01-02
+15. **Taiwan Futures** — Agent calls Blave API `GET /studio/market/twfutures/ohlcv/TXF/<schema>` for TXF OHLCV; schemas: 1d/1m/5m/15m/30m/60m; 1d and intraday from 2011-01-03
 16. **Gate.io** — Agent calls the Gate.io APIv4 for spot and USDT-settled perpetual futures trading
 
 No CLI or wrapper involved. All API calls are made directly by the agent.

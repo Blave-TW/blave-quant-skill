@@ -3469,7 +3469,7 @@ future_div = df[df["estimated"]].set_index("date")["points"]
 | Group | Taiwan Futures & Options |
 | Access | API plan or data fee |
 | Rate limit | 500 / 5 min per key + per IP |
-| Data from | TXF: 2013-12-30 (`1d`), 2014-01-02 (intraday). MXF: 2020-03-22 (`1d`). Stock futures start per contract — `CAF` returned `1d` bars at least as early as 2016-09-18 (the probe window began there, so it may reach further back) |
+| Data from | TXF: 2011-01-03 (`1d` and intraday). MXF: 2020-03-22 (`1d`). Stock futures start per contract — `CAF` returned `1d` bars at least as early as 2016-09-18 (the probe window began there, so it may reach further back) |
 | Update | Near-real-time from the on-disk 1m store, refreshed on request |
 | Source | Sinopac Shioaji (near-month continuous series) |
 
@@ -3574,7 +3574,7 @@ symbols = requests.get(f"{BASE_URL}/studio/market/twfutures/ohlcv/symbols", head
 | Group | Taiwan Futures & Options |
 | Access | API plan or data fee |
 | Rate limit | 500 / 5 min per key + per IP |
-| Data from | 2014 (TXF) |
+| Data from | 2011 (TXF) |
 | Update | Past years immutable; the current year's file is refreshed before download |
 | Source | Sinopac Shioaji |
 
