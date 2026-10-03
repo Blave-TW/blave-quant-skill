@@ -2680,17 +2680,39 @@ data = requests.get(f"{BASE_URL}/studio/market/twstock/balance_sheet/2330", head
 
 **Parameters** — same as `/financials/<stock_id>`.
 
-**Response** — same long format as `/financials/<stock_id>`. Key `type` codes:
-`OperatingActivities`, `InvestingActivities`, `FinancingActivities`, `CashBalancesEndOfPeriod`,
-`PropertyAndPlantAndEquipment`.
+**Response** — same long format as `/financials/<stock_id>`. Main `type` codes (FinMind's own
+codes; the full set varies by company and year, so treat the response as the authoritative list
+and use `origin_name` for anything not below). Filter on `type`, not `origin_name` — the same code's
+label switches between full- and half-width brackets across years:
+
+| `type` | `origin_name` |
+|---|---|
+| `CashFlowsFromOperatingActivities` | 營業活動之淨現金流入（流出） |
+| `CashProvidedByInvestingActivities` | 投資活動之淨現金流入（流出） |
+| `CashFlowsProvidedFromFinancingActivities` | 籌資活動之淨現金流入（流出） |
+| `PropertyAndPlantAndEquipment` | 取得不動產、廠房及設備 (capex, negative) |
+| `Depreciation` / `AmortizationExpense` | 折舊費用 / 攤銷費用 |
+| `CashBalancesIncrease` | 本期現金及約當現金增加（減少）數 |
+| `CashBalancesBeginningOfPeriod` / `CashBalancesEndOfPeriod` | 期初（年初）/ 期末現金及約當現金餘額 |
+
+Flow items are **year-to-date (YTD) cumulative**, as filed in Taiwan: the `03-31` row is Q1 alone,
+`06-30` is Q1–Q2, `09-30` is Q1–Q3, `12-31` is the full year. For a single quarter subtract the
+previous quarter of the same year (Q1 needs no subtraction) — so fetch from a January `start`.
+`CashBalancesEndOfPeriod` is the balance at the quarter end; `CashBalancesBeginningOfPeriod` is the
+balance at the start of the year. This endpoint has no `period` parameter — it always returns YTD
+(the `?period=quarter` single-quarter view exists only on the web chart route, not here).
 
 **Errors** — `400` invalid `stock_id`, `404` no data, `503` upstream quota.
 
 **Example**
 
 ```python
+import pandas as pd
 data = requests.get(f"{BASE_URL}/studio/market/twstock/cashflow/2330", headers=headers,
                     params={"start": "2022-01-01"}, timeout=30).json()["data"]
+cfo = (pd.DataFrame(data).query("type == 'CashFlowsFromOperatingActivities'")
+         .assign(date=lambda d: pd.to_datetime(d["date"])).set_index("date")["value"].sort_index())
+cfo_q = cfo - cfo.groupby(cfo.index.year).shift(1).fillna(0)   # YTD → single quarter
 ```
 
 ---
