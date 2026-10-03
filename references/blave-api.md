@@ -210,15 +210,25 @@ row = body["data"]["0G"]   # one token out of the 716 keys this response carried
 | Group | Crypto › General |
 | Access | API plan or data fee |
 | Rate limit | 500 / 5 min per key + per IP |
-| Data from | The symbol's Binance USDT-M perpetual listing date |
-| Update | Near-real-time. Server cache: 30 s (`1min`), 300 s (`1h` / `4h` / `1d`), 60 s (every other period) |
-| Source | Binance USDT-M futures (live API for recent bars, Binance official archive for older months) |
+| Data from | 2020-01-01, or the contract's listing date if later — every interval, `1min` included |
+| Update | The latest closed 1-minute bar is usually available within the next minute; in rare degraded cases the newest bars can lag about 5–10 minutes. Server cache: 30 s (`1min`), 300 s (`1h` / `4h` / `1d`), 60 s (every other period); only 5 s when the latest closed bar is not in yet |
+| Source | Binance USDⓈ-M futures |
+
+**Coverage.** Every Binance USDⓈ-M perpetual whose symbol ends in `USDT` — 740 contracts as of
+October 2026, including tokenized stocks, commodities and other TradFi USDT perpetuals. All 740
+have their full 1-minute history stored server-side, from 2020-01-01 or the listing date.
+A newly listed perpetual becomes queryable about 5–10 minutes after listing.
+
+**Not covered:** contracts quoted in USDC, USD1, U or BTC (e.g. `BTCUSDC`, `ETHBTC`) and
+quarterly delivery contracts — these return the `400 unknown symbol or no data` error below.
+Delisted contracts are not guaranteed: one may answer with whatever history is still stored or
+with that same `400` (those delisted before October 2026 have no `1min`–`4min` history).
 
 **Parameters**
 
 | Name | In | Type | Required | Default | Allowed / format | Description |
 |---|---|---|---|---|---|---|
-| `symbol` | query | string | yes | — | `BTCUSDT`; also `BTC`, `btc`, `BTC/USDT`, `BTC-USDT` | Binance USDT-M perpetual. A bare token gets `USDT` appended |
+| `symbol` | query | string | yes | — | `BTCUSDT`; also `BTC`, `btc`, `BTC/USDT`, `BTC-USDT` | Binance USDⓈ-M `USDT` perpetual. A bare token gets `USDT` appended; a bare token that only exists with a multiplier prefix resolves to it (`PEPE` → `1000PEPEUSDT`) |
 | `period` | query | string | yes | — | `{n}min` / `{n}h` / `{n}d`, minimum `1min` (e.g. `1min`, `3min`, `15min`, `2h`, `1d`, `7d`). `{n}m` is read as minutes (`15m` = `15min`) | Bar size. Any whole-minute size is accepted, not only the listed examples |
 | `start_date` | query | string | no | `end_date` − 365 days (period ≥ `5min`); `end_date` − 30 days (period < `5min`) | `YYYY-MM-DD` (UTC) | First day, inclusive |
 | `end_date` | query | string | no | now | `YYYY-MM-DD` (UTC) | Last day, inclusive (bars through the end of that UTC day) |
@@ -245,24 +255,27 @@ clamped** (`start_date` moved to `end_date` − 365 days, no error). Period < `5
 | 400 | `{"error": "periods below 5min must be a whole number of minutes"}` | e.g. `90s` |
 | 400 | `{"error": "date range exceeds max 30 days for periods below 5min"}` | Period < `5min` and range > 30 days |
 | 400 | `{"error": "invalid date format, expected YYYY-MM-DD"}` | Malformed `start_date` / `end_date` |
-| 400 | `{"error": "unknown symbol or no data: <symbol>"}` | Symbol not on Binance USDT-M |
+| 400 | `{"error": "unknown symbol or no data: <symbol>"}` | Symbol not covered (see *Not covered*) or not a real contract, e.g. `BTCUSDC`, `ETHBTC`, a typo. `<symbol>` echoes the value you sent. Not transient — do not retry |
 
 **Example**
 
 ```python
-params = {"symbol": "BTCUSDT", "period": "1h", "start_date": "2026-08-04", "end_date": "2026-08-07"}
-response = requests.get(f"{BASE_URL}/kline", headers=headers, params=params, timeout=120)
+params = {"symbol": "BTCUSDT", "period": "1h", "start_date": "2026-10-01", "end_date": "2026-10-02"}
+response = requests.get(f"{BASE_URL}/kline", headers=headers, params=params, timeout=60)
 data = response.json()
-# [{"time": 1785801600.0, "open": 63497.1, "high": 63558.8, "low": 63290.2, "close": 63337.6, "volume": 4583.87}, ...]
+# [{"time": 1790812800.0, "open": 83576.8, "high": 83612.6, "low": 83370.0, "close": 83460.0, "volume": 3123.991}, ...]
 ```
 
 **Notes**
-- A window entirely before the symbol's listing date returns `200` with `[]`, not an error.
-- The last bar can still be forming when `end_date` is today — drop it if you need closed bars only.
+- A window entirely before the listing date of a covered contract returns `200` with `[]`, not
+  an error.
+- At `1min` every bar returned is closed. A longer period can end in a partial bar when
+  `end_date` is today — it is built from the bars closed so far (at 07:09 UTC the `07:00` `1h`
+  bar holds 07:00–07:05); drop it if you need closed bars only.
 - For history beyond one window, send one request per window and concatenate (e.g. 3 years of
   `5min` = 3 requests; 1 year of `1min` = 13 requests of ≤30 days).
-- The first request for a symbol/range not yet cached server-side can take tens of seconds;
-  use a generous `timeout`.
+- All 740 USDT perps have full 1-minute history on disk, so a deep request is answered from
+  stored data — there is no slow first fetch.
 
 ---
 
