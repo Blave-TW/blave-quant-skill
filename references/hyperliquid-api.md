@@ -94,6 +94,7 @@ No params. Aggregates positions across top 100 leaderboard traders.
 ```
 
 Cached 5 min.
+If no data has been built yet (or the last rebuild failed and nothing older is kept), returns HTTP 503 `{"error": "top traders position unavailable"}` — retry in about a minute.
 
 ---
 
