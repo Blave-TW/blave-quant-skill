@@ -122,3 +122,4 @@ No params. Returns trader stats grouped by account size:
 Each bucket: `{stats: {count, profit_ratio, loss_ratio}, positions: {long, short}, long_exposure, short_exposure, net_exposure}`
 
 Returns `{"status": "warming_up"}` with HTTP 202 while cache is building — retry after a few seconds. Cached ~5 min.
+If the last build failed and no cached data exists, returns HTTP 503 `{"error": "bucket stats unavailable"}` — retry in about 3 minutes.
