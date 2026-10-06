@@ -3656,6 +3656,12 @@ def fetch_txf_chunked(schema, start, end, chunk_days=28):
   launched then), so bars per day jump from ~300 to ~1,140 at that date.
 - The series rolls contracts at monthly settlement without price adjustment — mask the roll in
   backtests.
+- Roll rule (all schemas; `TXF`, `MXF`, and stock futures alike): monthly settlement day — the
+  3rd Wednesday, or the next trading day when that Wednesday is closed — is the expiring month
+  for the whole day. It trades through its 13:30 Taipei close, no bar is stamped 13:31–14:59
+  Taipei on that day, and the series is the next month from the 15:00 night session on. The
+  settlement day's `1d` bar is the expiring month's, so its close is that contract's last
+  trade at 13:30.
 - For years of history use `ohlcv/<symbol>/export/<year>` instead of chunked JSON.
 - A range with no data returns `200` with `[]`.
 - Do not assume the series runs to the last trading day — `MXF` and `CAF` asked for everything up
@@ -3741,6 +3747,8 @@ bars_60m = (raw[["open", "high", "low", "close", "volume"]]
 
 **Notes**
 - One request per year, zero server-side computation — resample locally.
+- Same near-month continuous series as `ohlcv/<symbol>/1m`, under the same settlement-day roll
+  rule (no bars stamped 13:31–14:59 Taipei on monthly settlement day).
 
 ---
 
@@ -3789,6 +3797,11 @@ data = requests.get(f"{BASE_URL}/studio/market/twfutures/bid_ask_vol/TXF", heade
                     params={"start": "2026-05-29", "end": "2026-05-29"}, timeout=60).json()["data"]
 # [{"ts": "2026-05-29 00:45:00+00:00", "bid_vol": 669, "ask_vol": 447, "total_vol": 1156}, ...]
 ```
+
+**Notes**
+- Rows are the near-month continuous contract under the same roll rule as `ohlcv`: on monthly
+  settlement day there are no rows between the expiring month's 13:30 Taipei close and the
+  15:00 night open; from the night session on the rows are the next month.
 
 ---
 
