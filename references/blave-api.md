@@ -3471,20 +3471,18 @@ values are **net** (buy − sell) in TWD.
 data = requests.get(f"{BASE_URL}/studio/market/twmarket/institutional", headers=headers,
                     params={"start": "2024-01-01"}, timeout=60).json()["data"]
 # [{"date": "2024-01-02", "foreign": 1047078183.0, "investment_trust": 189637635.0,
-#   "dealer": -4447440583.0, "total": -3211404085.0}, ...]
+#   "dealer": -4448119903.0, "total": -3211404085.0}, ...]
 ```
 
 **Notes**
-- **Whole-market layer.** Here foreign dealers' own-account trading (外資自營商) is bucketed into
-  `dealer`, not `foreign`. The per-stock endpoint
-  (`GET /studio/market/twstock/institutional/<stock_id>`) is a different layer: it returns the raw
-  per-category columns and buckets nothing. Don't mix the two.
-- `foreign + investment_trust + dealer` does **not** equal `total`. `total` is the exchange's
-  published 三大法人合計 figure, which excludes 外資自營商 — the three columns include it, so the
-  difference is that day's 外資自營商 net. That activity sits entirely on warrants/ETNs, which Blave
-  does not serve, and has been 0 every day since 2024-08-16 (verified across 38,605 TWSE T86 rows on
-  2018-04-09, 2022-03-15 and 2024-08-16). **To match official or press numbers read `total`
-  directly — never sum the three columns.**
+- **Whole-market layer.** `foreign` is 外資及陸資 excluding foreign dealers' own-account trading
+  (外資自營商); `dealer` is 自營商 (自行買賣 + 避險), which TWSE already counts 外資自營商 inside. The
+  per-stock endpoint (`GET /studio/market/twstock/institutional/<stock_id>`) is a different layer:
+  it returns the raw per-category columns and buckets nothing. Don't mix the two.
+- `foreign + investment_trust + dealer` equals `total`, the exchange's published 三大法人合計, on
+  every day (verified against FinMind for all 5,537 days 2004-04-07 → 2026-10-06). 外資自營商 is not
+  a separate column: it sits on warrants/ETNs, which Blave does not serve, and has been 0 every day
+  after 2024-08-16.
 
 ---
 
