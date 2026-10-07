@@ -52,7 +52,7 @@ Content-Type: application/json
   "code": "...full source code..."
 }
 ```
-`category` must be exactly `Crypto` or `TW Stock` (anything else is rejected with 400). Private uploads (`/strategies/private`) accept any category.
+`category` is free-form here (any string up to 100 characters, may be empty or omitted; a non-string or longer value is rejected with 400). At review Blave assigns the public category — exactly one of `Crypto`, `TW Stock`, `US Stock`, `Forex`, `Other`.
 
 Status starts as `pending`. Blave reviews and publishes it.
 
