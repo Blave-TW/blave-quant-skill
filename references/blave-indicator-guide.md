@@ -235,3 +235,57 @@ fair basis = 期貨價 −（現貨指數 − 結算日前未除息點數合計�
 - 未除息點數合計 = `estimated: true` 各列 `points` 從明天累加到結算日。
 - fair basis 明顯為正 → 真溢價（偏多情緒/資金成本）；明顯為負 → 真逆價差（避險壓力）。原始逆價差 ≈ 未除息點數 → 中性,不是訊號。
 - `meta.degraded: true` 或距結算 >2 週時,估計段有模板成分（去年平移）,把 fair basis 當區間而非精確值。
+
+---
+
+## CME 持倉報告 CME Commitments of Traders（COT）
+
+`/cme_cot/get_latest`、`/cme_cot/get_history` — CFTC 每週公布的 CME 比特幣／以太幣期貨持倉，依交易人類別拆開。
+
+**時間軸：** 部位通常是**週二**收盤的狀態（週二遇美國假日時改為週一），CFTC 通常在**同週週五 15:30（美東）**公布；週三到週五遇聯邦假日會延到下週一，政府停擺時暫停、復工後再補發（2025-10～2026-01 延後 1–7 週）。所以這是週頻、至少落後三天的資料——適合看中期部位結構，不適合當短線進出訊號；回測時一列資料最早只能在它公布後使用。
+
+**TFF 類別（CFTC 定義的四類申報交易人＋未達申報門檻的部位）：**
+
+| 類別 | 是誰 |
+|---|---|
+| `dealer` 交易商 | 賣方：銀行與衍生品交易商，通常是做市、替客戶對沖，「They tend to have matched books or offset their risk across markets and clients.」 |
+| `asset_manager` 資產管理 | 退休基金、捐贈基金、保險、共同基金等機構投資人 |
+| `leveraged_funds` 槓桿基金 | 避險基金、CTA、CPO 等 |
+| `other_reportables` 其他 | 不屬前三類的大戶，多半是在避險自身業務風險 |
+| `nonreportable` 未達申報門檻 | 小額交易人，常被當成散戶的近似 |
+
+**槓桿基金淨空 ≠ 看空。** CFTC 對槓桿基金的說明是：「The strategies may involve taking outright positions or arbitrage within and across markets.」而報告裡的 `spread`（價差部位）只算同一市場內不同月份、或期貨與選擇權之間的對沖——「Inter-market spreads are not considered.」所以**基差交易**（買現貨或現貨 ETF、同時放空 CME 期貨，賺期貨溢價）在報告裡就只是一筆空單。槓桿基金淨空擴大，可能是看空，也可能只是基差（期貨溢價）夠肥、套利部位變多。判讀時：
+
+- 看淨空的**變化**跟 CME 期貨溢價、現貨 ETF 資金流是否同步——同步放大比較像套利，溢價收斂時淨空跟著縮也是同一回事。
+- 資產管理人淨多常是基金／ETF 配置的長期部位，跟槓桿基金淨空往往互為對手。
+- 不要單憑槓桿基金淨空推論「機構看空」——對用戶講這個數字時，一併說明套利的可能。
+
+**讀數提醒：**
+- `*_combined`（標準＋微型，以幣計）最適合看總量，但在 `micro_since`（BTC 2021-05-04、ETH 2021-12-14）那週會跳一階；跨這個日期比較請改用單一合約或從之後開始。
+- `*_change` 是 CFTC 自己公布的週變化；CFTC 會跳週，不要自己拿相鄰兩列相減。
+- Legacy 報告的 `non_commercial` 是舊式「投機」分類；金融期貨用 TFF 的四類較細。
+- 引用數字時附上回應裡的 `source`（CFTC 出處）。
+
+> 出處：CFTC, *Traders in Financial Futures — Explanatory Notes*（https://www.cftc.gov/sites/default/files/idc/groups/public/@commitmentsoftraders/documents/file/tfmexplanatorynotes.pdf）；發布時間：https://www.cftc.gov/MarketReports/CommitmentsofTraders/index.htm
+
+---
+
+## 法人台指期持倉成本 Institutional Carrying Cost（台指期）
+
+`/studio/market/twfutures/carrying_cost/<foreign|investment_trust|dealer>` — Blave 用期交所三大法人資料推算的「法人台指期部位平均成本」與損益。
+
+**口徑（引用前要知道）：**
+- 部位＝多方未平倉 − 空方未平倉，預設 `scope=all` 把小台（÷4）、微台（÷20）換算成大台口數一起算；`scope=tx` 只算大台（多數台灣網站的口徑）。跟別家比較時先對齊口徑。
+- 加碼價用該法人**當天同方向的成交均價**（期交所交易契約金額 ÷ 口數）；減碼成本不變、差額記已實現；反向或歸零則舊部位全數實現。
+- **每月結算日開新週期：成本重設為標記價、已實現歸零。** `realized_pnl` 是「本週期」不是累計；結算日剛過的幾天，成本貼著市價是算法造成的，不代表部位剛建立。
+- 損益單位是新台幣元；未實現損益用期交所的部位市值（結算價）計。
+
+**怎麼讀：**
+- 台指期收盤 vs `cost`：在成本之上／之下多少點，就是這個部位目前的浮盈／浮虧方向；乘上口數 × 200 就是 `unrealized_pnl`。
+- 常見的解讀是：部位浮虧擴大時，法人有停損或調整的壓力；成本附近常被當成參考價位。這是市場慣用的讀法，不是保證會發生的事。
+- 外資的台指期空單有一部分可能是現股部位的避險，不一定是看空；自營商的期貨部位常與選擇權部位互相對沖。
+
+**限制：**
+- 這是從每日彙總資料推算的**估計值**，不是法人的真實成交與損益。
+- 只含期貨，選擇權部位不在帳本裡——自營商尤其如此，期貨帳上的「虧損」可能在選擇權那邊被抵銷。
+- 資料自 **2023-10-18** 起（期交所只提供近三年），每日 15:40／17:40（台北）更新；回應帶 `stale: true` 時表示最新一天可能還沒進來。

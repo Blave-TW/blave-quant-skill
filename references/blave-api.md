@@ -1990,6 +1990,151 @@ print(data["windows"]["24h"]["net"], "line covers:", data["series"]["exchanges"]
 
 ---
 
+## `GET /cme_cot/get_latest`
+
+| | |
+|---|---|
+| Name | CME 比特幣／以太幣期貨持倉報告 CME Bitcoin / Ether Futures Commitments of Traders (latest) |
+| Group | Crypto › Raw data › CME positioning |
+| Access | API plan or data fee |
+| Rate limit | 500 / 5 min per key + per IP |
+| Data from | Latest report only (history: `/cme_cot/get_history`) |
+| Update | Weekly — positions as of Tuesday (Monday when Tuesday is a US holiday), published by CFTC on that week's Friday 15:30 US Eastern; a federal holiday Wed–Fri moves it to the next business day, a government shutdown delays it by weeks; server cache 1 h |
+| Source | U.S. CFTC Commitments of Traders, futures only — Traders in Financial Futures (TFF) + Legacy reports |
+
+The latest weekly CFTC row for each of the four CME crypto futures, plus standard + micro summed
+in coins per asset. Same shape as one row of `/cme_cot/get_history`, without `price`.
+
+**Parameters** — none.
+
+**Response** — `{"data": {"contracts": [...], "combined": [...], "report", "units", "source", "source_updated", "fetched_at", "stale"}}`
+
+| Field | Description |
+|---|---|
+| `contracts[]` | One per contract: `key` (`btc`, `micro_btc`, `eth`, `micro_eth`), `name`, `cftc_code`, `coin`, `coin_per_contract` (5 / 0.1 / 50 / 0.1), `latest` (a row, see `get_history`; `null` if the contract has no rows) |
+| `combined[]` | `btc_combined`, `eth_combined`: `name`, `coin`, `components`, `units`, `micro_since`, `note`, `latest` (a combined row, in coins) |
+| `report` | `futures_only` |
+| `units` | Unit of `contracts[].latest` positions: contracts (× `coin_per_contract` for coins) |
+| `source` | CFTC attribution line — show it with any figure you publish |
+| `source_updated` | When CFTC last updated the dataset |
+| `fetched_at` | When Blave fetched it (UTC) |
+| `stale` | `true` = CFTC was unreachable and the last stored copy is served |
+
+**Errors**
+
+| Status | Body | When |
+|---|---|---|
+| 503 | `{"error": "CFTC data unavailable. Please retry shortly."}` | CFTC unreachable and no stored copy |
+
+**Example**
+
+```python
+data = requests.get(f"{BASE_URL}/cme_cot/get_latest", headers=headers, timeout=60).json()["data"]
+btc = next(c for c in data["contracts"] if c["key"] == "btc")
+# Live capture 2026-10-07 (abridged):
+# {"key": "btc", "name": "Bitcoin Futures (CME)", "cftc_code": "133741", "coin": "BTC", "coin_per_contract": 5,
+#  "latest": {"date": "2026-09-29", "open_interest": 19596, "open_interest_change": -2719,
+#             "tff": {"leveraged_funds": {"long": 4980, "short": 11836, "spread": 538, "net": -6856,
+#                                         "long_change": 235, "short_change": -862, "spread_change": -2187, "net_change": 1097},
+#                     "asset_manager": {"long": 5069, "short": 1483, "spread": 297, "net": 3586, ...}, ...},
+#             "legacy": {"non_commercial": {...}, "commercial": {...}, "nonreportable": {...}}}}
+# data["source_updated"] == "Fri, 02 Oct 2026 19:30:08 GMT", data["stale"] == False
+```
+
+---
+
+## `GET /cme_cot/get_history`
+
+| | |
+|---|---|
+| Name | CME 比特幣／以太幣期貨持倉報告歷史 CME Bitcoin / Ether Futures Commitments of Traders (history) |
+| Group | Crypto › Raw data › CME positioning |
+| Access | API plan or data fee |
+| Rate limit | 500 / 5 min per key + per IP |
+| Data from | `btc` 2018-04-10, `micro_btc` 2021-05-04, `eth` 2021-04-06, `micro_eth` 2021-12-14 (CME's own BTC futures enter the COT on 2018-04-10, not at their 2017-12 launch) |
+| Update | Weekly — positions as of Tuesday (Monday when Tuesday is a US holiday), published by CFTC on that week's Friday 15:30 US Eastern; a federal holiday Wed–Fri moves it to the next business day, a government shutdown delays it by weeks; server cache 1 h |
+| Source | U.S. CFTC Commitments of Traders, futures only — TFF + Legacy reports; `price` = Binance spot UTC daily close |
+
+One contract's weekly positioning by trader category. Rows are dated by the report date — the
+day the positions are as of, usually a Tuesday (a Monday when Tuesday is a US holiday). **The data
+became public later**: normally that week's Friday 15:30 ET; a federal holiday Wednesday–Friday
+moves the release to the next business day, and a government shutdown delays it by weeks (the
+2018-12-24 … 2019-02-26 reports came out 2019-02-01 … 03-05; the 2025-09-30 … 2026-01-20 reports
+2025-11-19 … 2026-01-23 — CFTC Releases 7864-19 and 9138-25). A backtest must not act on a row
+before its release.
+
+**Parameters**
+
+| Name | In | Type | Required | Default | Allowed / format | Description |
+|---|---|---|---|---|---|---|
+| `contract` | query | string | no | `btc` | `btc`, `micro_btc`, `eth`, `micro_eth`, `btc_combined`, `eth_combined` (case-insensitive) | Single contracts are in **contracts**; `*_combined` = standard + micro summed in **coins** |
+| `start_date` | query | string | no | today (UTC) − 365 days | `YYYY-MM-DD` | First report date, inclusive. **Omitted = last year only — pass an early date (e.g. `2018-01-01`) for full history** |
+| `end_date` | query | string | no | latest | `YYYY-MM-DD` | Last report date, inclusive |
+
+**Response** — `{"data": {"contract": {...}, "rows": [...], "price_source", "report", "units", "source", "source_updated", "fetched_at", "stale"}}`, rows oldest → newest.
+
+`contract`: `key`, `name`, `coin`, and `cftc_code` + `coin_per_contract` (single contract) or
+`components` + `micro_since` + `note` (combined).
+
+Each row:
+
+| Field | Type | Description |
+|---|---|---|
+| `date` | string | Report date — usually a Tuesday, a Monday when Tuesday is a US holiday |
+| `open_interest` / `open_interest_change` | number | Total open interest and its week-over-week change |
+| `tff` | object | Groups `dealer`, `asset_manager`, `leveraged_funds`, `other_reportables`, `nonreportable` |
+| `legacy` | object \| null | Groups `non_commercial`, `commercial`, `nonreportable`; `null` if CFTC has no Legacy row for that week |
+| `price` | float \| null | Binance spot `BTCUSDT` / `ETHUSDT` UTC daily close on the report date; `null` when unavailable |
+| `included` | string[] | Combined contracts only: which contracts this row sums (`["btc"]` before `micro_since`) |
+
+Each group: `long`, `short`, `spread` (not for `nonreportable` / `commercial`), `net` (= long − short),
+and `long_change`, `short_change`, `spread_change`, `net_change`. Units: contracts for a single
+contract, coins for a combined one. The `*_change` fields are **CFTC's own** week-over-week
+figures, not row-to-row differences — CFTC skips weeks (e.g. government shutdowns), so never diff
+rows yourself.
+
+**Errors**
+
+| Status | Body | When |
+|---|---|---|
+| 400 | `{"error": "contract must be one of btc, micro_btc, eth, micro_eth, btc_combined, eth_combined"}` | Unknown contract |
+| 400 | `{"error": "Invalid start_date, expected YYYY-MM-DD"}` (or `end_date`) / `{"error": "start_date must not be after end_date"}` | Bad date / reversed range |
+| 503 | `{"error": "CFTC data unavailable. Please retry shortly."}` | CFTC unreachable and no stored copy |
+
+**Example**
+
+```python
+data = requests.get(f"{BASE_URL}/cme_cot/get_history", headers=headers,
+                    params={"contract": "btc_combined", "start_date": "2026-09-01"}, timeout=60).json()["data"]
+lev_net = {r["date"]: r["tff"]["leveraged_funds"]["net"] for r in data["rows"]}   # BTC
+# Live capture 2026-10-07 (abridged): 5 rows 2026-09-01 … 2026-09-29
+# {"contract": {"key": "btc_combined", "name": "Bitcoin + Micro Bitcoin Futures (CME), in BTC", "coin": "BTC",
+#               "components": ["btc", "micro_btc"], "micro_since": "2021-05-04", "units": "coins (...)", "note": "..."},
+#  "rows": [..., {"date": "2026-09-29", "included": ["btc", "micro_btc"], "price": 83663.66,
+#                 "open_interest": 100612.0, "open_interest_change": -14522.7,
+#                 "tff": {"leveraged_funds": {"long": 25889.6, "short": 61305.6, "spread": 2742.4, "net": -35416.0,
+#                                             "long_change": 680.4, "short_change": -4283.9,
+#                                             "spread_change": -11214.8, "net_change": 4964.3},
+#                         "asset_manager": {"long": 25570.8, "short": 7421.7, "net": 18149.1, ...},
+#                         "dealer": {"net": 13483.9, ...}, "other_reportables": {...}, "nonreportable": {...}},
+#                 "legacy": {"non_commercial": {"net": 11754.9, ...}, "commercial": {"net": -13695.5, ...},
+#                            "nonreportable": {...}}}],
+#  "price_source": "Binance spot BTCUSDT, UTC daily close on the report date (Tuesday)",
+#  "report": "futures_only", "source": "Source: U.S. Commodity Futures Trading Commission (CFTC), ...",
+#  "source_updated": "Fri, 02 Oct 2026 19:30:08 GMT", "fetched_at": "2026-10-07T09:16:35Z", "stale": false}
+```
+
+**Notes**
+- `*_combined` has a break at `micro_since`: the week micro joins, the totals step up and that
+  week's `*_change` includes micro's whole first position. Start a combined backtest after
+  `micro_since`, or use the single `btc` / `eth` contract.
+- Full BTC history is ~440 weekly rows (~0.5 MB) — one request, no paging.
+- Licence: CFTC data is public domain, but CFTC asks to be acknowledged — keep `source` next to
+  any figure you show. Not endorsed by the CFTC.
+- Interpretation (leveraged funds net short ≠ bearish): `references/blave-indicator-guide.md` › CME 持倉報告.
+
+---
+
 
 # Taiwan Stock
 
@@ -4118,6 +4263,103 @@ data = requests.get(f"{BASE_URL}/studio/market/twfutures/option/pcr", headers=he
 
 **Notes**
 - The official TAIFEX ratio — not derived from option institutional or large-trader data.
+
+---
+
+## `GET /studio/market/twfutures/carrying_cost/<identity>`
+
+| | |
+|---|---|
+| Name | 法人台指期持倉成本 Taiwan Index Futures Institutional Carrying Cost |
+| Group | Taiwan Futures & Options |
+| Access | API plan or data fee |
+| Rate limit | 500 / 5 min per key + per IP |
+| Data from | 2023-10-18 (TAIFEX publishes only about the last three years) |
+| Update | Daily after TAIFEX publishes — Blave jobs at 15:40 and 17:40 Taipei; server cache 5 min |
+| Source | Blave estimate from TAIFEX data only: 三大法人-區分各期貨契約 (TX / MTX / TMF) and 期貨每日交易行情 (TX close) |
+
+Blave's estimate of the average cost of one institution's net TAIEX-futures position, with its
+unrealized and realized PnL. **An estimate from daily aggregates, not the institution's real fills.**
+
+Method:
+- Position = long OI − short OI, converted to 大台 (TX) contracts: TX × 1, MTX × 1/4, TMF × 1/20
+  (`scope=all`), or TX only (`scope=tx`).
+- Adding to the position uses that institution's own average trade price of the day on the side it
+  added (TAIFEX 交易契約金額 ÷ (口數 × 200)) and updates a weighted-average cost. Reducing books
+  realized PnL at the opposite side's average price and leaves the cost unchanged. A flip, or going
+  flat, realizes the whole old position; the new direction starts at that day's price.
+- **Every monthly settlement day** (third Wednesday; the next trading day if closed) starts a new
+  cycle: cost resets to the mark price and realized PnL to 0. This makes the cost independent of
+  where the data starts.
+- Mark price = TAIFEX's own valuation of the open position (OI contract value ÷ (contracts × 200),
+  i.e. at each month's settlement price). Unrealized PnL = (mark − cost) × net contracts × 200.
+
+**Parameters**
+
+| Name | In | Type | Required | Default | Allowed / format | Description |
+|---|---|---|---|---|---|---|
+| `identity` | path | string | yes | — | `foreign`, `investment_trust`, `dealer` | 外資 / 投信 / 自營商 |
+| `start` | query | string | no | `2023-10-18` (whole history) | `YYYY-MM-DD` | First trading date, inclusive |
+| `end` | query | string | no | today | `YYYY-MM-DD` | Last trading date, inclusive |
+| `scope` | query | string | no | `all` | `all`, `tx` | `all` = TX + MTX + TMF in TX-equivalent contracts; `tx` = 大台 only (the basis most Taiwanese sites quote) |
+
+The ledger always runs from the start of the stored history; `start` / `end` only cut the window,
+so the same day has the same values whatever window you ask for.
+
+**Response** — `{"identity", "scope", "data": [...]}`, one row per trading day, oldest → newest;
+`"stale": true` is added only when the server's copy is behind TAIFEX's last published day (the
+newest row may be missing).
+
+| Field | Type | Unit | Description |
+|---|---|---|---|
+| `date` | string | — | Trading day (Taipei) |
+| `net_open_interest` | float | TX-equivalent contracts | Long − short OI (negative = net short) |
+| `net_open_interest_change` | float | contracts | Change vs the previous trading day |
+| `cost` | float \| null | index points | Weighted-average cost of the net position; `null` when flat |
+| `txf_close` | float \| null | index points | TX near-month day-session close (the expiring contract is skipped on settlement day) |
+| `mark_price` | float \| null | index points | TAIFEX valuation of the position, at settlement prices |
+| `unrealized_pnl` | int | TWD | (mark − cost) × net contracts × 200 |
+| `realized_pnl` | int | TWD | Realized since `cycle_start`; resets to 0 on every settlement day |
+| `total_pnl` | int | TWD | `unrealized_pnl + realized_pnl` |
+| `cycle_start` | string | — | The settlement day that opened the current cycle |
+
+**Errors**
+
+| Status | Body | When |
+|---|---|---|
+| 400 | `{"error": "Invalid identity. Allowed: ['dealer', 'foreign', 'investment_trust']"}` | Unknown identity |
+| 400 | `{"error": "Invalid scope. Allowed: ['all', 'tx']"}` | Unknown scope |
+| 400 | `{"error": "Invalid start date, expected YYYY-MM-DD"}` (or `end`) / `{"error": "start must not be after end"}` | Bad date / reversed range |
+| 503 | `{"error": "Market data is not ready on this server. Please retry later."}` | Store not ready — retry later, never read as "no position" |
+| 500 | `{"error": "Internal error"}` | Unexpected server error |
+
+**Example**
+
+```python
+body = requests.get(f"{BASE_URL}/studio/market/twfutures/carrying_cost/foreign", headers=headers,
+                    params={"start": "2026-10-06"}, timeout=60).json()
+rows = body["data"]
+# Live capture 2026-10-07 (scope=all):
+# {"identity": "foreign", "scope": "all", "data": [
+#   {"date": "2026-10-06", "net_open_interest": -78570.7, "net_open_interest_change": -3923.5,
+#    "cost": 46527.57, "txf_close": 50060.0, "mark_price": 50088.51,
+#    "unrealized_pnl": -55957022956, "realized_pnl": -5893982992, "total_pnl": -61851005948,
+#    "cycle_start": "2026-09-16"},
+#   {"date": "2026-10-07", "net_open_interest": -78435.8, "net_open_interest_change": 134.9,
+#    "cost": 46527.57, "txf_close": 49979.0, "mark_price": 49974.38,
+#    "unrealized_pnl": -54070636128, "realized_pnl": -5988669182, "total_pnl": -60059305310,
+#    "cycle_start": "2026-09-16"}]}
+gap = rows[-1]["txf_close"] - rows[-1]["cost"]   # points the market is above (+) / below (−) their cost
+```
+
+**Notes**
+- Futures only: option positions (including dealers' hedges) are not in the ledger, so a dealer's
+  "loss" here may be offset elsewhere.
+- Right after a settlement day the cost equals the mark by construction — the first days of a
+  cycle say little about where the position was really built.
+- Other sites' 外資成本 figures use different rules (TX only, near-month close as the trade price, or
+  undisclosed) — numbers will differ; compare like with like (`scope=tx`).
+- Interpretation: `references/blave-indicator-guide.md` › 法人台指期持倉成本.
 
 ---
 
