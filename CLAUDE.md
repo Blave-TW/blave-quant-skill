@@ -42,7 +42,7 @@ No CLI or wrapper involved. All API calls are made directly by the agent.
 | File | Purpose |
 |---|---|
 | `SKILL.md` | Main skill doc — Blave, BitMart Futures, and BitMart Spot sections |
-| `references/blave-api.md` | Blave data API — single complete reference: every endpoint's parameters, defaults, response fields, errors, data start date, Python example (fixed per-endpoint block format) |
+| `references/blave-api.md` | Blave data API — single complete reference: every endpoint's parameters, defaults, response fields, errors, data start date, Python example (fixed per-endpoint block format); opens with an endpoint → line index — regenerate it (command in the comment under the table) whenever an edit moves lines |
 | `references/blave-indicator-guide.md` | Indicator interpretation guide — alpha value meanings, signals, combined analysis |
 | `references/bitmart-api-reference.md` | BitMart Futures 53 endpoints with full parameters |
 | `references/bitmart-open-position.md` | Futures open position workflow |

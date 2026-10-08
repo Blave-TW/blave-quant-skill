@@ -3,6 +3,126 @@
 The single reference for the Blave data API: every endpoint's path, parameters, response,
 errors, and a Python example.
 
+## Index
+
+One row per endpoint: the line its `` ## `GET /path` `` block starts on (block = attribute
+table, parameters, response, errors, example, notes — 30–80 lines). Read a block with
+`offset=<line>` instead of the whole file, or locate the heading with
+`` grep -n '^## `GET /price`' ``. The index is static text: regenerate it after any edit that
+moves lines (command in the comment under the table).
+
+<!-- index:start -->
+| Line | Endpoint | Category |
+|:-|:-|:-|
+| 223 | `GET /price` | Crypto |
+| 266 | `GET /alpha_table` | Crypto |
+| 325 | `GET /kline` | Crypto |
+| 402 | `GET /market_direction/get_alpha` | Crypto |
+| 448 | `GET /screener/get_saved_conditions` | Crypto |
+| 480 | `GET /screener/get_saved_condition_result` | Crypto |
+| 519 | `GET /holder_concentration/get_symbols` | Crypto |
+| 548 | `GET /holder_concentration/get_alpha` | Crypto |
+| 597 | `GET /funding_rate/get_alpha` | Crypto |
+| 649 | `GET /market_sentiment/get_symbols` | Crypto |
+| 675 | `GET /market_sentiment/get_alpha` | Crypto |
+| 719 | `GET /capital_shortage/get_alpha` | Crypto |
+| 762 | `GET /sector_rotation/get_history_data` | Crypto |
+| 801 | `GET /sector_rotation/get_overview_data` | Crypto |
+| 835 | `GET /oi_imbalance/get_overview_data` | Crypto |
+| 876 | `GET /whale_hunter/get_symbols` | Crypto |
+| 902 | `GET /whale_hunter/get_alpha` | Crypto |
+| 954 | `GET /taker_intensity/get_symbols` | Crypto |
+| 980 | `GET /taker_intensity/get_alpha` | Crypto |
+| 1025 | `GET /unusual_movement/get_symbols` | Crypto |
+| 1051 | `GET /unusual_movement/get_alpha` | Crypto |
+| 1098 | `GET /squeeze_momentum/get_symbols` | Crypto |
+| 1124 | `GET /squeeze_momentum/get_alpha` | Crypto |
+| 1174 | `GET /blave_top_trader/get_exposure` | Crypto |
+| 1219 | `GET /liquidation/get_symbols` | Crypto |
+| 1245 | `GET /liquidation/get_alpha` | Crypto |
+| 1296 | `GET /liquidation/get_map` | Crypto |
+| 1342 | `GET /liquidation/get_map_change` | Crypto |
+| 1387 | `GET /liquidation/get_coin` | Crypto |
+| 1474 | `GET /liquidation/get_exchanges` | Crypto |
+| 1556 | `GET /long_short_ratio/get_table` | Crypto |
+| 1652 | `GET /long_short_ratio/get_coin` | Crypto |
+| 1729 | `GET /oi_imbalance/get_table` | Crypto |
+| 1818 | `GET /oi_imbalance/get_coin` | Crypto |
+| 1884 | `GET /oi_imbalance/get_history` | Crypto |
+| 1974 | `GET /taker_intensity/get_cvd_table` | Crypto |
+| 2051 | `GET /taker_intensity/get_cvd_coin` | Crypto |
+| 2113 | `GET /cme_cot/get_latest` | Crypto |
+| 2166 | `GET /cme_cot/get_history` | Crypto |
+| 2270 | `GET /studio/market/twstock/list` | Taiwan Stock |
+| 2313 | `GET /studio/market/twstock/info/<stock_id>` | Taiwan Stock |
+| 2349 | `GET /studio/market/twstock/price/<stock_id>` | Taiwan Stock |
+| 2410 | `GET /studio/market/twstock/price_adj/<stock_id>` | Taiwan Stock |
+| 2443 | `GET /studio/market/twstock/quote/<stock_id>` | Taiwan Stock |
+| 2504 | `GET /studio/market/twstock/quote` | Taiwan Stock |
+| 2544 | `GET /studio/market/twstock/quote/all` | Taiwan Stock |
+| 2574 | `GET /studio/market/twstock/minute/ohlcv/<stock_id>/<schema>` | Taiwan Stock |
+| 2638 | `GET /studio/market/twstock/minute/ohlcv/symbols` | Taiwan Stock |
+| 2665 | `GET /studio/market/twstock/kbar/<stock_id>` | Taiwan Stock |
+| 2716 | `GET /studio/market/twstock/market_value/<stock_id>` | Taiwan Stock |
+| 2749 | `GET /studio/market/twstock/market_value/all` | Taiwan Stock |
+| 2829 | `GET /studio/market/twstock/per/<stock_id>` | Taiwan Stock |
+| 2874 | `GET /studio/market/twstock/financials/<stock_id>` | Taiwan Stock |
+| 2918 | `GET /studio/market/twstock/balance_sheet/<stock_id>` | Taiwan Stock |
+| 2947 | `GET /studio/market/twstock/cashflow/<stock_id>` | Taiwan Stock |
+| 2998 | `GET /studio/market/twstock/monthly_revenue/<stock_id>` | Taiwan Stock |
+| 3048 | `GET /studio/market/twstock/dividend/<stock_id>` | Taiwan Stock |
+| 3113 | `GET /studio/market/twstock/news/<stock_id>` | Taiwan Stock |
+| 3159 | `GET /studio/market/twstock/institutional/<stock_id>` | Taiwan Stock |
+| 3212 | `GET /studio/market/twstock/margin/<stock_id>` | Taiwan Stock |
+| 3265 | `GET /studio/market/twstock/shareholding/<stock_id>` | Taiwan Stock |
+| 3307 | `GET /studio/market/twstock/foreign_shareholding/<stock_id>` | Taiwan Stock |
+| 3351 | `GET /studio/market/twstock/gov_bank/<stock_id>` | Taiwan Stock |
+| 3396 | `GET /studio/market/twstock/lending/<stock_id>` | Taiwan Stock |
+| 3439 | `GET /studio/market/twstock/broker/search` | Taiwan Stock |
+| 3476 | `GET /studio/market/twstock/broker/stock/<stock_id>` | Taiwan Stock |
+| 3531 | `GET /studio/market/twstock/broker/trader/<trader_id>` | Taiwan Stock |
+| 3566 | `GET /studio/market/twstock/batch/<data_type>` | Taiwan Stock |
+| 3628 | `GET /studio/market/twmarket/index/<index_id>` | Taiwan Market (大盤) |
+| 3669 | `GET /studio/market/twmarket/turnover` | Taiwan Market (大盤) |
+| 3709 | `GET /studio/market/twmarket/institutional` | Taiwan Market (大盤) |
+| 3754 | `GET /studio/market/twmarket/margin` | Taiwan Market (大盤) |
+| 3795 | `GET /studio/market/twmarket/dividend_points` | Taiwan Market (大盤) |
+| 3856 | `GET /studio/market/twfutures/ohlcv/<symbol>/<schema>` | Taiwan Futures & Options |
+| 3939 | `GET /studio/market/twfutures/ohlcv/symbols` | Taiwan Futures & Options |
+| 3967 | `GET /studio/market/twfutures/ohlcv/<symbol>/export/<year>` | Taiwan Futures & Options |
+| 4020 | `GET /studio/market/twfutures/bid_ask_vol/<symbol>` | Taiwan Futures & Options |
+| 4073 | `GET /studio/market/twfutures/daily/<futures_id>` | Taiwan Futures & Options |
+| 4124 | `GET /studio/market/twfutures/stock_futures/batch/daily` | Taiwan Futures & Options |
+| 4165 | `GET /studio/market/twfutures/institutional/<futures_id>` | Taiwan Futures & Options |
+| 4221 | `GET /studio/market/twfutures/large_traders/<futures_id>` | Taiwan Futures & Options |
+| 4270 | `GET /studio/market/twfutures/option/institutional/<option_id>` | Taiwan Futures & Options |
+| 4305 | `GET /studio/market/twfutures/option/large_traders/<option_id>` | Taiwan Futures & Options |
+| 4341 | `GET /studio/market/twfutures/option/pcr` | Taiwan Futures & Options |
+| 4389 | `GET /studio/market/twfutures/carrying_cost/<identity>` | Taiwan Futures & Options |
+| 4488 | `GET /studio/market/db/ohlcv/<dataset>/<symbol>/<schema>` | Commodities |
+| 4550 | `GET /studio/market/anue/economic_calendar` | Macro |
+<!-- index:end -->
+<!-- regenerate (from the repo root): python3 - <<'EOF'
+import re
+p = "references/blave-api.md"
+L = open(p, encoding="utf-8").read().split("\n")
+def rows(L):
+    out, cat, fence = [], "", False
+    for i, l in enumerate(L, 1):
+        if l.startswith("```"): fence = not fence; continue
+        if fence: continue
+        if l.startswith("# "): cat = l[2:].strip()
+        m = re.match(r"^## `((?:GET|POST) [^`]+)`", l)
+        if m: out.append((i, m.group(1), cat))
+    return out
+a = L.index("<!-" + "- index:start -" + "->"); b = L.index("<!-" + "- index:end -" + "->")
+for _ in range(2):
+    tbl = ["| Line | Endpoint | Category |", "|:-|:-|:-|"] + [f"| {i} | `{e}` | {c} |" for i, e, c in rows(L)]
+    L[a + 1:b] = tbl; b = a + 1 + len(tbl)
+open(p, "w", encoding="utf-8").write("\n".join(L))
+EOF
+-->
+
 ## Conventions
 
 **Base URL:** `https://api.blave.org` — every path below is relative to it.
