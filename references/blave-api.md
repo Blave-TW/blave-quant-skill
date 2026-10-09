@@ -14,93 +14,93 @@ moves lines (command in the comment under the table).
 <!-- index:start -->
 | Line | Endpoint | Category |
 |:-|:-|:-|
-| 223 | `GET /price` | Crypto |
-| 266 | `GET /alpha_table` | Crypto |
-| 325 | `GET /kline` | Crypto |
-| 402 | `GET /market_direction/get_alpha` | Crypto |
-| 448 | `GET /screener/get_saved_conditions` | Crypto |
-| 480 | `GET /screener/get_saved_condition_result` | Crypto |
-| 519 | `GET /holder_concentration/get_symbols` | Crypto |
-| 548 | `GET /holder_concentration/get_alpha` | Crypto |
-| 597 | `GET /funding_rate/get_alpha` | Crypto |
-| 649 | `GET /market_sentiment/get_symbols` | Crypto |
-| 675 | `GET /market_sentiment/get_alpha` | Crypto |
-| 719 | `GET /capital_shortage/get_alpha` | Crypto |
-| 762 | `GET /sector_rotation/get_history_data` | Crypto |
-| 801 | `GET /sector_rotation/get_overview_data` | Crypto |
-| 835 | `GET /oi_imbalance/get_overview_data` | Crypto |
-| 876 | `GET /whale_hunter/get_symbols` | Crypto |
-| 902 | `GET /whale_hunter/get_alpha` | Crypto |
-| 954 | `GET /taker_intensity/get_symbols` | Crypto |
-| 980 | `GET /taker_intensity/get_alpha` | Crypto |
-| 1025 | `GET /unusual_movement/get_symbols` | Crypto |
-| 1051 | `GET /unusual_movement/get_alpha` | Crypto |
-| 1098 | `GET /squeeze_momentum/get_symbols` | Crypto |
-| 1124 | `GET /squeeze_momentum/get_alpha` | Crypto |
-| 1174 | `GET /blave_top_trader/get_exposure` | Crypto |
-| 1219 | `GET /liquidation/get_symbols` | Crypto |
-| 1245 | `GET /liquidation/get_alpha` | Crypto |
-| 1296 | `GET /liquidation/get_map` | Crypto |
-| 1342 | `GET /liquidation/get_map_change` | Crypto |
-| 1387 | `GET /liquidation/get_coin` | Crypto |
-| 1474 | `GET /liquidation/get_exchanges` | Crypto |
-| 1556 | `GET /long_short_ratio/get_table` | Crypto |
-| 1652 | `GET /long_short_ratio/get_coin` | Crypto |
-| 1729 | `GET /oi_imbalance/get_table` | Crypto |
-| 1818 | `GET /oi_imbalance/get_coin` | Crypto |
-| 1884 | `GET /oi_imbalance/get_history` | Crypto |
-| 1974 | `GET /taker_intensity/get_cvd_table` | Crypto |
-| 2051 | `GET /taker_intensity/get_cvd_coin` | Crypto |
-| 2113 | `GET /cme_cot/get_latest` | Crypto |
-| 2166 | `GET /cme_cot/get_history` | Crypto |
-| 2270 | `GET /studio/market/twstock/list` | Taiwan Stock |
-| 2313 | `GET /studio/market/twstock/info/<stock_id>` | Taiwan Stock |
-| 2349 | `GET /studio/market/twstock/price/<stock_id>` | Taiwan Stock |
-| 2410 | `GET /studio/market/twstock/price_adj/<stock_id>` | Taiwan Stock |
-| 2443 | `GET /studio/market/twstock/quote/<stock_id>` | Taiwan Stock |
-| 2504 | `GET /studio/market/twstock/quote` | Taiwan Stock |
-| 2544 | `GET /studio/market/twstock/quote/all` | Taiwan Stock |
-| 2574 | `GET /studio/market/twstock/minute/ohlcv/<stock_id>/<schema>` | Taiwan Stock |
-| 2638 | `GET /studio/market/twstock/minute/ohlcv/symbols` | Taiwan Stock |
-| 2665 | `GET /studio/market/twstock/kbar/<stock_id>` | Taiwan Stock |
-| 2716 | `GET /studio/market/twstock/market_value/<stock_id>` | Taiwan Stock |
-| 2749 | `GET /studio/market/twstock/market_value/all` | Taiwan Stock |
-| 2829 | `GET /studio/market/twstock/per/<stock_id>` | Taiwan Stock |
-| 2874 | `GET /studio/market/twstock/financials/<stock_id>` | Taiwan Stock |
-| 2918 | `GET /studio/market/twstock/balance_sheet/<stock_id>` | Taiwan Stock |
-| 2947 | `GET /studio/market/twstock/cashflow/<stock_id>` | Taiwan Stock |
-| 2998 | `GET /studio/market/twstock/monthly_revenue/<stock_id>` | Taiwan Stock |
-| 3048 | `GET /studio/market/twstock/dividend/<stock_id>` | Taiwan Stock |
-| 3113 | `GET /studio/market/twstock/news/<stock_id>` | Taiwan Stock |
-| 3159 | `GET /studio/market/twstock/institutional/<stock_id>` | Taiwan Stock |
-| 3212 | `GET /studio/market/twstock/margin/<stock_id>` | Taiwan Stock |
-| 3265 | `GET /studio/market/twstock/shareholding/<stock_id>` | Taiwan Stock |
-| 3307 | `GET /studio/market/twstock/foreign_shareholding/<stock_id>` | Taiwan Stock |
-| 3351 | `GET /studio/market/twstock/gov_bank/<stock_id>` | Taiwan Stock |
-| 3396 | `GET /studio/market/twstock/lending/<stock_id>` | Taiwan Stock |
-| 3439 | `GET /studio/market/twstock/broker/search` | Taiwan Stock |
-| 3476 | `GET /studio/market/twstock/broker/stock/<stock_id>` | Taiwan Stock |
-| 3531 | `GET /studio/market/twstock/broker/trader/<trader_id>` | Taiwan Stock |
-| 3566 | `GET /studio/market/twstock/batch/<data_type>` | Taiwan Stock |
-| 3628 | `GET /studio/market/twmarket/index/<index_id>` | Taiwan Market (大盤) |
-| 3669 | `GET /studio/market/twmarket/turnover` | Taiwan Market (大盤) |
-| 3709 | `GET /studio/market/twmarket/institutional` | Taiwan Market (大盤) |
-| 3754 | `GET /studio/market/twmarket/margin` | Taiwan Market (大盤) |
-| 3795 | `GET /studio/market/twmarket/dividend_points` | Taiwan Market (大盤) |
-| 3856 | `GET /studio/market/twfutures/ohlcv/<symbol>/<schema>` | Taiwan Futures & Options |
-| 3939 | `GET /studio/market/twfutures/ohlcv/symbols` | Taiwan Futures & Options |
-| 3967 | `GET /studio/market/twfutures/ohlcv/<symbol>/export/<year>` | Taiwan Futures & Options |
-| 4020 | `GET /studio/market/twfutures/bid_ask_vol/<symbol>` | Taiwan Futures & Options |
-| 4073 | `GET /studio/market/twfutures/daily/<futures_id>` | Taiwan Futures & Options |
-| 4124 | `GET /studio/market/twfutures/stock_futures/batch/daily` | Taiwan Futures & Options |
-| 4165 | `GET /studio/market/twfutures/institutional/<futures_id>` | Taiwan Futures & Options |
-| 4221 | `GET /studio/market/twfutures/large_traders/<futures_id>` | Taiwan Futures & Options |
-| 4270 | `GET /studio/market/twfutures/option/institutional/<option_id>` | Taiwan Futures & Options |
-| 4305 | `GET /studio/market/twfutures/option/large_traders/<option_id>` | Taiwan Futures & Options |
-| 4341 | `GET /studio/market/twfutures/option/pcr` | Taiwan Futures & Options |
-| 4389 | `GET /studio/market/twfutures/carrying_cost/<identity>` | Taiwan Futures & Options |
-| 4488 | `GET /studio/market/db/ohlcv/<dataset>/<symbol>/<schema>` | Commodities |
-| 4550 | `GET /studio/market/anue/economic_calendar` | Macro |
+| 236 | `GET /price` | Crypto |
+| 279 | `GET /alpha_table` | Crypto |
+| 338 | `GET /kline` | Crypto |
+| 415 | `GET /market_direction/get_alpha` | Crypto |
+| 461 | `GET /screener/get_saved_conditions` | Crypto |
+| 493 | `GET /screener/get_saved_condition_result` | Crypto |
+| 532 | `GET /holder_concentration/get_symbols` | Crypto |
+| 561 | `GET /holder_concentration/get_alpha` | Crypto |
+| 610 | `GET /funding_rate/get_alpha` | Crypto |
+| 662 | `GET /market_sentiment/get_symbols` | Crypto |
+| 688 | `GET /market_sentiment/get_alpha` | Crypto |
+| 732 | `GET /capital_shortage/get_alpha` | Crypto |
+| 775 | `GET /sector_rotation/get_history_data` | Crypto |
+| 814 | `GET /sector_rotation/get_overview_data` | Crypto |
+| 848 | `GET /oi_imbalance/get_overview_data` | Crypto |
+| 889 | `GET /whale_hunter/get_symbols` | Crypto |
+| 915 | `GET /whale_hunter/get_alpha` | Crypto |
+| 967 | `GET /taker_intensity/get_symbols` | Crypto |
+| 993 | `GET /taker_intensity/get_alpha` | Crypto |
+| 1038 | `GET /unusual_movement/get_symbols` | Crypto |
+| 1064 | `GET /unusual_movement/get_alpha` | Crypto |
+| 1111 | `GET /squeeze_momentum/get_symbols` | Crypto |
+| 1137 | `GET /squeeze_momentum/get_alpha` | Crypto |
+| 1187 | `GET /blave_top_trader/get_exposure` | Crypto |
+| 1232 | `GET /liquidation/get_symbols` | Crypto |
+| 1258 | `GET /liquidation/get_alpha` | Crypto |
+| 1309 | `GET /liquidation/get_map` | Crypto |
+| 1355 | `GET /liquidation/get_map_change` | Crypto |
+| 1400 | `GET /liquidation/get_coin` | Crypto |
+| 1487 | `GET /liquidation/get_exchanges` | Crypto |
+| 1569 | `GET /long_short_ratio/get_table` | Crypto |
+| 1665 | `GET /long_short_ratio/get_coin` | Crypto |
+| 1742 | `GET /oi_imbalance/get_table` | Crypto |
+| 1831 | `GET /oi_imbalance/get_coin` | Crypto |
+| 1897 | `GET /oi_imbalance/get_history` | Crypto |
+| 1987 | `GET /taker_intensity/get_cvd_table` | Crypto |
+| 2064 | `GET /taker_intensity/get_cvd_coin` | Crypto |
+| 2126 | `GET /cme_cot/get_latest` | Crypto |
+| 2179 | `GET /cme_cot/get_history` | Crypto |
+| 2283 | `GET /studio/market/twstock/list` | Taiwan Stock |
+| 2326 | `GET /studio/market/twstock/info/<stock_id>` | Taiwan Stock |
+| 2362 | `GET /studio/market/twstock/price/<stock_id>` | Taiwan Stock |
+| 2423 | `GET /studio/market/twstock/price_adj/<stock_id>` | Taiwan Stock |
+| 2456 | `GET /studio/market/twstock/quote/<stock_id>` | Taiwan Stock |
+| 2517 | `GET /studio/market/twstock/quote` | Taiwan Stock |
+| 2557 | `GET /studio/market/twstock/quote/all` | Taiwan Stock |
+| 2587 | `GET /studio/market/twstock/minute/ohlcv/<stock_id>/<schema>` | Taiwan Stock |
+| 2651 | `GET /studio/market/twstock/minute/ohlcv/symbols` | Taiwan Stock |
+| 2678 | `GET /studio/market/twstock/kbar/<stock_id>` | Taiwan Stock |
+| 2729 | `GET /studio/market/twstock/market_value/<stock_id>` | Taiwan Stock |
+| 2762 | `GET /studio/market/twstock/market_value/all` | Taiwan Stock |
+| 2842 | `GET /studio/market/twstock/per/<stock_id>` | Taiwan Stock |
+| 2887 | `GET /studio/market/twstock/financials/<stock_id>` | Taiwan Stock |
+| 2931 | `GET /studio/market/twstock/balance_sheet/<stock_id>` | Taiwan Stock |
+| 2960 | `GET /studio/market/twstock/cashflow/<stock_id>` | Taiwan Stock |
+| 3011 | `GET /studio/market/twstock/monthly_revenue/<stock_id>` | Taiwan Stock |
+| 3061 | `GET /studio/market/twstock/dividend/<stock_id>` | Taiwan Stock |
+| 3126 | `GET /studio/market/twstock/news/<stock_id>` | Taiwan Stock |
+| 3172 | `GET /studio/market/twstock/institutional/<stock_id>` | Taiwan Stock |
+| 3225 | `GET /studio/market/twstock/margin/<stock_id>` | Taiwan Stock |
+| 3278 | `GET /studio/market/twstock/shareholding/<stock_id>` | Taiwan Stock |
+| 3320 | `GET /studio/market/twstock/foreign_shareholding/<stock_id>` | Taiwan Stock |
+| 3364 | `GET /studio/market/twstock/gov_bank/<stock_id>` | Taiwan Stock |
+| 3409 | `GET /studio/market/twstock/lending/<stock_id>` | Taiwan Stock |
+| 3452 | `GET /studio/market/twstock/broker/search` | Taiwan Stock |
+| 3489 | `GET /studio/market/twstock/broker/stock/<stock_id>` | Taiwan Stock |
+| 3544 | `GET /studio/market/twstock/broker/trader/<trader_id>` | Taiwan Stock |
+| 3579 | `GET /studio/market/twstock/batch/<data_type>` | Taiwan Stock |
+| 3641 | `GET /studio/market/twmarket/index/<index_id>` | Taiwan Market (大盤) |
+| 3682 | `GET /studio/market/twmarket/turnover` | Taiwan Market (大盤) |
+| 3722 | `GET /studio/market/twmarket/institutional` | Taiwan Market (大盤) |
+| 3767 | `GET /studio/market/twmarket/margin` | Taiwan Market (大盤) |
+| 3808 | `GET /studio/market/twmarket/dividend_points` | Taiwan Market (大盤) |
+| 3869 | `GET /studio/market/twfutures/ohlcv/<symbol>/<schema>` | Taiwan Futures & Options |
+| 3952 | `GET /studio/market/twfutures/ohlcv/symbols` | Taiwan Futures & Options |
+| 3980 | `GET /studio/market/twfutures/ohlcv/<symbol>/export/<year>` | Taiwan Futures & Options |
+| 4033 | `GET /studio/market/twfutures/bid_ask_vol/<symbol>` | Taiwan Futures & Options |
+| 4086 | `GET /studio/market/twfutures/daily/<futures_id>` | Taiwan Futures & Options |
+| 4137 | `GET /studio/market/twfutures/stock_futures/batch/daily` | Taiwan Futures & Options |
+| 4178 | `GET /studio/market/twfutures/institutional/<futures_id>` | Taiwan Futures & Options |
+| 4234 | `GET /studio/market/twfutures/large_traders/<futures_id>` | Taiwan Futures & Options |
+| 4283 | `GET /studio/market/twfutures/option/institutional/<option_id>` | Taiwan Futures & Options |
+| 4318 | `GET /studio/market/twfutures/option/large_traders/<option_id>` | Taiwan Futures & Options |
+| 4354 | `GET /studio/market/twfutures/option/pcr` | Taiwan Futures & Options |
+| 4402 | `GET /studio/market/twfutures/carrying_cost/<identity>` | Taiwan Futures & Options |
+| 4501 | `GET /studio/market/db/ohlcv/<dataset>/<symbol>/<schema>` | Commodities |
+| 4563 | `GET /studio/market/anue/economic_calendar` | Macro |
 <!-- index:end -->
 <!-- regenerate (from the repo root): python3 - <<'EOF'
 import re
@@ -134,8 +134,21 @@ EOF
 
 | Value | Meaning |
 |---|---|
-| `API plan or data fee` | Valid key, and the account has an active API plan, or owns a Blave Agent machine, or is billed the hourly API data fee in credit. Out of credit → `403 ERR007` |
+| `API plan or data fee` | Valid key, and the account's billing covers data — see *Which key, which plan* below. Not covered → `403 ERR007` |
 | `Any valid key` | Valid key only — no plan check, no data fee |
+
+**Which key, which plan.** Blave Agent is moving from hourly billing to plan billing; each account
+switches on a date the platform emails that user.
+
+- **A key you created yourself** (API page above — what scripts, external agents and this skill
+  use outside Blave Agent): on plan billing it needs an **API plan**, even if the account also has
+  a Blave Agent plan or trial. Before the account switches, it also works when the account owns a
+  Blave Agent machine, or with the hourly data fee charged from credit.
+- **Keys Blave Agent issues** (the cloud machine's own key, the desktop app's sign-in key):
+  covered by the card trial, an active Blave Agent plan (every tier includes data) or an API
+  plan.
+- Not covered → `403 ERR007`; its `message` and `next_steps` name the way out — follow them, do
+  not guess a price.
 
 **Rate limit** — unless a block says otherwise: 500 requests / 5 min per API key, and
 500 requests / 5 min per IP. The window resets after 5 minutes.
@@ -147,7 +160,7 @@ EOF
 | 403 | `{"error_code": "ERR005", "message": "API key and Secret key are required."}` | Header missing (`API plan or data fee` endpoints) |
 | 422 | `{"error_code": "ERR001", "message": "Token is invalid or expired."}` | Header missing (`Any valid key` endpoints) |
 | 403 | `{"error_code": "ERR005", "message": "Invalid API key."}` / `"Invalid Secret key."` | Wrong key pair |
-| 403 | `{"error_code": "ERR007", "message": "Insufficient credit. Please top up."}` | Data fee could not be charged |
+| 403 | `{"error_code": "ERR007", "message": "…", "next_steps": {…}}` | The key's account is not covered (see *Which key, which plan*): a self-created key without an API plan, no Blave Agent plan, or the hourly data fee could not be charged — `message` says which |
 | 429 | `{"error_code": "ERR429", "message": "Rate limit exceeded."}` | Rate limit hit |
 | 500 | `{"error": "Internal error"}` or an HTML error page | Unexpected server error |
 

@@ -1,7 +1,7 @@
 ---
 name: blave-quant
 description: "Blave quant data layer and exchange-trading reference for AI agents. Use when the task needs crypto alpha/market data, Taiwan stock, futures or market-wide data, CME/ICE or TXF OHLCV, Hyperliquid top traders, or trading on BitMart, OKX, Bybit, BingX, Bitget, Binance, Bitfinex, KuCoin or Gate.io."
-version: 1.23.20
+version: 1.23.21
 metadata:
   openclaw:
     emoji: "📊"
@@ -119,6 +119,7 @@ This skill is a **data access layer**. When the user's request involves any of t
 No API key or 401/403 → guide user to:
 
 - Subscribe: **[https://blave.org/landing/en/pricing](https://blave.org/landing/en/pricing)** — $629/year, 14-day free trial
+- Once the account is on plan billing, a key the user created themselves needs an **API plan**; a Blave Agent plan covers only the keys Blave Agent issues (cloud machine, desktop app) — `references/blave-api.md` › *Which key, which plan*
 - Create key: **[https://blave.org/landing/en/api?tab=blave](https://blave.org/landing/en/api?tab=blave)**
 
 Add to `.env`: `blave_api_key=...` and `blave_secret_key=...`
