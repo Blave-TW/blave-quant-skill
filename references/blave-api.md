@@ -71,38 +71,38 @@ moves lines (command in the comment under the table).
 | 2980 | `GET /studio/market/twstock/cashflow/<stock_id>` | Taiwan Stock |
 | 3031 | `GET /studio/market/twstock/monthly_revenue/<stock_id>` | Taiwan Stock |
 | 3081 | `GET /studio/market/twstock/ratios/<stock_id>` | Taiwan Stock |
-| 3167 | `GET /studio/market/twstock/dividend/<stock_id>` | Taiwan Stock |
-| 3232 | `GET /studio/market/twstock/news/<stock_id>` | Taiwan Stock |
-| 3278 | `GET /studio/market/twstock/institutional/<stock_id>` | Taiwan Stock |
-| 3331 | `GET /studio/market/twstock/margin/<stock_id>` | Taiwan Stock |
-| 3384 | `GET /studio/market/twstock/shareholding/<stock_id>` | Taiwan Stock |
-| 3426 | `GET /studio/market/twstock/foreign_shareholding/<stock_id>` | Taiwan Stock |
-| 3470 | `GET /studio/market/twstock/gov_bank/<stock_id>` | Taiwan Stock |
-| 3515 | `GET /studio/market/twstock/lending/<stock_id>` | Taiwan Stock |
-| 3558 | `GET /studio/market/twstock/broker/search` | Taiwan Stock |
-| 3595 | `GET /studio/market/twstock/broker/stock/<stock_id>` | Taiwan Stock |
-| 3650 | `GET /studio/market/twstock/broker/trader/<trader_id>` | Taiwan Stock |
-| 3685 | `GET /studio/market/twstock/alerts` | Taiwan Stock |
-| 3792 | `GET /studio/market/twstock/batch/<data_type>` | Taiwan Stock |
-| 3858 | `GET /studio/market/twmarket/index/<index_id>` | Taiwan Market (大盤) |
-| 3899 | `GET /studio/market/twmarket/turnover` | Taiwan Market (大盤) |
-| 3939 | `GET /studio/market/twmarket/institutional` | Taiwan Market (大盤) |
-| 3984 | `GET /studio/market/twmarket/margin` | Taiwan Market (大盤) |
-| 4025 | `GET /studio/market/twmarket/dividend_points` | Taiwan Market (大盤) |
-| 4086 | `GET /studio/market/twfutures/ohlcv/<symbol>/<schema>` | Taiwan Futures & Options |
-| 4169 | `GET /studio/market/twfutures/ohlcv/symbols` | Taiwan Futures & Options |
-| 4197 | `GET /studio/market/twfutures/ohlcv/<symbol>/export/<year>` | Taiwan Futures & Options |
-| 4250 | `GET /studio/market/twfutures/bid_ask_vol/<symbol>` | Taiwan Futures & Options |
-| 4303 | `GET /studio/market/twfutures/daily/<futures_id>` | Taiwan Futures & Options |
-| 4354 | `GET /studio/market/twfutures/stock_futures/batch/daily` | Taiwan Futures & Options |
-| 4395 | `GET /studio/market/twfutures/institutional/<futures_id>` | Taiwan Futures & Options |
-| 4451 | `GET /studio/market/twfutures/large_traders/<futures_id>` | Taiwan Futures & Options |
-| 4500 | `GET /studio/market/twfutures/option/institutional/<option_id>` | Taiwan Futures & Options |
-| 4535 | `GET /studio/market/twfutures/option/large_traders/<option_id>` | Taiwan Futures & Options |
-| 4571 | `GET /studio/market/twfutures/option/pcr` | Taiwan Futures & Options |
-| 4619 | `GET /studio/market/twfutures/carrying_cost/<identity>` | Taiwan Futures & Options |
-| 4718 | `GET /studio/market/db/ohlcv/<dataset>/<symbol>/<schema>` | Commodities |
-| 4780 | `GET /studio/market/anue/economic_calendar` | Macro |
+| 3168 | `GET /studio/market/twstock/dividend/<stock_id>` | Taiwan Stock |
+| 3233 | `GET /studio/market/twstock/news/<stock_id>` | Taiwan Stock |
+| 3279 | `GET /studio/market/twstock/institutional/<stock_id>` | Taiwan Stock |
+| 3332 | `GET /studio/market/twstock/margin/<stock_id>` | Taiwan Stock |
+| 3385 | `GET /studio/market/twstock/shareholding/<stock_id>` | Taiwan Stock |
+| 3427 | `GET /studio/market/twstock/foreign_shareholding/<stock_id>` | Taiwan Stock |
+| 3471 | `GET /studio/market/twstock/gov_bank/<stock_id>` | Taiwan Stock |
+| 3516 | `GET /studio/market/twstock/lending/<stock_id>` | Taiwan Stock |
+| 3559 | `GET /studio/market/twstock/broker/search` | Taiwan Stock |
+| 3596 | `GET /studio/market/twstock/broker/stock/<stock_id>` | Taiwan Stock |
+| 3651 | `GET /studio/market/twstock/broker/trader/<trader_id>` | Taiwan Stock |
+| 3686 | `GET /studio/market/twstock/alerts` | Taiwan Stock |
+| 3793 | `GET /studio/market/twstock/batch/<data_type>` | Taiwan Stock |
+| 3859 | `GET /studio/market/twmarket/index/<index_id>` | Taiwan Market (大盤) |
+| 3900 | `GET /studio/market/twmarket/turnover` | Taiwan Market (大盤) |
+| 3940 | `GET /studio/market/twmarket/institutional` | Taiwan Market (大盤) |
+| 3985 | `GET /studio/market/twmarket/margin` | Taiwan Market (大盤) |
+| 4026 | `GET /studio/market/twmarket/dividend_points` | Taiwan Market (大盤) |
+| 4087 | `GET /studio/market/twfutures/ohlcv/<symbol>/<schema>` | Taiwan Futures & Options |
+| 4170 | `GET /studio/market/twfutures/ohlcv/symbols` | Taiwan Futures & Options |
+| 4198 | `GET /studio/market/twfutures/ohlcv/<symbol>/export/<year>` | Taiwan Futures & Options |
+| 4251 | `GET /studio/market/twfutures/bid_ask_vol/<symbol>` | Taiwan Futures & Options |
+| 4304 | `GET /studio/market/twfutures/daily/<futures_id>` | Taiwan Futures & Options |
+| 4355 | `GET /studio/market/twfutures/stock_futures/batch/daily` | Taiwan Futures & Options |
+| 4396 | `GET /studio/market/twfutures/institutional/<futures_id>` | Taiwan Futures & Options |
+| 4452 | `GET /studio/market/twfutures/large_traders/<futures_id>` | Taiwan Futures & Options |
+| 4501 | `GET /studio/market/twfutures/option/institutional/<option_id>` | Taiwan Futures & Options |
+| 4536 | `GET /studio/market/twfutures/option/large_traders/<option_id>` | Taiwan Futures & Options |
+| 4572 | `GET /studio/market/twfutures/option/pcr` | Taiwan Futures & Options |
+| 4620 | `GET /studio/market/twfutures/carrying_cost/<identity>` | Taiwan Futures & Options |
+| 4719 | `GET /studio/market/db/ohlcv/<dataset>/<symbol>/<schema>` | Commodities |
+| 4781 | `GET /studio/market/anue/economic_calendar` | Macro |
 <!-- index:end -->
 <!-- regenerate (from the repo root): python3 - <<'EOF'
 import re
@@ -3150,13 +3150,14 @@ df = pd.DataFrame(data).assign(date=lambda d: pd.to_datetime(d["date"])).set_ind
 ```
 
 **Notes**
-- **Read `references/twstock-fundamentals-reference.md` › *Financial Ratios* before using a
-  column** — it holds every formula and null rule (single-quarter ROE / ROA are **not**
-  annualised, how the share count is derived, which ratios are null for banks / securities /
-  insurers).
+- Single-quarter ROE / ROA are **not** annualised; per-share figures use a share count derived
+  from net income ÷ EPS; banks, securities firms and insurers have several ratios that are
+  always `null` (no gross margin, current ratio, etc.).
+- Agents: every formula and null rule is in `references/twstock-fundamentals-reference.md` ›
+  *Financial Ratios* — read it before using a column.
 - Rows are stamped with the quarter end, but a quarter's filing is public only weeks later. In a
-  backtest shift each row to its availability date (same table as the statements, in that
-  reference) — joining on `date` is lookahead.
+  backtest shift each row to its availability date (the statutory filing deadlines, same as the
+  statements) — joining on `date` is lookahead.
 - A missing line item or a zero denominator gives `null`, never `0`.
 - Not included: PER / PBR / dividend yield (daily — `per/<stock_id>`) and the monthly-revenue
   ratios (compute YoY / MoM from `monthly_revenue/<stock_id>`).
