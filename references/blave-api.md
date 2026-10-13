@@ -14,95 +14,95 @@ moves lines (command in the comment under the table).
 <!-- index:start -->
 | Line | Endpoint | Category |
 |:-|:-|:-|
-| 238 | `GET /price` | Crypto |
-| 281 | `GET /alpha_table` | Crypto |
-| 340 | `GET /kline` | Crypto |
-| 417 | `GET /market_direction/get_alpha` | Crypto |
-| 463 | `GET /screener/get_saved_conditions` | Crypto |
-| 502 | `GET /screener/get_saved_condition_result` | Crypto |
-| 552 | `GET /holder_concentration/get_symbols` | Crypto |
-| 581 | `GET /holder_concentration/get_alpha` | Crypto |
-| 630 | `GET /funding_rate/get_alpha` | Crypto |
-| 682 | `GET /market_sentiment/get_symbols` | Crypto |
-| 708 | `GET /market_sentiment/get_alpha` | Crypto |
-| 752 | `GET /capital_shortage/get_alpha` | Crypto |
-| 795 | `GET /sector_rotation/get_history_data` | Crypto |
-| 834 | `GET /sector_rotation/get_overview_data` | Crypto |
-| 868 | `GET /oi_imbalance/get_overview_data` | Crypto |
-| 909 | `GET /whale_hunter/get_symbols` | Crypto |
-| 935 | `GET /whale_hunter/get_alpha` | Crypto |
-| 987 | `GET /taker_intensity/get_symbols` | Crypto |
-| 1013 | `GET /taker_intensity/get_alpha` | Crypto |
-| 1058 | `GET /unusual_movement/get_symbols` | Crypto |
-| 1084 | `GET /unusual_movement/get_alpha` | Crypto |
-| 1131 | `GET /squeeze_momentum/get_symbols` | Crypto |
-| 1157 | `GET /squeeze_momentum/get_alpha` | Crypto |
-| 1207 | `GET /blave_top_trader/get_exposure` | Crypto |
-| 1252 | `GET /liquidation/get_symbols` | Crypto |
-| 1278 | `GET /liquidation/get_alpha` | Crypto |
-| 1329 | `GET /liquidation/get_map` | Crypto |
-| 1375 | `GET /liquidation/get_map_change` | Crypto |
-| 1420 | `GET /liquidation/get_coin` | Crypto |
-| 1507 | `GET /liquidation/get_exchanges` | Crypto |
-| 1589 | `GET /long_short_ratio/get_table` | Crypto |
-| 1685 | `GET /long_short_ratio/get_coin` | Crypto |
-| 1762 | `GET /oi_imbalance/get_table` | Crypto |
-| 1851 | `GET /oi_imbalance/get_coin` | Crypto |
-| 1917 | `GET /oi_imbalance/get_history` | Crypto |
-| 2007 | `GET /taker_intensity/get_cvd_table` | Crypto |
-| 2084 | `GET /taker_intensity/get_cvd_coin` | Crypto |
-| 2146 | `GET /cme_cot/get_latest` | Crypto |
-| 2199 | `GET /cme_cot/get_history` | Crypto |
-| 2303 | `GET /studio/market/twstock/list` | Taiwan Stock |
-| 2346 | `GET /studio/market/twstock/info/<stock_id>` | Taiwan Stock |
-| 2382 | `GET /studio/market/twstock/price/<stock_id>` | Taiwan Stock |
-| 2443 | `GET /studio/market/twstock/price_adj/<stock_id>` | Taiwan Stock |
-| 2476 | `GET /studio/market/twstock/quote/<stock_id>` | Taiwan Stock |
-| 2537 | `GET /studio/market/twstock/quote` | Taiwan Stock |
-| 2577 | `GET /studio/market/twstock/quote/all` | Taiwan Stock |
-| 2607 | `GET /studio/market/twstock/minute/ohlcv/<stock_id>/<schema>` | Taiwan Stock |
-| 2671 | `GET /studio/market/twstock/minute/ohlcv/symbols` | Taiwan Stock |
-| 2698 | `GET /studio/market/twstock/kbar/<stock_id>` | Taiwan Stock |
-| 2749 | `GET /studio/market/twstock/market_value/<stock_id>` | Taiwan Stock |
-| 2782 | `GET /studio/market/twstock/market_value/all` | Taiwan Stock |
-| 2862 | `GET /studio/market/twstock/per/<stock_id>` | Taiwan Stock |
-| 2907 | `GET /studio/market/twstock/financials/<stock_id>` | Taiwan Stock |
-| 2951 | `GET /studio/market/twstock/balance_sheet/<stock_id>` | Taiwan Stock |
-| 2980 | `GET /studio/market/twstock/cashflow/<stock_id>` | Taiwan Stock |
-| 3031 | `GET /studio/market/twstock/monthly_revenue/<stock_id>` | Taiwan Stock |
-| 3081 | `GET /studio/market/twstock/ratios/<stock_id>` | Taiwan Stock |
-| 3168 | `GET /studio/market/twstock/dividend/<stock_id>` | Taiwan Stock |
-| 3233 | `GET /studio/market/twstock/news/<stock_id>` | Taiwan Stock |
-| 3279 | `GET /studio/market/twstock/institutional/<stock_id>` | Taiwan Stock |
-| 3332 | `GET /studio/market/twstock/margin/<stock_id>` | Taiwan Stock |
-| 3385 | `GET /studio/market/twstock/shareholding/<stock_id>` | Taiwan Stock |
-| 3427 | `GET /studio/market/twstock/foreign_shareholding/<stock_id>` | Taiwan Stock |
-| 3471 | `GET /studio/market/twstock/gov_bank/<stock_id>` | Taiwan Stock |
-| 3516 | `GET /studio/market/twstock/lending/<stock_id>` | Taiwan Stock |
-| 3559 | `GET /studio/market/twstock/broker/search` | Taiwan Stock |
-| 3596 | `GET /studio/market/twstock/broker/stock/<stock_id>` | Taiwan Stock |
-| 3651 | `GET /studio/market/twstock/broker/trader/<trader_id>` | Taiwan Stock |
-| 3686 | `GET /studio/market/twstock/alerts` | Taiwan Stock |
-| 3793 | `GET /studio/market/twstock/batch/<data_type>` | Taiwan Stock |
-| 3859 | `GET /studio/market/twmarket/index/<index_id>` | Taiwan Market (大盤) |
-| 3900 | `GET /studio/market/twmarket/turnover` | Taiwan Market (大盤) |
-| 3940 | `GET /studio/market/twmarket/institutional` | Taiwan Market (大盤) |
-| 3985 | `GET /studio/market/twmarket/margin` | Taiwan Market (大盤) |
-| 4026 | `GET /studio/market/twmarket/dividend_points` | Taiwan Market (大盤) |
-| 4087 | `GET /studio/market/twfutures/ohlcv/<symbol>/<schema>` | Taiwan Futures & Options |
-| 4170 | `GET /studio/market/twfutures/ohlcv/symbols` | Taiwan Futures & Options |
-| 4198 | `GET /studio/market/twfutures/ohlcv/<symbol>/export/<year>` | Taiwan Futures & Options |
-| 4251 | `GET /studio/market/twfutures/bid_ask_vol/<symbol>` | Taiwan Futures & Options |
-| 4304 | `GET /studio/market/twfutures/daily/<futures_id>` | Taiwan Futures & Options |
-| 4355 | `GET /studio/market/twfutures/stock_futures/batch/daily` | Taiwan Futures & Options |
-| 4396 | `GET /studio/market/twfutures/institutional/<futures_id>` | Taiwan Futures & Options |
-| 4452 | `GET /studio/market/twfutures/large_traders/<futures_id>` | Taiwan Futures & Options |
-| 4501 | `GET /studio/market/twfutures/option/institutional/<option_id>` | Taiwan Futures & Options |
-| 4536 | `GET /studio/market/twfutures/option/large_traders/<option_id>` | Taiwan Futures & Options |
-| 4572 | `GET /studio/market/twfutures/option/pcr` | Taiwan Futures & Options |
-| 4620 | `GET /studio/market/twfutures/carrying_cost/<identity>` | Taiwan Futures & Options |
-| 4719 | `GET /studio/market/db/ohlcv/<dataset>/<symbol>/<schema>` | Commodities |
-| 4781 | `GET /studio/market/anue/economic_calendar` | Macro |
+| 236 | `GET /price` | Crypto |
+| 283 | `GET /alpha_table` | Crypto |
+| 341 | `GET /kline` | Crypto |
+| 422 | `GET /market_direction/get_alpha` | Crypto |
+| 470 | `GET /screener/get_saved_conditions` | Crypto |
+| 511 | `GET /screener/get_saved_condition_result` | Crypto |
+| 560 | `GET /holder_concentration/get_symbols` | Crypto |
+| 589 | `GET /holder_concentration/get_alpha` | Crypto |
+| 641 | `GET /funding_rate/get_alpha` | Crypto |
+| 696 | `GET /market_sentiment/get_symbols` | Crypto |
+| 724 | `GET /market_sentiment/get_alpha` | Crypto |
+| 770 | `GET /capital_shortage/get_alpha` | Crypto |
+| 816 | `GET /sector_rotation/get_history_data` | Crypto |
+| 861 | `GET /sector_rotation/get_overview_data` | Crypto |
+| 898 | `GET /oi_imbalance/get_overview_data` | Crypto |
+| 939 | `GET /whale_hunter/get_symbols` | Crypto |
+| 967 | `GET /whale_hunter/get_alpha` | Crypto |
+| 1020 | `GET /taker_intensity/get_symbols` | Crypto |
+| 1048 | `GET /taker_intensity/get_alpha` | Crypto |
+| 1096 | `GET /unusual_movement/get_symbols` | Crypto |
+| 1124 | `GET /unusual_movement/get_alpha` | Crypto |
+| 1174 | `GET /squeeze_momentum/get_symbols` | Crypto |
+| 1202 | `GET /squeeze_momentum/get_alpha` | Crypto |
+| 1253 | `GET /blave_top_trader/get_exposure` | Crypto |
+| 1300 | `GET /liquidation/get_symbols` | Crypto |
+| 1328 | `GET /liquidation/get_alpha` | Crypto |
+| 1378 | `GET /liquidation/get_map` | Crypto |
+| 1423 | `GET /liquidation/get_map_change` | Crypto |
+| 1472 | `GET /liquidation/get_coin` | Crypto |
+| 1561 | `GET /liquidation/get_exchanges` | Crypto |
+| 1645 | `GET /long_short_ratio/get_table` | Crypto |
+| 1742 | `GET /long_short_ratio/get_coin` | Crypto |
+| 1820 | `GET /oi_imbalance/get_table` | Crypto |
+| 1910 | `GET /oi_imbalance/get_coin` | Crypto |
+| 1977 | `GET /oi_imbalance/get_history` | Crypto |
+| 2070 | `GET /taker_intensity/get_cvd_table` | Crypto |
+| 2148 | `GET /taker_intensity/get_cvd_coin` | Crypto |
+| 2211 | `GET /cme_cot/get_latest` | Crypto |
+| 2270 | `GET /cme_cot/get_history` | Crypto |
+| 2377 | `GET /studio/market/twstock/list` | Taiwan Stock |
+| 2420 | `GET /studio/market/twstock/info/<stock_id>` | Taiwan Stock |
+| 2458 | `GET /studio/market/twstock/price/<stock_id>` | Taiwan Stock |
+| 2522 | `GET /studio/market/twstock/price_adj/<stock_id>` | Taiwan Stock |
+| 2556 | `GET /studio/market/twstock/quote/<stock_id>` | Taiwan Stock |
+| 2617 | `GET /studio/market/twstock/quote` | Taiwan Stock |
+| 2659 | `GET /studio/market/twstock/quote/all` | Taiwan Stock |
+| 2691 | `GET /studio/market/twstock/minute/ohlcv/<stock_id>/<schema>` | Taiwan Stock |
+| 2754 | `GET /studio/market/twstock/minute/ohlcv/symbols` | Taiwan Stock |
+| 2780 | `GET /studio/market/twstock/kbar/<stock_id>` | Taiwan Stock |
+| 2831 | `GET /studio/market/twstock/market_value/<stock_id>` | Taiwan Stock |
+| 2866 | `GET /studio/market/twstock/market_value/all` | Taiwan Stock |
+| 2946 | `GET /studio/market/twstock/per/<stock_id>` | Taiwan Stock |
+| 2993 | `GET /studio/market/twstock/financials/<stock_id>` | Taiwan Stock |
+| 3041 | `GET /studio/market/twstock/balance_sheet/<stock_id>` | Taiwan Stock |
+| 3074 | `GET /studio/market/twstock/cashflow/<stock_id>` | Taiwan Stock |
+| 3129 | `GET /studio/market/twstock/monthly_revenue/<stock_id>` | Taiwan Stock |
+| 3181 | `GET /studio/market/twstock/ratios/<stock_id>` | Taiwan Stock |
+| 3270 | `GET /studio/market/twstock/dividend/<stock_id>` | Taiwan Stock |
+| 3334 | `GET /studio/market/twstock/news/<stock_id>` | Taiwan Stock |
+| 3385 | `GET /studio/market/twstock/institutional/<stock_id>` | Taiwan Stock |
+| 3440 | `GET /studio/market/twstock/margin/<stock_id>` | Taiwan Stock |
+| 3495 | `GET /studio/market/twstock/shareholding/<stock_id>` | Taiwan Stock |
+| 3540 | `GET /studio/market/twstock/foreign_shareholding/<stock_id>` | Taiwan Stock |
+| 3588 | `GET /studio/market/twstock/gov_bank/<stock_id>` | Taiwan Stock |
+| 3635 | `GET /studio/market/twstock/lending/<stock_id>` | Taiwan Stock |
+| 3680 | `GET /studio/market/twstock/broker/search` | Taiwan Stock |
+| 3716 | `GET /studio/market/twstock/broker/stock/<stock_id>` | Taiwan Stock |
+| 3771 | `GET /studio/market/twstock/broker/trader/<trader_id>` | Taiwan Stock |
+| 3808 | `GET /studio/market/twstock/alerts` | Taiwan Stock |
+| 3916 | `GET /studio/market/twstock/batch/<data_type>` | Taiwan Stock |
+| 3981 | `GET /studio/market/twmarket/index/<index_id>` | Taiwan Market (大盤) |
+| 4025 | `GET /studio/market/twmarket/turnover` | Taiwan Market (大盤) |
+| 4068 | `GET /studio/market/twmarket/institutional` | Taiwan Market (大盤) |
+| 4112 | `GET /studio/market/twmarket/margin` | Taiwan Market (大盤) |
+| 4155 | `GET /studio/market/twmarket/dividend_points` | Taiwan Market (大盤) |
+| 4218 | `GET /studio/market/twfutures/ohlcv/<symbol>/<schema>` | Taiwan Futures & Options |
+| 4303 | `GET /studio/market/twfutures/ohlcv/symbols` | Taiwan Futures & Options |
+| 4330 | `GET /studio/market/twfutures/ohlcv/<symbol>/export/<year>` | Taiwan Futures & Options |
+| 4383 | `GET /studio/market/twfutures/bid_ask_vol/<symbol>` | Taiwan Futures & Options |
+| 4435 | `GET /studio/market/twfutures/daily/<futures_id>` | Taiwan Futures & Options |
+| 4490 | `GET /studio/market/twfutures/stock_futures/batch/daily` | Taiwan Futures & Options |
+| 4530 | `GET /studio/market/twfutures/institutional/<futures_id>` | Taiwan Futures & Options |
+| 4587 | `GET /studio/market/twfutures/large_traders/<futures_id>` | Taiwan Futures & Options |
+| 4638 | `GET /studio/market/twfutures/option/institutional/<option_id>` | Taiwan Futures & Options |
+| 4675 | `GET /studio/market/twfutures/option/large_traders/<option_id>` | Taiwan Futures & Options |
+| 4713 | `GET /studio/market/twfutures/option/pcr` | Taiwan Futures & Options |
+| 4761 | `GET /studio/market/twfutures/carrying_cost/<identity>` | Taiwan Futures & Options |
+| 4862 | `GET /studio/market/db/ohlcv/<dataset>/<symbol>/<schema>` | Commodities |
+| 4923 | `GET /studio/market/anue/economic_calendar` | Macro |
 <!-- index:end -->
 <!-- regenerate (from the repo root): python3 - <<'EOF'
 import re
@@ -136,17 +136,15 @@ EOF
 
 | Value | Meaning |
 |---|---|
-| `API plan or data fee` | Valid key, and the account's billing covers data — see *Which key, which plan* below. Not covered → `403 ERR007` |
-| `Any valid key` | Valid key only — no plan check, no data fee |
+| `API plan or Blave Agent plan` | Valid key, and the account's plan covers that key — see the key rules below. Not covered → `403 ERR007` |
+| `Any valid key` | Valid key only — no plan check |
 
-**Which key, which plan.** Blave Agent is moving from hourly billing to plan billing; each account
-switches on a date the platform emails that user.
+Key rules:
 
-- **A key you created yourself** (API page above — what scripts, external agents and this skill
-  use outside Blave Agent): on plan billing it needs an **API plan**, even if the account also has
-  a Blave Agent plan or trial. Before the account switches, it also works when the account owns a
-  Blave Agent machine, or with the hourly data fee charged from credit.
-- **Keys Blave Agent issues** (the cloud machine's own key, the desktop app's sign-in key):
+- **A key you created yourself** (API page above — what your own scripts and external agents use
+  outside Blave Agent) needs an **API plan**, even if the account also has a Blave Agent plan
+  or trial.
+- **Keys Blave Agent issues** (the cloud machine's own key, the desktop app's sign-in key) are
   covered by the card trial, an active Blave Agent plan (every tier includes data) or an API
   plan.
 - Not covered → `403 ERR007`; its `message` and `next_steps` name the way out — follow them, do
@@ -159,10 +157,10 @@ switches on a date the platform emails that user.
 
 | Status | Body | When |
 |---|---|---|
-| 403 | `{"error_code": "ERR005", "message": "API key and Secret key are required."}` | Header missing (`API plan or data fee` endpoints) |
+| 403 | `{"error_code": "ERR005", "message": "API key and Secret key are required."}` | Header missing (`API plan or Blave Agent plan` endpoints) |
 | 422 | `{"error_code": "ERR001", "message": "Token is invalid or expired."}` | Header missing (`Any valid key` endpoints) |
 | 403 | `{"error_code": "ERR005", "message": "Invalid API key."}` / `"Invalid Secret key."` | Wrong key pair |
-| 403 | `{"error_code": "ERR007", "message": "…", "next_steps": {…}}` | The key's account is not covered (see *Which key, which plan*): a self-created key without an API plan, no Blave Agent plan, or the hourly data fee could not be charged — `message` says which |
+| 403 | `{"error_code": "ERR007", "message": "…", "next_steps": {…}}` | The key's account is not covered (key rules above): a self-created key without an API plan, or a Blave Agent key without a plan or trial — `message` says which |
 | 429 | `{"error_code": "ERR429", "message": "Rate limit exceeded."}` | Rate limit hit |
 | 500 | `{"error": "Internal error"}` or an HTML error page | Unexpected server error |
 
@@ -171,7 +169,7 @@ Taipei trading days (`YYYY-MM-DD`).
 
 **Endpoint block format.** Each endpoint is a `##` heading of the form `` `METHOD /path` ``,
 followed in fixed order by: an attribute table (`Name`, `Group`, `Access`, `Rate limit`,
-`Data from`, `Update`, `Source`), **Parameters**, **Response**, **Errors**, **Example**,
+`Data from`, `Update`), **Parameters**, **Response**, **Errors**, **Example**,
 **Notes**. Top-level `#` headings are categories. `待確認` marks a value not yet verified
 against the live API — including example responses that were not captured from a live call.
 
@@ -241,11 +239,10 @@ These Blave services have their own reference files and are not duplicated here:
 |---|---|
 | Name | 即時價格 Current Price |
 | Group | Crypto › General |
-| Access | API plan or data fee |
+| Access | API plan or Blave Agent plan |
 | Rate limit | 500 / 5 min per key + per IP |
 | Data from | Snapshot only (no history) |
 | Update | Server cache 5 s |
-| Source | Binance USDT-M perpetual last price; tokens not listed there fall back to Binance spot, then BingX perpetual. `change_24h` normally comes from the same venue as `price` (the two are cached separately, 5 s each, so they can briefly differ) |
 
 **Parameters**
 
@@ -276,6 +273,11 @@ print(response.json())
 # {"symbol": "BTC", "price": 75838.2, "change_24h": -0.01739}
 ```
 
+**Notes**
+- Price source, in fallback order: Binance USDT-M perpetual → Binance spot → BingX perpetual.
+- `change_24h` normally comes from the same venue as `price`, but the two are cached separately (5 s
+  each), so they can briefly differ.
+
 ---
 
 ## `GET /alpha_table`
@@ -284,11 +286,10 @@ print(response.json())
 |---|---|
 | Name | Alpha 總表 Alpha Table |
 | Group | Crypto › General |
-| Access | API plan or data fee |
+| Access | API plan or Blave Agent plan |
 | Rate limit | 500 / 5 min per key + per IP |
 | Data from | Snapshot only (latest value per symbol) |
 | Update | Every 5 minutes |
-| Source | Blave |
 
 **Parameters** — none.
 
@@ -343,11 +344,10 @@ row = body["data"]["0G"]   # one token out of the 716 keys this response carried
 |---|---|
 | Name | K 線 Kline (OHLCV) |
 | Group | Crypto › General |
-| Access | API plan or data fee |
+| Access | API plan or Blave Agent plan |
 | Rate limit | 500 / 5 min per key + per IP |
-| Data from | 2020-01-01, or the contract's listing date if later — every interval, `1min` included |
-| Update | The latest closed 1-minute bar is usually available within the next minute; in rare degraded cases the newest bars can lag about 5–10 minutes. Server cache: 30 s (`1min`), 300 s (`1h` / `4h` / `1d`), 60 s (every other period); only 5 s when the latest closed bar is not in yet |
-| Source | Binance USDⓈ-M futures |
+| Data from | 2020-01-01, or the contract's listing date if later |
+| Update | Within about a minute of each bar close |
 
 **Coverage.** Every Binance USDⓈ-M perpetual whose symbol ends in `USDT` — 740 contracts as of
 October 2026, including tokenized stocks, commodities and other TradFi USDT perpetuals. All 740
@@ -411,6 +411,11 @@ data = response.json()
   `5min` = 3 requests; 1 year of `1min` = 13 requests of ≤30 days).
 - All 740 USDT perps have full 1-minute history on disk, so a deep request is answered from
   stored data — there is no slow first fetch.
+- The start date applies to every interval, `1min` included.
+- The latest closed 1-minute bar is usually available within the next minute; in rare degraded cases
+  the newest bars can lag about 5–10 minutes.
+- Server cache: 30 s (`1min`), 300 s (`1h` / `4h` / `1d`), 60 s (every other period); only 5 s when
+  the latest closed bar is not in yet.
 
 ---
 
@@ -420,11 +425,10 @@ data = response.json()
 |---|---|
 | Name | 市場方向 Market Direction |
 | Group | Crypto › Tool |
-| Access | API plan or data fee |
+| Access | API plan or Blave Agent plan |
 | Rate limit | 500 / 5 min per key + per IP |
-| Data from | 2024-12-27 (earliest `1d` bar returned; market-wide series, no symbol dimension) |
+| Data from | 2024-12-27 |
 | Update | Every 5 minutes |
-| Source | Blave — one market-wide series (composite of Blave's crypto indicator overviews, no symbol dimension) |
 
 **Parameters** — no `symbol`: `alpha` is a single market-wide series, not a per-coin one.
 BTCUSDT is used internally only to align the bars; it is not returned and does not change
@@ -458,6 +462,9 @@ response = requests.get(f"{BASE_URL}/market_direction/get_alpha", headers=header
 #           "timestamp": [1789257600.0, 1789261200.0, 1789264800.0, ...]}}   # 72 bars
 ```
 
+**Notes**
+- One market-wide series with no symbol dimension; 2024-12-27 is the earliest `1d` bar returned.
+
 ---
 
 ## `GET /screener/get_saved_conditions`
@@ -466,11 +473,10 @@ response = requests.get(f"{BASE_URL}/market_direction/get_alpha", headers=header
 |---|---|
 | Name | 篩選器已存條件 Screener Saved Conditions |
 | Group | Crypto › Tool |
-| Access | API plan or data fee |
+| Access | API plan or Blave Agent plan |
 | Rate limit | 500 / 5 min per key + per IP |
 | Data from | — |
-| Update | Live (reads the account's saved conditions) |
-| Source | Blave |
+| Update | Live |
 
 **Parameters** — none.
 
@@ -480,7 +486,7 @@ e.g. `"12"`; send it back as the integer `condition_id`). Only this account's ow
 | Field | Type | Description |
 |---|---|---|
 | `filters` | object[] | The condition's filters, all ANDed: `indicator_id` (int), `indicator_name` (`{"en", "zh"}`), `param` (string; `"-"` = the indicator's default), `operator_id` (int), `operator_symbol` (string, e.g. `>`), `value` (threshold) |
-| `note` | string | The name the account saved the condition under (a condition you save is named here) |
+| `note` | string | The name you gave the condition when you saved it |
 | `name_en` / `name_zh` | string \| null | Set only on official / community conditions; on your own conditions expect empty or null and read `note` instead |
 | `description_en` / `description_zh` | string \| null | Set only on official / community conditions; may be empty or null |
 
@@ -497,6 +503,9 @@ response = requests.get(f"{BASE_URL}/screener/get_saved_conditions", headers=hea
 conditions = response.json()["data"]
 ```
 
+**Notes**
+- Each request reads the account's saved conditions live.
+
 ---
 
 ## `GET /screener/get_saved_condition_result`
@@ -505,11 +514,10 @@ conditions = response.json()["data"]
 |---|---|
 | Name | 篩選器結果 Screener Condition Result |
 | Group | Crypto › Tool |
-| Access | API plan or data fee |
+| Access | API plan or Blave Agent plan |
 | Rate limit | 500 / 5 min per key + per IP |
 | Data from | Snapshot (current alpha values) |
 | Update | Every 5 minutes |
-| Source | Blave |
 
 **Parameters**
 
@@ -555,11 +563,10 @@ response = requests.get(f"{BASE_URL}/screener/get_saved_condition_result", heade
 |---|---|
 | Name | 籌碼集中度幣種清單 Holder Concentration Symbols |
 | Group | Crypto › Alpha › Holder Concentration |
-| Access | API plan or data fee |
+| Access | API plan or Blave Agent plan |
 | Rate limit | 500 / 5 min per key + per IP |
 | Data from | — |
-| Update | Server cache 10 min (list taken from the latest Binance USDT-M open-interest snapshot) |
-| Source | Blave (Binance USDT-M symbol list) |
+| Update | Server cache 10 min |
 
 **Parameters** — none.
 
@@ -575,6 +582,7 @@ symbols = requests.get(f"{BASE_URL}/holder_concentration/get_symbols", headers=h
 
 **Notes**
 - Every `*/get_symbols` crypto endpoint currently returns the same Binance USDT-M symbol list.
+- The list is taken from the latest Binance USDT-M open-interest snapshot.
 
 ---
 
@@ -584,11 +592,10 @@ symbols = requests.get(f"{BASE_URL}/holder_concentration/get_symbols", headers=h
 |---|---|
 | Name | 籌碼集中度 Holder Concentration |
 | Group | Crypto › Alpha › Holder Concentration |
-| Access | API plan or data fee |
+| Access | API plan or Blave Agent plan |
 | Rate limit | 500 / 5 min per key + per IP |
-| Data from | 2021-05-11 (BTCUSDT `1d`; other symbols can start later) |
+| Data from | 2021-05-11 (BTCUSDT) |
 | Update | Every 5 minutes |
-| Source | Blave (Binance global long/short account ratio) |
 
 **Parameters** — see *Crypto indicator conventions*.
 
@@ -625,6 +632,10 @@ response = requests.get(f"{BASE_URL}/holder_concentration/get_alpha", headers=he
 #                    "return_ratio": 0.9024861762037658, "is_data_sufficient": true}}}   # 72 bars
 ```
 
+**Notes**
+- Covers Binance only — built on Binance's global long/short account ratio.
+- 2021-05-11 is BTCUSDT's first `1d` bar; other symbols can start later.
+
 ---
 
 ## `GET /funding_rate/get_alpha`
@@ -633,11 +644,10 @@ response = requests.get(f"{BASE_URL}/holder_concentration/get_alpha", headers=he
 |---|---|
 | Name | 資金費率 Funding Rate |
 | Group | Crypto › Alpha › Funding Rate |
-| Access | API plan or data fee |
+| Access | API plan or Blave Agent plan |
 | Rate limit | 500 / 5 min per key + per IP |
-| Data from | 2025-09-30 (BTCUSDT `1d`; other symbols can start later; `exchange=bybit` starts later — read the first timestamp) |
+| Data from | 2025-09-30 (BTCUSDT) |
 | Update | Every 5 minutes |
-| Source | USDT-M perpetual funding rate of the chosen `exchange` (Binance by default); `close` is always the Binance perp |
 
 **Parameters** — see *Crypto indicator conventions*.
 
@@ -677,6 +687,10 @@ response = requests.get(f"{BASE_URL}/funding_rate/get_alpha", headers=headers, p
 #                    "is_data_sufficient": false, ...}}}   # 72 bars
 ```
 
+**Notes**
+- 2025-09-30 is BTCUSDT's first `1d` bar; other symbols can start later, and `exchange=bybit` starts
+  later — read the first timestamp.
+
 ---
 
 ## `GET /market_sentiment/get_symbols`
@@ -685,11 +699,10 @@ response = requests.get(f"{BASE_URL}/funding_rate/get_alpha", headers=headers, p
 |---|---|
 | Name | 市場情緒幣種清單 Market Sentiment Symbols |
 | Group | Crypto › Alpha › Market Sentiment |
-| Access | API plan or data fee |
+| Access | API plan or Blave Agent plan |
 | Rate limit | 500 / 5 min per key + per IP |
 | Data from | — |
-| Update | Server cache 10 min (list taken from the latest Binance USDT-M open-interest snapshot) |
-| Source | Blave (Binance USDT-M symbol list) |
+| Update | Server cache 10 min |
 
 **Parameters** — none.
 
@@ -703,6 +716,9 @@ response = requests.get(f"{BASE_URL}/funding_rate/get_alpha", headers=headers, p
 symbols = requests.get(f"{BASE_URL}/market_sentiment/get_symbols", headers=headers, timeout=30).json()["data"]
 ```
 
+**Notes**
+- The list is taken from the latest Binance USDT-M open-interest snapshot.
+
 ---
 
 ## `GET /market_sentiment/get_alpha`
@@ -711,11 +727,10 @@ symbols = requests.get(f"{BASE_URL}/market_sentiment/get_symbols", headers=heade
 |---|---|
 | Name | 市場情緒 Market Sentiment |
 | Group | Crypto › Alpha › Market Sentiment |
-| Access | API plan or data fee |
+| Access | API plan or Blave Agent plan |
 | Rate limit | 500 / 5 min per key + per IP |
-| Data from | 2020-01-01 (BTCUSDT `1d`; other symbols can start later) |
+| Data from | 2020-01-01 (BTCUSDT) |
 | Update | Every 5 minutes |
-| Source | Blave |
 
 **Parameters** — see *Crypto indicator conventions*.
 
@@ -747,6 +762,9 @@ params = {"symbol": "BTCUSDT", "period": "1h", "start_date": "2025-01-01", "end_
 response = requests.get(f"{BASE_URL}/market_sentiment/get_alpha", headers=headers, params=params, timeout=60)
 ```
 
+**Notes**
+- 2020-01-01 is BTCUSDT's first `1d` bar; other symbols can start later.
+
 ---
 
 ## `GET /capital_shortage/get_alpha`
@@ -755,11 +773,10 @@ response = requests.get(f"{BASE_URL}/market_sentiment/get_alpha", headers=header
 |---|---|
 | Name | 資金稀缺 Capital Shortage |
 | Group | Crypto › Alpha › Capital Shortage |
-| Access | API plan or data fee |
+| Access | API plan or Blave Agent plan |
 | Rate limit | 500 / 5 min per key + per IP |
-| Data from | 2023-12-09 (`1d`; market-wide series, no symbol dimension) |
+| Data from | 2023-12-09 |
 | Update | Every 5 minutes |
-| Source | Blave (market-wide, Binance USDT lending APR) |
 
 **Parameters** — no `symbol`; market-wide. See *Crypto indicator conventions*.
 
@@ -790,6 +807,10 @@ params = {"period": "1h", "start_date": "2025-01-01", "end_date": "2025-03-01"}
 response = requests.get(f"{BASE_URL}/capital_shortage/get_alpha", headers=headers, params=params, timeout=60)
 ```
 
+**Notes**
+- Covers Binance only — market-wide, from the Binance USDT lending APR.
+- One market-wide series with no symbol dimension; 2023-12-09 is the first `1d` bar.
+
 ---
 
 ## `GET /sector_rotation/get_history_data`
@@ -798,11 +819,10 @@ response = requests.get(f"{BASE_URL}/capital_shortage/get_alpha", headers=header
 |---|---|
 | Name | 板塊輪動歷史 Sector Rotation History |
 | Group | Crypto › Alpha › Sector Rotation |
-| Access | API plan or data fee |
+| Access | API plan or Blave Agent plan |
 | Rate limit | 500 / 5 min per key + per IP |
-| Data from | Trailing one-year daily window — a call returned 366 daily points, 2025-09-16 → 2026-09-16, each sector seen starting at `0.0`. There are no parameters, and each rebuild recomputes only the trailing 365 days, so no longer history exists |
-| Update | Built by a scheduled job, ≈ hourly — it reruns 13 min after the previous run ends, and recent rebuilds landed 50–60 min apart; served from the job's output with no extra cache |
-| Source | Blave |
+| Data from | Trailing 365 days (daily) |
+| Update | About hourly |
 
 **Parameters** — none.
 
@@ -829,6 +849,13 @@ response = requests.get(f"{BASE_URL}/sector_rotation/get_history_data", headers=
 #           "timestamp": [1757980800.0, 1758067200.0, 1758153600.0, ...]}}   # 51 sectors, 366 points
 ```
 
+**Notes**
+- The series is a trailing one-year daily window (366 daily points), and every sector starts at
+  `0.0`. There are no parameters, and each rebuild recomputes only the trailing 365 days, so no
+  longer history exists.
+- Rebuilt by a scheduled job, with rebuilds landing 50–60 minutes apart; served from the job's
+  output with no extra server cache.
+
 ---
 
 ## `GET /sector_rotation/get_overview_data`
@@ -837,11 +864,10 @@ response = requests.get(f"{BASE_URL}/sector_rotation/get_history_data", headers=
 |---|---|
 | Name | 板塊輪動熱圖 Sector Rotation Overview |
 | Group | Crypto › Alpha › Sector Rotation |
-| Access | API plan or data fee |
+| Access | API plan or Blave Agent plan |
 | Rate limit | 500 / 5 min per key + per IP |
 | Data from | Snapshot |
-| Update | Built by a scheduled job, ≈ hourly — it reruns 13 min after the previous run ends, and recent rebuilds landed 50–60 min apart; served from the job's output with no extra cache |
-| Source | Blave |
+| Update | About hourly |
 
 **Parameters** — none.
 
@@ -863,6 +889,10 @@ data = requests.get(f"{BASE_URL}/sector_rotation/get_overview_data", headers=hea
 #         "symbols": {"0G": {"id": 38337, "data": {"1h": {"pct_change": 0.0061}, ...}}, ...}}, ...}
 ```
 
+**Notes**
+- Rebuilt by a scheduled job, with rebuilds landing 50–60 minutes apart; served from the job's
+  output with no extra server cache.
+
 ---
 
 ## `GET /oi_imbalance/get_overview_data`
@@ -871,11 +901,10 @@ data = requests.get(f"{BASE_URL}/sector_rotation/get_overview_data", headers=hea
 |---|---|
 | Name | OI 失衡 OI Imbalance |
 | Group | Crypto › Alpha › OI Imbalance |
-| Access | API plan or data fee |
+| Access | API plan or Blave Agent plan |
 | Rate limit | 500 / 5 min per key + per IP |
 | Data from | Snapshot |
-| Update | Every 5 minutes (server cache 5 min) |
-| Source | Blave (Binance / OKX / BingX futures OI) |
+| Update | Every 5 minutes |
 
 **Parameters** — none.
 
@@ -903,6 +932,7 @@ data = requests.get(f"{BASE_URL}/oi_imbalance/get_overview_data", headers=header
 
 **Notes**
 - `/alpha_table`'s `oi_imbalance` carries only the final `alpha`; this endpoint has the full table.
+- Server cache: 5 minutes.
 
 ---
 
@@ -912,11 +942,10 @@ data = requests.get(f"{BASE_URL}/oi_imbalance/get_overview_data", headers=header
 |---|---|
 | Name | 巨鯨警報幣種清單 Whale Hunter Symbols |
 | Group | Crypto › Alpha › Whale Hunter |
-| Access | API plan or data fee |
+| Access | API plan or Blave Agent plan |
 | Rate limit | 500 / 5 min per key + per IP |
 | Data from | — |
-| Update | Server cache 10 min (list taken from the latest Binance USDT-M open-interest snapshot) |
-| Source | Blave (Binance USDT-M symbol list) |
+| Update | Server cache 10 min |
 
 **Parameters** — none.
 
@@ -930,6 +959,9 @@ data = requests.get(f"{BASE_URL}/oi_imbalance/get_overview_data", headers=header
 symbols = requests.get(f"{BASE_URL}/whale_hunter/get_symbols", headers=headers, timeout=30).json()["data"]
 ```
 
+**Notes**
+- The list is taken from the latest Binance USDT-M open-interest snapshot.
+
 ---
 
 ## `GET /whale_hunter/get_alpha`
@@ -938,11 +970,10 @@ symbols = requests.get(f"{BASE_URL}/whale_hunter/get_symbols", headers=headers, 
 |---|---|
 | Name | 巨鯨警報 Whale Hunter |
 | Group | Crypto › Alpha › Whale Hunter |
-| Access | API plan or data fee |
+| Access | API plan or Blave Agent plan |
 | Rate limit | 500 / 5 min per key + per IP |
-| Data from | 2021-12-01 (BTCUSDT `1d`; other symbols can start later) |
+| Data from | 2021-12-01 (BTCUSDT) |
 | Update | Every 5 minutes |
-| Source | Blave (Binance USDT-M open interest and volume) |
 
 **Parameters** — see *Crypto indicator conventions*.
 
@@ -978,9 +1009,11 @@ response = requests.get(f"{BASE_URL}/whale_hunter/get_alpha", headers=headers, p
 ```
 
 **Notes**
+- Covers Binance only — USDT-M perpetual open interest and volume.
 - `timeframe` is not validated server-side. One value outside the list was tried, `2h`, and it
   returned `200` with data. That is a single observation — it does **not** establish that any
   `{n}h` works. Stay on the listed values unless you verify the one you need.
+- 2021-12-01 is BTCUSDT's first `1d` bar; other symbols can start later.
 
 ---
 
@@ -990,11 +1023,10 @@ response = requests.get(f"{BASE_URL}/whale_hunter/get_alpha", headers=headers, p
 |---|---|
 | Name | 多空力道幣種清單 Taker Intensity Symbols |
 | Group | Crypto › Alpha › Taker Intensity |
-| Access | API plan or data fee |
+| Access | API plan or Blave Agent plan |
 | Rate limit | 500 / 5 min per key + per IP |
 | Data from | — |
-| Update | Server cache 10 min (list taken from the latest Binance USDT-M open-interest snapshot) |
-| Source | Blave (Binance USDT-M symbol list) |
+| Update | Server cache 10 min |
 
 **Parameters** — none.
 
@@ -1008,6 +1040,9 @@ response = requests.get(f"{BASE_URL}/whale_hunter/get_alpha", headers=headers, p
 symbols = requests.get(f"{BASE_URL}/taker_intensity/get_symbols", headers=headers, timeout=30).json()["data"]
 ```
 
+**Notes**
+- The list is taken from the latest Binance USDT-M open-interest snapshot.
+
 ---
 
 ## `GET /taker_intensity/get_alpha`
@@ -1016,11 +1051,10 @@ symbols = requests.get(f"{BASE_URL}/taker_intensity/get_symbols", headers=header
 |---|---|
 | Name | 多空力道 Taker Intensity |
 | Group | Crypto › Alpha › Taker Intensity |
-| Access | API plan or data fee |
+| Access | API plan or Blave Agent plan |
 | Rate limit | 500 / 5 min per key + per IP |
-| Data from | 2020-01-01 (BTCUSDT `1d`; other symbols can start later) |
+| Data from | 2020-01-01 (BTCUSDT) |
 | Update | Every 5 minutes |
-| Source | Blave (Binance USDT-M taker buy/sell volume) |
 
 **Parameters** — see *Crypto indicator conventions*.
 
@@ -1053,6 +1087,10 @@ params = {"symbol": "BTCUSDT", "period": "1h", "timeframe": "24h", "start_date":
 response = requests.get(f"{BASE_URL}/taker_intensity/get_alpha", headers=headers, params=params, timeout=60)
 ```
 
+**Notes**
+- Covers Binance only — USDT-M perpetual taker buy/sell volume.
+- 2020-01-01 is BTCUSDT's first `1d` bar; other symbols can start later.
+
 ---
 
 ## `GET /unusual_movement/get_symbols`
@@ -1061,11 +1099,10 @@ response = requests.get(f"{BASE_URL}/taker_intensity/get_alpha", headers=headers
 |---|---|
 | Name | 異常漲跌幣種清單 Unusual Movement Symbols |
 | Group | Crypto › Alpha › Unusual Movement |
-| Access | API plan or data fee |
+| Access | API plan or Blave Agent plan |
 | Rate limit | 500 / 5 min per key + per IP |
 | Data from | — |
-| Update | Server cache 10 min (list taken from the latest Binance USDT-M open-interest snapshot) |
-| Source | Blave (Binance USDT-M symbol list) |
+| Update | Server cache 10 min |
 
 **Parameters** — none.
 
@@ -1079,6 +1116,9 @@ response = requests.get(f"{BASE_URL}/taker_intensity/get_alpha", headers=headers
 symbols = requests.get(f"{BASE_URL}/unusual_movement/get_symbols", headers=headers, timeout=30).json()["data"]
 ```
 
+**Notes**
+- The list is taken from the latest Binance USDT-M open-interest snapshot.
+
 ---
 
 ## `GET /unusual_movement/get_alpha`
@@ -1087,11 +1127,10 @@ symbols = requests.get(f"{BASE_URL}/unusual_movement/get_symbols", headers=heade
 |---|---|
 | Name | 異常漲跌 Unusual Movement |
 | Group | Crypto › Alpha › Unusual Movement |
-| Access | API plan or data fee |
+| Access | API plan or Blave Agent plan |
 | Rate limit | 500 / 5 min per key + per IP |
-| Data from | 2020-01-02 (BTCUSDT `1d`; other symbols can start later) |
+| Data from | 2020-01-02 (BTCUSDT) |
 | Update | Every 5 minutes |
-| Source | Blave (Binance USDT-M price) |
 
 **Parameters** — see *Crypto indicator conventions*.
 
@@ -1126,6 +1165,10 @@ params = {"symbol": "BTCUSDT", "period": "1h", "timeframe": "24h"}
 response = requests.get(f"{BASE_URL}/unusual_movement/get_alpha", headers=headers, params=params, timeout=60)
 ```
 
+**Notes**
+- Covers Binance only — USDT-M perpetual price.
+- 2020-01-02 is BTCUSDT's first `1d` bar; other symbols can start later.
+
 ---
 
 ## `GET /squeeze_momentum/get_symbols`
@@ -1134,11 +1177,10 @@ response = requests.get(f"{BASE_URL}/unusual_movement/get_alpha", headers=header
 |---|---|
 | Name | 擠壓動能幣種清單 Squeeze Momentum Symbols |
 | Group | Crypto › Alpha › Squeeze Momentum |
-| Access | API plan or data fee |
+| Access | API plan or Blave Agent plan |
 | Rate limit | 500 / 5 min per key + per IP |
 | Data from | — |
-| Update | Server cache 10 min (list taken from the latest Binance USDT-M open-interest snapshot) |
-| Source | Blave (Binance USDT-M symbol list) |
+| Update | Server cache 10 min |
 
 **Parameters** — none.
 
@@ -1152,6 +1194,9 @@ response = requests.get(f"{BASE_URL}/unusual_movement/get_alpha", headers=header
 symbols = requests.get(f"{BASE_URL}/squeeze_momentum/get_symbols", headers=headers, timeout=30).json()["data"]
 ```
 
+**Notes**
+- The list is taken from the latest Binance USDT-M open-interest snapshot.
+
 ---
 
 ## `GET /squeeze_momentum/get_alpha`
@@ -1160,11 +1205,10 @@ symbols = requests.get(f"{BASE_URL}/squeeze_momentum/get_symbols", headers=heade
 |---|---|
 | Name | 擠壓動能 Squeeze Momentum |
 | Group | Crypto › Alpha › Squeeze Momentum |
-| Access | API plan or data fee |
+| Access | API plan or Blave Agent plan |
 | Rate limit | 500 / 5 min per key + per IP |
-| Data from | 2020-02-09 — first non-zero `alpha` for BTCUSDT (other symbols can start later) |
+| Data from | 2020-02-09 (BTCUSDT) |
 | Update | Daily bars |
-| Source | Blave (Binance USDT-M price) |
 
 **Parameters** — no `period`; fixed to `1d`. See *Crypto indicator conventions*.
 
@@ -1198,9 +1242,11 @@ response = requests.get(f"{BASE_URL}/squeeze_momentum/get_alpha", headers=header
 ```
 
 **Notes**
+- Covers Binance only — USDT-M perpetual price.
 - The series is padded: BTCUSDT rows exist from 2020-01-01, but `alpha` is `0.0` until
   2020-02-09. A request starting earlier than the *Data from* date returns those padded rows —
   they are filler, not signal. Drop leading zeros, or start at the *Data from* date.
+- 2020-02-09 is the first non-zero `alpha` for BTCUSDT; other symbols can start later.
 
 ---
 
@@ -1210,11 +1256,10 @@ response = requests.get(f"{BASE_URL}/squeeze_momentum/get_alpha", headers=header
 |---|---|
 | Name | Blave 頂尖交易員曝險 Blave Top Trader Exposure |
 | Group | Crypto › Alpha › Blave Top Trader |
-| Access | API plan or data fee |
+| Access | API plan or Blave Agent plan |
 | Rate limit | 500 / 5 min per key + per IP |
 | Data from | 2025-03-03 |
 | Update | Every 5 minutes |
-| Source | Blave — one market-wide series (all coins these traders hold, no symbol dimension) |
 
 **Parameters** — no `symbol`: `alpha` is a single market-wide series, not a per-coin one.
 BTCUSDT is used internally only to align the bars; it is not returned and does not change
@@ -1247,6 +1292,9 @@ response = requests.get(f"{BASE_URL}/blave_top_trader/get_exposure", headers=hea
 # {"data": {"alpha": [34.32, 40.52, ...], "timestamp": [1747130400.0, ...]}}
 ```
 
+**Notes**
+- One market-wide series covering all coins these traders hold; there is no symbol dimension.
+
 ---
 
 ## `GET /liquidation/get_symbols`
@@ -1255,11 +1303,10 @@ response = requests.get(f"{BASE_URL}/blave_top_trader/get_exposure", headers=hea
 |---|---|
 | Name | 爆倉幣種清單 Liquidation Symbols |
 | Group | Crypto › Alpha › Liquidation |
-| Access | API plan or data fee |
+| Access | API plan or Blave Agent plan |
 | Rate limit | 500 / 5 min per key + per IP |
 | Data from | — |
-| Update | Server cache 10 min (list taken from the latest Binance USDT-M open-interest snapshot) |
-| Source | Blave (Binance USDT-M symbol list) |
+| Update | Server cache 10 min |
 
 **Parameters** — none.
 
@@ -1273,6 +1320,9 @@ response = requests.get(f"{BASE_URL}/blave_top_trader/get_exposure", headers=hea
 symbols = requests.get(f"{BASE_URL}/liquidation/get_symbols", headers=headers, timeout=30).json()["data"]
 ```
 
+**Notes**
+- The list is taken from the latest Binance USDT-M open-interest snapshot.
+
 ---
 
 ## `GET /liquidation/get_alpha`
@@ -1281,11 +1331,10 @@ symbols = requests.get(f"{BASE_URL}/liquidation/get_symbols", headers=headers, t
 |---|---|
 | Name | 爆倉指標 Liquidation |
 | Group | Crypto › Alpha › Liquidation |
-| Access | API plan or data fee |
+| Access | API plan or Blave Agent plan |
 | Rate limit | 500 / 5 min per key + per IP |
 | Data from | 2023-01-01 for BTC/ETH; other symbols may start later |
 | Update | Every 5 minutes |
-| Source | Blave (exchange liquidation feeds) |
 
 **Parameters** — see *Crypto indicator conventions*.
 
@@ -1332,11 +1381,10 @@ response = requests.get(f"{BASE_URL}/liquidation/get_alpha", headers=headers, pa
 |---|---|
 | Name | 爆倉地圖 Liquidation Map |
 | Group | Crypto › Alpha › Liquidation |
-| Access | API plan or data fee |
+| Access | API plan or Blave Agent plan |
 | Rate limit | 500 / 5 min per key + per IP |
 | Data from | Snapshot |
 | Update | Server cache 5 s |
-| Source | Blave |
 
 **Parameters**
 
@@ -1378,11 +1426,10 @@ response = requests.get(f"{BASE_URL}/liquidation/get_map", headers=headers, para
 |---|---|
 | Name | 爆倉地圖變化 Liquidation Map Change |
 | Group | Crypto › Alpha › Liquidation |
-| Access | API plan or data fee |
+| Access | API plan or Blave Agent plan |
 | Rate limit | 500 / 5 min per key + per IP |
 | Data from | Last 24 hours |
-| Update | Computed per request: the current map is rebuilt (server cache 5 s) and compared with saved map snapshots from ~1 h, ~8 h and ~24 h ago; snapshots are taken every 30 min for every symbol by a scheduled job, plus on each map request |
-| Source | Blave |
+| Update | Computed per request |
 
 **Parameters**
 
@@ -1415,6 +1462,11 @@ response = requests.get(f"{BASE_URL}/liquidation/get_map_change", headers=header
 # {"data": {"price": 77554.1, "labels": [54287.9, ...], "hist_0_1h": [0.0, ...], "hist_1_8h": [...], "hist_8_24h": [...]}}
 ```
 
+**Notes**
+- Each request rebuilds the current map (server cache 5 s) and compares it with saved map snapshots
+  from about 1 h, 8 h and 24 h ago. Snapshots are saved every 30 minutes for every symbol, plus on
+  each map request.
+
 ---
 
 ## `GET /liquidation/get_coin`
@@ -1423,11 +1475,10 @@ response = requests.get(f"{BASE_URL}/liquidation/get_map_change", headers=header
 |---|---|
 | Name | 每幣爆倉 Liquidation by Coin |
 | Group | Crypto › Alpha › Liquidation |
-| Access | API plan or data fee |
+| Access | API plan or Blave Agent plan |
 | Rate limit | 500 / 5 min per key + per IP |
 | Data from | Snapshot (last 24 h) |
-| Update | Every 5 minutes (server cache 5 min) |
-| Source | Blave (Binance, Bybit, Gate.io, OKX, HTX, Bitfinex liquidation feeds; USD notional converted at collection time, so exchanges can be summed) |
+| Update | Every 5 minutes |
 
 One coin's forced liquidations across every exchange feed Blave collects: four rolling
 windows with the per-exchange split, an hourly 24-point series, and each feed's coverage
@@ -1497,10 +1548,13 @@ peak = max(data["series"]["points"], key=lambda p: p["long_liq_usd"] + p["short_
 ```
 
 **Notes**
+- Covers the liquidation feeds of Binance, Bybit, Gate.io, OKX, HTX and Bitfinex.
 - Snapshot only: no `start_date` / `end_date`, and nothing older than 24 h. For history use
   `get_alpha` (a normalised long/short imbalance, not USD amounts).
 - Symbol handling differs from the other liquidation endpoints: `get_alpha` / `get_map` need the
   Binance perp form (`BTCUSDT`); here `BTC` and `BTCUSDT` are the same coin.
+- Server cache: 5 minutes.
+- USD notional is converted at collection time, so exchanges can be summed.
 
 ---
 
@@ -1510,11 +1564,10 @@ peak = max(data["series"]["points"], key=lambda p: p["long_liq_usd"] + p["short_
 |---|---|
 | Name | 爆倉矩陣 Liquidation Exchange Matrix |
 | Group | Crypto › Alpha › Liquidation |
-| Access | API plan or data fee |
+| Access | API plan or Blave Agent plan |
 | Rate limit | 500 / 5 min per key + per IP |
 | Data from | Rolling window, 5-minute aligned (default last 24 h) |
-| Update | Every 5 minutes (server cache 5 min) |
-| Source | Blave (Binance, Bybit, Gate.io, OKX, HTX, Bitfinex liquidation feeds; USD notional converted at collection time, so exchanges can be summed) |
+| Update | Every 5 minutes |
 
 Whole-market forced liquidations, aggregated per exchange and as a coin × exchange matrix —
 the market-wide companion to `/liquidation/get_coin`. Same rolling 5-minute-aligned frame,
@@ -1533,7 +1586,7 @@ so a coin's 24 h total is the same number on both.
 |---|---|---|---|
 | `exchanges[]` | object[] | — | One row per feed, sorted by total desc: `exchange`, `total_liq_usd`, `long_liq_usd`, `short_liq_usd`, `long_pct`, `short_pct`, `events`, `last_event_at`. Every feed is always listed: amounts `null` = no data received from that feed in the window (sorted last), `0.0` = connected but no liquidations |
 | `exchanges[].price_basis` / `.coverage` / `.time_basis` | string | — | How comparable that row is: `trade_avg` / `bankruptcy` / `unverified`; `full`, `full_unstated`, `sampled_1s`, `aggregated_1s`, `sampled_undisclosed`; `event`. **Keep them when re-publishing the numbers** — a sampled feed is not a full one |
-| `coins[]` | object[] | — | The top `top_n` by cross-exchange total: `token`, `token_id` (`0` when the symbol has no CoinMarketCap id), `total_liq_usd`, `long_liq_usd`, `short_liq_usd`, `by_exchange{name: {total/long/short_liq_usd}}`. `by_exchange` is sparse — a feed with nothing for that coin has no key; read it as `0` when that feed's `exchanges[]` total is not `null` |
+| `coins[]` | object[] | — | The top `top_n` by cross-exchange total: `token`, `token_id` (`0` when the symbol has no token id), `total_liq_usd`, `long_liq_usd`, `short_liq_usd`, `by_exchange{name: {total/long/short_liq_usd}}`. `by_exchange` is sparse — a feed with nothing for that coin has no key; read it as `0` when that feed's `exchanges[]` total is not `null` |
 | `others` | object | — | Everything `top_n` cut off, same fields plus `coin_count`, so `coins[] + others` adds back to each exchange's total |
 | `total` | object | USD / ratio | `total_liq_usd`, `long_liq_usd`, `short_liq_usd`, `long_pct`, `short_pct` |
 | `covered_hours` | float | h | Hours of the window that actually have buckets (< `hours` right after a collector restart) |
@@ -1577,6 +1630,7 @@ print([(e["exchange"], e["total_liq_usd"], e["coverage"]) for e in data["exchang
 ```
 
 **Notes**
+- Covers the liquidation feeds of Binance, Bybit, Gate.io, OKX, HTX and Bitfinex.
 - No data at all (feeds down, or the data source unreachable) is still a `200` with the same
   shape and every amount `null`, `buckets: 0` — never a table of zeros. Check `total.total_liq_usd`
   before using the numbers.
@@ -1584,6 +1638,8 @@ print([(e["exchange"], e["total_liq_usd"], e["coverage"]) for e in data["exchang
   normalised long-history signal is `/liquidation/get_alpha`.
 - The window is rolling, not a calendar day, and it is the same frame `/liquidation/get_coin`
   uses for `windows["24"]`.
+- Server cache: 5 minutes.
+- USD notional is converted at collection time, so exchanges can be summed.
 
 ---
 ## `GET /long_short_ratio/get_table`
@@ -1592,16 +1648,15 @@ print([(e["exchange"], e["total_liq_usd"], e["coverage"]) for e in data["exchang
 |---|---|
 | Name | 多空比總表 Long/Short Ratio Table |
 | Group | Crypto › Raw data › Long/short ratio |
-| Access | API plan or data fee |
+| Access | API plan or Blave Agent plan |
 | Rate limit | 500 / 5 min per key + per IP |
 | Data from | Snapshot (latest cross-section) |
-| Update | 5-minute buckets; the snapshot is the latest bucket each source published (Gate / OKX land ≈ 10 min late) |
-| Source | Blave (Binance, OKX, Gate.io, Bybit long/short-ratio feeds) |
+| Update | 5-minute buckets |
 
 Every collected coin × every long/short-ratio source, as of now. **Ten sources:** Binance,
 OKX and Gate.io each publish three kinds — all accounts, top-trader accounts, top-trader
 positions — and Bybit publishes accounts only. Rows are ordered by Binance open-interest
-notional. Only coins that resolve to a CoinMarketCap crypto are listed; the API-key
+notional. Only coins that resolve to an entry in Blave's token list are listed; the API-key
 response is the full table (`full: true`), the anonymous studio twin only the rows of its
 30-coin whitelist.
 
@@ -1679,6 +1734,8 @@ the dates matter only if you are told a source "has no history".
   is no long-history endpoint for this dataset.
 - Granularity is 5 minutes, but each source publishes on its own clock — do not describe it as
   "updates every 5 minutes".
+- The snapshot is the latest bucket each source has published; Gate.io and OKX buckets land about 10
+  minutes late.
 
 ---
 
@@ -1688,11 +1745,10 @@ the dates matter only if you are told a source "has no history".
 |---|---|
 | Name | 每幣多空比 Long/Short Ratio by Coin |
 | Group | Crypto › Raw data › Long/short ratio |
-| Access | API plan or data fee |
+| Access | API plan or Blave Agent plan |
 | Rate limit | 500 / 5 min per key + per IP |
 | Data from | Last 7 days, hourly + the latest 5-minute point |
-| Update | 5-minute buckets (Gate / OKX land ≈ 10 min late) |
-| Source | Blave (Binance, OKX, Gate.io, Bybit long/short-ratio feeds) |
+| Update | 5-minute buckets |
 
 One coin, all ten sources: the latest 5-minute value of each, a 7-day hourly series per
 source, and the Binance perp close on the same frame.
@@ -1748,6 +1804,7 @@ if latest is not None:
 ```
 
 **Notes**
+- Covers the long/short-ratio feeds of Binance, OKX, Gate.io and Bybit.
 - The cross-exchange "top trader" caveat on `/long_short_ratio/get_table` applies here too.
 - 7 days is the whole history this endpoint serves; there is no `start_date` / `end_date`.
 - **About the "anonymous studio twin" in every capture on this page's raw-data endpoints:** the
@@ -1756,6 +1813,7 @@ if latest is not None:
   the tables are cut to 30 coins (`full: false`), and a coin outside the studio whitelist answers
   `403 {"error_code": "ERR001", ..., "anon_whitelist": [...]}` instead of data. The API-key
   endpoints documented here have no whitelist and no row cut.
+- Gate.io and OKX buckets land about 10 minutes late.
 
 ---
 
@@ -1765,11 +1823,10 @@ if latest is not None:
 |---|---|
 | Name | 未平倉量總表 Open Interest Table |
 | Group | Crypto › Raw data › Open interest |
-| Access | API plan or data fee |
+| Access | API plan or Blave Agent plan |
 | Rate limit | 500 / 5 min per key + per IP |
-| Data from | Snapshot (latest cross-section, with 1 h / 4 h / 24 h changes) |
-| Update | Built by a scheduled job, ≈ every 15 minutes (5-minute source buckets; Gate / OKX land ≈ 10 min late) |
-| Source | Blave (Binance, OKX, BingX, Bybit, Gate.io open-interest feeds) |
+| Data from | Snapshot (latest cross-section) |
+| Update | About every 15 minutes |
 
 Every collected coin × five exchanges, in USD notional. **Basis: USDT-margined
 perpetuals only, USD notional, one side.** An exchange that reports both sides is halved
@@ -1785,8 +1842,8 @@ multiplied contracts (`1000PEPE` and friends) add across exchanges with no resca
 | `coins[].token` / `.token_id` | string / int | — | Coin |
 | `coins[].oi_total` | float | USD | Summed across the five exchanges |
 | `coins[].chg_1h` / `.chg_4h` / `.chg_24h` | float / null | fraction | Decimal change (`0.0675` = +6.75 %). Each window counts **only the exchanges that have a baseline at that window's start**, numerator and denominator over the same set; `null` when none does |
-| `coins[].market_cap` | float / null | USD | CoinMarketCap market cap; `null` when there is no usable one |
-| `coins[].oi_mcap` | float / null | ratio | `oi_total ÷ market_cap`; `null` when `market_cap` is |
+| `coins[].market_cap` | float / null | USD | Market cap; `null` when there is no usable one |
+| `coins[].oi_mcap` | float / null | ratio | `oi_total ÷ market_cap`; `null` when the token has no market cap |
 | `coins[].by_exchange` | object | — | `{exchange: {oi, chg_1h, chg_4h, chg_24h}}`, one key per exchange; `null` when the coin is not listed there. A per-window `null` means that exchange had no baseline that far back — a feed younger than the window |
 | `exchanges[]` | object[] | — | `binance`, `okx`, `bingx`, `bybit`, `gate` — whole-market `oi`, `side_factor`, `since`, `full_7d`, `last_at`, `stale` |
 | `exchanges[].since` / `.full_7d` | string / bool | date | The feed's first day when it has under 7 days of history (`full_7d: false`), else `null` / `true`. Informational on this table (it has no 7-day window); on `/oi_imbalance/get_coin` such a feed has no 7 d baseline and is left out of `series.total` |
@@ -1845,6 +1902,8 @@ OKX and Bybit are why `n_full_7d` is 3 of 5 and why their `chg_24h` was still `n
 - A cross-section, not history. One coin's last 7 days (hourly, all five exchanges) is
   `/oi_imbalance/get_coin`; backtest-length history for one coin on one exchange is
   `/oi_imbalance/get_history`.
+- The snapshot carries 1 h / 4 h / 24 h changes. It is rebuilt by a scheduled job about every 15
+  minutes from 5-minute source buckets; Gate.io and OKX buckets land about 10 minutes late.
 
 ---
 
@@ -1854,11 +1913,10 @@ OKX and Bybit are why `n_full_7d` is 3 of 5 and why their `chg_24h` was still `n
 |---|---|
 | Name | 每幣未平倉量 Open Interest by Coin |
 | Group | Crypto › Raw data › Open interest |
-| Access | API plan or data fee |
+| Access | API plan or Blave Agent plan |
 | Rate limit | 500 / 5 min per key + per IP |
 | Data from | Last 7 days, hourly + current values |
-| Update | 5-minute buckets (Gate / OKX land ≈ 10 min late) |
-| Source | Blave (Binance, OKX, BingX, Bybit, Gate.io open-interest feeds) |
+| Update | 5-minute buckets |
 
 One coin's open interest per exchange, on the same basis as the table: current value and
 share, four change windows with the exchanges each counted, and a 7-day hourly total line.
@@ -1906,11 +1964,13 @@ print(data["oi_total"], day["chg"], "counted:", day["exchanges"])
 ```
 
 **Notes**
+- Covers open interest on Binance, OKX, BingX, Bybit and Gate.io.
 - `windows["1h"]["exchanges"]` having five entries while `windows["24h"]` has three is the
   young-feed rule, not missing data — read that list before comparing windows.
 - The OI 失衡 caveat from `/oi_imbalance/get_table` applies to this `oi_total` too.
 - Seven days only. For a longer series to backtest on, use `/oi_imbalance/get_history` (one
   exchange, coins rather than USD — a different basis from `oi_total`).
+- Gate.io and OKX buckets land about 10 minutes late.
 
 ---
 
@@ -1920,11 +1980,10 @@ print(data["oi_total"], day["chg"], "counted:", day["exchanges"])
 |---|---|
 | Name | 未平倉量歷史 Open Interest History |
 | Group | Crypto › Raw data › Open interest |
-| Access | API plan or data fee |
+| Access | API plan or Blave Agent plan |
 | Rate limit | 500 / 5 min per key + per IP |
-| Data from | 5-minute resolution — `binance` 2021-12-01, `bybit` 2025-08-21, `gate` 2026-03-28 (each: or the coin's listing date there, if later). Currently listed contracts only |
+| Data from | binance 2021-12-01; bybit 2025-08-21; gate 2026-03-28 |
 | Update | 5-minute buckets |
-| Source | Blave (Binance, Bybit, Gate.io open-interest feeds; `close` from the Binance USDT-M perpetual) |
 
 One coin's open interest on **one exchange**, as a time series you can backtest on — the same
 basis as the Studio dashboard 未平倉量 card. **`alpha` is one-sided open interest in coins, not
@@ -1997,10 +2056,14 @@ params = {"symbol": "1000PEPE", "period": "1d", "start_date": "2026-09-01", "end
 ```
 
 **Notes**
+- Covers open interest on Binance, Bybit and Gate.io; `close` is the Binance USDT-M perpetual
+  price.
 - `200` with empty arrays means no bucket in that window (e.g. the coin listed after it) — do
   not cache it as a permanent "no data".
 - The last bucket keeps moving until its period closes when `end_date` is today.
 - For history beyond 365 days, send one request per year and concatenate.
+- Resolution is 5 minutes. Each exchange's series starts at the *Data from* date, or at the coin's
+  listing date on that exchange if later. Currently listed contracts only.
 
 ---
 
@@ -2010,11 +2073,10 @@ params = {"symbol": "1000PEPE", "period": "1d", "start_date": "2026-09-01", "end
 |---|---|
 | Name | 主動買賣淨額總表 CVD Table |
 | Group | Crypto › Raw data › CVD |
-| Access | API plan or data fee |
+| Access | API plan or Blave Agent plan |
 | Rate limit | 500 / 5 min per key + per IP |
 | Data from | Snapshot (rolling 1 h / 4 h / 24 h windows) |
-| Update | Built by a scheduled job, ≈ every 15 minutes (5-minute source buckets; Gate / OKX land ≈ 10 min late) |
-| Source | Blave (Binance, OKX, Gate.io taker-flow feeds) |
+| Update | About every 15 minutes |
 
 Taker (market-order) buy and sell turnover per coin, in USD, across **three exchanges**:
 Binance from the 5-minute kline's taker-buy quote volume (sell = the bar's total minus it),
@@ -2078,6 +2140,8 @@ window) — read them per coin from `/taker_intensity/get_cvd_coin`'s `exchanges
 - Not the same as the `taker_intensity` alpha (`/taker_intensity/get_alpha`), which is a
   normalised z-score-like signal with years of history. This is raw USD turnover, now.
 - Windows are rolling and end at the last closed 5-minute bar, so `net_24h` is not a calendar day.
+- Rebuilt by a scheduled job about every 15 minutes from 5-minute source buckets; Gate.io and OKX
+  buckets land about 10 minutes late.
 
 ---
 
@@ -2087,11 +2151,10 @@ window) — read them per coin from `/taker_intensity/get_cvd_coin`'s `exchanges
 |---|---|
 | Name | 每幣主動買賣淨額 CVD by Coin |
 | Group | Crypto › Raw data › CVD |
-| Access | API plan or data fee |
+| Access | API plan or Blave Agent plan |
 | Rate limit | 500 / 5 min per key + per IP |
 | Data from | Last 7 days, hourly + rolling windows |
-| Update | 5-minute buckets (Gate / OKX land ≈ 10 min late) |
-| Source | Blave (Binance, OKX, Gate.io taker-flow feeds) |
+| Update | 5-minute buckets |
 
 One coin's taker buy / sell / net per exchange (same basis as the table) plus a 7-day
 hourly net and its running cumulative — the CVD line itself.
@@ -2137,9 +2200,11 @@ print(data["windows"]["24h"]["net"], "line covers:", data["series"]["exchanges"]
 ```
 
 **Notes**
+- Covers taker flow on Binance, OKX and Gate.io.
 - `series.exchanges` being shorter than `exchanges[]` is the `full_7d` rule — compare the series
   against itself, not against `windows["24h"]`, which counts more venues.
 - `cvd[0] = 0` by construction: only the slope and the turning points carry information.
+- Gate.io and OKX buckets land about 10 minutes late.
 
 ---
 
@@ -2149,11 +2214,10 @@ print(data["windows"]["24h"]["net"], "line covers:", data["series"]["exchanges"]
 |---|---|
 | Name | CME 比特幣／以太幣期貨持倉報告 CME Bitcoin / Ether Futures Commitments of Traders (latest) |
 | Group | Crypto › Raw data › CME positioning |
-| Access | API plan or data fee |
+| Access | API plan or Blave Agent plan |
 | Rate limit | 500 / 5 min per key + per IP |
-| Data from | Latest report only (history: `/cme_cot/get_history`) |
-| Update | Weekly — positions as of Tuesday (Monday when Tuesday is a US holiday), published by CFTC on that week's Friday 15:30 US Eastern; a federal holiday Wed–Fri moves it to the next business day, a government shutdown delays it by weeks; server cache 1 h |
-| Source | U.S. CFTC Commitments of Traders, futures only — Traders in Financial Futures (TFF) + Legacy reports |
+| Data from | Latest report only |
+| Update | Weekly, Friday 15:30 US Eastern |
 
 The latest weekly CFTC row for each of the four CME crypto futures, plus standard + micro summed
 in coins per asset. Same shape as one row of `/cme_cot/get_history`, without `price`.
@@ -2194,6 +2258,13 @@ btc = next(c for c in data["contracts"] if c["key"] == "btc")
 # data["source_updated"] == "Fri, 02 Oct 2026 19:30:08 GMT", data["stale"] == False
 ```
 
+**Notes**
+- For history use `/cme_cot/get_history`.
+- Positions are as of Tuesday (Monday when Tuesday is a US holiday) and are published by the CFTC on
+  that week's Friday 15:30 US Eastern; a federal holiday Wednesday–Friday moves the release to the
+  next business day, and a government shutdown delays it by weeks.
+- Server cache: 1 hour.
+
 ---
 
 ## `GET /cme_cot/get_history`
@@ -2202,11 +2273,10 @@ btc = next(c for c in data["contracts"] if c["key"] == "btc")
 |---|---|
 | Name | CME 比特幣／以太幣期貨持倉報告歷史 CME Bitcoin / Ether Futures Commitments of Traders (history) |
 | Group | Crypto › Raw data › CME positioning |
-| Access | API plan or data fee |
+| Access | API plan or Blave Agent plan |
 | Rate limit | 500 / 5 min per key + per IP |
-| Data from | `btc` 2018-04-10, `micro_btc` 2021-05-04, `eth` 2021-04-06, `micro_eth` 2021-12-14 (CME's own BTC futures enter the COT on 2018-04-10, not at their 2017-12 launch) |
-| Update | Weekly — positions as of Tuesday (Monday when Tuesday is a US holiday), published by CFTC on that week's Friday 15:30 US Eastern; a federal holiday Wed–Fri moves it to the next business day, a government shutdown delays it by weeks; server cache 1 h |
-| Source | U.S. CFTC Commitments of Traders, futures only — TFF + Legacy reports; `price` = Binance spot UTC daily close |
+| Data from | 2018-04-10 (btc); other contracts later |
+| Update | Weekly, Friday 15:30 US Eastern |
 
 One contract's weekly positioning by trader category. Rows are dated by the report date — the
 day the positions are as of, usually a Tuesday (a Monday when Tuesday is a US holiday). **The data
@@ -2285,6 +2355,10 @@ lev_net = {r["date"]: r["tff"]["leveraged_funds"]["net"] for r in data["rows"]} 
 - Licence: CFTC data is public domain, but CFTC asks to be acknowledged — keep `source` next to
   any figure you show. Not endorsed by the CFTC.
 - Interpretation (leveraged funds net short ≠ bearish): `references/blave-indicator-guide.md` › CME 持倉報告.
+- Start date per contract: `btc` 2018-04-10, `micro_btc` 2021-05-04, `eth` 2021-04-06, `micro_eth`
+  2021-12-14. CME's own BTC futures enter the COT on 2018-04-10, not at their 2017-12 launch.
+- Server cache: 1 hour.
+- `price` is the Binance spot UTC daily close.
 
 ---
 
@@ -2306,11 +2380,10 @@ Conventions for this category:
 |---|---|
 | Name | 台股清單 Taiwan Stock List |
 | Group | Taiwan Stock › Market Data |
-| Access | API plan or data fee |
+| Access | API plan or Blave Agent plan |
 | Rate limit | 500 / 5 min per key + per IP |
 | Data from | Snapshot (currently listed securities) |
-| Update | Server cache 24 h (10 min when one market failed to load) |
-| Source | TWSE STOCK_DAY_ALL + TPEx mainboard quotes; company profiles from TWSE t187ap03_L / TPEx mopsfin_t187ap03_O |
+| Update | Server cache 24 h |
 
 **Parameters** — none.
 
@@ -2340,6 +2413,7 @@ data = requests.get(f"{BASE_URL}/studio/market/twstock/list", headers=headers, t
   sector, so `[:N]` truncation concentrates in a few sectors.
 - A list noticeably shorter than ~2,400 means one market failed to load — treat as degraded,
   not as delistings.
+- The server cache drops to 10 minutes when one market failed to load.
 
 ---
 
@@ -2349,11 +2423,10 @@ data = requests.get(f"{BASE_URL}/studio/market/twstock/list", headers=headers, t
 |---|---|
 | Name | 個股基本資料 Taiwan Stock Info |
 | Group | Taiwan Stock › Market Data |
-| Access | API plan or data fee |
+| Access | API plan or Blave Agent plan |
 | Rate limit | 500 / 5 min per key + per IP |
 | Data from | Snapshot |
-| Update | Same cache as `/list` (24 h) |
-| Source | Same as `/list` |
+| Update | Server cache 24 h |
 
 **Parameters**
 
@@ -2377,6 +2450,9 @@ info = requests.get(f"{BASE_URL}/studio/market/twstock/info/2330", headers=heade
 # {"stock_id": "2330", "name": "台積電", "close": 2410.0, "industry_code": "24", "listing_date": "1994-09-05"}
 ```
 
+**Notes**
+- Served from the same cache as `/list`.
+
 ---
 
 ## `GET /studio/market/twstock/price/<stock_id>`
@@ -2385,11 +2461,10 @@ info = requests.get(f"{BASE_URL}/studio/market/twstock/info/2330", headers=heade
 |---|---|
 | Name | 台股日K（原始）Taiwan Stock Daily Price (Raw) |
 | Group | Taiwan Stock › Market Data |
-| Access | API plan or data fee |
+| Access | API plan or Blave Agent plan |
 | Rate limit | 500 / 5 min per key + per IP |
-| Data from | 1994-10-01 — the floor the server asks upstream from. `2330` with no `start` / `end` returned 8,069 rows starting at exactly that floor. Codes listed later start later |
-| Update | Daily. Same-day row after the official TWSE/TPEx close publication (~14:00 Taipei); server cache 5 min |
-| Source | FinMind (history); TWSE / TPEx official daily quotes (same-day row) |
+| Data from | 1994-10-01 |
+| Update | Daily, about 14:00 Taipei |
 
 **Parameters**
 
@@ -2437,6 +2512,10 @@ data = response.json()["data"]   # no start/end → full history, 8,069 rows
   instead of returning `400`, so always send `YYYY-MM-DD`.
 - Use `price_adj` for backtesting total return; this endpoint is unadjusted.
 - For many stocks use `batch/price` (≤ 50 ids per call) instead of looping this endpoint.
+- 1994-10-01 is the earliest date served; codes listed later start later.
+- The same-day row comes from the official TWSE / TPEx closing files and appears after they are
+  published (about 14:00 Taipei).
+- Server cache: 5 minutes.
 
 ---
 
@@ -2446,11 +2525,10 @@ data = response.json()["data"]   # no start/end → full history, 8,069 rows
 |---|---|
 | Name | 台股日K（還原）Taiwan Stock Daily Price (Forward-Adjusted) |
 | Group | Taiwan Stock › Market Data |
-| Access | API plan or data fee |
+| Access | API plan or Blave Agent plan |
 | Rate limit | 500 / 5 min per key + per IP |
-| Data from | Same as `/price` — 1994-10-01 for `2330`, same 8,069 rows |
-| Update | Daily, rebuilt when the raw series advances; server cache 5 min |
-| Source | `/price` series adjusted with FinMind dividend data |
+| Data from | 1994-10-01 (same as /price) |
+| Update | Daily |
 
 **Parameters** — same as `/price/<stock_id>`.
 
@@ -2470,6 +2548,8 @@ data = requests.get(f"{BASE_URL}/studio/market/twstock/price_adj/2330", headers=
 - Forward adjustment (後復權 / 向後調整) for cash and stock dividends: early prices stay as
   traded; from each ex-dividend date onward prices are multiplied by the cumulative factor, so
   recent adjusted prices sit above raw. Use for total-return backtests.
+- Rebuilt when the raw `/price` series advances.
+- Server cache: 5 minutes.
 
 ---
 
@@ -2479,11 +2559,10 @@ data = requests.get(f"{BASE_URL}/studio/market/twstock/price_adj/2330", headers=
 |---|---|
 | Name | 即時報價 Taiwan Stock Real-Time Quote |
 | Group | Taiwan Stock › Market Data |
-| Access | API plan or data fee |
+| Access | API plan or Blave Agent plan |
 | Rate limit | 500 / 5 min per key + per IP |
 | Data from | Snapshot only — no history |
-| Update | ~10 s (server cache 10 s) |
-| Source | FinMind real-time snapshot |
+| Update | About every 10 seconds |
 
 **Parameters**
 
@@ -2531,6 +2610,7 @@ data = requests.get(f"{BASE_URL}/studio/market/twstock/quote/2330", headers=head
 
 **Notes**
 - For intraday price checks only — no history, not for backtesting.
+- Server cache: 10 s.
 
 ---
 
@@ -2540,11 +2620,10 @@ data = requests.get(f"{BASE_URL}/studio/market/twstock/quote/2330", headers=head
 |---|---|
 | Name | 即時報價（批次）Taiwan Stock Real-Time Quote (Batch) |
 | Group | Taiwan Stock › Market Data |
-| Access | API plan or data fee |
+| Access | API plan or Blave Agent plan |
 | Rate limit | 500 / 5 min per key + per IP |
 | Data from | Snapshot only — no history |
-| Update | ~10 s (server cache 10 s) |
-| Source | FinMind real-time snapshot |
+| Update | About every 10 seconds |
 
 **Parameters**
 
@@ -2572,6 +2651,9 @@ data = requests.get(f"{BASE_URL}/studio/market/twstock/quote", headers=headers,
 # {"2330": {...}, "2317": {...}}
 ```
 
+**Notes**
+- Server cache: 10 s.
+
 ---
 
 ## `GET /studio/market/twstock/quote/all`
@@ -2580,11 +2662,10 @@ data = requests.get(f"{BASE_URL}/studio/market/twstock/quote", headers=headers,
 |---|---|
 | Name | 即時報價（全市場）Taiwan Stock Real-Time Quote (All) |
 | Group | Taiwan Stock › Market Data |
-| Access | API plan or data fee |
+| Access | API plan or Blave Agent plan |
 | Rate limit | 500 / 5 min per key + per IP |
 | Data from | Snapshot only — no history |
-| Update | ~10 s (server cache 10 s) |
-| Source | FinMind real-time snapshot |
+| Update | About every 10 seconds |
 
 **Parameters** — none.
 
@@ -2602,6 +2683,9 @@ data = requests.get(f"{BASE_URL}/studio/market/twstock/quote", headers=headers,
 rows = requests.get(f"{BASE_URL}/studio/market/twstock/quote/all", headers=headers, timeout=30).json()["data"]
 ```
 
+**Notes**
+- Server cache: 10 s.
+
 ---
 
 ## `GET /studio/market/twstock/minute/ohlcv/<stock_id>/<schema>`
@@ -2610,11 +2694,10 @@ rows = requests.get(f"{BASE_URL}/studio/market/twstock/quote/all", headers=heade
 |---|---|
 | Name | 現股分線 Taiwan Stock Minute-Line OHLCV |
 | Group | Taiwan Stock › Market Data |
-| Access | API plan or data fee |
+| Access | API plan or Blave Agent plan |
 | Rate limit | 500 / 5 min per key + per IP |
 | Data from | 2019-01 (backfilled per stock) |
 | Update | Intraday live bars; official correction after the close |
-| Source | Shioaji (live) + FinMind (official history) |
 
 **Parameters**
 
@@ -2674,11 +2757,10 @@ body = requests.get(f"{BASE_URL}/studio/market/twstock/minute/ohlcv/2330/1m", he
 |---|---|
 | Name | 現股分線覆蓋清單 Minute-Line Covered Symbols |
 | Group | Taiwan Stock › Market Data |
-| Access | API plan or data fee |
+| Access | API plan or Blave Agent plan |
 | Rate limit | 500 / 5 min per key + per IP |
 | Data from | Snapshot |
 | Update | Live |
-| Source | Blave minute store |
 
 **Parameters** — none.
 
@@ -2701,11 +2783,10 @@ covered = requests.get(f"{BASE_URL}/studio/market/twstock/minute/ohlcv/symbols",
 |---|---|
 | Name | 分K（舊版）Taiwan Stock 1-Minute Bars (Legacy) |
 | Group | Taiwan Stock › Market Data |
-| Access | API plan or data fee |
+| Access | API plan or Blave Agent plan |
 | Rate limit | 500 / 5 min per key + per IP |
-| Data from | 2019-01-01, for ids covered by `minute/ohlcv/symbols` |
+| Data from | 2019-01-01 |
 | Update | Server cache 60 s when the range includes today, else 5 min |
-| Source | Same store as `minute/ohlcv` (no upstream call) |
 
 **Parameters**
 
@@ -2743,6 +2824,7 @@ data = requests.get(f"{BASE_URL}/studio/market/twstock/kbar/2330", headers=heade
 - Legacy — prefer `minute/ohlcv/<stock_id>/1m`. A listed stock with no minute data returns `[]`
   (this endpoint does not trigger seeding).
 - Today's bars are provisional intraday and replaced by official bars after ~16:10 Taipei.
+- Only ids covered by `minute/ohlcv/symbols` have data.
 
 ---
 
@@ -2752,11 +2834,10 @@ data = requests.get(f"{BASE_URL}/studio/market/twstock/kbar/2330", headers=heade
 |---|---|
 | Name | 市值 Taiwan Stock Market Value |
 | Group | Taiwan Stock › Fundamentals |
-| Access | API plan or data fee |
+| Access | API plan or Blave Agent plan |
 | Rate limit | 500 / 5 min per key + per IP |
 | Data from | 2004-01-01 |
-| Update | Daily; server cache 5 min |
-| Source | FinMind TaiwanStockMarketValue |
+| Update | Daily |
 
 **Parameters**
 
@@ -2777,6 +2858,9 @@ data = requests.get(f"{BASE_URL}/studio/market/twstock/market_value/2330", heade
                     params={"start": "2026-01-01"}, timeout=60).json()["data"]
 ```
 
+**Notes**
+- Server cache: 5 minutes.
+
 ---
 
 ## `GET /studio/market/twstock/market_value/all`
@@ -2785,11 +2869,10 @@ data = requests.get(f"{BASE_URL}/studio/market/twstock/market_value/2330", heade
 |---|---|
 | Name | 市值排名 Taiwan Stock Market Value Ranking |
 | Group | Taiwan Stock › Fundamentals |
-| Access | API plan or data fee |
+| Access | API plan or Blave Agent plan |
 | Rate limit | 500 / 5 min per key + per IP |
 | Data from | Snapshot (latest published day) |
-| Update | Daily (EOD); server cache 30 min |
-| Source | FinMind TaiwanStockMarketValue, filtered to `/list` |
+| Update | Daily (EOD) |
 
 **Parameters**
 
@@ -2808,7 +2891,7 @@ data = requests.get(f"{BASE_URL}/studio/market/twstock/market_value/2330", heade
 | `data[].name` | string | Name |
 | `data[].market` | string | `"TWSE"` (上市) or `"TPEx"` (上櫃), from the TWSE / TPEx listing rosters |
 | `data[].market_value` | int | TWD |
-| `data[].is_etf` | bool | `true` for the ETFs in the ranking (359 of 2,370 rows on 2026-09-17). `false` means "not in the ETF set", **not** "confirmed not an ETF": a security FinMind publishes no `industry_category` for — e.g. REIT `01010T` — is `false`, and it stays inside `twse_ex_etf_market_value` |
+| `data[].is_etf` | bool | `true` for the ETFs in the ranking (359 of 2,370 rows on 2026-09-17). `false` means "not in the ETF set", **not** "confirmed not an ETF": a security with no industry category — e.g. REIT `01010T` — is `false`, and it stays inside `twse_ex_etf_market_value` |
 
 **Errors**
 
@@ -2845,7 +2928,7 @@ tpex_only = [r["stock_id"] for r in rows if r["market"] == "TPEx"]   # board fil
   `/market_value/<stock_id>` for "top N by market cap" questions.
 - **`rank` and `twse_ex_etf_market_value` are different universes.** `rank` is whole-market —
   上市 + 上櫃, ETFs included — and did not change when the denominator was added. The
-  denominator is 上市 only and excludes ETFs (FinMind `industry_category` in
+  denominator is 上市 only and excludes ETFs (`industry_category` in
   `{ETF, 上櫃ETF, 上櫃指數股票型基金(ETF)}`); REITs and preferred shares are **not**
   excluded from it. So `market_value / twse_ex_etf_market_value` is an index weight only for a
   row whose `market` is `"TWSE"` and which is not an ETF — a TPEx or ETF row over this
@@ -2854,8 +2937,9 @@ tpex_only = [r["stock_id"] for r in rows if r["market"] == "TPEx"]   # board fil
 - `market` is a listing-board tag, not an ETF flag — **`is_etf` is the ETF flag.** Use it for an
   ETF-free universe. Don't infer ETFs from the `stock_id` prefix (`00` is a market convention
   rather than a contract, and it misses REITs `01xxxT`) and don't re-fetch a classification from
-  FinMind. `is_etf` is exactly the criterion `twse_ex_etf_market_value` is computed on, so an
+  elsewhere. `is_etf` is exactly the criterion `twse_ex_etf_market_value` is computed on, so an
   `is_etf` filter and the denominator can never disagree.
+- Server cache: 30 minutes.
 
 ---
 
@@ -2865,11 +2949,10 @@ tpex_only = [r["stock_id"] for r in rows if r["market"] == "TPEx"]   # board fil
 |---|---|
 | Name | 本益比／淨值比／殖利率 Taiwan Stock PER / PBR / Dividend Yield |
 | Group | Taiwan Stock › Fundamentals |
-| Access | API plan or data fee |
+| Access | API plan or Blave Agent plan |
 | Rate limit | 500 / 5 min per key + per IP |
 | Data from | 2005-10-01 |
-| Update | Daily; same-day row from TWSE / TPEx the same afternoon; server cache 5 min |
-| Source | FinMind TaiwanStockPER; TWSE BWIBBU_d / TPEx pera_result (same day) |
+| Update | Daily |
 
 **Parameters**
 
@@ -2901,6 +2984,9 @@ data = requests.get(f"{BASE_URL}/studio/market/twstock/per/2330", headers=header
 
 **Notes**
 - For value screens across many stocks use `batch/per`.
+- The same-day row comes from the official TWSE / TPEx publication and appears the same
+  afternoon.
+- Server cache: 5 minutes.
 
 ---
 
@@ -2910,11 +2996,10 @@ data = requests.get(f"{BASE_URL}/studio/market/twstock/per/2330", headers=header
 |---|---|
 | Name | 綜合損益表 Taiwan Stock Income Statement |
 | Group | Taiwan Stock › Fundamentals |
-| Access | API plan or data fee |
+| Access | API plan or Blave Agent plan |
 | Rate limit | 500 / 5 min per key + per IP |
-| Data from | 2013-01-01 is only the **default** `start`. Send an earlier `start` and earlier rows come back — `2330` with `start=2000-01-01` returned rows from 2000-06-30 |
-| Update | Quarterly; server cache 24 h |
-| Source | FinMind TaiwanStockFinancialStatements |
+| Data from | 2013-01-01 by default; earlier on request |
+| Update | Quarterly |
 
 **Parameters**
 
@@ -2946,6 +3031,11 @@ data = requests.get(f"{BASE_URL}/studio/market/twstock/financials/2330", headers
 wide = pd.DataFrame(data).pivot_table(index="date", columns="type", values="value", aggfunc="first")
 ```
 
+**Notes**
+- `start` defaults to 2013-01-01; send an earlier `start` and earlier rows come back (`2330` goes
+  back to 2000-06-30).
+- Server cache: 24 hours.
+
 ---
 
 ## `GET /studio/market/twstock/balance_sheet/<stock_id>`
@@ -2954,11 +3044,10 @@ wide = pd.DataFrame(data).pivot_table(index="date", columns="type", values="valu
 |---|---|
 | Name | 資產負債表 Taiwan Stock Balance Sheet |
 | Group | Taiwan Stock › Fundamentals |
-| Access | API plan or data fee |
+| Access | API plan or Blave Agent plan |
 | Rate limit | 500 / 5 min per key + per IP |
-| Data from | 2013-01-01 is only the **default** `start`. Send an earlier `start` and earlier rows come back — `2330` with `start=2000-01-01` returned rows from 2012-12-31 |
-| Update | Quarterly; server cache 24 h |
-| Source | FinMind TaiwanStockBalanceSheet |
+| Data from | 2013-01-01 by default; earlier on request |
+| Update | Quarterly |
 
 **Parameters** — same as `/financials/<stock_id>`.
 
@@ -2975,6 +3064,11 @@ data = requests.get(f"{BASE_URL}/studio/market/twstock/balance_sheet/2330", head
                     params={"start": "2022-01-01"}, timeout=30).json()["data"]
 ```
 
+**Notes**
+- `start` defaults to 2013-01-01; send an earlier `start` and earlier rows come back (`2330` goes
+  back to 2012-12-31).
+- Server cache: 24 hours.
+
 ---
 
 ## `GET /studio/market/twstock/cashflow/<stock_id>`
@@ -2983,16 +3077,15 @@ data = requests.get(f"{BASE_URL}/studio/market/twstock/balance_sheet/2330", head
 |---|---|
 | Name | 現金流量表 Taiwan Stock Cash Flow Statement |
 | Group | Taiwan Stock › Fundamentals |
-| Access | API plan or data fee |
+| Access | API plan or Blave Agent plan |
 | Rate limit | 500 / 5 min per key + per IP |
-| Data from | 2013-01-01 is only the **default** `start`. Send an earlier `start` and earlier rows come back — `2330` with `start=2000-01-01` returned rows from 2012-03-31 |
-| Update | Quarterly; server cache 24 h |
-| Source | FinMind TaiwanStockCashFlowsStatement |
+| Data from | 2013-01-01 by default; earlier on request |
+| Update | Quarterly |
 
 **Parameters** — same as `/financials/<stock_id>`.
 
-**Response** — same long format as `/financials/<stock_id>`. Main `type` codes (FinMind's own
-codes; the full set varies by company and year, so treat the response as the authoritative list
+**Response** — same long format as `/financials/<stock_id>`. Main `type` codes (the upstream
+dataset's own codes; the full set varies by company and year, so treat the response as the authoritative list
 and use `origin_name` for anything not below). Filter on `type`, not `origin_name` — the same code's
 label switches between full- and half-width brackets across years:
 
@@ -3026,6 +3119,11 @@ cfo = (pd.DataFrame(data).query("type == 'CashFlowsFromOperatingActivities'")
 cfo_q = cfo - cfo.groupby(cfo.index.year).shift(1).fillna(0)   # YTD → single quarter
 ```
 
+**Notes**
+- `start` defaults to 2013-01-01; send an earlier `start` and earlier rows come back (`2330` goes
+  back to 2012-03-31).
+- Server cache: 24 hours.
+
 ---
 
 ## `GET /studio/market/twstock/monthly_revenue/<stock_id>`
@@ -3034,11 +3132,10 @@ cfo_q = cfo - cfo.groupby(cfo.index.year).shift(1).fillna(0)   # YTD → single 
 |---|---|
 | Name | 月營收 Taiwan Stock Monthly Revenue |
 | Group | Taiwan Stock › Fundamentals |
-| Access | API plan or data fee |
+| Access | API plan or Blave Agent plan |
 | Rate limit | 500 / 5 min per key + per IP |
 | Data from | 2000-01-01 |
-| Update | Monthly; server cache 24 h |
-| Source | FinMind TaiwanStockMonthRevenue (passed through unchanged) |
+| Update | Monthly |
 
 **Parameters**
 
@@ -3076,6 +3173,9 @@ df["yoy_pct"] = df["revenue"].pct_change(periods=12) * 100
 #   "revenue": 215785127000, "revenue_year": 2024, "revenue_month": 1}, ...]
 ```
 
+**Notes**
+- Server cache: 24 hours.
+
 ---
 
 ## `GET /studio/market/twstock/ratios/<stock_id>`
@@ -3084,11 +3184,10 @@ df["yoy_pct"] = df["revenue"].pct_change(periods=12) * 100
 |---|---|
 | Name | 財務比率 Taiwan Stock Financial Ratios |
 | Group | Taiwan Stock › Fundamentals |
-| Access | API plan or data fee |
+| Access | API plan or Blave Agent plan |
 | Rate limit | 500 / 5 min per key + per IP |
-| Data from | 2013-03-31 (2013 Q1) — a hard floor; an earlier `start` returns nothing older |
-| Update | Quarterly; recomputed by the same job that refreshes the statements (runs twice daily, 13:30 and 23:00 UTC); server cache 6 h |
-| Source | Derived by Blave from `financials` / `balance_sheet` / `cashflow` (FinMind) |
+| Data from | 2013-03-31 (2013 Q1) |
+| Update | Quarterly |
 
 **Parameters**
 
@@ -3162,6 +3261,9 @@ df = pd.DataFrame(data).assign(date=lambda d: pd.to_datetime(d["date"])).set_ind
 - Not included: PER / PBR / dividend yield (daily — `per/<stock_id>`) and the monthly-revenue
   ratios (compute YoY / MoM from `monthly_revenue/<stock_id>`).
 - Many stocks → `GET /studio/market/twstock/batch/ratios?stock_ids=...` (≤ 50 ids per call).
+- 2013-03-31 is a hard floor: an earlier `start` returns nothing older.
+- Recomputed by the same job that refreshes the statements, twice daily (13:30 and 23:00 UTC).
+- Server cache: 6 hours.
 
 ---
 
@@ -3171,11 +3273,10 @@ df = pd.DataFrame(data).assign(date=lambda d: pd.to_datetime(d["date"])).set_ind
 |---|---|
 | Name | 股利事件 Taiwan Stock Dividend Events |
 | Group | Taiwan Stock › Fundamentals |
-| Access | API plan or data fee |
+| Access | API plan or Blave Agent plan |
 | Rate limit | 500 / 5 min per key + per IP |
-| Data from | Per stock — `2330` with no `start` / `end` returned 43 rows, earliest effective date 2005-06-19 |
+| Data from | Per stock (2330: 2005-06-19) |
 | Update | Refreshed on request when stale |
-| Source | FinMind dividend data |
 
 **Parameters**
 
@@ -3236,11 +3337,10 @@ data = requests.get(f"{BASE_URL}/studio/market/twstock/dividend/2330", headers=h
 |---|---|
 | Name | 個股新聞 Taiwan Stock News |
 | Group | Taiwan Stock › Fundamentals |
-| Access | API plan or data fee |
+| Access | API plan or Blave Agent plan |
 | Rate limit | 500 / 5 min per key + per IP |
-| Data from | Upstream coverage begins around mid-2020 (rows found as early as 2020-08 on spot checks; the true start is not documented) and is sparse — a few articles a day or none — until about 2021-02; earlier dates may return `[]` |
-| Update | Fetched per day on first request; server cache 5 min |
-| Source | FinMind TaiwanStockNews |
+| Data from | About mid-2020 (sparse until about 2021-02) |
+| Update | Fetched on request |
 
 **Parameters**
 
@@ -3274,6 +3374,12 @@ data = requests.get(f"{BASE_URL}/studio/market/twstock/news/2330", headers=heade
                     params={"start": "2026-08-01", "end": "2026-08-07"}, timeout=60).json()["data"]
 ```
 
+**Notes**
+- Coverage begins around mid-2020 (rows exist as early as 2020-08; the true start is not documented)
+  and is sparse — a few articles a day or none — until about 2021-02; earlier dates may return `[]`.
+- Each day's articles are fetched on the first request for that day.
+- Server cache: 5 minutes.
+
 ---
 
 ## `GET /studio/market/twstock/institutional/<stock_id>`
@@ -3282,11 +3388,10 @@ data = requests.get(f"{BASE_URL}/studio/market/twstock/news/2330", headers=heade
 |---|---|
 | Name | 三大法人買賣超 Taiwan Stock Institutional Investors |
 | Group | Taiwan Stock › Institutional Flow |
-| Access | API plan or data fee |
+| Access | API plan or Blave Agent plan |
 | Rate limit | 500 / 5 min per key + per IP |
-| Data from | Per stock — `2330` with no `start` / `end` returned 3,523 daily rows from 2012-05-02 |
-| Update | Daily; same-day row from TWSE / TPEx when available; server cache 5 min |
-| Source | FinMind TaiwanStockInstitutionalInvestorsBuySell; TWSE / TPEx official (same day) |
+| Data from | Per stock (2330: 2012-05-02) |
+| Update | Daily |
 
 **Parameters**
 
@@ -3326,6 +3431,9 @@ data = requests.get(f"{BASE_URL}/studio/market/twstock/institutional/2330", head
   your call. Blave's own per-stock surfaces (web, app, AI chat) count 外資自營商 as part of 外資,
   matching the exchanges' own column naming, and treat 自營商 as 自行買賣 plus 避險. The whole-market
   endpoint (`GET /studio/market/twmarket/institutional`) groups it differently — see that section.
+- The same-day row comes from the official TWSE / TPEx publication and appears once the
+  exchanges have published it.
+- Server cache: 5 minutes.
 
 ---
 
@@ -3335,11 +3443,10 @@ data = requests.get(f"{BASE_URL}/studio/market/twstock/institutional/2330", head
 |---|---|
 | Name | 融資融券 Taiwan Stock Margin Trading |
 | Group | Taiwan Stock › Institutional Flow |
-| Access | API plan or data fee |
+| Access | API plan or Blave Agent plan |
 | Rate limit | 500 / 5 min per key + per IP |
-| Data from | Per stock — `2330` with no `start` / `end` returned 6,323 daily rows from 2001-01-05 |
-| Update | Daily; server cache 5 min |
-| Source | FinMind TaiwanStockMarginPurchaseShortSale |
+| Data from | Per stock (2330: 2001-01-05) |
+| Update | Daily |
 
 **Parameters**
 
@@ -3380,6 +3487,9 @@ df = pd.DataFrame(data)
 df["margin_util"] = df["margin_balance"] / df["margin_limit"]   # 融資使用率
 ```
 
+**Notes**
+- Server cache: 5 minutes.
+
 ---
 
 ## `GET /studio/market/twstock/shareholding/<stock_id>`
@@ -3388,11 +3498,10 @@ df["margin_util"] = df["margin_balance"] / df["margin_limit"]   # 融資使用�
 |---|---|
 | Name | 股權持股分級表 Taiwan Stock Shareholding Distribution |
 | Group | Taiwan Stock › Institutional Flow |
-| Access | API plan or data fee |
+| Access | API plan or Blave Agent plan |
 | Rate limit | 500 / 5 min per key + per IP |
-| Data from | Per stock — `2330` with no `start` / `end` returned 10,656 rows across 649 weekly dates, earliest 2010-01-29 |
-| Update | Weekly (TDCC, Fridays); server cache 5 min |
-| Source | FinMind TaiwanStockHoldingSharesPer |
+| Data from | Per stock (2330: 2010-01-29) |
+| Update | Weekly, Fridays |
 
 **Parameters**
 
@@ -3422,6 +3531,10 @@ data = requests.get(f"{BASE_URL}/studio/market/twstock/shareholding/2330", heade
                     params={"start": "2024-01-01", "end": "2024-03-31"}, timeout=60).json()["data"]
 ```
 
+**Notes**
+- The figures are the shareholding distribution published by TDCC (集保結算所).
+- Server cache: 5 minutes.
+
 ---
 
 ## `GET /studio/market/twstock/foreign_shareholding/<stock_id>`
@@ -3430,11 +3543,10 @@ data = requests.get(f"{BASE_URL}/studio/market/twstock/shareholding/2330", heade
 |---|---|
 | Name | 外資持股 Taiwan Stock Foreign Shareholding |
 | Group | Taiwan Stock › Institutional Flow |
-| Access | API plan or data fee |
+| Access | API plan or Blave Agent plan |
 | Rate limit | 500 / 5 min per key + per IP |
-| Data from | 2013-01-01 is only the **default** `start`. Send an earlier `start` and earlier rows come back — `2330` with `start=2000-01-01` returned rows from 2004-02-12 |
-| Update | Daily; server cache 24 h |
-| Source | FinMind TaiwanStockShareholding |
+| Data from | 2013-01-01 by default; earlier on request |
+| Update | Daily |
 
 **Parameters**
 
@@ -3466,6 +3578,11 @@ data = requests.get(f"{BASE_URL}/studio/market/twstock/foreign_shareholding/2330
                     params={"start": "2026-01-01"}, timeout=60).json()["data"]
 ```
 
+**Notes**
+- `start` defaults to 2013-01-01; send an earlier `start` and earlier rows come back (`2330` goes
+  back to 2004-02-12).
+- Server cache: 24 hours.
+
 ---
 
 ## `GET /studio/market/twstock/gov_bank/<stock_id>`
@@ -3474,11 +3591,10 @@ data = requests.get(f"{BASE_URL}/studio/market/twstock/foreign_shareholding/2330
 |---|---|
 | Name | 八大行庫買賣超 Taiwan Stock Government Bank Buy/Sell |
 | Group | Taiwan Stock › Institutional Flow |
-| Access | API plan or data fee |
+| Access | API plan or Blave Agent plan |
 | Rate limit | 500 / 5 min per key + per IP |
 | Data from | 2021-06-30 |
-| Update | Daily; server cache 5 min |
-| Source | FinMind TaiwanStockGovernmentBankBuySell |
+| Update | Daily |
 
 **Parameters**
 
@@ -3511,6 +3627,9 @@ data = requests.get(f"{BASE_URL}/studio/market/twstock/gov_bank/2330", headers=h
                     params={"start": "2026-08-01", "end": "2026-08-07"}, timeout=60).json()["data"]
 ```
 
+**Notes**
+- Server cache: 5 minutes.
+
 ---
 
 ## `GET /studio/market/twstock/lending/<stock_id>`
@@ -3519,11 +3638,10 @@ data = requests.get(f"{BASE_URL}/studio/market/twstock/gov_bank/2330", headers=h
 |---|---|
 | Name | 借券成交明細 Taiwan Stock Securities Lending |
 | Group | Taiwan Stock › Institutional Flow |
-| Access | API plan or data fee |
+| Access | API plan or Blave Agent plan |
 | Rate limit | 500 / 5 min per key + per IP |
 | Data from | 2001-05-01 |
-| Update | Daily; server cache 5 min |
-| Source | FinMind TaiwanStockSecuritiesLending |
+| Update | Daily |
 
 **Parameters**
 
@@ -3554,6 +3672,9 @@ data = requests.get(f"{BASE_URL}/studio/market/twstock/lending/2330", headers=he
                     params={"start": "2026-08-01"}, timeout=60).json()["data"]
 ```
 
+**Notes**
+- Server cache: 5 minutes.
+
 ---
 
 ## `GET /studio/market/twstock/broker/search`
@@ -3562,11 +3683,10 @@ data = requests.get(f"{BASE_URL}/studio/market/twstock/lending/2330", headers=he
 |---|---|
 | Name | 券商分點查詢 Broker Branch Search |
 | Group | Taiwan Stock › Institutional Flow |
-| Access | API plan or data fee |
+| Access | API plan or Blave Agent plan |
 | Rate limit | 500 / 5 min per key + per IP |
 | Data from | Snapshot (~1,000 branches) |
 | Update | Loaded once per server process |
-| Source | FinMind TaiwanSecuritiesTraderInfo |
 
 **Parameters**
 
@@ -3599,11 +3719,10 @@ rows = requests.get(f"{BASE_URL}/studio/market/twstock/broker/search", headers=h
 |---|---|
 | Name | 分點買賣超（依個股）Broker Buy/Sell by Stock |
 | Group | Taiwan Stock › Institutional Flow |
-| Access | API plan or data fee |
+| Access | API plan or Blave Agent plan |
 | Rate limit | 500 / 5 min per key + per IP |
 | Data from | 2021-06-30 |
-| Update | Daily, after ~21:30 Taipei; server cache 5 min |
-| Source | FinMind TaiwanStockTradingDailyReport (whole-market daily file) |
+| Update | Daily, after about 21:30 Taipei |
 
 **Parameters** — send `date` for one day, or `start` (+ `end`) for a range; `start` wins if both are sent.
 
@@ -3645,6 +3764,7 @@ rows = requests.get(f"{BASE_URL}/studio/market/twstock/broker/stock/2330", heade
 - A day with no data (holiday, before 2021-06-28, or today before ~21:30) is `200` + `[]`.
 - Range queries are live: `start` / `end` over 2026-09-06 → 2026-09-13 returned rows spanning
   five distinct trading days, for both `broker/stock/<stock_id>` and `broker/trader/<trader_id>`.
+- Server cache: 5 minutes.
 
 ---
 
@@ -3654,11 +3774,10 @@ rows = requests.get(f"{BASE_URL}/studio/market/twstock/broker/stock/2330", heade
 |---|---|
 | Name | 分點買賣超（依分點）Broker Buy/Sell by Branch |
 | Group | Taiwan Stock › Institutional Flow |
-| Access | API plan or data fee |
+| Access | API plan or Blave Agent plan |
 | Rate limit | 500 / 5 min per key + per IP |
 | Data from | 2021-06-30 |
-| Update | Daily, after ~21:30 Taipei; server cache 5 min |
-| Source | FinMind TaiwanStockTradingDailyReport (whole-market daily file) |
+| Update | Daily, after about 21:30 Taipei |
 
 **Parameters** — same `date` / `start` / `end` rules as `/broker/stock/<stock_id>`.
 
@@ -3681,6 +3800,9 @@ rows = requests.get(f"{BASE_URL}/studio/market/twstock/broker/trader/9217", head
                     params={"date": "2026-08-07"}, timeout=60).json()["data"]
 ```
 
+**Notes**
+- Server cache: 5 minutes.
+
 ---
 
 ## `GET /studio/market/twstock/alerts`
@@ -3689,11 +3811,10 @@ rows = requests.get(f"{BASE_URL}/studio/market/twstock/broker/trader/9217", head
 |---|---|
 | Name | 注意股／處置股 Taiwan Stock Attention & Disposition Announcements |
 | Group | Taiwan Stock › Other |
-| Access | API plan or data fee |
+| Access | API plan or Blave Agent plan |
 | Rate limit | 500 / 5 min per key + per IP |
-| Data from | TWSE disposals and notices 2001-01; TPEx notices 2002-02; TPEx disposals 2003-09 |
-| Update | Store refreshed 17:45, 21:30 and 07:00 Taipei; a TPEx evening announcement may first appear in the 07:00 run |
-| Source | TWSE (臺灣證券交易所) and TPEx (證券櫃檯買賣中心) announcements |
+| Data from | TWSE 2001-01; TPEx notices 2002-02, disposals 2003-09 |
+| Update | Daily at 17:45, 21:30 and 07:00 Taipei |
 
 **Parameters** — give `date`, or `start` / `end`, or neither (= today, Taipei).
 
@@ -3727,7 +3848,7 @@ per announcement.
 | `condition` | string \| null | Disposal: the trigger as published (`連續三次`, `連續3個營業日`, `最近十個營業日已有六次` …). Notice: the clauses cited (`第一款、第五款`); `null` if none |
 | `measure` | string \| null | Disposal type: `第一次處置`, `第二次處置`, `再次處置`, `人工管制撮合`, `收足五成款券` …; `null` on notices and on early TPEx rows |
 | `match_minutes` | int \| null | Disposal: N of 「約每N分鐘撮合一次」 read from the text; `null` when the text names none (every TWSE disposal before ~2011 — its text is blank — and non-matching measures) and on notices |
-| `reason` | string \| null | Full announcement text; null where the exchange published none (every TWSE disposal before 2011-03) (disposal 處置內容, notice 注意交易資訊) |
+| `reason` | string \| null | Full announcement text; `null` where the exchange published none (every TWSE disposal before 2011-03) (disposal 處置內容, notice 注意交易資訊) |
 | `close`, `pe` | float \| null | Close and P/E on the announcement; always `null` on TWSE disposals |
 
 **Errors**
@@ -3787,6 +3908,8 @@ hist = requests.get(f"{BASE_URL}/studio/market/twstock/alerts", headers=headers,
   per row, never assume a value.
 - Pre-disposal candidate lists (處置候選) are not included.
 - Cite as 「資料來源：臺灣證券交易所、證券櫃檯買賣中心」.
+- The TWSE start date covers both disposals and notices.
+- A TPEx evening announcement may first appear in the 07:00 run.
 
 ---
 
@@ -3796,11 +3919,10 @@ hist = requests.get(f"{BASE_URL}/studio/market/twstock/alerts", headers=headers,
 |---|---|
 | Name | 台股批次查詢 Taiwan Stock Batch Fetch |
 | Group | Taiwan Stock › Other |
-| Access | API plan or data fee |
+| Access | API plan or Blave Agent plan |
 | Rate limit | 500 / 5 min per key + per IP |
-| Data from | Per `data_type` (same as the single-stock endpoint) |
-| Update | Per `data_type` |
-| Source | Per `data_type` |
+| Data from | Per data_type (same as the single-stock endpoint) |
+| Update | Per data_type |
 
 **Parameters**
 
@@ -3862,11 +3984,10 @@ full history. Do not sum per-stock endpoints as a substitute — coverage and un
 |---|---|
 | Name | 加權指數日K TAIEX Daily OHLC |
 | Group | Taiwan Market |
-| Access | API plan or data fee |
+| Access | API plan or Blave Agent plan |
 | Rate limit | 500 / 5 min per key + per IP |
 | Data from | 1999-01-05 |
-| Update | Daily; server cache 5 min |
-| Source | TWSE MI_5MINS_HIST |
+| Update | Daily |
 
 **Parameters**
 
@@ -3895,6 +4016,10 @@ body = requests.get(f"{BASE_URL}/studio/market/twmarket/index/TAIEX", headers=he
 # {"index_id": "TAIEX", "data": [{"date": "2024-01-02", "open": 17939.79, "high": 17956.74, "low": 17784.97, "close": 17853.76}, ...]}
 ```
 
+**Notes**
+- The series is the index as officially published by TWSE.
+- Server cache: 5 minutes.
+
 ---
 
 ## `GET /studio/market/twmarket/turnover`
@@ -3903,11 +4028,10 @@ body = requests.get(f"{BASE_URL}/studio/market/twmarket/index/TAIEX", headers=he
 |---|---|
 | Name | 全市場成交量值 Market Turnover |
 | Group | Taiwan Market |
-| Access | API plan or data fee |
+| Access | API plan or Blave Agent plan |
 | Rate limit | 500 / 5 min per key + per IP |
 | Data from | 1990-01-04 |
-| Update | Daily; server cache 5 min |
-| Source | TWSE FMTQIK |
+| Update | Daily |
 
 **Parameters**
 
@@ -3935,6 +4059,10 @@ data = requests.get(f"{BASE_URL}/studio/market/twmarket/turnover", headers=heade
 # [{"date": "2024-01-02", "volume": 6411778806.0, "value": 301290668897.0, "trades": 2267660.0}, ...]
 ```
 
+**Notes**
+- The figures are the market turnover statistics officially published by TWSE.
+- Server cache: 5 minutes.
+
 ---
 
 ## `GET /studio/market/twmarket/institutional`
@@ -3943,11 +4071,10 @@ data = requests.get(f"{BASE_URL}/studio/market/twmarket/turnover", headers=heade
 |---|---|
 | Name | 全市場三大法人買賣超 Market Institutional Net Buy/Sell |
 | Group | Taiwan Market |
-| Access | API plan or data fee |
+| Access | API plan or Blave Agent plan |
 | Rate limit | 500 / 5 min per key + per IP |
 | Data from | 2004-04-07 |
-| Update | Daily; server cache 5 min |
-| Source | FinMind; TWSE BFI82U before FinMind publishes the day |
+| Update | Daily |
 
 **Parameters**
 
@@ -3976,9 +4103,9 @@ data = requests.get(f"{BASE_URL}/studio/market/twmarket/institutional", headers=
   per-stock endpoint (`GET /studio/market/twstock/institutional/<stock_id>`) is a different layer:
   it returns the raw per-category columns and buckets nothing. Don't mix the two.
 - `foreign + investment_trust + dealer` equals `total`, the exchange's published 三大法人合計, on
-  every day (verified against FinMind for all 5,537 days 2004-04-07 → 2026-10-06). 外資自營商 is not
-  a separate column: it sits on warrants/ETNs, which Blave does not serve, and has been 0 every day
+  every day. 外資自營商 is not a separate column: it sits on warrants/ETNs, which Blave does not serve, and has been 0 every day
   after 2024-08-16.
+- Server cache: 5 minutes.
 
 ---
 
@@ -3988,11 +4115,10 @@ data = requests.get(f"{BASE_URL}/studio/market/twmarket/institutional", headers=
 |---|---|
 | Name | 全市場融資融券餘額 Market Margin Balance |
 | Group | Taiwan Market |
-| Access | API plan or data fee |
+| Access | API plan or Blave Agent plan |
 | Rate limit | 500 / 5 min per key + per IP |
 | Data from | 2001-01-03 |
-| Update | Daily; server cache 5 min |
-| Source | FinMind |
+| Update | Daily |
 
 **Parameters**
 
@@ -4021,6 +4147,9 @@ data = requests.get(f"{BASE_URL}/studio/market/twmarket/margin", headers=headers
 #   "margin_balance_value": 248424271000, "short_balance": 369678, "short_balance_prev": 359738}, ...]
 ```
 
+**Notes**
+- Server cache: 5 minutes.
+
 ---
 
 ## `GET /studio/market/twmarket/dividend_points`
@@ -4029,11 +4158,10 @@ data = requests.get(f"{BASE_URL}/studio/market/twmarket/margin", headers=headers
 |---|---|
 | Name | 加權指數每日除息點數 TAIEX Daily Dividend Points |
 | Group | Taiwan Market |
-| Access | API plan or data fee |
+| Access | API plan or Blave Agent plan |
 | Rate limit | 500 / 5 min per key + per IP |
 | Data from | 2003-01-02 (realized); forecasts up to today + 120 days |
-| Update | Realized leg each trading day ~17:00 Taipei; server cache 5 min (forecast inputs 1 h) |
-| Source | FinMind total-return vs price index (realized); announced dividends + last-year template (forecast) |
+| Update | Daily, about 17:00 Taipei (realized) |
 
 **Parameters**
 
@@ -4057,7 +4185,7 @@ data = requests.get(f"{BASE_URL}/studio/market/twmarket/margin", headers=headers
 | Status | Body | When |
 |---|---|---|
 | 400 | `{"error": "Invalid start date, expected YYYY-MM-DD"}` (or `end`) | Malformed date |
-| 404 | `{"error": "No TAIEX index data available from FinMind"}` | Cold store and no upstream data |
+| 404 | `{"error": "No TAIEX index data available"}` | Cold store and no upstream data |
 | 503 | error message | Forecast coverage below 90%, store not ready, or upstream rate limit |
 
 **Example**
@@ -4079,6 +4207,9 @@ future_div = df[df["estimated"]].set_index("date")["points"]
 - Forecasts more than ~2 weeks out lean on the last-year template.
 - Forecast rows are always returned from tomorrow through `end`, even when `start` is later
   than tomorrow — filter client-side.
+- Server cache: 5 minutes (forecast inputs 1 hour).
+- The realized leg is the total-return index against the price index; forecasts use announced
+  dividends plus a last-year template.
 
 ---
 
@@ -4090,11 +4221,10 @@ future_div = df[df["estimated"]].set_index("date")["points"]
 |---|---|
 | Name | 台灣期貨分線 Taiwan Futures OHLCV |
 | Group | Taiwan Futures & Options |
-| Access | API plan or data fee |
+| Access | API plan or Blave Agent plan |
 | Rate limit | 500 / 5 min per key + per IP |
-| Data from | TXF: 2011-01-03 (`1d` and intraday). MXF: 2020-03-22 (`1d`). Stock futures start per contract — `CAF` returned `1d` bars at least as early as 2016-09-18 (the probe window began there, so it may reach further back) |
-| Update | Near-real-time from the on-disk 1m store, refreshed on request |
-| Source | Sinopac Shioaji (near-month continuous series) |
+| Data from | TXF 2011-01-03; MXF 2020-03-22 (1d); stock futures per contract |
+| Update | Near-real-time |
 
 **Parameters**
 
@@ -4164,6 +4294,9 @@ def fetch_txf_chunked(schema, start, end, chunk_days=28):
   to the request date both came back with a last bar months old. Read `data[-1]["ts"]`.
 - `1d` bars carry a `16:00:00+00:00` time component (00:00 Taipei), not midnight UTC — take the
   date from `ts` rather than assuming the timestamp is date-aligned.
+- TXF's start date holds for `1d` and intraday; MXF's is for `1d`. Stock futures start per contract
+  — `CAF` has `1d` bars at least as early as 2016-09-18.
+- Bars are refreshed on request.
 
 ---
 
@@ -4173,11 +4306,10 @@ def fetch_txf_chunked(schema, start, end, chunk_days=28):
 |---|---|
 | Name | 期貨分線覆蓋清單 Taiwan Futures Minute-Line Symbols |
 | Group | Taiwan Futures & Options |
-| Access | API plan or data fee |
+| Access | API plan or Blave Agent plan |
 | Rate limit | 500 / 5 min per key + per IP |
 | Data from | Snapshot |
 | Update | Live |
-| Source | Blave |
 
 **Parameters** — none.
 
@@ -4201,11 +4333,10 @@ symbols = requests.get(f"{BASE_URL}/studio/market/twfutures/ohlcv/symbols", head
 |---|---|
 | Name | 期貨分線年檔下載 Taiwan Futures 1m Yearly Export |
 | Group | Taiwan Futures & Options |
-| Access | API plan or data fee |
+| Access | API plan or Blave Agent plan |
 | Rate limit | 500 / 5 min per key + per IP |
 | Data from | 2011 (TXF) |
-| Update | Past years immutable; the current year's file is refreshed before download |
-| Source | Sinopac Shioaji |
+| Update | Current year refreshed on download |
 
 **Parameters**
 
@@ -4245,6 +4376,7 @@ bars_60m = (raw[["open", "high", "low", "close", "volume"]]
 - One request per year, zero server-side computation — resample locally.
 - Same near-month continuous series as `ohlcv/<symbol>/1m`, under the same settlement-day roll
   rule (no bars stamped 13:31–14:59 Taipei on monthly settlement day).
+- Past years' files are immutable; the current year's file is refreshed before download.
 
 ---
 
@@ -4254,11 +4386,10 @@ bars_60m = (raw[["open", "high", "low", "close", "volume"]]
 |---|---|
 | Name | 台指期內外盤 Taiwan Futures Bid/Ask Volume |
 | Group | Taiwan Futures & Options |
-| Access | API plan or data fee |
+| Access | API plan or Blave Agent plan |
 | Rate limit | 500 / 5 min per key + per IP |
 | Data from | 2018-02-22 (TXF) |
 | Update | Aggregated from ticks, refreshed on request |
-| Source | Tick data (Sinopac Shioaji) |
 
 **Parameters**
 
@@ -4307,11 +4438,10 @@ data = requests.get(f"{BASE_URL}/studio/market/twfutures/bid_ask_vol/TXF", heade
 |---|---|
 | Name | 期貨日行情 Taiwan Futures Daily by Contract |
 | Group | Taiwan Futures & Options |
-| Access | API plan or data fee |
+| Access | API plan or Blave Agent plan |
 | Rate limit | 500 / 5 min per key + per IP |
-| Data from | 1998-07-21 for `TX`; other products start later — `MTX` from 2001-04-09, `CDF` (stock futures) from 2010-01-25 |
-| Update | Daily after ~15:00 Taipei (TAIFEX direct before FinMind catches up); server cache 5 min |
-| Source | FinMind TaiwanFuturesDaily; TAIFEX (latest day for TX / MTX / TMF) |
+| Data from | TX 1998-07-21; MTX 2001-04-09; CDF 2010-01-25 |
+| Update | Daily, after about 15:00 Taipei |
 
 **Parameters**
 
@@ -4350,6 +4480,11 @@ data = requests.get(f"{BASE_URL}/studio/market/twfutures/daily/TX", headers=head
                     params={"start": "2026-08-01"}, timeout=60).json()["data"]
 ```
 
+**Notes**
+- The latest day for `TX` / `MTX` / `TMF` comes from the official TAIFEX publication.
+- `TX` is the earliest product; others start later (`CDF` is a stock future).
+- Server cache: 5 minutes.
+
 ---
 
 ## `GET /studio/market/twfutures/stock_futures/batch/daily`
@@ -4358,11 +4493,10 @@ data = requests.get(f"{BASE_URL}/studio/market/twfutures/daily/TX", headers=head
 |---|---|
 | Name | 股票期貨批次日行情 Stock Futures Batch Daily |
 | Group | Taiwan Futures & Options |
-| Access | API plan or data fee |
+| Access | API plan or Blave Agent plan |
 | Rate limit | 500 / 5 min per key + per IP |
-| Data from | Per contract listing — `CDF` asked from 1998-07-01 returned rows starting 2010-01-25 |
-| Update | As `/daily/<futures_id>` |
-| Source | As `/daily/<futures_id>` |
+| Data from | Per contract listing (CDF: 2010-01-25) |
+| Update | Same as twfutures/daily |
 
 **Parameters**
 
@@ -4399,11 +4533,10 @@ body = requests.get(f"{BASE_URL}/studio/market/twfutures/stock_futures/batch/dai
 |---|---|
 | Name | 期貨三大法人 Taiwan Futures Institutional Investors |
 | Group | Taiwan Futures & Options |
-| Access | API plan or data fee |
+| Access | API plan or Blave Agent plan |
 | Rate limit | 500 / 5 min per key + per IP |
 | Data from | 2018-06-05 |
-| Update | Daily after ~15:00 Taipei (TAIFEX direct before FinMind catches up); server cache 5 min |
-| Source | FinMind TaiwanFuturesInstitutionalInvestors; TAIFEX (latest day) |
+| Update | Daily, after about 15:00 Taipei |
 
 **Parameters**
 
@@ -4441,11 +4574,13 @@ data = requests.get(f"{BASE_URL}/studio/market/twfutures/institutional/TX", head
 ```
 
 **Notes**
+- The latest day comes from the official TAIFEX publication.
 - `*_amount` is TWD thousand — **inferred from magnitude, not stated upstream**, but the
   arithmetic backs it: a `TX` row with `long_open_interest_balance_amount 722870036` over
   `..._volume 78292` is 9,233 per contract, and a `TX` contract is index × 200, so 9,233 thousand
   ÷ 200 ≈ 46,160 index points, which is where the index was trading that day. Read as TWD it
   would be 1,000× too small.
+- Server cache: 5 minutes.
 
 ---
 
@@ -4455,11 +4590,10 @@ data = requests.get(f"{BASE_URL}/studio/market/twfutures/institutional/TX", head
 |---|---|
 | Name | 期貨大額交易人 Taiwan Futures Large Traders |
 | Group | Taiwan Futures & Options |
-| Access | API plan or data fee |
+| Access | API plan or Blave Agent plan |
 | Rate limit | 500 / 5 min per key + per IP |
-| Data from | 2007-01-02 — `TX` asked from 1998-07-01 returned nothing before that date |
-| Update | Daily; server cache 5 min |
-| Source | FinMind TaiwanFuturesOpenInterestLargeTraders |
+| Data from | 2007-01-02 |
+| Update | Daily |
 
 **Parameters**
 
@@ -4496,6 +4630,9 @@ data = requests.get(f"{BASE_URL}/studio/market/twfutures/large_traders/TX", head
                     params={"start": "2026-08-01"}, timeout=60).json()["data"]
 ```
 
+**Notes**
+- Server cache: 5 minutes.
+
 ---
 
 ## `GET /studio/market/twfutures/option/institutional/<option_id>`
@@ -4504,11 +4641,10 @@ data = requests.get(f"{BASE_URL}/studio/market/twfutures/large_traders/TX", head
 |---|---|
 | Name | 選擇權三大法人 Taiwan Options Institutional Investors |
 | Group | Taiwan Futures & Options |
-| Access | API plan or data fee |
+| Access | API plan or Blave Agent plan |
 | Rate limit | 500 / 5 min per key + per IP |
 | Data from | 2018-06-05 |
-| Update | Daily; server cache 5 min |
-| Source | FinMind |
+| Update | Daily |
 
 **Parameters**
 
@@ -4531,6 +4667,9 @@ data = requests.get(f"{BASE_URL}/studio/market/twfutures/option/institutional/TX
                     params={"start": "2026-08-01"}, timeout=60).json()["data"]
 ```
 
+**Notes**
+- Server cache: 5 minutes.
+
 ---
 
 ## `GET /studio/market/twfutures/option/large_traders/<option_id>`
@@ -4539,11 +4678,10 @@ data = requests.get(f"{BASE_URL}/studio/market/twfutures/option/institutional/TX
 |---|---|
 | Name | 選擇權大額交易人 Taiwan Options Large Traders |
 | Group | Taiwan Futures & Options |
-| Access | API plan or data fee |
+| Access | API plan or Blave Agent plan |
 | Rate limit | 500 / 5 min per key + per IP |
-| Data from | 2007-01-02 — `TXO` asked from 1998-07-01 returned nothing before that date |
-| Update | Daily; server cache 5 min |
-| Source | FinMind |
+| Data from | 2007-01-02 |
+| Update | Daily |
 
 **Parameters**
 
@@ -4567,6 +4705,9 @@ data = requests.get(f"{BASE_URL}/studio/market/twfutures/option/large_traders/TX
                     params={"start": "2026-08-01"}, timeout=60).json()["data"]
 ```
 
+**Notes**
+- Server cache: 5 minutes.
+
 ---
 
 ## `GET /studio/market/twfutures/option/pcr`
@@ -4575,11 +4716,10 @@ data = requests.get(f"{BASE_URL}/studio/market/twfutures/option/large_traders/TX
 |---|---|
 | Name | 台指選擇權買賣權比 TXO Put/Call Ratio |
 | Group | Taiwan Futures & Options |
-| Access | API plan or data fee |
+| Access | API plan or Blave Agent plan |
 | Rate limit | 500 / 5 min per key + per IP |
 | Data from | 2001-12-24 |
-| Update | Daily; server cache 5 min |
-| Source | TAIFEX pcRatio (official) |
+| Update | Daily |
 
 **Parameters**
 
@@ -4614,6 +4754,7 @@ data = requests.get(f"{BASE_URL}/studio/market/twfutures/option/pcr", headers=he
 
 **Notes**
 - The official TAIFEX ratio — not derived from option institutional or large-trader data.
+- Server cache: 5 minutes.
 
 ---
 
@@ -4623,11 +4764,10 @@ data = requests.get(f"{BASE_URL}/studio/market/twfutures/option/pcr", headers=he
 |---|---|
 | Name | 法人台指期持倉成本 Taiwan Index Futures Institutional Carrying Cost |
 | Group | Taiwan Futures & Options |
-| Access | API plan or data fee |
+| Access | API plan or Blave Agent plan |
 | Rate limit | 500 / 5 min per key + per IP |
-| Data from | 2023-10-18 (TAIFEX publishes only about the last three years) |
-| Update | Daily after TAIFEX publishes — Blave jobs at 15:40 and 17:40 Taipei; server cache 5 min |
-| Source | Blave estimate from TAIFEX data only: 三大法人-區分各期貨契約 (TX / MTX / TMF) and 期貨每日交易行情 (TX close) |
+| Data from | 2023-10-18 |
+| Update | Daily, 15:40 and 17:40 Taipei |
 
 Blave's estimate of the average cost of one institution's net TAIEX-futures position, with its
 unrealized and realized PnL. **An estimate from daily aggregates, not the institution's real fills.**
@@ -4711,6 +4851,9 @@ gap = rows[-1]["txf_close"] - rows[-1]["cost"]   # points the market is above (+
 - Other sites' 外資成本 figures use different rules (TX only, near-month close as the trade price, or
   undisclosed) — numbers will differ; compare like with like (`scope=tx`).
 - Interpretation: `references/blave-indicator-guide.md` › 法人台指期持倉成本.
+- TAIFEX publishes only about the last three years, which sets the start date.
+- Updated after TAIFEX publishes each day.
+- Server cache: 5 minutes.
 
 ---
 
@@ -4722,11 +4865,10 @@ gap = rows[-1]["txf_close"] - rows[-1]["cost"]   # points the market is above (+
 |---|---|
 | Name | CME / ICE 期貨 K 線 CME / ICE Futures OHLCV |
 | Group | Commodities |
-| Access | API plan or data fee |
+| Access | API plan or Blave Agent plan |
 | Rate limit | 500 / 5 min per key + per IP |
 | Data from | 2010-06-06 |
 | Update | ~4 h delay |
-| Source | Databento |
 
 **Parameters**
 
@@ -4747,7 +4889,7 @@ Max range per request (`end` − `start`): `ohlcv-1d` 3650 d · `ohlcv-1h` 730 d
 | `ts` | string | UTC ISO | Bar open time |
 | `open` / `high` / `low` / `close` | float | USD (crude: per barrel; gold: per oz) | Prices |
 | `volume` | int | contracts | Volume |
-| `instrument_id` | int | — | Databento instrument id carried through from the source bar |
+| `instrument_id` | int | — | Upstream instrument id carried through from the source bar |
 
 **Errors**
 
@@ -4786,9 +4928,8 @@ data = requests.get(f"{BASE_URL}/studio/market/db/ohlcv/GLBX.MDP3/CL/ohlcv-1d", 
 | Group | Macro |
 | Access | Any valid key |
 | Rate limit | 100 requests / min per account |
-| Data from | Rolling window of roughly the past month plus the next few weeks — not a history archive |
-| Update | Server cache 5 min; `real` is filled in after the release |
-| Source | Anue 鉅亨網 (licensed feed) |
+| Data from | Rolling: about the past month to the next few weeks |
+| Update | Server cache 5 min |
 
 **Parameters** — all optional; unfiltered returns the whole feed (~1,400 rows), so always filter.
 
@@ -4867,3 +5008,5 @@ data = response.json()
   actual as the consensus), and fields a page does not cover get filled in from training data —
   a prior value, which has exactly one right answer, has been written wrong this way. If this
   endpoint cannot answer, say so.
+- The window is rolling — roughly the past month plus the next few weeks — not a history archive.
+- `real` is filled in after the release.

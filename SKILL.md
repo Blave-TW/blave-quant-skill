@@ -1,7 +1,7 @@
 ---
 name: blave-quant
 description: "Blave quant data layer and exchange-trading reference for AI agents. Use when the task needs crypto alpha/market data, Taiwan stock, futures or market-wide data, CME/ICE or TXF OHLCV, Hyperliquid top traders, or trading on BitMart, OKX, Bybit, BingX, Bitget, Binance, Bitfinex, KuCoin or Gate.io."
-version: 1.23.24
+version: 1.23.25
 metadata:
   openclaw:
     emoji: "📊"
@@ -167,8 +167,6 @@ Add to `.env`: `blave_api_key=...` and `blave_secret_key=...`
 | Taiwan Futures & Options | `studio/market/twfutures/ohlcv/<symbol>/<schema>`, `ohlcv/symbols`, `ohlcv/<symbol>/export/<year>`, `bid_ask_vol/<symbol>`, `daily/<futures_id>`, `stock_futures/batch/daily`, `institutional/<futures_id>`, `large_traders/<futures_id>`, `option/institutional/<option_id>`, `option/large_traders/<option_id>`, `option/pcr`, `carrying_cost/<identity>` (法人持倉成本) |
 | Commodities | `studio/market/db/ohlcv/<dataset>/<symbol>/<schema>` (WTI `CL`, gold `GC`, Brent `BRN`) |
 | Macro | `studio/market/anue/economic_calendar` |
-
-> 台股資料（日K、三大法人、融資融券、股權分級、財報、月營收、分點買賣超、即時報價）由 [FinMind](https://finmindtrade.com) 提供。
 
 ### Hyperliquid Top Trader Tracking
 

@@ -1,6 +1,6 @@
 # 台股財報資料 Taiwan Stock Fundamental Data
 
-**資料來源：** Blave API（台股資料由 [FinMind](https://finmindtrade.com) 提供）  
+**資料來源：** Blave API  
 **認證：** Bearer token（同其他 Blave API）  
 **Redis cache：** 24 小時
 
@@ -266,7 +266,7 @@ roe = df.set_index("available")["roe_ttm"]          # then reindex(prices.index,
 ## Attention & Disposition Stocks (注意股／處置股)
 
 Endpoint: `GET /studio/market/twstock/alerts` — parameters, fields and errors in
-`references/blave-api.md`. Source: TWSE and TPEx announcements (not FinMind); cite as
+`references/blave-api.md`. Source: TWSE and TPEx announcements; cite as
 「資料來源：臺灣證券交易所、證券櫃檯買賣中心」.
 
 ### The four tables
