@@ -1,7 +1,7 @@
 ---
 name: blave-quant
 description: "Blave quant data layer and exchange-trading reference for AI agents. Use when the task needs crypto alpha/market data, Taiwan stock, futures or market-wide data, CME/ICE or TXF OHLCV, Hyperliquid top traders, or trading on BitMart, OKX, Bybit, BingX, Bitget, Binance, Bitfinex, KuCoin or Gate.io."
-version: 1.23.23
+version: 1.23.24
 metadata:
   openclaw:
     emoji: "📊"
@@ -234,7 +234,7 @@ GET /studio/market/twstock/broker/stock/<stock_id>?date=YYYY-MM-DD
 GET /studio/market/twstock/broker/trader/<trader_id>?date=YYYY-MM-DD
 ```
 
-`date` 預設今天。多日可改用 `start=YYYY-MM-DD&end=YYYY-MM-DD` 一次查區間，區間最多 366 天（超過回 400），更長請分段。區間查詢待確認已部署：若回傳每筆 `date` 沒有跨日，退回逐日帶 `date` 查詢。資料起始 2021-06-30；當日資料台灣時間約 21:30 後才有，之前查當日回空陣列。回 503 代表資料暫不可用，稍後重試，不要當成沒有交易。
+`date` 預設今天。多日可改用 `start=YYYY-MM-DD&end=YYYY-MM-DD` 一次查區間，區間最多 366 天（超過回 400），更長請分段。資料起始 2021-06-30；當日資料台灣時間約 21:30 後才有，之前查當日回空陣列。回 503 代表資料暫不可用，稍後重試，不要當成沒有交易。
 
 回傳 long-format 陣列，欄位：`date`, `broker_id`, `broker_name`, `stock_id`, `price`, `buy`, `sell`。
 

@@ -19,90 +19,90 @@ moves lines (command in the comment under the table).
 | 340 | `GET /kline` | Crypto |
 | 417 | `GET /market_direction/get_alpha` | Crypto |
 | 463 | `GET /screener/get_saved_conditions` | Crypto |
-| 495 | `GET /screener/get_saved_condition_result` | Crypto |
-| 534 | `GET /holder_concentration/get_symbols` | Crypto |
-| 563 | `GET /holder_concentration/get_alpha` | Crypto |
-| 612 | `GET /funding_rate/get_alpha` | Crypto |
-| 664 | `GET /market_sentiment/get_symbols` | Crypto |
-| 690 | `GET /market_sentiment/get_alpha` | Crypto |
-| 734 | `GET /capital_shortage/get_alpha` | Crypto |
-| 777 | `GET /sector_rotation/get_history_data` | Crypto |
-| 816 | `GET /sector_rotation/get_overview_data` | Crypto |
-| 850 | `GET /oi_imbalance/get_overview_data` | Crypto |
-| 891 | `GET /whale_hunter/get_symbols` | Crypto |
-| 917 | `GET /whale_hunter/get_alpha` | Crypto |
-| 969 | `GET /taker_intensity/get_symbols` | Crypto |
-| 995 | `GET /taker_intensity/get_alpha` | Crypto |
-| 1040 | `GET /unusual_movement/get_symbols` | Crypto |
-| 1066 | `GET /unusual_movement/get_alpha` | Crypto |
-| 1113 | `GET /squeeze_momentum/get_symbols` | Crypto |
-| 1139 | `GET /squeeze_momentum/get_alpha` | Crypto |
-| 1189 | `GET /blave_top_trader/get_exposure` | Crypto |
-| 1234 | `GET /liquidation/get_symbols` | Crypto |
-| 1260 | `GET /liquidation/get_alpha` | Crypto |
-| 1311 | `GET /liquidation/get_map` | Crypto |
-| 1357 | `GET /liquidation/get_map_change` | Crypto |
-| 1402 | `GET /liquidation/get_coin` | Crypto |
-| 1489 | `GET /liquidation/get_exchanges` | Crypto |
-| 1571 | `GET /long_short_ratio/get_table` | Crypto |
-| 1667 | `GET /long_short_ratio/get_coin` | Crypto |
-| 1744 | `GET /oi_imbalance/get_table` | Crypto |
-| 1833 | `GET /oi_imbalance/get_coin` | Crypto |
-| 1899 | `GET /oi_imbalance/get_history` | Crypto |
-| 1989 | `GET /taker_intensity/get_cvd_table` | Crypto |
-| 2066 | `GET /taker_intensity/get_cvd_coin` | Crypto |
-| 2128 | `GET /cme_cot/get_latest` | Crypto |
-| 2181 | `GET /cme_cot/get_history` | Crypto |
-| 2285 | `GET /studio/market/twstock/list` | Taiwan Stock |
-| 2328 | `GET /studio/market/twstock/info/<stock_id>` | Taiwan Stock |
-| 2364 | `GET /studio/market/twstock/price/<stock_id>` | Taiwan Stock |
-| 2425 | `GET /studio/market/twstock/price_adj/<stock_id>` | Taiwan Stock |
-| 2458 | `GET /studio/market/twstock/quote/<stock_id>` | Taiwan Stock |
-| 2519 | `GET /studio/market/twstock/quote` | Taiwan Stock |
-| 2559 | `GET /studio/market/twstock/quote/all` | Taiwan Stock |
-| 2589 | `GET /studio/market/twstock/minute/ohlcv/<stock_id>/<schema>` | Taiwan Stock |
-| 2653 | `GET /studio/market/twstock/minute/ohlcv/symbols` | Taiwan Stock |
-| 2680 | `GET /studio/market/twstock/kbar/<stock_id>` | Taiwan Stock |
-| 2731 | `GET /studio/market/twstock/market_value/<stock_id>` | Taiwan Stock |
-| 2764 | `GET /studio/market/twstock/market_value/all` | Taiwan Stock |
-| 2844 | `GET /studio/market/twstock/per/<stock_id>` | Taiwan Stock |
-| 2889 | `GET /studio/market/twstock/financials/<stock_id>` | Taiwan Stock |
-| 2933 | `GET /studio/market/twstock/balance_sheet/<stock_id>` | Taiwan Stock |
-| 2962 | `GET /studio/market/twstock/cashflow/<stock_id>` | Taiwan Stock |
-| 3013 | `GET /studio/market/twstock/monthly_revenue/<stock_id>` | Taiwan Stock |
-| 3063 | `GET /studio/market/twstock/ratios/<stock_id>` | Taiwan Stock |
-| 3149 | `GET /studio/market/twstock/dividend/<stock_id>` | Taiwan Stock |
-| 3214 | `GET /studio/market/twstock/news/<stock_id>` | Taiwan Stock |
-| 3260 | `GET /studio/market/twstock/institutional/<stock_id>` | Taiwan Stock |
-| 3313 | `GET /studio/market/twstock/margin/<stock_id>` | Taiwan Stock |
-| 3366 | `GET /studio/market/twstock/shareholding/<stock_id>` | Taiwan Stock |
-| 3408 | `GET /studio/market/twstock/foreign_shareholding/<stock_id>` | Taiwan Stock |
-| 3452 | `GET /studio/market/twstock/gov_bank/<stock_id>` | Taiwan Stock |
-| 3497 | `GET /studio/market/twstock/lending/<stock_id>` | Taiwan Stock |
-| 3540 | `GET /studio/market/twstock/broker/search` | Taiwan Stock |
-| 3577 | `GET /studio/market/twstock/broker/stock/<stock_id>` | Taiwan Stock |
-| 3632 | `GET /studio/market/twstock/broker/trader/<trader_id>` | Taiwan Stock |
-| 3667 | `GET /studio/market/twstock/alerts` | Taiwan Stock |
-| 3774 | `GET /studio/market/twstock/batch/<data_type>` | Taiwan Stock |
-| 3840 | `GET /studio/market/twmarket/index/<index_id>` | Taiwan Market (大盤) |
-| 3881 | `GET /studio/market/twmarket/turnover` | Taiwan Market (大盤) |
-| 3921 | `GET /studio/market/twmarket/institutional` | Taiwan Market (大盤) |
-| 3966 | `GET /studio/market/twmarket/margin` | Taiwan Market (大盤) |
-| 4007 | `GET /studio/market/twmarket/dividend_points` | Taiwan Market (大盤) |
-| 4068 | `GET /studio/market/twfutures/ohlcv/<symbol>/<schema>` | Taiwan Futures & Options |
-| 4151 | `GET /studio/market/twfutures/ohlcv/symbols` | Taiwan Futures & Options |
-| 4179 | `GET /studio/market/twfutures/ohlcv/<symbol>/export/<year>` | Taiwan Futures & Options |
-| 4232 | `GET /studio/market/twfutures/bid_ask_vol/<symbol>` | Taiwan Futures & Options |
-| 4285 | `GET /studio/market/twfutures/daily/<futures_id>` | Taiwan Futures & Options |
-| 4336 | `GET /studio/market/twfutures/stock_futures/batch/daily` | Taiwan Futures & Options |
-| 4377 | `GET /studio/market/twfutures/institutional/<futures_id>` | Taiwan Futures & Options |
-| 4433 | `GET /studio/market/twfutures/large_traders/<futures_id>` | Taiwan Futures & Options |
-| 4482 | `GET /studio/market/twfutures/option/institutional/<option_id>` | Taiwan Futures & Options |
-| 4517 | `GET /studio/market/twfutures/option/large_traders/<option_id>` | Taiwan Futures & Options |
-| 4553 | `GET /studio/market/twfutures/option/pcr` | Taiwan Futures & Options |
-| 4601 | `GET /studio/market/twfutures/carrying_cost/<identity>` | Taiwan Futures & Options |
-| 4700 | `GET /studio/market/db/ohlcv/<dataset>/<symbol>/<schema>` | Commodities |
-| 4762 | `GET /studio/market/anue/economic_calendar` | Macro |
+| 502 | `GET /screener/get_saved_condition_result` | Crypto |
+| 552 | `GET /holder_concentration/get_symbols` | Crypto |
+| 581 | `GET /holder_concentration/get_alpha` | Crypto |
+| 630 | `GET /funding_rate/get_alpha` | Crypto |
+| 682 | `GET /market_sentiment/get_symbols` | Crypto |
+| 708 | `GET /market_sentiment/get_alpha` | Crypto |
+| 752 | `GET /capital_shortage/get_alpha` | Crypto |
+| 795 | `GET /sector_rotation/get_history_data` | Crypto |
+| 834 | `GET /sector_rotation/get_overview_data` | Crypto |
+| 868 | `GET /oi_imbalance/get_overview_data` | Crypto |
+| 909 | `GET /whale_hunter/get_symbols` | Crypto |
+| 935 | `GET /whale_hunter/get_alpha` | Crypto |
+| 987 | `GET /taker_intensity/get_symbols` | Crypto |
+| 1013 | `GET /taker_intensity/get_alpha` | Crypto |
+| 1058 | `GET /unusual_movement/get_symbols` | Crypto |
+| 1084 | `GET /unusual_movement/get_alpha` | Crypto |
+| 1131 | `GET /squeeze_momentum/get_symbols` | Crypto |
+| 1157 | `GET /squeeze_momentum/get_alpha` | Crypto |
+| 1207 | `GET /blave_top_trader/get_exposure` | Crypto |
+| 1252 | `GET /liquidation/get_symbols` | Crypto |
+| 1278 | `GET /liquidation/get_alpha` | Crypto |
+| 1329 | `GET /liquidation/get_map` | Crypto |
+| 1375 | `GET /liquidation/get_map_change` | Crypto |
+| 1420 | `GET /liquidation/get_coin` | Crypto |
+| 1507 | `GET /liquidation/get_exchanges` | Crypto |
+| 1589 | `GET /long_short_ratio/get_table` | Crypto |
+| 1685 | `GET /long_short_ratio/get_coin` | Crypto |
+| 1762 | `GET /oi_imbalance/get_table` | Crypto |
+| 1851 | `GET /oi_imbalance/get_coin` | Crypto |
+| 1917 | `GET /oi_imbalance/get_history` | Crypto |
+| 2007 | `GET /taker_intensity/get_cvd_table` | Crypto |
+| 2084 | `GET /taker_intensity/get_cvd_coin` | Crypto |
+| 2146 | `GET /cme_cot/get_latest` | Crypto |
+| 2199 | `GET /cme_cot/get_history` | Crypto |
+| 2303 | `GET /studio/market/twstock/list` | Taiwan Stock |
+| 2346 | `GET /studio/market/twstock/info/<stock_id>` | Taiwan Stock |
+| 2382 | `GET /studio/market/twstock/price/<stock_id>` | Taiwan Stock |
+| 2443 | `GET /studio/market/twstock/price_adj/<stock_id>` | Taiwan Stock |
+| 2476 | `GET /studio/market/twstock/quote/<stock_id>` | Taiwan Stock |
+| 2537 | `GET /studio/market/twstock/quote` | Taiwan Stock |
+| 2577 | `GET /studio/market/twstock/quote/all` | Taiwan Stock |
+| 2607 | `GET /studio/market/twstock/minute/ohlcv/<stock_id>/<schema>` | Taiwan Stock |
+| 2671 | `GET /studio/market/twstock/minute/ohlcv/symbols` | Taiwan Stock |
+| 2698 | `GET /studio/market/twstock/kbar/<stock_id>` | Taiwan Stock |
+| 2749 | `GET /studio/market/twstock/market_value/<stock_id>` | Taiwan Stock |
+| 2782 | `GET /studio/market/twstock/market_value/all` | Taiwan Stock |
+| 2862 | `GET /studio/market/twstock/per/<stock_id>` | Taiwan Stock |
+| 2907 | `GET /studio/market/twstock/financials/<stock_id>` | Taiwan Stock |
+| 2951 | `GET /studio/market/twstock/balance_sheet/<stock_id>` | Taiwan Stock |
+| 2980 | `GET /studio/market/twstock/cashflow/<stock_id>` | Taiwan Stock |
+| 3031 | `GET /studio/market/twstock/monthly_revenue/<stock_id>` | Taiwan Stock |
+| 3081 | `GET /studio/market/twstock/ratios/<stock_id>` | Taiwan Stock |
+| 3167 | `GET /studio/market/twstock/dividend/<stock_id>` | Taiwan Stock |
+| 3232 | `GET /studio/market/twstock/news/<stock_id>` | Taiwan Stock |
+| 3278 | `GET /studio/market/twstock/institutional/<stock_id>` | Taiwan Stock |
+| 3331 | `GET /studio/market/twstock/margin/<stock_id>` | Taiwan Stock |
+| 3384 | `GET /studio/market/twstock/shareholding/<stock_id>` | Taiwan Stock |
+| 3426 | `GET /studio/market/twstock/foreign_shareholding/<stock_id>` | Taiwan Stock |
+| 3470 | `GET /studio/market/twstock/gov_bank/<stock_id>` | Taiwan Stock |
+| 3515 | `GET /studio/market/twstock/lending/<stock_id>` | Taiwan Stock |
+| 3558 | `GET /studio/market/twstock/broker/search` | Taiwan Stock |
+| 3595 | `GET /studio/market/twstock/broker/stock/<stock_id>` | Taiwan Stock |
+| 3650 | `GET /studio/market/twstock/broker/trader/<trader_id>` | Taiwan Stock |
+| 3685 | `GET /studio/market/twstock/alerts` | Taiwan Stock |
+| 3792 | `GET /studio/market/twstock/batch/<data_type>` | Taiwan Stock |
+| 3858 | `GET /studio/market/twmarket/index/<index_id>` | Taiwan Market (大盤) |
+| 3899 | `GET /studio/market/twmarket/turnover` | Taiwan Market (大盤) |
+| 3939 | `GET /studio/market/twmarket/institutional` | Taiwan Market (大盤) |
+| 3984 | `GET /studio/market/twmarket/margin` | Taiwan Market (大盤) |
+| 4025 | `GET /studio/market/twmarket/dividend_points` | Taiwan Market (大盤) |
+| 4086 | `GET /studio/market/twfutures/ohlcv/<symbol>/<schema>` | Taiwan Futures & Options |
+| 4169 | `GET /studio/market/twfutures/ohlcv/symbols` | Taiwan Futures & Options |
+| 4197 | `GET /studio/market/twfutures/ohlcv/<symbol>/export/<year>` | Taiwan Futures & Options |
+| 4250 | `GET /studio/market/twfutures/bid_ask_vol/<symbol>` | Taiwan Futures & Options |
+| 4303 | `GET /studio/market/twfutures/daily/<futures_id>` | Taiwan Futures & Options |
+| 4354 | `GET /studio/market/twfutures/stock_futures/batch/daily` | Taiwan Futures & Options |
+| 4395 | `GET /studio/market/twfutures/institutional/<futures_id>` | Taiwan Futures & Options |
+| 4451 | `GET /studio/market/twfutures/large_traders/<futures_id>` | Taiwan Futures & Options |
+| 4500 | `GET /studio/market/twfutures/option/institutional/<option_id>` | Taiwan Futures & Options |
+| 4535 | `GET /studio/market/twfutures/option/large_traders/<option_id>` | Taiwan Futures & Options |
+| 4571 | `GET /studio/market/twfutures/option/pcr` | Taiwan Futures & Options |
+| 4619 | `GET /studio/market/twfutures/carrying_cost/<identity>` | Taiwan Futures & Options |
+| 4718 | `GET /studio/market/db/ohlcv/<dataset>/<symbol>/<schema>` | Commodities |
+| 4780 | `GET /studio/market/anue/economic_calendar` | Macro |
 <!-- index:end -->
 <!-- regenerate (from the repo root): python3 - <<'EOF'
 import re
@@ -245,7 +245,7 @@ These Blave services have their own reference files and are not duplicated here:
 | Rate limit | 500 / 5 min per key + per IP |
 | Data from | Snapshot only (no history) |
 | Update | Server cache 5 s |
-| Source | Blave price feed for USDT pairs（待確認：上游交易所） |
+| Source | Binance USDT-M perpetual last price; tokens not listed there fall back to Binance spot, then BingX perpetual. `change_24h` normally comes from the same venue as `price` (the two are cached separately, 5 s each, so they can briefly differ) |
 
 **Parameters**
 
@@ -474,8 +474,15 @@ response = requests.get(f"{BASE_URL}/market_direction/get_alpha", headers=header
 
 **Parameters** — none.
 
-**Response** — `{"data": {<condition_id>: {"filters": [...], ...}}}`, keyed by condition id
-（待確認：每個條件物件的完整欄位）.
+**Response** — `{"data": {<condition_id>: {...}}}`, keyed by condition id (a JSON string key,
+e.g. `"12"`; send it back as the integer `condition_id`). Only this account's own conditions.
+
+| Field | Type | Description |
+|---|---|---|
+| `filters` | object[] | The condition's filters, all ANDed: `indicator_id` (int), `indicator_name` (`{"en", "zh"}`), `param` (string; `"-"` = the indicator's default), `operator_id` (int), `operator_symbol` (string, e.g. `>`), `value` (threshold) |
+| `note` | string | The name the account saved the condition under (a condition you save is named here) |
+| `name_en` / `name_zh` | string \| null | Set only on official / community conditions; on your own conditions expect empty or null and read `note` instead |
+| `description_en` / `description_zh` | string \| null | Set only on official / community conditions; may be empty or null |
 
 **Errors**
 
@@ -510,8 +517,19 @@ conditions = response.json()["data"]
 |---|---|---|---|---|---|---|
 | `condition_id` | query | int | yes | — | An id from `get_saved_conditions` | Condition to run |
 
-**Response** — `{"data": ...}` with the symbols matching the condition（待確認：Notion 寫
-`{"alpha_names": [...], "symbols": [...]}`，需實抓確認）.
+**Response** — `{"data": {"alpha_names": [...], "symbols": [...]}}`.
+
+| Field | Type | Description |
+|---|---|---|
+| `alpha_names` | object[] | One per distinct filter indicator, in filter order: `en` / `zh` (display name, with the parameter in parentheses when there is one), `name` (indicator key), `type`, `url`; plus `value_format`, `value_decimals`, `polarity` when the indicator defines them |
+| `symbols` | object[] | Tokens matching every filter |
+| `symbols[].symbol` | string | Token without `USDT` (e.g. `BTC`) |
+| `symbols[].id` | int | Token id (`0` when unknown) |
+| `symbols[].user_selected` | bool | Token is on the account's watchlist |
+| `symbols[].price` | float | Latest price in USDT (same feed as `/price`; `0` when unavailable) |
+| `symbols[].24h_chg` | float | 24h change as a fraction (`0.025` = +2.5%) |
+| `symbols[].alphas` | float[] | The token's value for each filter indicator, parallel to `alpha_names` |
+| `symbols[].alpha_notes` | object[] | Per indicator: `indicator_id`, `color`, `direction`, `note` (plus `background_color` when a rule matched; `color` `null` and empty strings when none did) |
 
 **Errors**
 
@@ -540,7 +558,7 @@ response = requests.get(f"{BASE_URL}/screener/get_saved_condition_result", heade
 | Access | API plan or data fee |
 | Rate limit | 500 / 5 min per key + per IP |
 | Data from | — |
-| Update | 待確認 |
+| Update | Server cache 10 min (list taken from the latest Binance USDT-M open-interest snapshot) |
 | Source | Blave (Binance USDT-M symbol list) |
 
 **Parameters** — none.
@@ -670,7 +688,7 @@ response = requests.get(f"{BASE_URL}/funding_rate/get_alpha", headers=headers, p
 | Access | API plan or data fee |
 | Rate limit | 500 / 5 min per key + per IP |
 | Data from | — |
-| Update | 待確認 |
+| Update | Server cache 10 min (list taken from the latest Binance USDT-M open-interest snapshot) |
 | Source | Blave (Binance USDT-M symbol list) |
 
 **Parameters** — none.
@@ -782,8 +800,8 @@ response = requests.get(f"{BASE_URL}/capital_shortage/get_alpha", headers=header
 | Group | Crypto › Alpha › Sector Rotation |
 | Access | API plan or data fee |
 | Rate limit | 500 / 5 min per key + per IP |
-| Data from | Trailing one-year daily window — a call returned 366 daily points, 2025-09-16 → 2026-09-16, each sector seen starting at `0.0`. There are no parameters, so a longer history is not reachable through this endpoint; whether one exists upstream is 待確認 |
-| Update | 待確認 |
+| Data from | Trailing one-year daily window — a call returned 366 daily points, 2025-09-16 → 2026-09-16, each sector seen starting at `0.0`. There are no parameters, and each rebuild recomputes only the trailing 365 days, so no longer history exists |
+| Update | Built by a scheduled job, ≈ hourly — it reruns 13 min after the previous run ends, and recent rebuilds landed 50–60 min apart; served from the job's output with no extra cache |
 | Source | Blave |
 
 **Parameters** — none.
@@ -822,7 +840,7 @@ response = requests.get(f"{BASE_URL}/sector_rotation/get_history_data", headers=
 | Access | API plan or data fee |
 | Rate limit | 500 / 5 min per key + per IP |
 | Data from | Snapshot |
-| Update | 待確認 |
+| Update | Built by a scheduled job, ≈ hourly — it reruns 13 min after the previous run ends, and recent rebuilds landed 50–60 min apart; served from the job's output with no extra cache |
 | Source | Blave |
 
 **Parameters** — none.
@@ -856,7 +874,7 @@ data = requests.get(f"{BASE_URL}/sector_rotation/get_overview_data", headers=hea
 | Access | API plan or data fee |
 | Rate limit | 500 / 5 min per key + per IP |
 | Data from | Snapshot |
-| Update | 待確認 |
+| Update | Every 5 minutes (server cache 5 min) |
 | Source | Blave (Binance / OKX / BingX futures OI) |
 
 **Parameters** — none.
@@ -897,7 +915,7 @@ data = requests.get(f"{BASE_URL}/oi_imbalance/get_overview_data", headers=header
 | Access | API plan or data fee |
 | Rate limit | 500 / 5 min per key + per IP |
 | Data from | — |
-| Update | 待確認 |
+| Update | Server cache 10 min (list taken from the latest Binance USDT-M open-interest snapshot) |
 | Source | Blave (Binance USDT-M symbol list) |
 
 **Parameters** — none.
@@ -975,7 +993,7 @@ response = requests.get(f"{BASE_URL}/whale_hunter/get_alpha", headers=headers, p
 | Access | API plan or data fee |
 | Rate limit | 500 / 5 min per key + per IP |
 | Data from | — |
-| Update | 待確認 |
+| Update | Server cache 10 min (list taken from the latest Binance USDT-M open-interest snapshot) |
 | Source | Blave (Binance USDT-M symbol list) |
 
 **Parameters** — none.
@@ -1046,7 +1064,7 @@ response = requests.get(f"{BASE_URL}/taker_intensity/get_alpha", headers=headers
 | Access | API plan or data fee |
 | Rate limit | 500 / 5 min per key + per IP |
 | Data from | — |
-| Update | 待確認 |
+| Update | Server cache 10 min (list taken from the latest Binance USDT-M open-interest snapshot) |
 | Source | Blave (Binance USDT-M symbol list) |
 
 **Parameters** — none.
@@ -1119,7 +1137,7 @@ response = requests.get(f"{BASE_URL}/unusual_movement/get_alpha", headers=header
 | Access | API plan or data fee |
 | Rate limit | 500 / 5 min per key + per IP |
 | Data from | — |
-| Update | 待確認 |
+| Update | Server cache 10 min (list taken from the latest Binance USDT-M open-interest snapshot) |
 | Source | Blave (Binance USDT-M symbol list) |
 
 **Parameters** — none.
@@ -1240,7 +1258,7 @@ response = requests.get(f"{BASE_URL}/blave_top_trader/get_exposure", headers=hea
 | Access | API plan or data fee |
 | Rate limit | 500 / 5 min per key + per IP |
 | Data from | — |
-| Update | 待確認 |
+| Update | Server cache 10 min (list taken from the latest Binance USDT-M open-interest snapshot) |
 | Source | Blave (Binance USDT-M symbol list) |
 
 **Parameters** — none.
@@ -1363,7 +1381,7 @@ response = requests.get(f"{BASE_URL}/liquidation/get_map", headers=headers, para
 | Access | API plan or data fee |
 | Rate limit | 500 / 5 min per key + per IP |
 | Data from | Last 24 hours |
-| Update | 待確認 |
+| Update | Computed per request: the current map is rebuilt (server cache 5 s) and compared with saved map snapshots from ~1 h, ~8 h and ~24 h ago; snapshots are taken every 30 min for every symbol by a scheduled job, plus on each map request |
 | Source | Blave |
 
 **Parameters**
@@ -2617,7 +2635,7 @@ Max range per request (`end` − `start`): `1m` 31 d · `5m` 62 d · `15m` 93 d 
 |---|---|---|---|
 | `ts` | string | UTC ISO | Bar open time (minute-start label); the 13:30 Taipei bar is the closing auction |
 | `open` / `high` / `low` / `close` | float | TWD | Prices |
-| `volume` | int | lots (張), not shares | Volume. Every `TAIEX` `1d` bar observed carried `volume: 0`, so index volume is effectively unavailable here — do not read it as a turnover figure（待確認：`TAIEX` 的 volume 單位） |
+| `volume` | int | lots (張), not shares | Volume. `TAIEX` bars always carry `volume: 0` at every schema — the index has no volume, so none is served; do not read it as a turnover figure |
 
 **Errors**
 
@@ -3219,7 +3237,7 @@ data = requests.get(f"{BASE_URL}/studio/market/twstock/dividend/2330", headers=h
 | Group | Taiwan Stock › Fundamentals |
 | Access | API plan or data fee |
 | Rate limit | 500 / 5 min per key + per IP |
-| Data from | 待確認 |
+| Data from | Upstream coverage begins around mid-2020 (rows found as early as 2020-08 on spot checks; the true start is not documented) and is sparse — a few articles a day or none — until about 2021-02; earlier dates may return `[]` |
 | Update | Fetched per day on first request; server cache 5 min |
 | Source | FinMind TaiwanStockNews |
 
@@ -3231,7 +3249,7 @@ data = requests.get(f"{BASE_URL}/studio/market/twstock/dividend/2330", headers=h
 | `start` | query | string | no | today − 6 days | `YYYY-MM-DD` | First day |
 | `end` | query | string | no | today | `YYYY-MM-DD` | Last day; `end` − `start` ≤ 31 days |
 
-**Response** — `{"stock_id", "data": [...]}`, several articles per day (weekdays only are fetched).
+**Response** — `{"stock_id", "data": [...]}`, several articles per day (weekends included).
 
 | Field | Type | Description |
 |---|---|---|
