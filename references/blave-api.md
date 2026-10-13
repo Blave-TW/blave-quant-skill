@@ -14,94 +14,95 @@ moves lines (command in the comment under the table).
 <!-- index:start -->
 | Line | Endpoint | Category |
 |:-|:-|:-|
-| 237 | `GET /price` | Crypto |
-| 280 | `GET /alpha_table` | Crypto |
-| 339 | `GET /kline` | Crypto |
-| 416 | `GET /market_direction/get_alpha` | Crypto |
-| 462 | `GET /screener/get_saved_conditions` | Crypto |
-| 494 | `GET /screener/get_saved_condition_result` | Crypto |
-| 533 | `GET /holder_concentration/get_symbols` | Crypto |
-| 562 | `GET /holder_concentration/get_alpha` | Crypto |
-| 611 | `GET /funding_rate/get_alpha` | Crypto |
-| 663 | `GET /market_sentiment/get_symbols` | Crypto |
-| 689 | `GET /market_sentiment/get_alpha` | Crypto |
-| 733 | `GET /capital_shortage/get_alpha` | Crypto |
-| 776 | `GET /sector_rotation/get_history_data` | Crypto |
-| 815 | `GET /sector_rotation/get_overview_data` | Crypto |
-| 849 | `GET /oi_imbalance/get_overview_data` | Crypto |
-| 890 | `GET /whale_hunter/get_symbols` | Crypto |
-| 916 | `GET /whale_hunter/get_alpha` | Crypto |
-| 968 | `GET /taker_intensity/get_symbols` | Crypto |
-| 994 | `GET /taker_intensity/get_alpha` | Crypto |
-| 1039 | `GET /unusual_movement/get_symbols` | Crypto |
-| 1065 | `GET /unusual_movement/get_alpha` | Crypto |
-| 1112 | `GET /squeeze_momentum/get_symbols` | Crypto |
-| 1138 | `GET /squeeze_momentum/get_alpha` | Crypto |
-| 1188 | `GET /blave_top_trader/get_exposure` | Crypto |
-| 1233 | `GET /liquidation/get_symbols` | Crypto |
-| 1259 | `GET /liquidation/get_alpha` | Crypto |
-| 1310 | `GET /liquidation/get_map` | Crypto |
-| 1356 | `GET /liquidation/get_map_change` | Crypto |
-| 1401 | `GET /liquidation/get_coin` | Crypto |
-| 1488 | `GET /liquidation/get_exchanges` | Crypto |
-| 1570 | `GET /long_short_ratio/get_table` | Crypto |
-| 1666 | `GET /long_short_ratio/get_coin` | Crypto |
-| 1743 | `GET /oi_imbalance/get_table` | Crypto |
-| 1832 | `GET /oi_imbalance/get_coin` | Crypto |
-| 1898 | `GET /oi_imbalance/get_history` | Crypto |
-| 1988 | `GET /taker_intensity/get_cvd_table` | Crypto |
-| 2065 | `GET /taker_intensity/get_cvd_coin` | Crypto |
-| 2127 | `GET /cme_cot/get_latest` | Crypto |
-| 2180 | `GET /cme_cot/get_history` | Crypto |
-| 2284 | `GET /studio/market/twstock/list` | Taiwan Stock |
-| 2327 | `GET /studio/market/twstock/info/<stock_id>` | Taiwan Stock |
-| 2363 | `GET /studio/market/twstock/price/<stock_id>` | Taiwan Stock |
-| 2424 | `GET /studio/market/twstock/price_adj/<stock_id>` | Taiwan Stock |
-| 2457 | `GET /studio/market/twstock/quote/<stock_id>` | Taiwan Stock |
-| 2518 | `GET /studio/market/twstock/quote` | Taiwan Stock |
-| 2558 | `GET /studio/market/twstock/quote/all` | Taiwan Stock |
-| 2588 | `GET /studio/market/twstock/minute/ohlcv/<stock_id>/<schema>` | Taiwan Stock |
-| 2652 | `GET /studio/market/twstock/minute/ohlcv/symbols` | Taiwan Stock |
-| 2679 | `GET /studio/market/twstock/kbar/<stock_id>` | Taiwan Stock |
-| 2730 | `GET /studio/market/twstock/market_value/<stock_id>` | Taiwan Stock |
-| 2763 | `GET /studio/market/twstock/market_value/all` | Taiwan Stock |
-| 2843 | `GET /studio/market/twstock/per/<stock_id>` | Taiwan Stock |
-| 2888 | `GET /studio/market/twstock/financials/<stock_id>` | Taiwan Stock |
-| 2932 | `GET /studio/market/twstock/balance_sheet/<stock_id>` | Taiwan Stock |
-| 2961 | `GET /studio/market/twstock/cashflow/<stock_id>` | Taiwan Stock |
-| 3012 | `GET /studio/market/twstock/monthly_revenue/<stock_id>` | Taiwan Stock |
-| 3062 | `GET /studio/market/twstock/ratios/<stock_id>` | Taiwan Stock |
-| 3148 | `GET /studio/market/twstock/dividend/<stock_id>` | Taiwan Stock |
-| 3213 | `GET /studio/market/twstock/news/<stock_id>` | Taiwan Stock |
-| 3259 | `GET /studio/market/twstock/institutional/<stock_id>` | Taiwan Stock |
-| 3312 | `GET /studio/market/twstock/margin/<stock_id>` | Taiwan Stock |
-| 3365 | `GET /studio/market/twstock/shareholding/<stock_id>` | Taiwan Stock |
-| 3407 | `GET /studio/market/twstock/foreign_shareholding/<stock_id>` | Taiwan Stock |
-| 3451 | `GET /studio/market/twstock/gov_bank/<stock_id>` | Taiwan Stock |
-| 3496 | `GET /studio/market/twstock/lending/<stock_id>` | Taiwan Stock |
-| 3539 | `GET /studio/market/twstock/broker/search` | Taiwan Stock |
-| 3576 | `GET /studio/market/twstock/broker/stock/<stock_id>` | Taiwan Stock |
-| 3631 | `GET /studio/market/twstock/broker/trader/<trader_id>` | Taiwan Stock |
-| 3666 | `GET /studio/market/twstock/batch/<data_type>` | Taiwan Stock |
-| 3732 | `GET /studio/market/twmarket/index/<index_id>` | Taiwan Market (大盤) |
-| 3773 | `GET /studio/market/twmarket/turnover` | Taiwan Market (大盤) |
-| 3813 | `GET /studio/market/twmarket/institutional` | Taiwan Market (大盤) |
-| 3858 | `GET /studio/market/twmarket/margin` | Taiwan Market (大盤) |
-| 3899 | `GET /studio/market/twmarket/dividend_points` | Taiwan Market (大盤) |
-| 3960 | `GET /studio/market/twfutures/ohlcv/<symbol>/<schema>` | Taiwan Futures & Options |
-| 4043 | `GET /studio/market/twfutures/ohlcv/symbols` | Taiwan Futures & Options |
-| 4071 | `GET /studio/market/twfutures/ohlcv/<symbol>/export/<year>` | Taiwan Futures & Options |
-| 4124 | `GET /studio/market/twfutures/bid_ask_vol/<symbol>` | Taiwan Futures & Options |
-| 4177 | `GET /studio/market/twfutures/daily/<futures_id>` | Taiwan Futures & Options |
-| 4228 | `GET /studio/market/twfutures/stock_futures/batch/daily` | Taiwan Futures & Options |
-| 4269 | `GET /studio/market/twfutures/institutional/<futures_id>` | Taiwan Futures & Options |
-| 4325 | `GET /studio/market/twfutures/large_traders/<futures_id>` | Taiwan Futures & Options |
-| 4374 | `GET /studio/market/twfutures/option/institutional/<option_id>` | Taiwan Futures & Options |
-| 4409 | `GET /studio/market/twfutures/option/large_traders/<option_id>` | Taiwan Futures & Options |
-| 4445 | `GET /studio/market/twfutures/option/pcr` | Taiwan Futures & Options |
-| 4493 | `GET /studio/market/twfutures/carrying_cost/<identity>` | Taiwan Futures & Options |
-| 4592 | `GET /studio/market/db/ohlcv/<dataset>/<symbol>/<schema>` | Commodities |
-| 4654 | `GET /studio/market/anue/economic_calendar` | Macro |
+| 238 | `GET /price` | Crypto |
+| 281 | `GET /alpha_table` | Crypto |
+| 340 | `GET /kline` | Crypto |
+| 417 | `GET /market_direction/get_alpha` | Crypto |
+| 463 | `GET /screener/get_saved_conditions` | Crypto |
+| 495 | `GET /screener/get_saved_condition_result` | Crypto |
+| 534 | `GET /holder_concentration/get_symbols` | Crypto |
+| 563 | `GET /holder_concentration/get_alpha` | Crypto |
+| 612 | `GET /funding_rate/get_alpha` | Crypto |
+| 664 | `GET /market_sentiment/get_symbols` | Crypto |
+| 690 | `GET /market_sentiment/get_alpha` | Crypto |
+| 734 | `GET /capital_shortage/get_alpha` | Crypto |
+| 777 | `GET /sector_rotation/get_history_data` | Crypto |
+| 816 | `GET /sector_rotation/get_overview_data` | Crypto |
+| 850 | `GET /oi_imbalance/get_overview_data` | Crypto |
+| 891 | `GET /whale_hunter/get_symbols` | Crypto |
+| 917 | `GET /whale_hunter/get_alpha` | Crypto |
+| 969 | `GET /taker_intensity/get_symbols` | Crypto |
+| 995 | `GET /taker_intensity/get_alpha` | Crypto |
+| 1040 | `GET /unusual_movement/get_symbols` | Crypto |
+| 1066 | `GET /unusual_movement/get_alpha` | Crypto |
+| 1113 | `GET /squeeze_momentum/get_symbols` | Crypto |
+| 1139 | `GET /squeeze_momentum/get_alpha` | Crypto |
+| 1189 | `GET /blave_top_trader/get_exposure` | Crypto |
+| 1234 | `GET /liquidation/get_symbols` | Crypto |
+| 1260 | `GET /liquidation/get_alpha` | Crypto |
+| 1311 | `GET /liquidation/get_map` | Crypto |
+| 1357 | `GET /liquidation/get_map_change` | Crypto |
+| 1402 | `GET /liquidation/get_coin` | Crypto |
+| 1489 | `GET /liquidation/get_exchanges` | Crypto |
+| 1571 | `GET /long_short_ratio/get_table` | Crypto |
+| 1667 | `GET /long_short_ratio/get_coin` | Crypto |
+| 1744 | `GET /oi_imbalance/get_table` | Crypto |
+| 1833 | `GET /oi_imbalance/get_coin` | Crypto |
+| 1899 | `GET /oi_imbalance/get_history` | Crypto |
+| 1989 | `GET /taker_intensity/get_cvd_table` | Crypto |
+| 2066 | `GET /taker_intensity/get_cvd_coin` | Crypto |
+| 2128 | `GET /cme_cot/get_latest` | Crypto |
+| 2181 | `GET /cme_cot/get_history` | Crypto |
+| 2285 | `GET /studio/market/twstock/list` | Taiwan Stock |
+| 2328 | `GET /studio/market/twstock/info/<stock_id>` | Taiwan Stock |
+| 2364 | `GET /studio/market/twstock/price/<stock_id>` | Taiwan Stock |
+| 2425 | `GET /studio/market/twstock/price_adj/<stock_id>` | Taiwan Stock |
+| 2458 | `GET /studio/market/twstock/quote/<stock_id>` | Taiwan Stock |
+| 2519 | `GET /studio/market/twstock/quote` | Taiwan Stock |
+| 2559 | `GET /studio/market/twstock/quote/all` | Taiwan Stock |
+| 2589 | `GET /studio/market/twstock/minute/ohlcv/<stock_id>/<schema>` | Taiwan Stock |
+| 2653 | `GET /studio/market/twstock/minute/ohlcv/symbols` | Taiwan Stock |
+| 2680 | `GET /studio/market/twstock/kbar/<stock_id>` | Taiwan Stock |
+| 2731 | `GET /studio/market/twstock/market_value/<stock_id>` | Taiwan Stock |
+| 2764 | `GET /studio/market/twstock/market_value/all` | Taiwan Stock |
+| 2844 | `GET /studio/market/twstock/per/<stock_id>` | Taiwan Stock |
+| 2889 | `GET /studio/market/twstock/financials/<stock_id>` | Taiwan Stock |
+| 2933 | `GET /studio/market/twstock/balance_sheet/<stock_id>` | Taiwan Stock |
+| 2962 | `GET /studio/market/twstock/cashflow/<stock_id>` | Taiwan Stock |
+| 3013 | `GET /studio/market/twstock/monthly_revenue/<stock_id>` | Taiwan Stock |
+| 3063 | `GET /studio/market/twstock/ratios/<stock_id>` | Taiwan Stock |
+| 3149 | `GET /studio/market/twstock/dividend/<stock_id>` | Taiwan Stock |
+| 3214 | `GET /studio/market/twstock/news/<stock_id>` | Taiwan Stock |
+| 3260 | `GET /studio/market/twstock/institutional/<stock_id>` | Taiwan Stock |
+| 3313 | `GET /studio/market/twstock/margin/<stock_id>` | Taiwan Stock |
+| 3366 | `GET /studio/market/twstock/shareholding/<stock_id>` | Taiwan Stock |
+| 3408 | `GET /studio/market/twstock/foreign_shareholding/<stock_id>` | Taiwan Stock |
+| 3452 | `GET /studio/market/twstock/gov_bank/<stock_id>` | Taiwan Stock |
+| 3497 | `GET /studio/market/twstock/lending/<stock_id>` | Taiwan Stock |
+| 3540 | `GET /studio/market/twstock/broker/search` | Taiwan Stock |
+| 3577 | `GET /studio/market/twstock/broker/stock/<stock_id>` | Taiwan Stock |
+| 3632 | `GET /studio/market/twstock/broker/trader/<trader_id>` | Taiwan Stock |
+| 3667 | `GET /studio/market/twstock/alerts` | Taiwan Stock |
+| 3774 | `GET /studio/market/twstock/batch/<data_type>` | Taiwan Stock |
+| 3840 | `GET /studio/market/twmarket/index/<index_id>` | Taiwan Market (大盤) |
+| 3881 | `GET /studio/market/twmarket/turnover` | Taiwan Market (大盤) |
+| 3921 | `GET /studio/market/twmarket/institutional` | Taiwan Market (大盤) |
+| 3966 | `GET /studio/market/twmarket/margin` | Taiwan Market (大盤) |
+| 4007 | `GET /studio/market/twmarket/dividend_points` | Taiwan Market (大盤) |
+| 4068 | `GET /studio/market/twfutures/ohlcv/<symbol>/<schema>` | Taiwan Futures & Options |
+| 4151 | `GET /studio/market/twfutures/ohlcv/symbols` | Taiwan Futures & Options |
+| 4179 | `GET /studio/market/twfutures/ohlcv/<symbol>/export/<year>` | Taiwan Futures & Options |
+| 4232 | `GET /studio/market/twfutures/bid_ask_vol/<symbol>` | Taiwan Futures & Options |
+| 4285 | `GET /studio/market/twfutures/daily/<futures_id>` | Taiwan Futures & Options |
+| 4336 | `GET /studio/market/twfutures/stock_futures/batch/daily` | Taiwan Futures & Options |
+| 4377 | `GET /studio/market/twfutures/institutional/<futures_id>` | Taiwan Futures & Options |
+| 4433 | `GET /studio/market/twfutures/large_traders/<futures_id>` | Taiwan Futures & Options |
+| 4482 | `GET /studio/market/twfutures/option/institutional/<option_id>` | Taiwan Futures & Options |
+| 4517 | `GET /studio/market/twfutures/option/large_traders/<option_id>` | Taiwan Futures & Options |
+| 4553 | `GET /studio/market/twfutures/option/pcr` | Taiwan Futures & Options |
+| 4601 | `GET /studio/market/twfutures/carrying_cost/<identity>` | Taiwan Futures & Options |
+| 4700 | `GET /studio/market/db/ohlcv/<dataset>/<symbol>/<schema>` | Commodities |
+| 4762 | `GET /studio/market/anue/economic_calendar` | Macro |
 <!-- index:end -->
 <!-- regenerate (from the repo root): python3 - <<'EOF'
 import re
@@ -3660,6 +3661,113 @@ rows = requests.get(f"{BASE_URL}/studio/market/twstock/broker/stock/2330", heade
 rows = requests.get(f"{BASE_URL}/studio/market/twstock/broker/trader/9217", headers=headers,
                     params={"date": "2026-08-07"}, timeout=60).json()["data"]
 ```
+
+---
+
+## `GET /studio/market/twstock/alerts`
+
+| | |
+|---|---|
+| Name | 注意股／處置股 Taiwan Stock Attention & Disposition Announcements |
+| Group | Taiwan Stock › Other |
+| Access | API plan or data fee |
+| Rate limit | 500 / 5 min per key + per IP |
+| Data from | TWSE disposals and notices 2001-01; TPEx notices 2002-02; TPEx disposals 2003-09 |
+| Update | Store refreshed 17:45, 21:30 and 07:00 Taipei; a TPEx evening announcement may first appear in the 07:00 run |
+| Source | TWSE (臺灣證券交易所) and TPEx (證券櫃檯買賣中心) announcements |
+
+**Parameters** — give `date`, or `start` / `end`, or neither (= today, Taipei).
+
+| Name | In | Type | Required | Default | Allowed / format | Description |
+|---|---|---|---|---|---|---|
+| `date` | query | string | no | — | strict `YYYY-MM-DD`; not with `start` / `end` | One day: disposals **in force** that day, notices **announced** that day |
+| `start` | query | string | no | `2001-01-01` with `stock_id`, else `end` − 365 days | strict `YYYY-MM-DD` | First day of the range |
+| `end` | query | string | no | today (or `start` if later) | strict `YYYY-MM-DD` | Last day of the range (inclusive) |
+| `kind` | query | string | no | both | `disposal` (處置), `notice` (注意) | Announcement type |
+| `market` | query | string | no | both | `twse`, `tpex` | Exchange |
+| `stock_id` | query | string | no | all | See category conventions | One code; lifts the 366-day cap |
+
+Range semantics: a **disposal** is returned when its period (`start`–`end`) overlaps the range, a
+**notice** when its announcement `date` is inside it. Without `stock_id` the range is at most
+**366 days inclusive** — split longer whole-market ranges (one calendar year per call fits).
+Unlike the category default, `start` / `end` / `date` are strictly validated.
+
+**Response** — `{"start", "end", "data": [...]}`; `start` / `end` echo the resolved range (both
+equal `date` when `date` was sent). Rows sorted by `date`, `market`, `kind`, `stock_id`. One row
+per announcement.
+
+| Field | Type | Description |
+|---|---|---|
+| `date` | string | Announcement day `YYYY-MM-DD` (a disposal takes effect the next trading day) |
+| `stock_id` | string | Code — includes warrants, ETFs and convertible bonds (e.g. `037060`, `45402`) |
+| `stock_name` | string \| null | Name as published |
+| `market` | string | `twse` (上市) or `tpex` (上櫃) |
+| `kind` | string | `disposal` or `notice` |
+| `count` | int | The exchange's cumulative count (累計 / 累計次數) |
+| `start`, `end` | string \| null | Disposal period, both days included; `null` on notices |
+| `condition` | string \| null | Disposal: the trigger as published (`連續三次`, `連續3個營業日`, `最近十個營業日已有六次` …). Notice: the clauses cited (`第一款、第五款`); `null` if none |
+| `measure` | string \| null | Disposal type: `第一次處置`, `第二次處置`, `再次處置`, `人工管制撮合`, `收足五成款券` …; `null` on notices and on early TPEx rows |
+| `match_minutes` | int \| null | Disposal: N of 「約每N分鐘撮合一次」 read from the text; `null` when the text names none (every TWSE disposal before ~2011 — its text is blank — and non-matching measures) and on notices |
+| `reason` | string \| null | Full announcement text; null where the exchange published none (every TWSE disposal before 2011-03) (disposal 處置內容, notice 注意交易資訊) |
+| `close`, `pe` | float \| null | Close and P/E on the announcement; always `null` on TWSE disposals |
+
+**Errors**
+
+| Status | Body | When |
+|---|---|---|
+| 400 | `{"error": "Invalid start date, expected YYYY-MM-DD"}` (or `end`) | Malformed `start` / `end` |
+| 400 | `{"error": "start must not be after end"}` | Reversed range |
+| 400 | `{"error": "Invalid date, expected YYYY-MM-DD"}` | Malformed `date` |
+| 400 | `{"error": "use either date or start/end"}` | `date` sent with `start` or `end` |
+| 400 | `{"error": "Invalid stock_id"}` | Format check failed |
+| 400 | `{"error": "kind must be one of ['disposal', 'notice']"}` / `{"error": "market must be one of ['twse', 'tpex']"}` | Unknown value |
+| 400 | `{"error": "start/end range is <n> days; max 366 (inclusive) without stock_id — split into smaller ranges"}` | Range over 366 days without `stock_id` |
+| 503 | `{"error": "Data temporarily unavailable. Please retry shortly."}` | A table you asked for is not servable (not refreshed for 48 h, or unreadable) — retry later, never read it as "no announcements". Only the requested `kind` / `market` tables are checked |
+
+**Example**
+
+```python
+# disposals in force on one day
+data = requests.get(f"{BASE_URL}/studio/market/twstock/alerts", headers=headers,
+                    params={"date": "2026-10-13", "kind": "disposal"}, timeout=30).json()["data"]
+# [..., {"date": "2026-10-12", "stock_id": "5228", "stock_name": "鈺鎧", "market": "tpex",
+#   "kind": "disposal", "count": 2, "start": "2026-10-13", "end": "2026-10-19",
+#   "condition": "連續3個營業日", "measure": "第一次處置", "match_minutes": 2,
+#   "reason": "* 公布日期：115/10/12\n* 證券代號：5228\n…", "close": 59.6, "pe": 29.22},
+#  {"date": "2026-10-12", "stock_id": "2492", "stock_name": "華新科", "market": "twse",
+#   "kind": "disposal", "count": 8, "start": "2026-10-13", "end": "2026-10-19",
+#   "condition": "連續三次", "measure": "第一次處置", "match_minutes": 2,
+#   "reason": "１處置原因：該有價證券之交易，連續三個營業日達本公司「公布注意交易資訊」標準。\n２處置期間：…", "close": None, "pe": None}, ...]   # 36 rows
+
+# notices announced on one day
+notes = requests.get(f"{BASE_URL}/studio/market/twstock/alerts", headers=headers,
+                     params={"date": "2026-10-12", "kind": "notice"}, timeout=30).json()["data"]
+# [..., {"date": "2026-10-12", "stock_id": "5228", "stock_name": "鈺鎧", "market": "tpex",
+#   "kind": "notice", "count": 15, "start": None, "end": None, "condition": "第一款、第三款、第四款",
+#   "measure": None, "match_minutes": None,
+#   "reason": "最近六個營業日(含當日)累積之最後成交價漲幅達32.63%(第一款)\n…", "close": 59.6, "pe": 29.22}, ...]
+
+# one stock's disposal history (no range cap with stock_id)
+hist = requests.get(f"{BASE_URL}/studio/market/twstock/alerts", headers=headers,
+                    params={"stock_id": "2492", "kind": "disposal", "start": "2001-01-01"},
+                    timeout=30).json()["data"]
+# 10 rows: 2001-11-23~2001-11-29 收足五成款券 (match_minutes None), 2018-05-08~2018-05-21 第一次處置 (5), …,
+#          2026-10-13~2026-10-19 第一次處置 (2)
+```
+
+**Notes**
+- **A disposal is announced after the close and takes effect the next trading day** — `date` is
+  the announcement day, `start` the first day in force. To ask "under disposition on D", use
+  `date=D` (or `start=end=D`), not the announcement date. Backtest recipe (excluding disposed
+  stocks without look-ahead): `references/twstock-fundamentals-reference.md` ›
+  *Attention & Disposition Stocks*.
+- A stock can have overlapping disposal periods (a 第二次處置 announced inside the first).
+- `start` / `end` are the announced period; a market holiday or trading suspension inside it
+  extends the real end, which the data does not record.
+- `match_minutes` follows the rules of the day (TPEx 5 / 20 minutes → 2 from 2026-08-10) — read it
+  per row, never assume a value.
+- Pre-disposal candidate lists (處置候選) are not included.
+- Cite as 「資料來源：臺灣證券交易所、證券櫃檯買賣中心」.
 
 ---
 

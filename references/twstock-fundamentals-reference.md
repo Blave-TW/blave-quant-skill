@@ -263,6 +263,95 @@ roe = df.set_index("available")["roe_ttm"]          # then reindex(prices.index,
 
 ---
 
+## Attention & Disposition Stocks (注意股／處置股)
+
+Endpoint: `GET /studio/market/twstock/alerts` — parameters, fields and errors in
+`references/blave-api.md`. Source: TWSE and TPEx announcements (not FinMind); cite as
+「資料來源：臺灣證券交易所、證券櫃檯買賣中心」.
+
+### The four tables
+
+| Table | `market` / `kind` | What it is | From |
+|---|---|---|---|
+| TWSE 注意股 | `twse` / `notice` | A listed stock flagged that day for unusual price, volume, turnover or concentration; `condition` names the clauses (`第一款` …) | 2001-01 |
+| TWSE 處置股 | `twse` / `disposal` | Repeated notices → for a period the stock trades by periodic call auction (one match every N minutes) and large orders must be prepaid | 2001-01 |
+| TPEx 注意股 | `tpex` / `notice` | Same, for OTC stocks | 2002-02 |
+| TPEx 處置股 | `tpex` / `disposal` | Same, for OTC stocks | 2003-09 (2002-02 – 2003-08 exist only as a static exchange page and are not included) |
+
+About 114,000 rows in all, ~7,000 a year (notices ~93%). `stock_id` also covers warrants, ETFs
+and convertible bonds — filter to your universe.
+
+### Field notes
+
+- `date` is the **announcement day**. A disposal is announced after the close and is in force
+  from the next trading day: `start` is that first day, `end` the last, both included. Every
+  stored disposal so far starts after its announcement day except one 2007 TPEx row.
+- `match_minutes` = the N of 「約每N分鐘撮合一次」 read from the announcement text. `null` when the
+  text names none: every TWSE disposal before ~2011 (the exchange left the text blank), measures
+  that are not periodic matching (e.g. `收足五成款券`), and all notices. The minutes follow the
+  rules of the day (TPEx moved 5 / 20 → 2 from 2026-08-10) — never fill a default.
+- `measure` is `null` on early TPEx disposals; `close` / `pe` are always `null` on TWSE disposals.
+- A stock can have overlapping disposal periods (a 第二次處置 announced inside the first) — OR them.
+- `start` / `end` are the **announced** period: a market holiday or trading suspension inside it
+  extends the real end, which the data does not record.
+
+### Query semantics
+
+- Disposals match on **period overlap**: `date=D` (or `start=end=D`) with `kind=disposal` returns
+  every stock under disposition on D — including one announced weeks earlier.
+- Notices match on the **announcement day** inside the range.
+- Without `stock_id` a range is at most 366 days (inclusive); loop calendar years. A disposal that
+  crosses a year boundary appears in both years' answers — drop duplicates on
+  `(market, stock_id, start, end)`. With `stock_id` there is no cap.
+
+### When new rows appear
+
+Blave's store refreshes at **17:45, 21:30 and 07:00 Taipei**. TWSE and TPEx announce after the
+close and publish no time; a TPEx evening announcement may only arrive in the 07:00 run. So an
+announcement made on D is normally in by ~07:30 on D+1, before that day's open — unconfirmed:
+if the 07:00 run fails it waits for 17:45. lib's `FEED_TIMING` uses the same D+1 07:30 stamp.
+
+### Backtest: drop disposed stocks from the universe
+
+```python
+import pandas as pd, requests
+BASE_URL = "https://api.blave.org"   # headers = {"api-key": ..., "secret-key": ...} (blave-api.md › Setup)
+
+def disposal_periods(start, end, headers):
+    """Whole-market disposal periods overlapping [start, end] — one request per calendar year."""
+    rows, s, e = [], pd.Timestamp(start), pd.Timestamp(end)
+    for y in range(s.year, e.year + 1):
+        lo, hi = max(s, pd.Timestamp(y, 1, 1)), min(e, pd.Timestamp(y, 12, 31))
+        r = requests.get(f"{BASE_URL}/studio/market/twstock/alerts", headers=headers, timeout=60,
+                         params={"start": f"{lo:%Y-%m-%d}", "end": f"{hi:%Y-%m-%d}", "kind": "disposal"})
+        r.raise_for_status()                      # a 503 means "retry later", never "no disposals"
+        rows += r.json()["data"]
+    df = pd.DataFrame(rows, columns=["date", "stock_id", "market", "start", "end"])
+    df[["date", "start", "end"]] = df[["date", "start", "end"]].apply(pd.to_datetime)
+    return df.drop_duplicates(["market", "stock_id", "start", "end"])
+
+def disposed_mask(periods, dates, stock_ids):
+    """dates × stocks, True = under disposition that day (start and end included)."""
+    days = pd.DatetimeIndex(dates).normalize()
+    mask = pd.DataFrame(False, index=days, columns=list(stock_ids))
+    for p in periods[periods["stock_id"].isin(mask.columns)].itertuples():
+        mask[p.stock_id] = mask[p.stock_id].to_numpy() | ((days >= p.start) & (days <= p.end))
+    return mask
+
+periods = disposal_periods("2020-01-01", "2025-12-31", headers)
+mask = disposed_mask(periods, close.index, close.columns)    # close: dates × stocks
+score = close.pct_change(20).where(~mask)                    # a disposed stock is not ranked on D
+```
+
+**Point in time.** `mask` on day D only uses announcements made before D (after the close of
+D−1 at the latest), so it is safe for a decision taken at D's close and filled at D+1's open —
+the stock is still held through the first disposal day. Avoiding that first day too
+(`mask.shift(-1)`) needs the announcement of D's evening, so it is only honest when your orders
+are decided after ~07:30 the next morning, before the open — never for a signal computed at D's
+close. Never join announcements to prices on `date` as if they were known that morning.
+
+---
+
 ## Blave Agent lib 用法
 
 所有台股資料一律用 batch 函式（即使只有 1 支）：
