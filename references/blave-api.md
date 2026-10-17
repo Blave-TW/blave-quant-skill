@@ -377,7 +377,7 @@ clamped** (`start_date` moved to `end_date` − 365 days, no error). Period < `5
 | Field | Type | Unit | Description |
 |---|---|---|---|
 | `time` | float | Unix seconds (UTC) | Bar open time |
-| `open` / `high` / `low` / `close` | float | quote currency (USDT) | Prices |
+| `open` / `high` / `low` / `close` | float | quote currency (USDT) | Prices, per contract: on a multiplier contract the price is for the contract's unit (`1000PEPEUSDT` = per 1000 PEPE, `1MBABYDOGEUSDT` = per 1,000,000 BABYDOGE) |
 | `volume` | float \| null | base asset | Traded volume; `null` when the source has no volume for that bar |
 
 **Errors**
