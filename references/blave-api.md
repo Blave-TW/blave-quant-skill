@@ -1750,7 +1750,7 @@ the dates matter only if you are told a source "has no history".
 | Name | 每幣多空比 Long/Short Ratio by Coin |
 | Group | Crypto › Raw data › Long/short ratio |
 | Access | API plan or Blave Agent plan |
-| Rate limit | **200 / hour per key on this endpoint**, plus the shared 500 / 5 min per key + per IP |
+| Rate limit | 200 / hour per key, plus the shared 500 / 5 min per key + per IP |
 | Data from | Last 7 days, hourly + the latest 5-minute point |
 | Update | 5-minute buckets |
 
@@ -1923,7 +1923,7 @@ OKX and Bybit are why `n_full_7d` is 3 of 5 and why their `chg_24h` was still `n
 | Name | 每幣未平倉量 Open Interest by Coin |
 | Group | Crypto › Raw data › Open interest |
 | Access | API plan or Blave Agent plan |
-| Rate limit | **200 / hour per key on this endpoint**, plus the shared 500 / 5 min per key + per IP |
+| Rate limit | 200 / hour per key, plus the shared 500 / 5 min per key + per IP |
 | Data from | Last 7 days, hourly + current values |
 | Update | 5-minute buckets |
 
