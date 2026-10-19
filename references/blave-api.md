@@ -14,95 +14,95 @@ moves lines (command in the comment under the table).
 <!-- index:start -->
 | Line | Endpoint | Category |
 |:-|:-|:-|
-| 236 | `GET /price` | Crypto |
-| 283 | `GET /alpha_table` | Crypto |
-| 341 | `GET /kline` | Crypto |
-| 422 | `GET /market_direction/get_alpha` | Crypto |
-| 470 | `GET /screener/get_saved_conditions` | Crypto |
-| 511 | `GET /screener/get_saved_condition_result` | Crypto |
-| 560 | `GET /holder_concentration/get_symbols` | Crypto |
-| 589 | `GET /holder_concentration/get_alpha` | Crypto |
-| 641 | `GET /funding_rate/get_alpha` | Crypto |
-| 696 | `GET /market_sentiment/get_symbols` | Crypto |
-| 724 | `GET /market_sentiment/get_alpha` | Crypto |
-| 770 | `GET /capital_shortage/get_alpha` | Crypto |
-| 816 | `GET /sector_rotation/get_history_data` | Crypto |
-| 861 | `GET /sector_rotation/get_overview_data` | Crypto |
-| 898 | `GET /oi_imbalance/get_overview_data` | Crypto |
-| 939 | `GET /whale_hunter/get_symbols` | Crypto |
-| 967 | `GET /whale_hunter/get_alpha` | Crypto |
-| 1020 | `GET /taker_intensity/get_symbols` | Crypto |
-| 1048 | `GET /taker_intensity/get_alpha` | Crypto |
-| 1096 | `GET /unusual_movement/get_symbols` | Crypto |
-| 1124 | `GET /unusual_movement/get_alpha` | Crypto |
-| 1174 | `GET /squeeze_momentum/get_symbols` | Crypto |
-| 1202 | `GET /squeeze_momentum/get_alpha` | Crypto |
-| 1253 | `GET /blave_top_trader/get_exposure` | Crypto |
-| 1300 | `GET /liquidation/get_symbols` | Crypto |
-| 1328 | `GET /liquidation/get_alpha` | Crypto |
-| 1378 | `GET /liquidation/get_map` | Crypto |
-| 1423 | `GET /liquidation/get_map_change` | Crypto |
-| 1472 | `GET /liquidation/get_coin` | Crypto |
-| 1561 | `GET /liquidation/get_exchanges` | Crypto |
-| 1645 | `GET /long_short_ratio/get_table` | Crypto |
-| 1742 | `GET /long_short_ratio/get_coin` | Crypto |
-| 1820 | `GET /oi_imbalance/get_table` | Crypto |
-| 1910 | `GET /oi_imbalance/get_coin` | Crypto |
-| 1977 | `GET /oi_imbalance/get_history` | Crypto |
-| 2070 | `GET /taker_intensity/get_cvd_table` | Crypto |
-| 2148 | `GET /taker_intensity/get_cvd_coin` | Crypto |
-| 2211 | `GET /cme_cot/get_latest` | Crypto |
-| 2270 | `GET /cme_cot/get_history` | Crypto |
-| 2377 | `GET /studio/market/twstock/list` | Taiwan Stock |
-| 2420 | `GET /studio/market/twstock/info/<stock_id>` | Taiwan Stock |
-| 2458 | `GET /studio/market/twstock/price/<stock_id>` | Taiwan Stock |
-| 2522 | `GET /studio/market/twstock/price_adj/<stock_id>` | Taiwan Stock |
-| 2556 | `GET /studio/market/twstock/quote/<stock_id>` | Taiwan Stock |
-| 2617 | `GET /studio/market/twstock/quote` | Taiwan Stock |
-| 2659 | `GET /studio/market/twstock/quote/all` | Taiwan Stock |
-| 2691 | `GET /studio/market/twstock/minute/ohlcv/<stock_id>/<schema>` | Taiwan Stock |
-| 2754 | `GET /studio/market/twstock/minute/ohlcv/symbols` | Taiwan Stock |
-| 2780 | `GET /studio/market/twstock/kbar/<stock_id>` | Taiwan Stock |
-| 2831 | `GET /studio/market/twstock/market_value/<stock_id>` | Taiwan Stock |
-| 2866 | `GET /studio/market/twstock/market_value/all` | Taiwan Stock |
-| 2946 | `GET /studio/market/twstock/per/<stock_id>` | Taiwan Stock |
-| 2993 | `GET /studio/market/twstock/financials/<stock_id>` | Taiwan Stock |
-| 3041 | `GET /studio/market/twstock/balance_sheet/<stock_id>` | Taiwan Stock |
-| 3074 | `GET /studio/market/twstock/cashflow/<stock_id>` | Taiwan Stock |
-| 3129 | `GET /studio/market/twstock/monthly_revenue/<stock_id>` | Taiwan Stock |
-| 3181 | `GET /studio/market/twstock/ratios/<stock_id>` | Taiwan Stock |
-| 3270 | `GET /studio/market/twstock/dividend/<stock_id>` | Taiwan Stock |
-| 3334 | `GET /studio/market/twstock/news/<stock_id>` | Taiwan Stock |
-| 3385 | `GET /studio/market/twstock/institutional/<stock_id>` | Taiwan Stock |
-| 3440 | `GET /studio/market/twstock/margin/<stock_id>` | Taiwan Stock |
-| 3495 | `GET /studio/market/twstock/shareholding/<stock_id>` | Taiwan Stock |
-| 3540 | `GET /studio/market/twstock/foreign_shareholding/<stock_id>` | Taiwan Stock |
-| 3588 | `GET /studio/market/twstock/gov_bank/<stock_id>` | Taiwan Stock |
-| 3635 | `GET /studio/market/twstock/lending/<stock_id>` | Taiwan Stock |
-| 3680 | `GET /studio/market/twstock/broker/search` | Taiwan Stock |
-| 3716 | `GET /studio/market/twstock/broker/stock/<stock_id>` | Taiwan Stock |
-| 3771 | `GET /studio/market/twstock/broker/trader/<trader_id>` | Taiwan Stock |
-| 3808 | `GET /studio/market/twstock/alerts` | Taiwan Stock |
-| 3916 | `GET /studio/market/twstock/batch/<data_type>` | Taiwan Stock |
-| 3981 | `GET /studio/market/twmarket/index/<index_id>` | Taiwan Market (大盤) |
-| 4025 | `GET /studio/market/twmarket/turnover` | Taiwan Market (大盤) |
-| 4068 | `GET /studio/market/twmarket/institutional` | Taiwan Market (大盤) |
-| 4112 | `GET /studio/market/twmarket/margin` | Taiwan Market (大盤) |
-| 4155 | `GET /studio/market/twmarket/dividend_points` | Taiwan Market (大盤) |
-| 4218 | `GET /studio/market/twfutures/ohlcv/<symbol>/<schema>` | Taiwan Futures & Options |
-| 4303 | `GET /studio/market/twfutures/ohlcv/symbols` | Taiwan Futures & Options |
-| 4330 | `GET /studio/market/twfutures/ohlcv/<symbol>/export/<year>` | Taiwan Futures & Options |
-| 4383 | `GET /studio/market/twfutures/bid_ask_vol/<symbol>` | Taiwan Futures & Options |
-| 4435 | `GET /studio/market/twfutures/daily/<futures_id>` | Taiwan Futures & Options |
-| 4490 | `GET /studio/market/twfutures/stock_futures/batch/daily` | Taiwan Futures & Options |
-| 4530 | `GET /studio/market/twfutures/institutional/<futures_id>` | Taiwan Futures & Options |
-| 4587 | `GET /studio/market/twfutures/large_traders/<futures_id>` | Taiwan Futures & Options |
-| 4638 | `GET /studio/market/twfutures/option/institutional/<option_id>` | Taiwan Futures & Options |
-| 4675 | `GET /studio/market/twfutures/option/large_traders/<option_id>` | Taiwan Futures & Options |
-| 4713 | `GET /studio/market/twfutures/option/pcr` | Taiwan Futures & Options |
-| 4761 | `GET /studio/market/twfutures/carrying_cost/<identity>` | Taiwan Futures & Options |
-| 4862 | `GET /studio/market/db/ohlcv/<dataset>/<symbol>/<schema>` | Commodities |
-| 4923 | `GET /studio/market/anue/economic_calendar` | Macro |
+| 240 | `GET /price` | Crypto |
+| 287 | `GET /alpha_table` | Crypto |
+| 345 | `GET /kline` | Crypto |
+| 426 | `GET /market_direction/get_alpha` | Crypto |
+| 474 | `GET /screener/get_saved_conditions` | Crypto |
+| 515 | `GET /screener/get_saved_condition_result` | Crypto |
+| 564 | `GET /holder_concentration/get_symbols` | Crypto |
+| 593 | `GET /holder_concentration/get_alpha` | Crypto |
+| 645 | `GET /funding_rate/get_alpha` | Crypto |
+| 700 | `GET /market_sentiment/get_symbols` | Crypto |
+| 728 | `GET /market_sentiment/get_alpha` | Crypto |
+| 774 | `GET /capital_shortage/get_alpha` | Crypto |
+| 820 | `GET /sector_rotation/get_history_data` | Crypto |
+| 865 | `GET /sector_rotation/get_overview_data` | Crypto |
+| 902 | `GET /oi_imbalance/get_overview_data` | Crypto |
+| 943 | `GET /whale_hunter/get_symbols` | Crypto |
+| 971 | `GET /whale_hunter/get_alpha` | Crypto |
+| 1024 | `GET /taker_intensity/get_symbols` | Crypto |
+| 1052 | `GET /taker_intensity/get_alpha` | Crypto |
+| 1100 | `GET /unusual_movement/get_symbols` | Crypto |
+| 1128 | `GET /unusual_movement/get_alpha` | Crypto |
+| 1178 | `GET /squeeze_momentum/get_symbols` | Crypto |
+| 1206 | `GET /squeeze_momentum/get_alpha` | Crypto |
+| 1257 | `GET /blave_top_trader/get_exposure` | Crypto |
+| 1304 | `GET /liquidation/get_symbols` | Crypto |
+| 1332 | `GET /liquidation/get_alpha` | Crypto |
+| 1382 | `GET /liquidation/get_map` | Crypto |
+| 1427 | `GET /liquidation/get_map_change` | Crypto |
+| 1476 | `GET /liquidation/get_coin` | Crypto |
+| 1565 | `GET /liquidation/get_exchanges` | Crypto |
+| 1649 | `GET /long_short_ratio/get_table` | Crypto |
+| 1746 | `GET /long_short_ratio/get_coin` | Crypto |
+| 1829 | `GET /oi_imbalance/get_table` | Crypto |
+| 1919 | `GET /oi_imbalance/get_coin` | Crypto |
+| 1989 | `GET /oi_imbalance/get_history` | Crypto |
+| 2082 | `GET /taker_intensity/get_cvd_table` | Crypto |
+| 2160 | `GET /taker_intensity/get_cvd_coin` | Crypto |
+| 2223 | `GET /cme_cot/get_latest` | Crypto |
+| 2282 | `GET /cme_cot/get_history` | Crypto |
+| 2389 | `GET /studio/market/twstock/list` | Taiwan Stock |
+| 2432 | `GET /studio/market/twstock/info/<stock_id>` | Taiwan Stock |
+| 2470 | `GET /studio/market/twstock/price/<stock_id>` | Taiwan Stock |
+| 2534 | `GET /studio/market/twstock/price_adj/<stock_id>` | Taiwan Stock |
+| 2568 | `GET /studio/market/twstock/quote/<stock_id>` | Taiwan Stock |
+| 2629 | `GET /studio/market/twstock/quote` | Taiwan Stock |
+| 2671 | `GET /studio/market/twstock/quote/all` | Taiwan Stock |
+| 2703 | `GET /studio/market/twstock/minute/ohlcv/<stock_id>/<schema>` | Taiwan Stock |
+| 2766 | `GET /studio/market/twstock/minute/ohlcv/symbols` | Taiwan Stock |
+| 2792 | `GET /studio/market/twstock/kbar/<stock_id>` | Taiwan Stock |
+| 2843 | `GET /studio/market/twstock/market_value/<stock_id>` | Taiwan Stock |
+| 2878 | `GET /studio/market/twstock/market_value/all` | Taiwan Stock |
+| 2958 | `GET /studio/market/twstock/per/<stock_id>` | Taiwan Stock |
+| 3005 | `GET /studio/market/twstock/financials/<stock_id>` | Taiwan Stock |
+| 3053 | `GET /studio/market/twstock/balance_sheet/<stock_id>` | Taiwan Stock |
+| 3086 | `GET /studio/market/twstock/cashflow/<stock_id>` | Taiwan Stock |
+| 3141 | `GET /studio/market/twstock/monthly_revenue/<stock_id>` | Taiwan Stock |
+| 3193 | `GET /studio/market/twstock/ratios/<stock_id>` | Taiwan Stock |
+| 3282 | `GET /studio/market/twstock/dividend/<stock_id>` | Taiwan Stock |
+| 3346 | `GET /studio/market/twstock/news/<stock_id>` | Taiwan Stock |
+| 3397 | `GET /studio/market/twstock/institutional/<stock_id>` | Taiwan Stock |
+| 3452 | `GET /studio/market/twstock/margin/<stock_id>` | Taiwan Stock |
+| 3507 | `GET /studio/market/twstock/shareholding/<stock_id>` | Taiwan Stock |
+| 3552 | `GET /studio/market/twstock/foreign_shareholding/<stock_id>` | Taiwan Stock |
+| 3600 | `GET /studio/market/twstock/gov_bank/<stock_id>` | Taiwan Stock |
+| 3647 | `GET /studio/market/twstock/lending/<stock_id>` | Taiwan Stock |
+| 3692 | `GET /studio/market/twstock/broker/search` | Taiwan Stock |
+| 3728 | `GET /studio/market/twstock/broker/stock/<stock_id>` | Taiwan Stock |
+| 3783 | `GET /studio/market/twstock/broker/trader/<trader_id>` | Taiwan Stock |
+| 3820 | `GET /studio/market/twstock/alerts` | Taiwan Stock |
+| 3928 | `GET /studio/market/twstock/batch/<data_type>` | Taiwan Stock |
+| 3993 | `GET /studio/market/twmarket/index/<index_id>` | Taiwan Market (大盤) |
+| 4037 | `GET /studio/market/twmarket/turnover` | Taiwan Market (大盤) |
+| 4080 | `GET /studio/market/twmarket/institutional` | Taiwan Market (大盤) |
+| 4124 | `GET /studio/market/twmarket/margin` | Taiwan Market (大盤) |
+| 4167 | `GET /studio/market/twmarket/dividend_points` | Taiwan Market (大盤) |
+| 4230 | `GET /studio/market/twfutures/ohlcv/<symbol>/<schema>` | Taiwan Futures & Options |
+| 4315 | `GET /studio/market/twfutures/ohlcv/symbols` | Taiwan Futures & Options |
+| 4342 | `GET /studio/market/twfutures/ohlcv/<symbol>/export/<year>` | Taiwan Futures & Options |
+| 4395 | `GET /studio/market/twfutures/bid_ask_vol/<symbol>` | Taiwan Futures & Options |
+| 4447 | `GET /studio/market/twfutures/daily/<futures_id>` | Taiwan Futures & Options |
+| 4502 | `GET /studio/market/twfutures/stock_futures/batch/daily` | Taiwan Futures & Options |
+| 4542 | `GET /studio/market/twfutures/institutional/<futures_id>` | Taiwan Futures & Options |
+| 4599 | `GET /studio/market/twfutures/large_traders/<futures_id>` | Taiwan Futures & Options |
+| 4650 | `GET /studio/market/twfutures/option/institutional/<option_id>` | Taiwan Futures & Options |
+| 4687 | `GET /studio/market/twfutures/option/large_traders/<option_id>` | Taiwan Futures & Options |
+| 4725 | `GET /studio/market/twfutures/option/pcr` | Taiwan Futures & Options |
+| 4773 | `GET /studio/market/twfutures/carrying_cost/<identity>` | Taiwan Futures & Options |
+| 4874 | `GET /studio/market/db/ohlcv/<dataset>/<symbol>/<schema>` | Commodities |
+| 4935 | `GET /studio/market/anue/economic_calendar` | Macro |
 <!-- index:end -->
 <!-- regenerate (from the repo root): python3 - <<'EOF'
 import re
@@ -151,7 +151,10 @@ Key rules:
   not guess a price.
 
 **Rate limit** — unless a block says otherwise: 500 requests / 5 min per API key, and
-500 requests / 5 min per IP. The window resets after 5 minutes.
+500 requests / 5 min per IP. The window resets after 5 minutes. A few endpoints that compute
+each response on request carry an extra, lower limit in their block (on top of the shared one);
+when that one is hit the `429` message names it and the response carries `Retry-After` (seconds
+until that key's window on that endpoint resets).
 
 **Shared errors** (endpoint-specific errors are listed in each block):
 
@@ -161,7 +164,8 @@ Key rules:
 | 422 | `{"error_code": "ERR001", "message": "Token is invalid or expired."}` | Header missing (`Any valid key` endpoints) |
 | 403 | `{"error_code": "ERR005", "message": "Invalid API key."}` / `"Invalid Secret key."` | Wrong key pair |
 | 403 | `{"error_code": "ERR007", "message": "…", "next_steps": {…}}` | The key's account is not covered (key rules above): a self-created key without an API plan, or a Blave Agent key without a plan or trial — `message` says which |
-| 429 | `{"error_code": "ERR429", "message": "Rate limit exceeded."}` | Rate limit hit |
+| 429 | `{"error_code": "ERR429", "message": "Rate limit exceeded."}` | Shared rate limit hit |
+| 429 | `{"error_code": "ERR429", "message": "Rate limit exceeded: this endpoint allows 200 requests per hour per API key."}` + `Retry-After` header | Per-endpoint limit hit (only endpoints whose block lists one) |
 | 500 | `{"error": "Internal error"}` or an HTML error page | Unexpected server error |
 
 **Timestamps** are UTC unless a block says otherwise. Taiwan market `date` fields are
@@ -1746,7 +1750,7 @@ the dates matter only if you are told a source "has no history".
 | Name | 每幣多空比 Long/Short Ratio by Coin |
 | Group | Crypto › Raw data › Long/short ratio |
 | Access | API plan or Blave Agent plan |
-| Rate limit | 500 / 5 min per key + per IP |
+| Rate limit | **200 / hour per key on this endpoint**, plus the shared 500 / 5 min per key + per IP |
 | Data from | Last 7 days, hourly + the latest 5-minute point |
 | Update | 5-minute buckets |
 
@@ -1807,6 +1811,11 @@ if latest is not None:
 - Covers the long/short-ratio feeds of Binance, OKX, Gate.io and Bybit.
 - The cross-exchange "top trader" caveat on `/long_short_ratio/get_table` applies here too.
 - 7 days is the whole history this endpoint serves; there is no `start_date` / `end_date`.
+- **Rate limit — 200 / hour per key.** Each call rebuilds seven days of history across ten feeds,
+  so this endpoint has its own lower limit. The 168-slot series changes once an hour; only
+  `latest` moves in between. For every coin's latest value, call `/long_short_ratio/get_table`
+  once instead of looping `get_coin` over coins. Every call with your key counts, including ones that
+  come back `404` — drop symbols that 404 rather than retrying them.
 - **About the "anonymous studio twin" in every capture on this page's raw-data endpoints:** the
   studio pages (`/studio/charts/...`) serve the same payload from the same builder without a key,
   which is where these examples were taken. They are not a substitute for the API-key endpoints:
@@ -1914,7 +1923,7 @@ OKX and Bybit are why `n_full_7d` is 3 of 5 and why their `chg_24h` was still `n
 | Name | 每幣未平倉量 Open Interest by Coin |
 | Group | Crypto › Raw data › Open interest |
 | Access | API plan or Blave Agent plan |
-| Rate limit | 500 / 5 min per key + per IP |
+| Rate limit | **200 / hour per key on this endpoint**, plus the shared 500 / 5 min per key + per IP |
 | Data from | Last 7 days, hourly + current values |
 | Update | 5-minute buckets |
 
@@ -1965,6 +1974,9 @@ print(data["oi_total"], day["chg"], "counted:", day["exchanges"])
 
 **Notes**
 - Covers open interest on Binance, OKX, BingX, Bybit and Gate.io.
+- **Rate limit — 200 / hour per key**, for the same reason as `/long_short_ratio/get_coin`. For
+  every coin's current open interest, call `/oi_imbalance/get_table` once instead of looping
+  `get_coin` over coins.
 - `windows["1h"]["exchanges"]` having five entries while `windows["24h"]` has three is the
   young-feed rule, not missing data — read that list before comparing windows.
 - The OI 失衡 caveat from `/oi_imbalance/get_table` applies to this `oi_total` too.
