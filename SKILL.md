@@ -1,7 +1,7 @@
 ---
 name: blave-quant
-description: "Blave quant data layer and exchange-trading reference for AI agents. Use when the task needs crypto alpha/market data, Taiwan stock, futures or market-wide data, CME/ICE or TXF OHLCV, Hyperliquid top traders, or trading on BitMart, OKX, Bybit, BingX, Bitget, Binance, Bitfinex, KuCoin or Gate.io."
-version: 1.23.28
+description: "Blave quant data layer and exchange-trading reference for AI agents. Use when the task needs crypto alpha/market data, Taiwan stock, futures or market-wide data, CME/ICE or TXF OHLCV, Hyperliquid top traders, or trading on BitMart, OKX, Bybit, BingX, Bitget, Binance, Bitfinex, KuCoin, Gate.io or StockCoin (US / KR stock perps), including US stock perpetuals on Binance, Bybit and BingX."
+version: 1.24.0
 metadata:
   openclaw:
     emoji: "📊"
@@ -34,13 +34,15 @@ metadata:
         - KUCOIN_API_PASSPHRASE
         - GATE_API_KEY
         - GATE_SECRET_KEY
+        - STOCKCOIN_API_KEY
+        - STOCKCOIN_SECRET_KEY
 ---
 
 # Blave Quant Skill
 
-Quant infrastructure for AI agents. Capabilities: **Blave** market alpha data (including 台股日K), **CME / ICE Futures** OHLCV, **Taiwan Futures** OHLCV (TXF), **BitMart** trading, **OKX** trading, **Bybit** trading, **BingX** trading, **Bitget** trading, **Binance** trading, **Bitfinex** trading & funding, **KuCoin** trading, **Gate.io** trading, **TWSE/TPEX** 台股查詢, **TWSE BSR** 分點資料.
+Quant infrastructure for AI agents. Capabilities: **Blave** market alpha data (including 台股日K), **CME / ICE Futures** OHLCV, **Taiwan Futures** OHLCV (TXF), **BitMart** trading, **OKX** trading, **Bybit** trading, **BingX** trading, **Bitget** trading, **Binance** trading, **Bitfinex** trading & funding, **KuCoin** trading, **Gate.io** trading, **StockCoin** trading (stock perps), **TWSE/TPEX** 台股查詢, **TWSE BSR** 分點資料.
 
-**Keywords (zh ↔ en, so a request in either language lands on the right reference):** 籌碼集中度 Holder Concentration · 多空力道 Taker Intensity · 巨鯨警報 Whale Hunter · 擠壓動能 Squeeze Momentum · 市場方向 Market Direction · 資金稀缺 Capital Shortage · 板塊輪動 Sector Rotation · OI 失衡 OI Imbalance · Blave頂尖交易員 Top Trader Exposure · 市場情緒 Market Sentiment · 每幣爆倉 / 爆倉矩陣 liquidation by coin / exchange matrix · 多空比 long/short ratio · 未平倉量 open interest (table, per coin, history) · 主動買賣淨額 CVD · CME 持倉報告 COT · kline (every Binance USDT perpetual incl. tokenized stocks, 1min from 2020-01) · alpha table · screener saved conditions · Hyperliquid leaderboard / positions · 台股日K / 現股分線 / 向後調整 / 三大法人 / 融資融券 / 股權持股分級表 / 綜合損益表 / 資產負債表 / 現金流量表 / 月營收 / 財務比率 financial ratios (ROE・毛利率・成長率・週轉率・自由現金流, 單季與近四季 TTM) / 股利事件 / 注意股・處置股 attention & disposition stocks (處置期間、分盤撮合分鐘數) / 市值排名（市場別、ETF 旗標、上市扣除 ETF 市值分母）/ 分點買賣超 / 本益比・殖利率・淨值比 · 大盤加權指數 / 全市場成交量值 / 全市場三大法人 / 全市場融資融券 / 指數每日除息點數（含未來預估） · 台指期 TXF 日線與分線 / 選擇權 PCR / 法人持倉成本 · WTI `CL` / 黃金 `GC` / 布蘭特 `BRN` · 總經日曆 economic calendar.
+**Keywords (zh ↔ en, so a request in either language lands on the right reference):** 籌碼集中度 Holder Concentration · 多空力道 Taker Intensity · 巨鯨警報 Whale Hunter · 擠壓動能 Squeeze Momentum · 市場方向 Market Direction · 資金稀缺 Capital Shortage · 板塊輪動 Sector Rotation · OI 失衡 OI Imbalance · Blave頂尖交易員 Top Trader Exposure · 市場情緒 Market Sentiment · 每幣爆倉 / 爆倉矩陣 liquidation by coin / exchange matrix · 多空比 long/short ratio · 未平倉量 open interest (table, per coin, history) · 主動買賣淨額 CVD · CME 持倉報告 COT · kline (every Binance USDT perpetual incl. tokenized stocks, 1min from 2020-01) · 美股代幣／股票永續 US stock perps (Binance / Bybit / BingX / StockCoin names, stock-perp agreement) · alpha table · screener saved conditions · Hyperliquid leaderboard / positions · 台股日K / 現股分線 / 向後調整 / 三大法人 / 融資融券 / 股權持股分級表 / 綜合損益表 / 資產負債表 / 現金流量表 / 月營收 / 財務比率 financial ratios (ROE・毛利率・成長率・週轉率・自由現金流, 單季與近四季 TTM) / 股利事件 / 注意股・處置股 attention & disposition stocks (處置期間、分盤撮合分鐘數) / 市值排名（市場別、ETF 旗標、上市扣除 ETF 市值分母）/ 分點買賣超 / 本益比・殖利率・淨值比 · 大盤加權指數 / 全市場成交量值 / 全市場三大法人 / 全市場融資融券 / 指數每日除息點數（含未來預估） · 台指期 TXF 日線與分線 / 選擇權 PCR / 法人持倉成本 · WTI `CL` / 黃金 `GC` / 布蘭特 `BRN` · 總經日曆 economic calendar.
 
 ## Safety Mode (MANDATORY — applies to every exchange)
 
@@ -105,6 +107,8 @@ This skill is a **data access layer**. When the user's request involves any of t
 | Bitfinex (spot / margin / lending) | `references/bitfinex-skill.md` |
 | KuCoin | `references/kucoin-skill.md` · `references/kucoin-api-reference.md` |
 | Gate.io | `references/gateio-skill.md` · `references/gateio-api-reference.md` |
+| StockCoin (US / KR stock, ETF, commodity perps; no spot) | `references/stockcoin-skill.md` |
+| US stock perps on any venue (names per venue, same-ticker collisions, stock-perp agreement) | `references/stock-perps.md` |
 
 **Marketplace**
 
@@ -192,6 +196,9 @@ When the user wants to trade, **ask which exchange** if not specified, then **re
 | Bitfinex | `BITFINEX_API_KEY`, `BITFINEX_API_SECRET` | `references/bitfinex-skill.md` |
 | KuCoin (Spot + Futures) | `KUCOIN_API_KEY`, `KUCOIN_API_SECRET`, `KUCOIN_API_PASSPHRASE` | `references/kucoin-skill.md` |
 | Gate.io (Spot + Futures) | `GATE_API_KEY`, `GATE_SECRET_KEY` | `references/gateio-skill.md` |
+| StockCoin (Perps only) | `STOCKCOIN_API_KEY`, `STOCKCOIN_SECRET_KEY` | `references/stockcoin-skill.md` |
+
+Trading a US stock perp (`NVDAUSDT` …) on any venue: also read `references/stock-perps.md` — the venue's name for the stock can differ, and a same-name contract can be a different instrument.
 
 **Workflow for all exchanges:**
 1. Verify credentials from `.env` — if missing, **STOP**

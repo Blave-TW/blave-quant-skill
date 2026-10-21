@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Overview
 
-This repo contains one skill covering sixteen capabilities:
+This repo contains one skill covering seventeen capabilities:
 1. **Blave** — Agent calls the Blave REST API directly for crypto market alpha data, Taiwan stock data, and Hyperliquid top trader tracking
 2. **CME / ICE Futures** — Agent fetches WTI crude (CL), gold (GC), and Brent crude (BRN) OHLCV from 2010 via Blave API
 3. **Taiwan Futures** — Agent fetches TXF (台指期近月連續) OHLCV (1d and intraday from 2011-01-03) via Blave API; schemas 1d/1m/5m/15m/30m/60m
@@ -21,6 +21,7 @@ This repo contains one skill covering sixteen capabilities:
 14. **台股分點買賣超** — Agent calls Blave API `GET /studio/market/twstock/broker/stock/<stock_id>` (by stock) or `GET /studio/market/twstock/broker/trader/<trader_id>` (by broker branch) for daily buy/sell data; no CAPTCHA required
 15. **Taiwan Futures** — Agent calls Blave API `GET /studio/market/twfutures/ohlcv/TXF/<schema>` for TXF OHLCV; schemas: 1d/1m/5m/15m/30m/60m; 1d and intraday from 2011-01-03
 16. **Gate.io** — Agent calls the Gate.io APIv4 for spot and USDT-settled perpetual futures trading
+17. **StockCoin** — Agent calls the StockCoin OpenAPI for USDT perpetuals on US / KR stocks, ETFs and commodities (no spot); US stock perps on other venues → `references/stock-perps.md`
 
 No CLI or wrapper involved. All API calls are made directly by the agent.
 
@@ -36,6 +37,7 @@ No CLI or wrapper involved. All API calls are made directly by the agent.
 - `BITFINEX_API_KEY`, `BITFINEX_API_SECRET` — Bitfinex API auth
 - `KUCOIN_API_KEY`, `KUCOIN_API_SECRET`, `KUCOIN_API_PASSPHRASE` — KuCoin API auth
 - `GATE_API_KEY`, `GATE_SECRET_KEY` — Gate.io API auth
+- `STOCKCOIN_API_KEY`, `STOCKCOIN_SECRET_KEY` — StockCoin API auth (FUTURES-type key)
 
 ## Files
 
@@ -64,6 +66,8 @@ No CLI or wrapper involved. All API calls are made directly by the agent.
 | `references/kucoin-bpp.md` | KuCoin Broker Pro Program — commission tiers, referral bonuses, dashboard guide |
 | `references/gateio-skill.md` | Gate.io spot + futures overview — auth, broker channel header, operation flow, quick reference |
 | `references/gateio-api-reference.md` | Gate.io spot + futures full endpoints, Python signature + broker channel header |
+| `references/stockcoin-skill.md` | StockCoin perps — auth/signature, wallets, contracts sizing, hedge-mode sides, orders, STOP SL/TP, error codes, field-verified lessons (no attribution) |
+| `references/stock-perps.md` | US stock perps across Binance / Bybit / BingX / StockCoin — venue names, same-ticker collisions, stock-perp agreement, BingX status 25 |
 | `references/twse-skill.md` | 停復牌狀態 + 全市場 PE 批次掃描（Blave API 沒有對應端點時才用）— 快速參考 |
 | `references/twse-api-reference.md` | 同上，完整 API 參考：欄位說明、Python 範例、民國年轉換 |
 | `references/twse-bsr-reference.md` | 台股分點買賣超 — 工作流程與 Python 範例（端點規格見 `references/blave-api.md`） |
@@ -171,6 +175,14 @@ Base URL: `https://api.bitfinex.com` (auth) | `https://api-pub.bitfinex.com` (pu
 Signature: `HMAC-SHA384(secret, "/api/" + path + nonce + body)` → hex
 Headers: `bfx-apikey`, `bfx-nonce`, `bfx-signature`
 Affiliate code: `"meta": {"aff_code": "ZZDLtrXMF"}` on every order
+
+## StockCoin
+
+Base URL: `https://api.stockcoin.ai` (private prefix `/openapi/v1`) | Symbols: `NVDA-PERP-USDT` | Size: contracts of 0.0001 base
+
+Signature: `HMAC-SHA256(secret, sorted_query + sorted_form_body)` → hex, `timestamp` in the query, appended as `&signature=<hex>`; POST body is form-urlencoded
+Headers: `X-BH-APIKEY`
+Broker attribution: none (StockCoin has no broker id)
 
 ## TWSE / TPEX — 台股市場查詢
 

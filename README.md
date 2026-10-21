@@ -15,6 +15,7 @@ Quant infrastructure for AI agents — the data layer and exchange-trading refer
 11. **Bitfinex** — Spot, margin, and funding/lending on Bitfinex
 12. **KuCoin** — Spot and futures trading on KuCoin
 13. **Gate.io** — Spot and USDT-settled perpetual futures trading on Gate.io
+14. **StockCoin** — USDT perpetuals on US / KR stocks, ETFs and commodities on StockCoin (no spot); plus US stock perps on Binance, Bybit and BingX
 
 Official website: [https://blave.org](https://blave.org) | For more details, visit the [Blave Docs](https://blave.org/docs/en)
 
@@ -25,7 +26,7 @@ This skill is **documentation only** — it contains no executable code, scripts
 - All files are plain Markdown (`.md`)
 - No `package.json`, no scripts, no dependencies
 - All API calls are made directly by your agent — this skill only provides the instructions
-- Your API keys stay in your local `.env` file. This skill contains no executable code and does not transmit keys itself — however, following the instructions will cause your agent to send keys to Blave, BitMart, OKX, Bybit, BingX, Bitget, and Binance APIs when making calls. We recommend using API keys with minimum required permissions and enabling IP whitelisting where possible.
+- Your API keys stay in your local `.env` file. This skill contains no executable code and does not transmit keys itself — however, following the instructions will cause your agent to send keys to Blave, BitMart, OKX, Bybit, BingX, Bitget, Binance, Bitfinex, KuCoin, Gate.io and StockCoin APIs when making calls. We recommend using API keys with minimum required permissions and enabling IP whitelisting where possible.
 - API request signing (HMAC-SHA256) is performed by your agent in code — the reference docs include `openssl`/`curl` shell examples for illustration only. No local shell tools are required by this skill.
 
 You can inspect the full source at: [https://github.com/Blave-TW/blave-quant-skill](https://github.com/Blave-TW/blave-quant-skill)

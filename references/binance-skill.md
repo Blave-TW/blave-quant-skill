@@ -126,4 +126,5 @@ After order → query order status. After close → query positions.
 
 ## References
 - `references/binance-api-reference.md` — spot + futures endpoints, Python signature
+- `references/stock-perps.md` — US stock perps (`underlyingType: "EQUITY"`), `-4411` = TradFi-Perps agreement not signed (sign only with the user's explicit consent)
 

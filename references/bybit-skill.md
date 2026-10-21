@@ -203,3 +203,4 @@ After order → `GET /v5/order/realtime` and `GET /v5/execution/list`; after clo
 
 ## References
 - Broker attribution table — repo root `CLAUDE.md`
+- `references/stock-perps.md` — US stock perps (`symbolType` stock/ETF, names like `AMDSTOCKUSDT`), `110126` = stock-perp agreement not signed (main account, on the Bybit website/app)
