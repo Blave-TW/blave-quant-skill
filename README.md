@@ -61,7 +61,7 @@ Or just tell your agent: **"Update the blave-quant skill"** — the agent will r
 
 Subscribe to the **API Plan** to get API access. First-time subscribers get a **14-day free trial** (credit card required).
 
-👉 [https://blave.org/landing/en/pricing](https://blave.org/landing/en/pricing)
+👉 [https://blave.org/landing/en/pricing#api](https://blave.org/landing/en/pricing#api)
 
 #### 2. Create Your Blave API Key
 
