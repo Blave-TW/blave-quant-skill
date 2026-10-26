@@ -1,7 +1,7 @@
 ---
 name: blave-quant
-description: "Blave quant data layer and exchange-trading reference for AI agents. Use when the task needs crypto alpha/market data, Taiwan stock, futures or market-wide data, CME/ICE or TXF OHLCV, Hyperliquid top traders, or trading on BitMart, OKX, Bybit, BingX, Bitget, Binance, Bitfinex, KuCoin, Gate.io or StockCoin (US / KR stock perps), including US stock perpetuals on Binance, Bybit and BingX."
-version: 1.24.1
+description: "Blave quant data layer and exchange-trading reference for AI agents. Use when the task needs crypto alpha/market data, Taiwan stock, futures or market-wide data, CME/ICE or TXF OHLCV, Hyperliquid top traders, or trading on BitMart, OKX, Bybit, BingX, Bitget, Binance, Bitfinex, KuCoin, Gate.io or StockCoin (US / KR stock perps), including US stock perpetuals on Binance, Bybit, BingX and Bitget."
+version: 1.24.2
 metadata:
   openclaw:
     emoji: "📊"

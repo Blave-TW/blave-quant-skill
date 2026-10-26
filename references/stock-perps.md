@@ -27,6 +27,7 @@ Binance, Bybit, BingX, OKX and Gate.io trade stock perps **24/7, weekends includ
 | OKX, Gate.io | typically the same ticker in the venue's normal USDT swap naming | check the venue classifies it as a stock (see Rule 1) |
 | Bybit | `NVDAUSDT`, or `<T>STOCKUSDT` (e.g. `AMDSTOCKUSDT`, `NOKIAUSDT`) where a coin owns the bare name | `GET /v5/market/instruments-info?category=linear` → rows with `symbolType` `stock` / `ETF`; `underlyingTicker` carries the ticker (use rows with `marketRegion: "US"`) |
 | BingX | `NCSK<T>2USD-USDT` (e.g. `NCSKNVDA2USD-USDT`; ETFs/indices may be `NCSI…`) | `GET /openApi/swap/v2/quote/contracts` → `asset` `NCSK<T>2USD`, `displayName` `<T>-USDT`; a few are renamed (`NCSKCISCO2USD` = CSCO) and a few use another form where a coin owns the ticker (`AMDUS-USDT`) |
+| Bitget | `NVDAUSDT`, or `<T>STOCKUSDT` (e.g. `ACNSTOCKUSDT`, `BBSTOCKUSDT`) where a coin owns the bare name | `GET /api/v2/mix/market/contracts?productType=USDT-FUTURES` → rows with `isRwa: "YES"`; the ticker is `baseCoin` without the `STOCK` suffix (`isRwa` also covers commodities and HK names — only match a Binance `EQUITY` ticker). See `references/bitget-skill.md` |
 | StockCoin | `NVDA-PERP-USDT` | see `references/stockcoin-skill.md` (size is contracts of 0.0001 base; some names are not open to the API) |
 
 Positions come back under the venue's name — map them back to the strategy's ticker before comparing with a

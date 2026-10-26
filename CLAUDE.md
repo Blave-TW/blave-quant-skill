@@ -67,7 +67,7 @@ No CLI or wrapper involved. All API calls are made directly by the agent.
 | `references/gateio-skill.md` | Gate.io spot + futures overview — auth, broker channel header, operation flow, quick reference |
 | `references/gateio-api-reference.md` | Gate.io spot + futures full endpoints, Python signature + broker channel header |
 | `references/stockcoin-skill.md` | StockCoin perps — auth/signature, wallets, contracts sizing, hedge-mode sides, orders, STOP SL/TP, error codes, field-verified lessons (no attribution) |
-| `references/stock-perps.md` | US stock perps across Binance / Bybit / BingX / StockCoin — venue names, same-ticker collisions, stock-perp agreement, BingX status 25 |
+| `references/stock-perps.md` | US stock perps across Binance / Bybit / BingX / Bitget / StockCoin — venue names, same-ticker collisions, stock-perp agreement, BingX status 25 |
 | `references/twse-skill.md` | 停復牌狀態 + 全市場 PE 批次掃描（Blave API 沒有對應端點時才用）— 快速參考 |
 | `references/twse-api-reference.md` | 同上，完整 API 參考：欄位說明、Python 範例、民國年轉換 |
 | `references/twse-bsr-reference.md` | 台股分點買賣超 — 工作流程與 Python 範例（端點規格見 `references/blave-api.md`） |

@@ -15,7 +15,7 @@ Quant infrastructure for AI agents — the data layer and exchange-trading refer
 11. **Bitfinex** — Spot, margin, and funding/lending on Bitfinex
 12. **KuCoin** — Spot and futures trading on KuCoin
 13. **Gate.io** — Spot and USDT-settled perpetual futures trading on Gate.io
-14. **StockCoin** — USDT perpetuals on US / KR stocks, ETFs and commodities on StockCoin (no spot); plus US stock perps on Binance, Bybit and BingX
+14. **StockCoin** — USDT perpetuals on US / KR stocks, ETFs and commodities on StockCoin (no spot); plus US stock perps on Binance, Bybit, BingX and Bitget
 
 Official website: [https://blave.org](https://blave.org) | For more details, visit the [Blave Docs](https://blave.org/docs/en)
 
