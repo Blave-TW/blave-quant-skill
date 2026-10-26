@@ -121,6 +121,8 @@ Base URL: `https://api.bitget.com`
 Signature: `Base64(HMAC-SHA256(secret, timestamp + METHOD + path + body))`
 Headers: `ACCESS-KEY`, `ACCESS-SIGN`, `ACCESS-PASSPHRASE`, `ACCESS-TIMESTAMP`
 
+Blave Agent's shipped libs (`lib/account_bitget.py` / `lib/order_bitget.py`) trade USDT-M perps on **both Classic (v2 API) and Unified Trading Account (UTA, v3 API)** accounts — the libs read the account type per key and pick the API. Broker attribution: none — no code issued yet, nothing is sent (`X-CHANNEL-API-CODE` once Bitget issues Blave's code). The side table, account-type switch behaviour, measured codes and the `40092` eligibility refusal are in `references/bitget-skill.md`.
+
 ## Binance
 
 Spot Base URL: `https://api.binance.com` | Futures Base URL: `https://fapi.binance.com`

@@ -185,7 +185,7 @@ BINGX_SECRET_KEY=YOUR_SECRET_KEY
 
 #### 1. Create Your Bitget API Key
 
-1. Register at **[https://www.bitget.com/](https://www.bitget.com/)** (if you don't have an account)
+1. Register at **[https://www.bitget.com/](https://www.bitget.com/)** (if you don't have an account). Both **Classic** and **Unified Trading Account (UTA)** accounts are supported
 2. Go to **Account → API Management**
 3. Click **Create API Key**
 4. Set a **Passphrase** (required for signing requests)

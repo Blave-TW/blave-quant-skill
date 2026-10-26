@@ -6,6 +6,11 @@
 
 **Success response:** `"code": "00000"` — all other codes are errors.
 
+**Classic and UTA accounts are both supported.** This file lists the Classic (v2) private
+endpoints; a Unified Trading Account answers on v3 instead — the account-type check, the
+v3 endpoints and the side table are in `references/bitget-skill.md` › *Account types*.
+**Broker attribution: none** (no code issued yet; nothing is sent).
+
 ---
 
 ## Authentication
