@@ -18,91 +18,91 @@ moves lines (command in the comment under the table).
 | 287 | `GET /alpha_table` | Crypto |
 | 345 | `GET /kline` | Crypto |
 | 426 | `GET /market_direction/get_alpha` | Crypto |
-| 474 | `GET /screener/get_saved_conditions` | Crypto |
-| 515 | `GET /screener/get_saved_condition_result` | Crypto |
-| 564 | `GET /holder_concentration/get_symbols` | Crypto |
-| 593 | `GET /holder_concentration/get_alpha` | Crypto |
-| 645 | `GET /funding_rate/get_alpha` | Crypto |
-| 700 | `GET /market_sentiment/get_symbols` | Crypto |
-| 728 | `GET /market_sentiment/get_alpha` | Crypto |
-| 774 | `GET /capital_shortage/get_alpha` | Crypto |
-| 820 | `GET /sector_rotation/get_history_data` | Crypto |
-| 865 | `GET /sector_rotation/get_overview_data` | Crypto |
-| 902 | `GET /oi_imbalance/get_overview_data` | Crypto |
-| 943 | `GET /whale_hunter/get_symbols` | Crypto |
-| 971 | `GET /whale_hunter/get_alpha` | Crypto |
-| 1024 | `GET /taker_intensity/get_symbols` | Crypto |
-| 1052 | `GET /taker_intensity/get_alpha` | Crypto |
-| 1100 | `GET /unusual_movement/get_symbols` | Crypto |
-| 1128 | `GET /unusual_movement/get_alpha` | Crypto |
-| 1178 | `GET /squeeze_momentum/get_symbols` | Crypto |
-| 1206 | `GET /squeeze_momentum/get_alpha` | Crypto |
-| 1257 | `GET /blave_top_trader/get_exposure` | Crypto |
-| 1304 | `GET /liquidation/get_symbols` | Crypto |
-| 1332 | `GET /liquidation/get_alpha` | Crypto |
-| 1382 | `GET /liquidation/get_map` | Crypto |
-| 1427 | `GET /liquidation/get_map_change` | Crypto |
-| 1476 | `GET /liquidation/get_coin` | Crypto |
-| 1565 | `GET /liquidation/get_exchanges` | Crypto |
-| 1649 | `GET /long_short_ratio/get_table` | Crypto |
-| 1746 | `GET /long_short_ratio/get_coin` | Crypto |
-| 1829 | `GET /oi_imbalance/get_table` | Crypto |
-| 1919 | `GET /oi_imbalance/get_coin` | Crypto |
-| 1989 | `GET /oi_imbalance/get_history` | Crypto |
-| 2082 | `GET /taker_intensity/get_cvd_table` | Crypto |
-| 2160 | `GET /taker_intensity/get_cvd_coin` | Crypto |
-| 2223 | `GET /cme_cot/get_latest` | Crypto |
-| 2282 | `GET /cme_cot/get_history` | Crypto |
-| 2389 | `GET /studio/market/twstock/list` | Taiwan Stock |
-| 2432 | `GET /studio/market/twstock/info/<stock_id>` | Taiwan Stock |
-| 2470 | `GET /studio/market/twstock/price/<stock_id>` | Taiwan Stock |
-| 2534 | `GET /studio/market/twstock/price_adj/<stock_id>` | Taiwan Stock |
-| 2568 | `GET /studio/market/twstock/quote/<stock_id>` | Taiwan Stock |
-| 2629 | `GET /studio/market/twstock/quote` | Taiwan Stock |
-| 2671 | `GET /studio/market/twstock/quote/all` | Taiwan Stock |
-| 2703 | `GET /studio/market/twstock/minute/ohlcv/<stock_id>/<schema>` | Taiwan Stock |
-| 2766 | `GET /studio/market/twstock/minute/ohlcv/symbols` | Taiwan Stock |
-| 2792 | `GET /studio/market/twstock/kbar/<stock_id>` | Taiwan Stock |
-| 2843 | `GET /studio/market/twstock/market_value/<stock_id>` | Taiwan Stock |
-| 2878 | `GET /studio/market/twstock/market_value/all` | Taiwan Stock |
-| 2958 | `GET /studio/market/twstock/per/<stock_id>` | Taiwan Stock |
-| 3005 | `GET /studio/market/twstock/financials/<stock_id>` | Taiwan Stock |
-| 3053 | `GET /studio/market/twstock/balance_sheet/<stock_id>` | Taiwan Stock |
-| 3086 | `GET /studio/market/twstock/cashflow/<stock_id>` | Taiwan Stock |
-| 3141 | `GET /studio/market/twstock/monthly_revenue/<stock_id>` | Taiwan Stock |
-| 3193 | `GET /studio/market/twstock/ratios/<stock_id>` | Taiwan Stock |
-| 3282 | `GET /studio/market/twstock/dividend/<stock_id>` | Taiwan Stock |
-| 3346 | `GET /studio/market/twstock/news/<stock_id>` | Taiwan Stock |
-| 3397 | `GET /studio/market/twstock/institutional/<stock_id>` | Taiwan Stock |
-| 3452 | `GET /studio/market/twstock/margin/<stock_id>` | Taiwan Stock |
-| 3507 | `GET /studio/market/twstock/shareholding/<stock_id>` | Taiwan Stock |
-| 3552 | `GET /studio/market/twstock/foreign_shareholding/<stock_id>` | Taiwan Stock |
-| 3600 | `GET /studio/market/twstock/gov_bank/<stock_id>` | Taiwan Stock |
-| 3647 | `GET /studio/market/twstock/lending/<stock_id>` | Taiwan Stock |
-| 3692 | `GET /studio/market/twstock/broker/search` | Taiwan Stock |
-| 3728 | `GET /studio/market/twstock/broker/stock/<stock_id>` | Taiwan Stock |
-| 3783 | `GET /studio/market/twstock/broker/trader/<trader_id>` | Taiwan Stock |
-| 3820 | `GET /studio/market/twstock/alerts` | Taiwan Stock |
-| 3928 | `GET /studio/market/twstock/batch/<data_type>` | Taiwan Stock |
-| 3993 | `GET /studio/market/twmarket/index/<index_id>` | Taiwan Market (大盤) |
-| 4037 | `GET /studio/market/twmarket/turnover` | Taiwan Market (大盤) |
-| 4080 | `GET /studio/market/twmarket/institutional` | Taiwan Market (大盤) |
-| 4124 | `GET /studio/market/twmarket/margin` | Taiwan Market (大盤) |
-| 4167 | `GET /studio/market/twmarket/dividend_points` | Taiwan Market (大盤) |
-| 4230 | `GET /studio/market/twfutures/ohlcv/<symbol>/<schema>` | Taiwan Futures & Options |
-| 4315 | `GET /studio/market/twfutures/ohlcv/symbols` | Taiwan Futures & Options |
-| 4342 | `GET /studio/market/twfutures/ohlcv/<symbol>/export/<year>` | Taiwan Futures & Options |
-| 4395 | `GET /studio/market/twfutures/bid_ask_vol/<symbol>` | Taiwan Futures & Options |
-| 4447 | `GET /studio/market/twfutures/daily/<futures_id>` | Taiwan Futures & Options |
-| 4502 | `GET /studio/market/twfutures/stock_futures/batch/daily` | Taiwan Futures & Options |
-| 4542 | `GET /studio/market/twfutures/institutional/<futures_id>` | Taiwan Futures & Options |
-| 4599 | `GET /studio/market/twfutures/large_traders/<futures_id>` | Taiwan Futures & Options |
-| 4650 | `GET /studio/market/twfutures/option/institutional/<option_id>` | Taiwan Futures & Options |
-| 4687 | `GET /studio/market/twfutures/option/large_traders/<option_id>` | Taiwan Futures & Options |
-| 4725 | `GET /studio/market/twfutures/option/pcr` | Taiwan Futures & Options |
-| 4773 | `GET /studio/market/twfutures/carrying_cost/<identity>` | Taiwan Futures & Options |
-| 4874 | `GET /studio/market/db/ohlcv/<dataset>/<symbol>/<schema>` | Commodities |
-| 4935 | `GET /studio/market/anue/economic_calendar` | Macro |
+| 473 | `GET /screener/get_saved_conditions` | Crypto |
+| 514 | `GET /screener/get_saved_condition_result` | Crypto |
+| 563 | `GET /holder_concentration/get_symbols` | Crypto |
+| 591 | `GET /holder_concentration/get_alpha` | Crypto |
+| 642 | `GET /funding_rate/get_alpha` | Crypto |
+| 697 | `GET /market_sentiment/get_symbols` | Crypto |
+| 725 | `GET /market_sentiment/get_alpha` | Crypto |
+| 771 | `GET /capital_shortage/get_alpha` | Crypto |
+| 816 | `GET /sector_rotation/get_history_data` | Crypto |
+| 861 | `GET /sector_rotation/get_overview_data` | Crypto |
+| 898 | `GET /oi_imbalance/get_overview_data` | Crypto |
+| 939 | `GET /whale_hunter/get_symbols` | Crypto |
+| 967 | `GET /whale_hunter/get_alpha` | Crypto |
+| 1019 | `GET /taker_intensity/get_symbols` | Crypto |
+| 1047 | `GET /taker_intensity/get_alpha` | Crypto |
+| 1094 | `GET /unusual_movement/get_symbols` | Crypto |
+| 1122 | `GET /unusual_movement/get_alpha` | Crypto |
+| 1171 | `GET /squeeze_momentum/get_symbols` | Crypto |
+| 1199 | `GET /squeeze_momentum/get_alpha` | Crypto |
+| 1250 | `GET /blave_top_trader/get_exposure` | Crypto |
+| 1297 | `GET /liquidation/get_symbols` | Crypto |
+| 1325 | `GET /liquidation/get_alpha` | Crypto |
+| 1375 | `GET /liquidation/get_map` | Crypto |
+| 1420 | `GET /liquidation/get_map_change` | Crypto |
+| 1464 | `GET /liquidation/get_coin` | Crypto |
+| 1553 | `GET /liquidation/get_exchanges` | Crypto |
+| 1637 | `GET /long_short_ratio/get_table` | Crypto |
+| 1734 | `GET /long_short_ratio/get_coin` | Crypto |
+| 1817 | `GET /oi_imbalance/get_table` | Crypto |
+| 1907 | `GET /oi_imbalance/get_coin` | Crypto |
+| 1977 | `GET /oi_imbalance/get_history` | Crypto |
+| 2070 | `GET /taker_intensity/get_cvd_table` | Crypto |
+| 2148 | `GET /taker_intensity/get_cvd_coin` | Crypto |
+| 2211 | `GET /cme_cot/get_latest` | Crypto |
+| 2270 | `GET /cme_cot/get_history` | Crypto |
+| 2377 | `GET /studio/market/twstock/list` | Taiwan Stock |
+| 2420 | `GET /studio/market/twstock/info/<stock_id>` | Taiwan Stock |
+| 2458 | `GET /studio/market/twstock/price/<stock_id>` | Taiwan Stock |
+| 2522 | `GET /studio/market/twstock/price_adj/<stock_id>` | Taiwan Stock |
+| 2556 | `GET /studio/market/twstock/quote/<stock_id>` | Taiwan Stock |
+| 2617 | `GET /studio/market/twstock/quote` | Taiwan Stock |
+| 2659 | `GET /studio/market/twstock/quote/all` | Taiwan Stock |
+| 2691 | `GET /studio/market/twstock/minute/ohlcv/<stock_id>/<schema>` | Taiwan Stock |
+| 2754 | `GET /studio/market/twstock/minute/ohlcv/symbols` | Taiwan Stock |
+| 2780 | `GET /studio/market/twstock/kbar/<stock_id>` | Taiwan Stock |
+| 2831 | `GET /studio/market/twstock/market_value/<stock_id>` | Taiwan Stock |
+| 2866 | `GET /studio/market/twstock/market_value/all` | Taiwan Stock |
+| 2946 | `GET /studio/market/twstock/per/<stock_id>` | Taiwan Stock |
+| 2993 | `GET /studio/market/twstock/financials/<stock_id>` | Taiwan Stock |
+| 3041 | `GET /studio/market/twstock/balance_sheet/<stock_id>` | Taiwan Stock |
+| 3074 | `GET /studio/market/twstock/cashflow/<stock_id>` | Taiwan Stock |
+| 3129 | `GET /studio/market/twstock/monthly_revenue/<stock_id>` | Taiwan Stock |
+| 3181 | `GET /studio/market/twstock/ratios/<stock_id>` | Taiwan Stock |
+| 3270 | `GET /studio/market/twstock/dividend/<stock_id>` | Taiwan Stock |
+| 3334 | `GET /studio/market/twstock/news/<stock_id>` | Taiwan Stock |
+| 3385 | `GET /studio/market/twstock/institutional/<stock_id>` | Taiwan Stock |
+| 3440 | `GET /studio/market/twstock/margin/<stock_id>` | Taiwan Stock |
+| 3495 | `GET /studio/market/twstock/shareholding/<stock_id>` | Taiwan Stock |
+| 3540 | `GET /studio/market/twstock/foreign_shareholding/<stock_id>` | Taiwan Stock |
+| 3588 | `GET /studio/market/twstock/gov_bank/<stock_id>` | Taiwan Stock |
+| 3635 | `GET /studio/market/twstock/lending/<stock_id>` | Taiwan Stock |
+| 3680 | `GET /studio/market/twstock/broker/search` | Taiwan Stock |
+| 3716 | `GET /studio/market/twstock/broker/stock/<stock_id>` | Taiwan Stock |
+| 3771 | `GET /studio/market/twstock/broker/trader/<trader_id>` | Taiwan Stock |
+| 3808 | `GET /studio/market/twstock/alerts` | Taiwan Stock |
+| 3916 | `GET /studio/market/twstock/batch/<data_type>` | Taiwan Stock |
+| 3981 | `GET /studio/market/twmarket/index/<index_id>` | Taiwan Market (大盤) |
+| 4025 | `GET /studio/market/twmarket/turnover` | Taiwan Market (大盤) |
+| 4068 | `GET /studio/market/twmarket/institutional` | Taiwan Market (大盤) |
+| 4112 | `GET /studio/market/twmarket/margin` | Taiwan Market (大盤) |
+| 4155 | `GET /studio/market/twmarket/dividend_points` | Taiwan Market (大盤) |
+| 4218 | `GET /studio/market/twfutures/ohlcv/<symbol>/<schema>` | Taiwan Futures & Options |
+| 4303 | `GET /studio/market/twfutures/ohlcv/symbols` | Taiwan Futures & Options |
+| 4330 | `GET /studio/market/twfutures/ohlcv/<symbol>/export/<year>` | Taiwan Futures & Options |
+| 4383 | `GET /studio/market/twfutures/bid_ask_vol/<symbol>` | Taiwan Futures & Options |
+| 4435 | `GET /studio/market/twfutures/daily/<futures_id>` | Taiwan Futures & Options |
+| 4490 | `GET /studio/market/twfutures/stock_futures/batch/daily` | Taiwan Futures & Options |
+| 4530 | `GET /studio/market/twfutures/institutional/<futures_id>` | Taiwan Futures & Options |
+| 4587 | `GET /studio/market/twfutures/large_traders/<futures_id>` | Taiwan Futures & Options |
+| 4638 | `GET /studio/market/twfutures/option/institutional/<option_id>` | Taiwan Futures & Options |
+| 4675 | `GET /studio/market/twfutures/option/large_traders/<option_id>` | Taiwan Futures & Options |
+| 4713 | `GET /studio/market/twfutures/option/pcr` | Taiwan Futures & Options |
+| 4761 | `GET /studio/market/twfutures/carrying_cost/<identity>` | Taiwan Futures & Options |
+| 4862 | `GET /studio/market/db/ohlcv/<dataset>/<symbol>/<schema>` | Commodities |
+| 4923 | `GET /studio/market/anue/economic_calendar` | Macro |
 <!-- index:end -->
 <!-- regenerate (from the repo root): python3 - <<'EOF'
 import re
@@ -189,7 +189,7 @@ Shared by every crypto `get_alpha` / `get_exposure` endpoint:
   defaults to `end_date` − 365 days. A range longer than 365 days is **silently clamped**
   (`start_date` moved to `end_date` − 365 days). A malformed date is not validated and ends in
   a `500` — always send `YYYY-MM-DD`.
-- **`symbol`** — Binance USDT-M perpetual, e.g. `BTCUSDT`; `BTC`, `btc`, `BTC/USDT`, `BTC-USDT`
+- **`symbol`** — USDT perpetual symbol, e.g. `BTCUSDT`; `BTC`, `btc`, `BTC/USDT`, `BTC-USDT`
   are also accepted (a bare token gets `USDT` appended). The `get_symbols` endpoints list the
   covered symbols.
 - **Only closed bars** are returned — the still-forming last bar is dropped.
@@ -197,17 +197,17 @@ Shared by every crypto `get_alpha` / `get_exposure` endpoint:
   element per bar. `timestamp` is Unix seconds (UTC), the bar label.
 - For history beyond 365 days, send one request per year and concatenate.
 
-**`stat` object** — returned by indicators whose block lists it. A logistic model fitted on
-the symbol's past year of this indicator versus the next-24h price move:
+**`stat` object** — returned by indicators whose block lists it. A model estimate of the
+next-24h price move given the latest indicator value — not a win rate:
 
 | Field | Type | Description |
 |---|---|---|
 | `up_prob` | float | Probability of a 24h up move given the latest indicator value (0–1) |
 | `avg_up_return` | float | Mean 24h return over past up moves (decimal, 0.02 = +2%) |
 | `avg_down_return` | float | Mean 24h return over past down moves (decimal, negative) |
-| `return_ratio` | float | `-avg_up_return / avg_down_return` |
-| `exp_value` | float | `up_prob × avg_up_return + (1 − up_prob) × avg_down_return` |
-| `is_data_sufficient` | bool | `false` when the symbol has less than one year of history — do not rely on the other fields then |
+| `return_ratio` | float | Size of the average up move relative to the average down move (above 1 = up moves are larger) |
+| `exp_value` | float | Expected 24h return (decimal): up probability × average up move + down probability × average down move |
+| `is_data_sufficient` | bool | `false` when the symbol does not have enough history — do not rely on the other fields then |
 
 When there is no data the object falls back to `up_prob` 0.5 and zeros.
 
@@ -435,8 +435,7 @@ data = response.json()
 | Update | Every 5 minutes |
 
 **Parameters** — no `symbol`: `alpha` is a single market-wide series, not a per-coin one.
-BTCUSDT is used internally only to align the bars; it is not returned and does not change
-`alpha`. See *Crypto indicator conventions*.
+See *Crypto indicator conventions*.
 
 | Name | In | Type | Required | Default | Allowed / format | Description |
 |---|---|---|---|---|---|---|
@@ -449,7 +448,7 @@ BTCUSDT is used internally only to align the bars; it is not returned and does n
 | Field | Type | Description |
 |---|---|---|
 | `timestamp` | float[] | Unix seconds (UTC) |
-| `alpha` | float[] | Market direction value |
+| `alpha` | float[] | Market direction. No upper or lower bound: around 0 is this coin's normal level, and the larger the absolute value, the more unusual. Beyond ±2 is rare and beyond ±3 extreme, on the same scale for every coin. Scan your thresholds with a backtest. |
 
 **Errors**
 
@@ -585,8 +584,7 @@ symbols = requests.get(f"{BASE_URL}/holder_concentration/get_symbols", headers=h
 ```
 
 **Notes**
-- Every `*/get_symbols` crypto endpoint currently returns the same Binance USDT-M symbol list.
-- The list is taken from the latest Binance USDT-M open-interest snapshot.
+- Every `*/get_symbols` crypto endpoint currently returns the same USDT perpetual symbol list.
 
 ---
 
@@ -615,7 +613,7 @@ symbols = requests.get(f"{BASE_URL}/holder_concentration/get_symbols", headers=h
 | Field | Type | Description |
 |---|---|---|
 | `timestamp` | float[] | Unix seconds (UTC) |
-| `alpha` | float[] | Z-score of the log long/short account ratio vs its 30-day mean, sign-flipped — higher = more concentrated |
+| `alpha` | float[] | Holder concentration: above 0 = whale longs more concentrated than usual, below 0 = whale shorts more concentrated than usual. No upper or lower bound: around 0 is this coin's normal level, and the larger the absolute value, the more unusual. Beyond ±2 is rare and beyond ±3 extreme, on the same scale for every coin. Scan your thresholds with a backtest. |
 | `stat` | object | See *`stat` object* |
 
 **Errors**
@@ -637,7 +635,6 @@ response = requests.get(f"{BASE_URL}/holder_concentration/get_alpha", headers=he
 ```
 
 **Notes**
-- Covers Binance only — built on Binance's global long/short account ratio.
 - 2021-05-11 is BTCUSDT's first `1d` bar; other symbols can start later.
 
 ---
@@ -721,7 +718,7 @@ symbols = requests.get(f"{BASE_URL}/market_sentiment/get_symbols", headers=heade
 ```
 
 **Notes**
-- The list is taken from the latest Binance USDT-M open-interest snapshot.
+- Same USDT perpetual symbol list as every other `*/get_symbols` crypto endpoint.
 
 ---
 
@@ -750,7 +747,7 @@ symbols = requests.get(f"{BASE_URL}/market_sentiment/get_symbols", headers=heade
 | Field | Type | Description |
 |---|---|---|
 | `timestamp` | float[] | Unix seconds (UTC) |
-| `alpha` | float[] | Market sentiment value |
+| `alpha` | float[] | Market sentiment: above 0 = more optimistic than usual, below 0 = more pessimistic than usual. No upper or lower bound: around 0 is this coin's normal level, and the larger the absolute value, the more unusual. Beyond ±2 is rare and beyond ±3 extreme, on the same scale for every coin. Scan your thresholds with a backtest. |
 | `stat` | object | See *`stat` object* |
 
 **Errors**
@@ -795,7 +792,7 @@ response = requests.get(f"{BASE_URL}/market_sentiment/get_alpha", headers=header
 | Field | Type | Description |
 |---|---|---|
 | `timestamp` | float[] | Unix seconds (UTC) |
-| `alpha` | float[] | Capital shortage value |
+| `alpha` | float[] | Capital shortage: above 0 = more leverage than usual and tighter funds, below 0 = less leverage and looser funds. No upper or lower bound: around 0 is this coin's normal level, and the larger the absolute value, the more unusual. Beyond ±2 is rare and beyond ±3 extreme, on the same scale for every coin. Scan your thresholds with a backtest. |
 | `stat` | object | See *`stat` object* (computed against BTC) |
 
 **Errors**
@@ -812,7 +809,6 @@ response = requests.get(f"{BASE_URL}/capital_shortage/get_alpha", headers=header
 ```
 
 **Notes**
-- Covers Binance only — market-wide, from the Binance USDT lending APR.
 - One market-wide series with no symbol dimension; 2023-12-09 is the first `1d` bar.
 
 ---
@@ -964,7 +960,7 @@ symbols = requests.get(f"{BASE_URL}/whale_hunter/get_symbols", headers=headers, 
 ```
 
 **Notes**
-- The list is taken from the latest Binance USDT-M open-interest snapshot.
+- Same USDT perpetual symbol list as every other `*/get_symbols` crypto endpoint.
 
 ---
 
@@ -985,7 +981,7 @@ symbols = requests.get(f"{BASE_URL}/whale_hunter/get_symbols", headers=headers, 
 |---|---|---|---|---|---|---|
 | `symbol` | query | string | yes | — | e.g. `BTCUSDT` | Symbol |
 | `period` | query | string | yes | — | `5min`, `15min`, `1h`, `4h`, `8h`, `1d` | Bar size |
-| `timeframe` | query | string | no | `24h` | `15min`, `1h`, `4h`, `8h`, `24h`, `3d` | Rolling window the flow is summed over |
+| `timeframe` | query | string | no | `24h` | `15min`, `1h`, `4h`, `8h`, `24h`, `3d` | Time window the reading covers |
 | `score_type` | query | string | no | `score_oi` | `score_oi`, `score_volume` | Open-interest change or volume |
 | `start_date` | query | string | no | `end_date` − 365 days | `YYYY-MM-DD` | First day |
 | `end_date` | query | string | no | today | `YYYY-MM-DD` | Last day |
@@ -995,7 +991,7 @@ symbols = requests.get(f"{BASE_URL}/whale_hunter/get_symbols", headers=headers, 
 | Field | Type | Description |
 |---|---|---|
 | `timestamp` | float[] | Unix seconds (UTC) |
-| `alpha` | float[] | Z-score of the `timeframe`-summed OI change (or volume) vs its 30-day mean |
+| `alpha` | float[] | Whale hunter over `timeframe`: above 0 = open interest (or volume) higher or busier than usual, below 0 = lower or quieter. No upper or lower bound: around 0 is this coin's normal level, and the larger the absolute value, the more unusual. Beyond ±2 is rare and beyond ±3 extreme, on the same scale for every coin. Scan your thresholds with a backtest. |
 | `stat` | object | See *`stat` object* |
 
 **Errors**
@@ -1013,7 +1009,6 @@ response = requests.get(f"{BASE_URL}/whale_hunter/get_alpha", headers=headers, p
 ```
 
 **Notes**
-- Covers Binance only — USDT-M perpetual open interest and volume.
 - `timeframe` is not validated server-side. One value outside the list was tried, `2h`, and it
   returned `200` with data. That is a single observation — it does **not** establish that any
   `{n}h` works. Stay on the listed values unless you verify the one you need.
@@ -1045,7 +1040,7 @@ symbols = requests.get(f"{BASE_URL}/taker_intensity/get_symbols", headers=header
 ```
 
 **Notes**
-- The list is taken from the latest Binance USDT-M open-interest snapshot.
+- Same USDT perpetual symbol list as every other `*/get_symbols` crypto endpoint.
 
 ---
 
@@ -1075,7 +1070,7 @@ symbols = requests.get(f"{BASE_URL}/taker_intensity/get_symbols", headers=header
 | Field | Type | Description |
 |---|---|---|
 | `timestamp` | float[] | Unix seconds (UTC) |
-| `alpha` | float[] | Z-score of `timeframe`-summed (taker buy − taker sell) volume vs its 30-day mean; positive = net buying |
+| `alpha` | float[] | Taker intensity over `timeframe`: above 0 = more aggressive longs than usual, below 0 = more aggressive shorts than usual. No upper or lower bound: around 0 is this coin's normal level, and the larger the absolute value, the more unusual. Beyond ±2 is rare and beyond ±3 extreme, on the same scale for every coin. Scan your thresholds with a backtest. |
 | `stat` | object | See *`stat` object* |
 
 **Errors**
@@ -1092,7 +1087,6 @@ response = requests.get(f"{BASE_URL}/taker_intensity/get_alpha", headers=headers
 ```
 
 **Notes**
-- Covers Binance only — USDT-M perpetual taker buy/sell volume.
 - 2020-01-01 is BTCUSDT's first `1d` bar; other symbols can start later.
 
 ---
@@ -1121,7 +1115,7 @@ symbols = requests.get(f"{BASE_URL}/unusual_movement/get_symbols", headers=heade
 ```
 
 **Notes**
-- The list is taken from the latest Binance USDT-M open-interest snapshot.
+- Same USDT perpetual symbol list as every other `*/get_symbols` crypto endpoint.
 
 ---
 
@@ -1151,7 +1145,7 @@ symbols = requests.get(f"{BASE_URL}/unusual_movement/get_symbols", headers=heade
 | Field | Type | Description |
 |---|---|---|
 | `timestamp` | float[] | Unix seconds (UTC) |
-| `alpha` | float[] | Return over `timeframe` divided by 365-day volatility scaled to that window — large \|alpha\| = outlier |
+| `alpha` | float[] | Unusual movement over `timeframe`: above 0 = a rarer rise than usual, below 0 = a rarer drop than usual. No upper or lower bound: around 0 is this coin's normal level, and the larger the absolute value, the more unusual. Beyond ±2 is rare and beyond ±3 extreme, on the same scale for every coin. Scan your thresholds with a backtest. |
 | `close` | float[] | Close price (USDT) |
 | `stat` | object | See *`stat` object* |
 
@@ -1170,7 +1164,6 @@ response = requests.get(f"{BASE_URL}/unusual_movement/get_alpha", headers=header
 ```
 
 **Notes**
-- Covers Binance only — USDT-M perpetual price.
 - 2020-01-02 is BTCUSDT's first `1d` bar; other symbols can start later.
 
 ---
@@ -1199,7 +1192,7 @@ symbols = requests.get(f"{BASE_URL}/squeeze_momentum/get_symbols", headers=heade
 ```
 
 **Notes**
-- The list is taken from the latest Binance USDT-M open-interest snapshot.
+- Same USDT perpetual symbol list as every other `*/get_symbols` crypto endpoint.
 
 ---
 
@@ -1280,7 +1273,7 @@ BTCUSDT is used internally only to align the bars; it is not returned and does n
 | Field | Type | Description |
 |---|---|---|
 | `timestamp` | float[] | Unix seconds (UTC) |
-| `alpha` | float[] | Net exposure of Blave's top traders (top 10% by account assets) — the median, across those traders, of each trader's net notional position ÷ own assets, ×100 (positive = net long). A raw ratio, not a z-score |
+| `alpha` | float[] | Net exposure of Blave's top traders (top 10% by account assets) — the median, across those traders, of each trader's net notional position ÷ own assets, ×100 (positive = net long). A raw ratio, not a Blave score — do not reuse other indicators' thresholds |
 
 **Errors**
 
@@ -1325,7 +1318,7 @@ symbols = requests.get(f"{BASE_URL}/liquidation/get_symbols", headers=headers, t
 ```
 
 **Notes**
-- The list is taken from the latest Binance USDT-M open-interest snapshot.
+- Same USDT perpetual symbol list as every other `*/get_symbols` crypto endpoint.
 
 ---
 
@@ -1355,7 +1348,7 @@ symbols = requests.get(f"{BASE_URL}/liquidation/get_symbols", headers=headers, t
 | Field | Type | Description |
 |---|---|---|
 | `timestamp` | float[] | Unix seconds (UTC) |
-| `alpha` | float[] | (short − long liquidations, in coins) summed over `timeframe` ÷ its 30-day rolling std; mean not subtracted. > 0 = more shorts than longs liquidated, < 0 = more longs |
+| `alpha` | float[] | Liquidation imbalance over `timeframe`, and how unusual the gap is. Positive means more short liquidations, negative means more long liquidations; 0 is not this coin's normal level. |
 | `stat` | object | See *`stat` object* |
 
 **Errors**
@@ -1404,9 +1397,9 @@ response = requests.get(f"{BASE_URL}/liquidation/get_alpha", headers=headers, pa
 |---|---|---|---|
 | `price` | float | USDT | Current price |
 | `labels` | float[] | USDT | 200 price buckets |
-| `oi_value` | float[] | USD | Estimated allocation of Binance open interest to each bucket (model estimate, not real positions) |
+| `oi_value` | float[] | USD | Estimated open interest at each bucket (model estimate, not real positions) |
 | `cumsum` | float[] | USD | Cumulative liquidation exposure across buckets |
-| `liquidation` | object | USD | `{"24h": {"buy_liq": [...], "sell_liq": [...]}}` — actual Binance force-order liquidations over the last 24 h per bucket, each divided by a fixed 0.3 Binance-share assumption: `buy_liq` = short liquidations, `sell_liq` = long liquidations |
+| `liquidation` | object | USD | `{"24h": {"buy_liq": [...], "sell_liq": [...]}}` — liquidations that happened over the last 24 h per bucket, extrapolated to a market-wide estimate: `buy_liq` = short liquidations, `sell_liq` = long liquidations |
 
 **Errors**
 
@@ -1449,7 +1442,7 @@ response = requests.get(f"{BASE_URL}/liquidation/get_map", headers=headers, para
 |---|---|---|---|
 | `price` | float | USDT | Current price |
 | `labels` | float[] | USDT | 200 price buckets (lower edges) |
-| `hist_0_1h` | float[] | USD | New estimated liquidation exposure over the last 0–1 h, per bucket: positive difference between model map snapshots, not actual liquidations |
+| `hist_0_1h` | float[] | USD | New estimated liquidation exposure over the last 0–1 h, per bucket — an estimate, not actual liquidations |
 | `hist_1_8h` | float[] | USD | Last 1–8 h |
 | `hist_8_24h` | float[] | USD | Last 8–24 h |
 
@@ -1466,11 +1459,6 @@ response = requests.get(f"{BASE_URL}/liquidation/get_map_change", headers=header
 # {"data": {"price": 77554.1, "labels": [54287.9, ...], "hist_0_1h": [0.0, ...], "hist_1_8h": [...], "hist_8_24h": [...]}}
 ```
 
-**Notes**
-- Each request rebuilds the current map (server cache 5 s) and compares it with saved map snapshots
-  from about 1 h, 8 h and 24 h ago. Snapshots are saved every 30 minutes for every symbol, plus on
-  each map request.
-
 ---
 
 ## `GET /liquidation/get_coin`
@@ -1486,7 +1474,7 @@ response = requests.get(f"{BASE_URL}/liquidation/get_map_change", headers=header
 
 One coin's forced liquidations across every exchange feed Blave collects: four rolling
 windows with the per-exchange split, an hourly 24-point series, and each feed's coverage
-notes. This is real liquidation flow (like `get_alpha`'s input), not the model estimate
+notes. This is real liquidation flow, not the model estimate
 behind `get_map`.
 
 **Parameters**
@@ -1554,9 +1542,9 @@ peak = max(data["series"]["points"], key=lambda p: p["long_liq_usd"] + p["short_
 **Notes**
 - Covers the liquidation feeds of Binance, Bybit, Gate.io, OKX, HTX and Bitfinex.
 - Snapshot only: no `start_date` / `end_date`, and nothing older than 24 h. For history use
-  `get_alpha` (a normalised long/short imbalance, not USD amounts).
+  `get_alpha` (a Blave score of the long/short imbalance, not USD amounts).
 - Symbol handling differs from the other liquidation endpoints: `get_alpha` / `get_map` need the
-  Binance perp form (`BTCUSDT`); here `BTC` and `BTCUSDT` are the same coin.
+  USDT perpetual symbol (`BTCUSDT`); here `BTC` and `BTCUSDT` are the same coin.
 - Server cache: 5 minutes.
 - USD notional is converted at collection time, so exchanges can be summed.
 
@@ -1639,7 +1627,7 @@ print([(e["exchange"], e["total_liq_usd"], e["coverage"]) for e in data["exchang
   shape and every amount `null`, `buckets: 0` — never a table of zeros. Check `total.total_liq_usd`
   before using the numbers.
 - Totals only — no time series. Hourly shape for one coin is `/liquidation/get_coin`; a
-  normalised long-history signal is `/liquidation/get_alpha`.
+  long-history Blave score is `/liquidation/get_alpha`.
 - The window is rolling, not a calendar day, and it is the same frame `/liquidation/get_coin`
   uses for `windows["24"]`.
 - Server cache: 5 minutes.
@@ -2150,7 +2138,7 @@ window) — read them per coin from `/taker_intensity/get_cvd_coin`'s `exchanges
 
 **Notes**
 - Not the same as the `taker_intensity` alpha (`/taker_intensity/get_alpha`), which is a
-  normalised z-score-like signal with years of history. This is raw USD turnover, now.
+  Blave score with years of history. This is raw USD turnover, now.
 - Windows are rolling and end at the last closed 5-minute bar, so `net_24h` is not a calendar day.
 - Rebuilt by a scheduled job about every 15 minutes from 5-minute source buckets; Gate.io and OKX
   buckets land about 10 minutes late.
