@@ -448,7 +448,7 @@ See *Crypto indicator conventions*.
 | Field | Type | Description |
 |---|---|---|
 | `timestamp` | float[] | Unix seconds (UTC) |
-| `alpha` | float[] | Market direction. No upper or lower bound: around 0 is this coin's normal level, and the larger the absolute value, the more unusual. Beyond ±2 is rare and beyond ±3 extreme, on the same scale for every coin. Scan your thresholds with a backtest. |
+| `alpha` | float[] | Market direction. No upper or lower bound: around 0 is the normal level, and the larger the absolute value, the more unusual. Beyond ±2 is rare and beyond ±3 extreme, on the same scale for every coin. Scan your thresholds with a backtest. |
 
 **Errors**
 
@@ -613,7 +613,7 @@ symbols = requests.get(f"{BASE_URL}/holder_concentration/get_symbols", headers=h
 | Field | Type | Description |
 |---|---|---|
 | `timestamp` | float[] | Unix seconds (UTC) |
-| `alpha` | float[] | Holder concentration: above 0 = whale longs more concentrated than usual, below 0 = whale shorts more concentrated than usual. No upper or lower bound: around 0 is this coin's normal level, and the larger the absolute value, the more unusual. Beyond ±2 is rare and beyond ±3 extreme, on the same scale for every coin. Scan your thresholds with a backtest. |
+| `alpha` | float[] | Holder concentration: above 0 = whale longs more concentrated than usual, below 0 = whale shorts more concentrated than usual. No upper or lower bound: around 0 is the normal level, and the larger the absolute value, the more unusual. Beyond ±2 is rare and beyond ±3 extreme, on the same scale for every coin. Scan your thresholds with a backtest. |
 | `stat` | object | See *`stat` object* |
 
 **Errors**
@@ -747,7 +747,7 @@ symbols = requests.get(f"{BASE_URL}/market_sentiment/get_symbols", headers=heade
 | Field | Type | Description |
 |---|---|---|
 | `timestamp` | float[] | Unix seconds (UTC) |
-| `alpha` | float[] | Market sentiment: above 0 = more optimistic than usual, below 0 = more pessimistic than usual. No upper or lower bound: around 0 is this coin's normal level, and the larger the absolute value, the more unusual. Beyond ±2 is rare and beyond ±3 extreme, on the same scale for every coin. Scan your thresholds with a backtest. |
+| `alpha` | float[] | Market sentiment: above 0 = more optimistic than usual, below 0 = more pessimistic than usual. No upper or lower bound: around 0 is the normal level, and the larger the absolute value, the more unusual. Beyond ±2 is rare and beyond ±3 extreme, on the same scale for every coin. Scan your thresholds with a backtest. |
 | `stat` | object | See *`stat` object* |
 
 **Errors**
@@ -792,7 +792,7 @@ response = requests.get(f"{BASE_URL}/market_sentiment/get_alpha", headers=header
 | Field | Type | Description |
 |---|---|---|
 | `timestamp` | float[] | Unix seconds (UTC) |
-| `alpha` | float[] | Capital shortage: above 0 = more leverage than usual and tighter funds, below 0 = less leverage and looser funds. No upper or lower bound: around 0 is this coin's normal level, and the larger the absolute value, the more unusual. Beyond ±2 is rare and beyond ±3 extreme, on the same scale for every coin. Scan your thresholds with a backtest. |
+| `alpha` | float[] | Capital shortage: above 0 = more leverage than usual and tighter funds, below 0 = less leverage and looser funds. No upper or lower bound: around 0 is the normal level, and the larger the absolute value, the more unusual. Beyond ±2 is rare and beyond ±3 extreme, on the same scale for every coin. Scan your thresholds with a backtest. |
 | `stat` | object | See *`stat` object* (computed against BTC) |
 
 **Errors**
@@ -991,7 +991,7 @@ symbols = requests.get(f"{BASE_URL}/whale_hunter/get_symbols", headers=headers, 
 | Field | Type | Description |
 |---|---|---|
 | `timestamp` | float[] | Unix seconds (UTC) |
-| `alpha` | float[] | Whale hunter over `timeframe`: above 0 = open interest (or volume) higher or busier than usual, below 0 = lower or quieter. No upper or lower bound: around 0 is this coin's normal level, and the larger the absolute value, the more unusual. Beyond ±2 is rare and beyond ±3 extreme, on the same scale for every coin. Scan your thresholds with a backtest. |
+| `alpha` | float[] | Whale hunter over `timeframe`: above 0 = open interest (or volume) higher or busier than usual, below 0 = lower or quieter. No upper or lower bound: around 0 is the normal level, and the larger the absolute value, the more unusual. Beyond ±2 is rare and beyond ±3 extreme, on the same scale for every coin. Scan your thresholds with a backtest. |
 | `stat` | object | See *`stat` object* |
 
 **Errors**
@@ -1070,7 +1070,7 @@ symbols = requests.get(f"{BASE_URL}/taker_intensity/get_symbols", headers=header
 | Field | Type | Description |
 |---|---|---|
 | `timestamp` | float[] | Unix seconds (UTC) |
-| `alpha` | float[] | Taker intensity over `timeframe`: above 0 = more aggressive longs than usual, below 0 = more aggressive shorts than usual. No upper or lower bound: around 0 is this coin's normal level, and the larger the absolute value, the more unusual. Beyond ±2 is rare and beyond ±3 extreme, on the same scale for every coin. Scan your thresholds with a backtest. |
+| `alpha` | float[] | Taker intensity over `timeframe`: above 0 = more aggressive longs than usual, below 0 = more aggressive shorts than usual. No upper or lower bound: around 0 is the normal level, and the larger the absolute value, the more unusual. Beyond ±2 is rare and beyond ±3 extreme, on the same scale for every coin. Scan your thresholds with a backtest. |
 | `stat` | object | See *`stat` object* |
 
 **Errors**
@@ -1145,7 +1145,7 @@ symbols = requests.get(f"{BASE_URL}/unusual_movement/get_symbols", headers=heade
 | Field | Type | Description |
 |---|---|---|
 | `timestamp` | float[] | Unix seconds (UTC) |
-| `alpha` | float[] | Unusual movement over `timeframe`: above 0 = a rarer rise than usual, below 0 = a rarer drop than usual. No upper or lower bound: around 0 is this coin's normal level, and the larger the absolute value, the more unusual. Beyond ±2 is rare and beyond ±3 extreme, on the same scale for every coin. Scan your thresholds with a backtest. |
+| `alpha` | float[] | Unusual movement over `timeframe`: above 0 = a rarer rise than usual, below 0 = a rarer drop than usual. No upper or lower bound: around 0 is the normal level, and the larger the absolute value, the more unusual. Beyond ±2 is rare and beyond ±3 extreme, on the same scale for every coin. Scan your thresholds with a backtest. |
 | `close` | float[] | Close price (USDT) |
 | `stat` | object | See *`stat` object* |
 
