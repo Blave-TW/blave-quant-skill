@@ -40,7 +40,6 @@ After order → `GET /api/v5/trade/order` → confirm status. After close → `G
 ## Security
 - WRITE operations require **"CONFIRM"**
 - Always show liquidation price before opening leveraged swap positions
-- "Not financial advice. Trading carries significant risk of loss."
 
 ## Field-Verified Lessons (live account, 2026-08-05)
 

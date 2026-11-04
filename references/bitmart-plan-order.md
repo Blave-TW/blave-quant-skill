@@ -99,8 +99,6 @@ Plan Order Created Successfully:
   Trigger: Buy Long when price <= 65,000.0 USDT
   Execution: Market, 10 contracts, 10x leverage
   Status: Active (waiting for trigger)
-
-Not financial advice. Futures trading carries significant risk of loss.
 ```
 
 ---

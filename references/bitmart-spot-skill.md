@@ -69,7 +69,6 @@ After order → query order detail. After cancel → check open orders.
 ## Security
 
 - WRITE operations require **"CONFIRM"**
-- "Not financial advice. Spot trading carries risk of loss."
 
 ## References
 

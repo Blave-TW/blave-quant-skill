@@ -139,8 +139,6 @@ TP/SL Order Set Successfully:
   Stop Loss: 64,000.0 USDT (-4.48%)
   Risk/Reward: 1:1.67
   Status: Active
-
-Not financial advice. Futures trading carries significant risk of loss.
 ```
 
 ---

@@ -281,7 +281,6 @@ Public market data (contracts, tickers) stays on v2 in either mode.
 ## Security
 - WRITE operations require **"CONFIRM"**
 - Always show liquidation price before opening leveraged positions
-- "Not financial advice. Trading carries significant risk of loss."
 
 ## References
 - `references/bitget-api-reference.md` — spot + futures endpoints, Python signature

@@ -122,7 +122,6 @@ After order → query order status. After close → query positions.
 ## Security
 - WRITE operations require **"CONFIRM"**
 - Always show liquidation price before opening leveraged positions
-- "Not financial advice. Trading carries significant risk of loss."
 
 ## References
 - `references/binance-api-reference.md` — spot + futures endpoints, Python signature

@@ -275,6 +275,5 @@ Bitfinex v2 returns **arrays**, not objects. Key mappings:
 ## Security
 - WRITE operations require **"CONFIRM"**
 - Always show liquidation price before opening margin positions
-- "Not financial advice. Trading carries significant risk of loss."
 
 ---

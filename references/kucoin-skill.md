@@ -97,7 +97,6 @@ After order → `GET /api/v1/orders/{orderId}`. After close → `GET /api/v1/pos
 ## Security
 - WRITE operations require **"CONFIRM"**
 - Always show liquidation price before opening leveraged futures positions
-- "Not financial advice. Trading carries significant risk of loss."
 
 ## References
 - `references/kucoin-api-reference.md` — full endpoints, Python signature, broker sign helper

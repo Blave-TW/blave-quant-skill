@@ -168,9 +168,6 @@ Position Summary:
   Estimated Margin: ~671 USDT
   Estimated Liquidation: ~60,500 USDT
 
-  WARNING: Futures trading carries significant risk. Higher leverage
-  amplifies both gains and losses. You could lose your entire margin.
-
 Please type CONFIRM to proceed.
 ```
 
@@ -230,8 +227,6 @@ Position Opened Successfully:
   Liquidation Price: 60,500.0 USDT
   Mark Price: 67,125.0 USDT
   Unrealized PnL: +0.16 USDT
-
-Not financial advice. Futures trading carries significant risk of loss.
 ```
 
 ---

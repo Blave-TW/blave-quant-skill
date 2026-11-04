@@ -75,7 +75,6 @@ After order → query order status. After close → query positions.
 ## Security
 - WRITE operations require **"CONFIRM"**
 - Always show liquidation price before opening leveraged positions
-- "Not financial advice. Trading carries significant risk of loss."
 
 ## Field-Verified Lessons (live account, 2026-08-05)
 

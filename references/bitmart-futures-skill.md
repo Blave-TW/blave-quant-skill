@@ -117,7 +117,6 @@ Rate limit: 1 req/2sec. ⚠️ `/spot/v1/transfer-contract` does NOT exist.
 
 - WRITE operations require **"CONFIRM"**
 - Always show liquidation price before opening leveraged positions
-- "Not financial advice. Futures trading carries significant risk of loss."
 
 ## References
 

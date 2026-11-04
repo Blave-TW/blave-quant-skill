@@ -167,7 +167,6 @@ After order → `GET /v5/order/realtime` and `GET /v5/execution/list`; after clo
 ## Security
 - WRITE operations require **"CONFIRM"**
 - Always show liquidation price before opening leveraged positions
-- "Not financial advice. Trading carries significant risk of loss."
 
 ## Field-Verified Lessons (live UTA account, 2026-09-09)
 

@@ -355,7 +355,7 @@ BitMart Spot Portfolio:
 └──────────┴───────────────┴────────────┴────────────────┘
 Total Portfolio Value: ~$186,515.46
 
-Note: Not financial advice. Values are approximate based on current market prices.
+Note: Values are approximate based on current market prices.
 ```
 
 ### Error Handling

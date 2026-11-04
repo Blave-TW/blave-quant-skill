@@ -135,8 +135,6 @@ Position Closed Successfully:
   Fees: 4.05 USDT
   Net PnL: +45.80 USDT
   Margin Released: 670.00 USDT
-
-Not financial advice. You are solely responsible for your investment decisions.
 ```
 
 ---

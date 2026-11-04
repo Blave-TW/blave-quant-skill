@@ -208,4 +208,3 @@ Private (signed, under `/openapi/v1`):
 - WRITE operations require **"CONFIRM"**
 - Trading hours are not verified — check them on the venue before relying on a stop outside the underlying's
   exchange hours; a gap at the underlying's open can move the price past a stop
-- "Not financial advice. Trading carries significant risk of loss."
