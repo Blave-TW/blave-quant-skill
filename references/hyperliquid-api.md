@@ -6,7 +6,7 @@ All endpoints are prefixed with `https://api.blave.org/hyperliquid/`. Auth heade
 
 ## `GET /hyperliquid/leaderboard`
 
-`sort_by` — default `accountValue`; pass any window key (`week`, `month`, `allTime`) to sort by PnL.
+`sort_by` — default `accountValue`; pass a window key (`day`, `week`, `month`, `allTime`) to sort by PnL. Any other value returns 400 `{"error": "invalid_sort_by", "allowed": [...]}`.
 
 Returns top 100 traders:
 - `ethAddress` — wallet address
