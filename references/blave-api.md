@@ -5588,7 +5588,7 @@ data = requests.get(f"{BASE_URL}/studio/market/twfutures/large_traders/TX", head
 | Group | Taiwan Futures & Options |
 | Access | API plan or Blave Agent plan |
 | Rate limit | 500 / 5 min per key + per IP |
-| Data from | 2018-06-05 (TMF from about 2024-08) |
+| Data from | 2018-06-05 (TMF from 2024-07-29, its listing date) |
 | Update | Daily, after about 15:00 Taipei |
 
 **Parameters**
@@ -5652,7 +5652,7 @@ series = [requests.get(f"{BASE_URL}/studio/market/twfutures/retail_long_short_ra
   index × 50) sits in between, and `TX` (臺股期貨, index × 200) is mostly institutional, so the
   residual there is small. On 2026-11-06 the ratio was 47.14 for `TMF`, 17.37 for `MTX` and
   5.92 for `TX`. Track one product over time and compare it only with itself.
-- `TMF` history starts around 2024-08.
+- `TMF` history starts 2024-07-29, its listing date.
 - The ratio is unrounded — round for display.
 - Server cache: 5 minutes.
 
