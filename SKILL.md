@@ -42,7 +42,7 @@ metadata:
 
 Quant infrastructure for AI agents. Capabilities: **Blave** market alpha data (including 台股日K), **CME / ICE Futures** OHLCV, **Taiwan Futures** OHLCV (TXF), **BitMart** trading, **OKX** trading, **Bybit** trading, **BingX** trading, **Bitget** trading, **Binance** trading, **Bitfinex** trading & funding, **KuCoin** trading, **Gate.io** trading, **StockCoin** trading (stock perps), **TWSE/TPEX** 台股查詢, **TWSE BSR** 分點資料.
 
-**Keywords (zh ↔ en, so a request in either language lands on the right reference):** 籌碼集中度 Holder Concentration · 多空力道 Taker Intensity · 巨鯨警報 Whale Hunter · 擠壓動能 Squeeze Momentum · 市場方向 Market Direction · 資金稀缺 Capital Shortage · 板塊輪動 Sector Rotation · OI 失衡 OI Imbalance · Blave頂尖交易員 Top Trader Exposure · 市場情緒 Market Sentiment · 每幣爆倉 / 爆倉矩陣 liquidation by coin / exchange matrix · 多空比 long/short ratio · 未平倉量 open interest (table, per coin, history) · 主動買賣淨額 CVD · CME 持倉報告 COT · kline (every Binance USDT perpetual incl. tokenized stocks, 1min from 2020-01) · 美股代幣／股票永續 US stock perps (Binance / Bybit / BingX / StockCoin names, stock-perp agreement) · alpha table · screener saved conditions · Hyperliquid leaderboard / positions · 台股日K / 現股分線 / 向後調整 / 三大法人 / 融資融券 / 股權持股分級表 / 綜合損益表 / 資產負債表 / 現金流量表 / 月營收 / 財務比率 financial ratios (ROE・毛利率・成長率・週轉率・自由現金流, 單季與近四季 TTM) / 股利事件 / 注意股・處置股 attention & disposition stocks (處置期間、分盤撮合分鐘數) / 市值排名（市場別、ETF 旗標、上市扣除 ETF 市值分母）/ 分點買賣超 / 本益比・殖利率・淨值比 / 台股板塊輪動 sector rotation（RS・動能四象限、板塊法人估值、上漲比例 breadth、成分股）/ 台股選股器 stock screener（估值・獲利・成長・報酬・法人條件） · 大盤加權指數 / 全市場成交量值 / 全市場三大法人 / 全市場融資融券 / 指數每日除息點數（含未來預估） · 台指期 TXF 日線與分線 / 選擇權 PCR / 法人持倉成本 / 散戶多空比 retail long/short ratio / 股票期貨清單與流動性排行 stock futures list & liquidity ranking · WTI `CL` / 黃金 `GC` / 布蘭特 `BRN` · 總經日曆 economic calendar.
+**Keywords (zh ↔ en, so a request in either language lands on the right reference):** 籌碼集中度 Holder Concentration · 多空力道 Taker Intensity · 巨鯨警報 Whale Hunter · 擠壓動能 Squeeze Momentum · 市場方向 Market Direction · 資金稀缺 Capital Shortage · 板塊輪動 Sector Rotation · OI 失衡 OI Imbalance · Blave頂尖交易員 Top Trader Exposure · 市場情緒 Market Sentiment · 每幣爆倉 / 爆倉矩陣 liquidation by coin / exchange matrix · 多空比 long/short ratio · 未平倉量 open interest (table, per coin, history) · 主動買賣淨額 CVD · CME 持倉報告 COT · kline (every Binance USDT perpetual incl. tokenized stocks, 1min from 2020-01) · 美股代幣／股票永續 US stock perps (Binance / Bybit / BingX / StockCoin names, stock-perp agreement) · alpha table · screener saved conditions · Hyperliquid leaderboard / positions · 台股日K / 現股分線 / 向後調整 / 三大法人 / 融資融券 / 股權持股分級表 / 綜合損益表 / 資產負債表 / 現金流量表 / 月營收 / 財務比率 financial ratios (ROE・毛利率・成長率・週轉率・自由現金流, 單季與近四季 TTM) / 股利事件 / 注意股・處置股 attention & disposition stocks (處置期間、分盤撮合分鐘數) / 市值排名（市場別、ETF 旗標、上市扣除 ETF 市值分母）/ 分點買賣超 / 本益比・殖利率・淨值比 / 台股板塊輪動 sector rotation（RS・動能四象限、板塊法人估值、上漲比例 breadth、成分股）/ 題材族群 concept themes（題材指數、成分股與入選理由）/ 法人買超家數比例 institutional buying breadth（題材・產業）/ 台股選股器 stock screener（估值・獲利・成長・報酬・法人條件） · 大盤加權指數 / 全市場成交量值 / 全市場三大法人 / 全市場融資融券 / 大盤融資維持率 margin maintenance ratio / 指數每日除息點數（含未來預估） · 台指期 TXF 日線與分線 / 選擇權 PCR / 法人持倉成本 / 散戶多空比 retail long/short ratio / 股票期貨清單與流動性排行 stock futures list & liquidity ranking · WTI `CL` / 黃金 `GC` / 布蘭特 `BRN` · 總經日曆 economic calendar.
 
 ## Safety Mode (MANDATORY — applies to every exchange)
 
@@ -84,12 +84,14 @@ This skill is a **data access layer**. When the user's request involves any of t
 | Screener saved conditions | `references/blave-api.md` |
 | CME/ICE futures OHLCV (WTI crude, Gold, Brent) | `references/blave-api.md` |
 | Taiwan stock daily OHLCV, quote, institutional flows, margin, shareholding, PE/yield/PB, stock list/info | `references/blave-api.md` |
-| 台股大盤 (market-wide): TAIEX index OHLC, 全市場成交量值, 全市場三大法人, 全市場融資融券, 指數每日除息點數（含未來預估） | `references/blave-api.md` |
+| 台股大盤 (market-wide): TAIEX index OHLC, 全市場成交量值, 全市場三大法人, 全市場融資融券, 大盤融資維持率, 指數每日除息點數（含未來預估） | `references/blave-api.md` (endpoints) · `references/blave-indicator-guide.md` (融資維持率) |
 | 台股股利事件 (dividend events: cash/stock amounts + announce/ex/pay dates, single + batch) | `references/blave-api.md` |
 | 台股財報：損益表、資產負債表、月營收（含 batch fetch） | `references/blave-api.md` (endpoints) · `references/twstock-fundamentals-reference.md` (analysis guide) |
 | 台股財務比率 Taiwan stock financial ratios (ROE, margins, growth, turnover, FCF — per quarter and TTM, single + batch) | `references/blave-api.md` (endpoints) · `references/twstock-fundamentals-reference.md` › *Financial Ratios* (formulas, units, null rules, lookahead) |
 | 台股注意股・處置股 Taiwan attention & disposition stocks (TWSE + TPEx announcements from 2001; disposal periods for excluding disposed stocks in a backtest) | `references/blave-api.md` (endpoint) · `references/twstock-fundamentals-reference.md` › *Attention & Disposition Stocks* (tables, semantics, backtest mask, point in time) |
 | 台股分點買賣超 (broker daily buy/sell by branch) | `references/blave-api.md` (endpoints) · `references/twse-bsr-reference.md` (workflow) |
+| 台股板塊輪動・題材族群・法人買超家數比例 sector rotation, concept themes, institutional buying breadth; 台股選股器 stock screener | `references/blave-api.md` (endpoints) · `references/blave-indicator-guide.md` (RS quadrants, themes, breadth) |
+| 台指期散戶多空比 retail long/short ratio (`TMF` / `MTX` / `TX` not comparable); 股票期貨清單・流動性排行 | `references/blave-api.md` (endpoints) · `references/blave-indicator-guide.md` (散戶多空比) |
 | 法人台指期持倉成本 institutional carrying cost (外資/投信/自營商 TAIEX futures cost + PnL) | `references/blave-api.md` (endpoint) · `references/blave-indicator-guide.md` (method & limits) |
 | Trading-halt status / one-shot full-market PE scan (the only two things Blave has no endpoint for) | `references/twse-skill.md` |
 
@@ -155,7 +157,7 @@ Add to `.env`: `blave_api_key=...` and `blave_secret_key=...`
 
 ## Endpoints
 
-**Every endpoint's parameters, defaults, response fields, errors, data start date, and a Python example live in `references/blave-api.md`. Read the relevant block there before writing any call.** That file opens with an endpoint → line index: read the index, then `Read` the block at its `offset` (or grep the `` ## `GET /path` `` heading) — never the whole 5,500-line file. Index by category:
+**Every endpoint's parameters, defaults, response fields, errors, data start date, and a Python example live in `references/blave-api.md`. Read the relevant block there before writing any call.** That file opens with an endpoint → line index: read the index, then `Read` the block at its `offset` (or grep the `` ## `GET /path` `` heading) — never the whole 6,000-line file. Index by category:
 
 | Category | Endpoints (`GET` unless marked `POST`, relative to `https://api.blave.org`) |
 |---|---|
@@ -167,9 +169,9 @@ Add to `.env`: `blave_api_key=...` and `blave_secret_key=...`
 | Taiwan Stock › Fundamentals | `market_value/<stock_id>`, `market_value/all`, `per/<stock_id>`, `financials/<stock_id>`, `balance_sheet/<stock_id>`, `cashflow/<stock_id>`, `monthly_revenue/<stock_id>`, `ratios/<stock_id>`, `dividend/<stock_id>`, `news/<stock_id>` |
 | Taiwan Stock › Institutional Flow | `institutional/<stock_id>`, `margin/<stock_id>`, `shareholding/<stock_id>`, `foreign_shareholding/<stock_id>`, `gov_bank/<stock_id>`, `lending/<stock_id>`, `broker/search`, `broker/stock/<stock_id>`, `broker/trader/<trader_id>` |
 | Taiwan Stock › Other | `alerts` (注意股／處置股), `batch/<data_type>` |
-| Taiwan Stock › Sectors | `sector/overview` (板塊輪動), `sector/breadth` (上漲比例), `sector/constituents/<slug>` (成分股) |
+| Taiwan Stock › Sectors & Themes | `sector/overview` (板塊輪動), `sector/breadth` (上漲比例), `sector/constituents/<slug>` (成分股), `theme/overview` (題材族群), `theme/constituents/<slug>`, `theme/<slug>/index` (題材指數), `chip_breadth/<theme\|sector>` (法人買超家數比例), `chip_breadth/<scope>/<slug>` |
 | Taiwan Stock › Screener | `POST screener/run` (選股器) |
-| Taiwan Market (大盤) | `studio/market/twmarket/index/TAIEX`, `turnover`, `institutional`, `margin`, `dividend_points` |
+| Taiwan Market (大盤) | `studio/market/twmarket/index/TAIEX`, `turnover`, `institutional`, `margin`, `margin_maintenance` (融資維持率), `dividend_points` |
 | Taiwan Futures & Options | `studio/market/twfutures/ohlcv/<symbol>/<schema>`, `ohlcv/symbols`, `ohlcv/<symbol>/export/<year>`, `bid_ask_vol/<symbol>`, `daily/<futures_id>`, `stock_futures/list`, `stock_futures/liquidity_ranking`, `stock_futures/batch/daily`, `institutional/<futures_id>`, `large_traders/<futures_id>`, `retail_long_short_ratio/<futures_id>` (散戶多空比), `option/institutional/<option_id>`, `option/large_traders/<option_id>`, `option/pcr`, `carrying_cost/<identity>` (法人持倉成本) |
 | Commodities | `studio/market/db/ohlcv/<dataset>/<symbol>/<schema>` (WTI `CL`, gold `GC`, Brent `BRN`) |
 | Macro | `studio/market/anue/economic_calendar` |

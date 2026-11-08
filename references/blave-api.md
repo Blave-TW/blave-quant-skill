@@ -14,102 +14,108 @@ moves lines (command in the comment under the table).
 <!-- index:start -->
 | Line | Endpoint | Category |
 |:-|:-|:-|
-| 247 | `GET /price` | Crypto |
-| 294 | `GET /alpha_table` | Crypto |
-| 352 | `GET /kline` | Crypto |
-| 433 | `GET /market_direction/get_alpha` | Crypto |
-| 480 | `GET /screener/get_saved_conditions` | Crypto |
-| 521 | `GET /screener/get_saved_condition_result` | Crypto |
-| 570 | `GET /holder_concentration/get_symbols` | Crypto |
-| 598 | `GET /holder_concentration/get_alpha` | Crypto |
-| 649 | `GET /funding_rate/get_alpha` | Crypto |
-| 704 | `GET /market_sentiment/get_symbols` | Crypto |
-| 732 | `GET /market_sentiment/get_alpha` | Crypto |
-| 778 | `GET /capital_shortage/get_alpha` | Crypto |
-| 823 | `GET /sector_rotation/get_history_data` | Crypto |
-| 868 | `GET /sector_rotation/get_overview_data` | Crypto |
-| 905 | `GET /oi_imbalance/get_overview_data` | Crypto |
-| 946 | `GET /whale_hunter/get_symbols` | Crypto |
-| 974 | `GET /whale_hunter/get_alpha` | Crypto |
-| 1026 | `GET /taker_intensity/get_symbols` | Crypto |
-| 1054 | `GET /taker_intensity/get_alpha` | Crypto |
-| 1101 | `GET /unusual_movement/get_symbols` | Crypto |
-| 1129 | `GET /unusual_movement/get_alpha` | Crypto |
-| 1178 | `GET /squeeze_momentum/get_symbols` | Crypto |
-| 1206 | `GET /squeeze_momentum/get_alpha` | Crypto |
-| 1257 | `GET /blave_top_trader/get_exposure` | Crypto |
-| 1304 | `GET /liquidation/get_symbols` | Crypto |
-| 1332 | `GET /liquidation/get_alpha` | Crypto |
-| 1382 | `GET /liquidation/get_map` | Crypto |
-| 1427 | `GET /liquidation/get_map_change` | Crypto |
-| 1471 | `GET /liquidation/get_coin` | Crypto |
-| 1560 | `GET /liquidation/get_exchanges` | Crypto |
-| 1644 | `GET /long_short_ratio/get_table` | Crypto |
-| 1741 | `GET /long_short_ratio/get_coin` | Crypto |
-| 1824 | `GET /oi_imbalance/get_table` | Crypto |
-| 1914 | `GET /oi_imbalance/get_coin` | Crypto |
-| 1984 | `GET /oi_imbalance/get_history` | Crypto |
-| 2077 | `GET /taker_intensity/get_cvd_table` | Crypto |
-| 2155 | `GET /taker_intensity/get_cvd_coin` | Crypto |
-| 2218 | `GET /cme_cot/get_latest` | Crypto |
-| 2277 | `GET /cme_cot/get_history` | Crypto |
-| 2384 | `GET /studio/market/twstock/list` | Taiwan Stock |
-| 2427 | `GET /studio/market/twstock/info/<stock_id>` | Taiwan Stock |
-| 2465 | `GET /studio/market/twstock/price/<stock_id>` | Taiwan Stock |
-| 2529 | `GET /studio/market/twstock/price_adj/<stock_id>` | Taiwan Stock |
-| 2563 | `GET /studio/market/twstock/quote/<stock_id>` | Taiwan Stock |
-| 2624 | `GET /studio/market/twstock/quote` | Taiwan Stock |
-| 2666 | `GET /studio/market/twstock/quote/all` | Taiwan Stock |
-| 2698 | `GET /studio/market/twstock/minute/ohlcv/<stock_id>/<schema>` | Taiwan Stock |
-| 2761 | `GET /studio/market/twstock/minute/ohlcv/symbols` | Taiwan Stock |
-| 2787 | `GET /studio/market/twstock/kbar/<stock_id>` | Taiwan Stock |
-| 2838 | `GET /studio/market/twstock/market_value/<stock_id>` | Taiwan Stock |
-| 2873 | `GET /studio/market/twstock/market_value/all` | Taiwan Stock |
-| 2953 | `GET /studio/market/twstock/per/<stock_id>` | Taiwan Stock |
-| 3000 | `GET /studio/market/twstock/financials/<stock_id>` | Taiwan Stock |
-| 3048 | `GET /studio/market/twstock/balance_sheet/<stock_id>` | Taiwan Stock |
-| 3081 | `GET /studio/market/twstock/cashflow/<stock_id>` | Taiwan Stock |
-| 3136 | `GET /studio/market/twstock/monthly_revenue/<stock_id>` | Taiwan Stock |
-| 3188 | `GET /studio/market/twstock/ratios/<stock_id>` | Taiwan Stock |
-| 3277 | `GET /studio/market/twstock/dividend/<stock_id>` | Taiwan Stock |
-| 3341 | `GET /studio/market/twstock/news/<stock_id>` | Taiwan Stock |
-| 3392 | `GET /studio/market/twstock/institutional/<stock_id>` | Taiwan Stock |
-| 3447 | `GET /studio/market/twstock/margin/<stock_id>` | Taiwan Stock |
-| 3502 | `GET /studio/market/twstock/shareholding/<stock_id>` | Taiwan Stock |
-| 3547 | `GET /studio/market/twstock/foreign_shareholding/<stock_id>` | Taiwan Stock |
-| 3595 | `GET /studio/market/twstock/gov_bank/<stock_id>` | Taiwan Stock |
-| 3642 | `GET /studio/market/twstock/lending/<stock_id>` | Taiwan Stock |
-| 3687 | `GET /studio/market/twstock/broker/search` | Taiwan Stock |
-| 3723 | `GET /studio/market/twstock/broker/stock/<stock_id>` | Taiwan Stock |
-| 3778 | `GET /studio/market/twstock/broker/trader/<trader_id>` | Taiwan Stock |
-| 3815 | `GET /studio/market/twstock/alerts` | Taiwan Stock |
-| 3923 | `GET /studio/market/twstock/batch/<data_type>` | Taiwan Stock |
-| 3983 | `GET /studio/market/twstock/sector/overview` | Taiwan Stock |
-| 4088 | `GET /studio/market/twstock/sector/breadth` | Taiwan Stock |
-| 4138 | `GET /studio/market/twstock/sector/constituents/<slug>` | Taiwan Stock |
-| 4195 | `POST /studio/market/twstock/screener/run` | Taiwan Stock |
-| 4332 | `GET /studio/market/twmarket/index/<index_id>` | Taiwan Market (大盤) |
-| 4376 | `GET /studio/market/twmarket/turnover` | Taiwan Market (大盤) |
-| 4419 | `GET /studio/market/twmarket/institutional` | Taiwan Market (大盤) |
-| 4463 | `GET /studio/market/twmarket/margin` | Taiwan Market (大盤) |
-| 4506 | `GET /studio/market/twmarket/dividend_points` | Taiwan Market (大盤) |
-| 4569 | `GET /studio/market/twfutures/ohlcv/<symbol>/<schema>` | Taiwan Futures & Options |
-| 4654 | `GET /studio/market/twfutures/ohlcv/symbols` | Taiwan Futures & Options |
-| 4681 | `GET /studio/market/twfutures/ohlcv/<symbol>/export/<year>` | Taiwan Futures & Options |
-| 4734 | `GET /studio/market/twfutures/bid_ask_vol/<symbol>` | Taiwan Futures & Options |
-| 4786 | `GET /studio/market/twfutures/daily/<futures_id>` | Taiwan Futures & Options |
-| 4841 | `GET /studio/market/twfutures/stock_futures/list` | Taiwan Futures & Options |
-| 4897 | `GET /studio/market/twfutures/stock_futures/liquidity_ranking` | Taiwan Futures & Options |
-| 4950 | `GET /studio/market/twfutures/stock_futures/batch/daily` | Taiwan Futures & Options |
-| 4990 | `GET /studio/market/twfutures/institutional/<futures_id>` | Taiwan Futures & Options |
-| 5047 | `GET /studio/market/twfutures/large_traders/<futures_id>` | Taiwan Futures & Options |
-| 5098 | `GET /studio/market/twfutures/retail_long_short_ratio/<futures_id>` | Taiwan Futures & Options |
-| 5171 | `GET /studio/market/twfutures/option/institutional/<option_id>` | Taiwan Futures & Options |
-| 5208 | `GET /studio/market/twfutures/option/large_traders/<option_id>` | Taiwan Futures & Options |
-| 5246 | `GET /studio/market/twfutures/option/pcr` | Taiwan Futures & Options |
-| 5294 | `GET /studio/market/twfutures/carrying_cost/<identity>` | Taiwan Futures & Options |
-| 5395 | `GET /studio/market/db/ohlcv/<dataset>/<symbol>/<schema>` | Commodities |
-| 5456 | `GET /studio/market/anue/economic_calendar` | Macro |
+| 253 | `GET /price` | Crypto |
+| 300 | `GET /alpha_table` | Crypto |
+| 358 | `GET /kline` | Crypto |
+| 439 | `GET /market_direction/get_alpha` | Crypto |
+| 486 | `GET /screener/get_saved_conditions` | Crypto |
+| 527 | `GET /screener/get_saved_condition_result` | Crypto |
+| 576 | `GET /holder_concentration/get_symbols` | Crypto |
+| 604 | `GET /holder_concentration/get_alpha` | Crypto |
+| 655 | `GET /funding_rate/get_alpha` | Crypto |
+| 710 | `GET /market_sentiment/get_symbols` | Crypto |
+| 738 | `GET /market_sentiment/get_alpha` | Crypto |
+| 784 | `GET /capital_shortage/get_alpha` | Crypto |
+| 829 | `GET /sector_rotation/get_history_data` | Crypto |
+| 874 | `GET /sector_rotation/get_overview_data` | Crypto |
+| 911 | `GET /oi_imbalance/get_overview_data` | Crypto |
+| 952 | `GET /whale_hunter/get_symbols` | Crypto |
+| 980 | `GET /whale_hunter/get_alpha` | Crypto |
+| 1032 | `GET /taker_intensity/get_symbols` | Crypto |
+| 1060 | `GET /taker_intensity/get_alpha` | Crypto |
+| 1107 | `GET /unusual_movement/get_symbols` | Crypto |
+| 1135 | `GET /unusual_movement/get_alpha` | Crypto |
+| 1184 | `GET /squeeze_momentum/get_symbols` | Crypto |
+| 1212 | `GET /squeeze_momentum/get_alpha` | Crypto |
+| 1263 | `GET /blave_top_trader/get_exposure` | Crypto |
+| 1310 | `GET /liquidation/get_symbols` | Crypto |
+| 1338 | `GET /liquidation/get_alpha` | Crypto |
+| 1388 | `GET /liquidation/get_map` | Crypto |
+| 1433 | `GET /liquidation/get_map_change` | Crypto |
+| 1477 | `GET /liquidation/get_coin` | Crypto |
+| 1566 | `GET /liquidation/get_exchanges` | Crypto |
+| 1650 | `GET /long_short_ratio/get_table` | Crypto |
+| 1747 | `GET /long_short_ratio/get_coin` | Crypto |
+| 1830 | `GET /oi_imbalance/get_table` | Crypto |
+| 1920 | `GET /oi_imbalance/get_coin` | Crypto |
+| 1990 | `GET /oi_imbalance/get_history` | Crypto |
+| 2083 | `GET /taker_intensity/get_cvd_table` | Crypto |
+| 2161 | `GET /taker_intensity/get_cvd_coin` | Crypto |
+| 2224 | `GET /cme_cot/get_latest` | Crypto |
+| 2283 | `GET /cme_cot/get_history` | Crypto |
+| 2390 | `GET /studio/market/twstock/list` | Taiwan Stock |
+| 2433 | `GET /studio/market/twstock/info/<stock_id>` | Taiwan Stock |
+| 2471 | `GET /studio/market/twstock/price/<stock_id>` | Taiwan Stock |
+| 2535 | `GET /studio/market/twstock/price_adj/<stock_id>` | Taiwan Stock |
+| 2569 | `GET /studio/market/twstock/quote/<stock_id>` | Taiwan Stock |
+| 2630 | `GET /studio/market/twstock/quote` | Taiwan Stock |
+| 2672 | `GET /studio/market/twstock/quote/all` | Taiwan Stock |
+| 2704 | `GET /studio/market/twstock/minute/ohlcv/<stock_id>/<schema>` | Taiwan Stock |
+| 2767 | `GET /studio/market/twstock/minute/ohlcv/symbols` | Taiwan Stock |
+| 2793 | `GET /studio/market/twstock/kbar/<stock_id>` | Taiwan Stock |
+| 2844 | `GET /studio/market/twstock/market_value/<stock_id>` | Taiwan Stock |
+| 2879 | `GET /studio/market/twstock/market_value/all` | Taiwan Stock |
+| 2959 | `GET /studio/market/twstock/per/<stock_id>` | Taiwan Stock |
+| 3006 | `GET /studio/market/twstock/financials/<stock_id>` | Taiwan Stock |
+| 3054 | `GET /studio/market/twstock/balance_sheet/<stock_id>` | Taiwan Stock |
+| 3087 | `GET /studio/market/twstock/cashflow/<stock_id>` | Taiwan Stock |
+| 3142 | `GET /studio/market/twstock/monthly_revenue/<stock_id>` | Taiwan Stock |
+| 3194 | `GET /studio/market/twstock/ratios/<stock_id>` | Taiwan Stock |
+| 3283 | `GET /studio/market/twstock/dividend/<stock_id>` | Taiwan Stock |
+| 3347 | `GET /studio/market/twstock/news/<stock_id>` | Taiwan Stock |
+| 3398 | `GET /studio/market/twstock/institutional/<stock_id>` | Taiwan Stock |
+| 3453 | `GET /studio/market/twstock/margin/<stock_id>` | Taiwan Stock |
+| 3508 | `GET /studio/market/twstock/shareholding/<stock_id>` | Taiwan Stock |
+| 3553 | `GET /studio/market/twstock/foreign_shareholding/<stock_id>` | Taiwan Stock |
+| 3601 | `GET /studio/market/twstock/gov_bank/<stock_id>` | Taiwan Stock |
+| 3648 | `GET /studio/market/twstock/lending/<stock_id>` | Taiwan Stock |
+| 3693 | `GET /studio/market/twstock/broker/search` | Taiwan Stock |
+| 3729 | `GET /studio/market/twstock/broker/stock/<stock_id>` | Taiwan Stock |
+| 3784 | `GET /studio/market/twstock/broker/trader/<trader_id>` | Taiwan Stock |
+| 3821 | `GET /studio/market/twstock/alerts` | Taiwan Stock |
+| 3929 | `GET /studio/market/twstock/batch/<data_type>` | Taiwan Stock |
+| 3989 | `GET /studio/market/twstock/sector/overview` | Taiwan Stock |
+| 4101 | `GET /studio/market/twstock/sector/breadth` | Taiwan Stock |
+| 4152 | `GET /studio/market/twstock/sector/constituents/<slug>` | Taiwan Stock |
+| 4213 | `GET /studio/market/twstock/theme/overview` | Taiwan Stock |
+| 4305 | `GET /studio/market/twstock/theme/constituents/<slug>` | Taiwan Stock |
+| 4391 | `GET /studio/market/twstock/theme/<slug>/index` | Taiwan Stock |
+| 4455 | `GET /studio/market/twstock/chip_breadth/<scope>` | Taiwan Stock |
+| 4531 | `GET /studio/market/twstock/chip_breadth/<scope>/<slug>` | Taiwan Stock |
+| 4614 | `POST /studio/market/twstock/screener/run` | Taiwan Stock |
+| 4758 | `GET /studio/market/twmarket/index/<index_id>` | Taiwan Market (大盤) |
+| 4802 | `GET /studio/market/twmarket/turnover` | Taiwan Market (大盤) |
+| 4845 | `GET /studio/market/twmarket/institutional` | Taiwan Market (大盤) |
+| 4889 | `GET /studio/market/twmarket/margin` | Taiwan Market (大盤) |
+| 4932 | `GET /studio/market/twmarket/margin_maintenance` | Taiwan Market (大盤) |
+| 4985 | `GET /studio/market/twmarket/dividend_points` | Taiwan Market (大盤) |
+| 5048 | `GET /studio/market/twfutures/ohlcv/<symbol>/<schema>` | Taiwan Futures & Options |
+| 5133 | `GET /studio/market/twfutures/ohlcv/symbols` | Taiwan Futures & Options |
+| 5161 | `GET /studio/market/twfutures/ohlcv/<symbol>/export/<year>` | Taiwan Futures & Options |
+| 5214 | `GET /studio/market/twfutures/bid_ask_vol/<symbol>` | Taiwan Futures & Options |
+| 5266 | `GET /studio/market/twfutures/daily/<futures_id>` | Taiwan Futures & Options |
+| 5321 | `GET /studio/market/twfutures/stock_futures/list` | Taiwan Futures & Options |
+| 5379 | `GET /studio/market/twfutures/stock_futures/liquidity_ranking` | Taiwan Futures & Options |
+| 5435 | `GET /studio/market/twfutures/stock_futures/batch/daily` | Taiwan Futures & Options |
+| 5475 | `GET /studio/market/twfutures/institutional/<futures_id>` | Taiwan Futures & Options |
+| 5532 | `GET /studio/market/twfutures/large_traders/<futures_id>` | Taiwan Futures & Options |
+| 5583 | `GET /studio/market/twfutures/retail_long_short_ratio/<futures_id>` | Taiwan Futures & Options |
+| 5661 | `GET /studio/market/twfutures/option/institutional/<option_id>` | Taiwan Futures & Options |
+| 5698 | `GET /studio/market/twfutures/option/large_traders/<option_id>` | Taiwan Futures & Options |
+| 5736 | `GET /studio/market/twfutures/option/pcr` | Taiwan Futures & Options |
+| 5784 | `GET /studio/market/twfutures/carrying_cost/<identity>` | Taiwan Futures & Options |
+| 5885 | `GET /studio/market/db/ohlcv/<dataset>/<symbol>/<schema>` | Commodities |
+| 5946 | `GET /studio/market/anue/economic_calendar` | Macro |
 <!-- index:end -->
 <!-- regenerate (from the repo root): python3 - <<'EOF'
 import re
@@ -3985,7 +3991,7 @@ payload = requests.get(f"{BASE_URL}/studio/market/twstock/batch/per", headers=he
 | | |
 |---|---|
 | Name | 台股板塊輪動 Taiwan Stock Sector Rotation |
-| Group | Taiwan Stock › Sectors |
+| Group | Taiwan Stock › Sectors & Themes |
 | Access | API plan or Blave Agent plan |
 | Rate limit | 500 / 5 min per key + per IP |
 | Data from | Snapshot (latest trading day) |
@@ -4044,20 +4050,27 @@ Any field can be `null` when its history is too short or the day is not publishe
 ```python
 body = requests.get(f"{BASE_URL}/studio/market/twstock/sector/overview", headers=headers,
                     params={"window": 20}, timeout=120).json()
-# shape of the response (values illustrative):
+# Live capture 2026-11-06 (abridged with ...):
 # {"date": "2026-11-06",
-#  "summary": {"up": 21, "down": 10, "migrations_today": 3, "foreign_total": 152.3, "foreign_streak": 2,
-#              "trust_total": 18.6, "trust_streak": -1, "margin_change": -12.4, "margin_pctl": 18},
-#  "sectors": [{"slug": "cement", "name": "水泥", "group": "trad", "weight": 0.4,
-#               "returns": {"d1": 0.52, "d5": -1.1, "d10": -2.3, "d20": -3.05, "d60": -4.8, "ytd": -9.6},
-#               "rs": 96.4, "momentum": 99.2, "tail": [[97.8, 99.9], [97.1, 99.5], [96.9, 99.0], [96.6, 99.1]],
-#               "clamped": false, "quadrant": "lagging", "migration_days": 12,
-#               "foreign": -0.8, "trust": 0.1, "dealer": 0.0,
-#               "foreign_win": -6.2, "trust_win": 0.9, "dealer_win": -0.3, "foreign_win_prev": -3.1,
-#               "stats": {"rs_up_streak": 0, "foreign_streak": -3, "dealer_streak": 1, "d5_return_pctl_1y": 31,
-#                         "foreign_buy_days_20d": 7, "foreign_buy_days_pctl_1y": 22}}, ...],
-#  "concentration": {"top3_buy_share": 0.71},
-#  "flow_caps": {"foreign": 220, "trust": 60, "dealer": 25}}
+#  "summary": {"up": 2, "down": 30, "migrations_today": 3, "foreign_total": -911.9, "foreign_streak": -7,
+#              "trust_total": 266.6, "trust_streak": 19, "margin_change": -423.6, "margin_pctl": 0},
+#  "sectors": [{"slug": "cement", "name": "水泥", "group": "trad", "weight": 0.3,
+#               "returns": {"d1": -1.66, "d5": -4.72, "d10": -1.66, "d20": 4.16, "d60": null, "ytd": null},
+#               "rs": 115.0, "momentum": 112.0, "tail": [[113.1, 97.7], [115.0, 104.2], [115.0, 109.6], [115.0, 112.0]],
+#               "clamped": true, "quadrant": "leading", "migration_days": 4,
+#               "foreign": 4.5, "trust": -0.1, "dealer": 0.3,
+#               "foreign_win": 48.0, "trust_win": 3.7, "dealer_win": 4.3, "foreign_win_prev": 8.4,
+#               "stats": {"rs_up_streak": 2, "foreign_streak": 3, "dealer_streak": 2, "d5_return_pctl_1y": null,
+#                         "foreign_buy_days_20d": 15, "foreign_buy_days_pctl_1y": 100}}, ...,
+#              {"slug": "semiconductor", "name": "半導體", "group": "elec", "weight": 55.2,
+#               "returns": {"d1": -4.71, "d5": -12.04, "d10": -14.4, "d20": -20.99, "d60": -11.55, "ytd": 44.86},
+#               "rs": 99.1, "momentum": 100.7, "tail": [[98.0, 100.6], [98.3, 100.5], [98.5, 100.9], [98.9, 100.8]],
+#               "clamped": false, "quadrant": "improving", "migration_days": 6,
+#               "foreign": -662.8, "trust": 135.8, "dealer": 216.8,
+#               "foreign_win": -10057.1, "trust_win": 1402.2, "dealer_win": 865.3, "foreign_win_prev": 1944.2,
+#               "stats": {...}}, ... 32 sectors],
+#  "concentration": {"top3_buy_share": 0.64},
+#  "flow_caps": {"foreign": 320, "trust": 160, "dealer": 30}}
 
 leading = [s["name"] for s in body["sectors"] if s["quadrant"] == "leading"]
 ```
@@ -4090,7 +4103,7 @@ leading = [s["name"] for s in body["sectors"] if s["quadrant"] == "leading"]
 | | |
 |---|---|
 | Name | 台股板塊上漲比例 Taiwan Stock Sector Breadth |
-| Group | Taiwan Stock › Sectors |
+| Group | Taiwan Stock › Sectors & Themes |
 | Access | API plan or Blave Agent plan |
 | Rate limit | 500 / 5 min per key + per IP |
 | Data from | Up to 730 calendar days back |
@@ -4108,7 +4121,7 @@ arrays, one element per trading day, oldest first.
 | Field | Type | Unit | Description |
 |---|---|---|---|
 | `dates` | string[] | — | Trading days (`YYYY-MM-DD`) |
-| `pct_up` | float[] | % | Share of the 32 sector indices that closed up that day (one decimal) |
+| `pct_up` | float[] | % | Share of the sector indices that closed up that day, out of those with a change figure that day (32 on most days; one decimal) |
 
 **Errors**
 
@@ -4124,8 +4137,9 @@ arrays, one element per trading day, oldest first.
 ```python
 body = requests.get(f"{BASE_URL}/studio/market/twstock/sector/breadth", headers=headers,
                     params={"days": 90}, timeout=120).json()
-# shape of the response (values illustrative):
-# {"dates": ["2026-08-10", "2026-08-11", ...], "pct_up": [62.5, 31.2, ...]}
+# Live capture 2026-11-06 (abridged with ...):
+# {"dates": ["2026-08-10", "2026-08-11", "2026-08-12", ..., "2026-11-06"],
+#  "pct_up": [76.7, 46.7, 56.7, ..., 6.2]}   # 60 trading days
 ```
 
 **Notes**
@@ -4140,7 +4154,7 @@ body = requests.get(f"{BASE_URL}/studio/market/twstock/sector/breadth", headers=
 | | |
 |---|---|
 | Name | 台股板塊成分股 Taiwan Stock Sector Constituents |
-| Group | Taiwan Stock › Sectors |
+| Group | Taiwan Stock › Sectors & Themes |
 | Access | API plan or Blave Agent plan |
 | Rate limit | 500 / 5 min per key + per IP |
 | Data from | Snapshot (latest trading day) |
@@ -4177,10 +4191,14 @@ the sector's 5 largest constituents by market value, largest first.
 ```python
 body = requests.get(f"{BASE_URL}/studio/market/twstock/sector/constituents/semiconductor", headers=headers,
                     timeout=60).json()
-# shape of the response (values illustrative):
-# {"date": "2026-11-06", "total": 48,
-#  "stocks": [{"stock_id": "2330", "name": "台積電", "chg": 1.25, "foreign": 85.3,
-#              "themes": [{"slug": "memory", "name": {"zh": "記憶體", "en": "Memory", "cn": "存储器"}}]}, ...]}
+# Live capture 2026-11-06 (abridged with ...):
+# {"date": "2026-11-06", "total": 116,
+#  "stocks": [{"stock_id": "2330", "name": "台積電", "chg": -4.69, "foreign": -487.7,
+#              "themes": [{"slug": "silicon-photonics-cpo",
+#                          "name": {"zh": "矽光子／CPO", "en": "Silicon Photonics / CPO", "cn": "硅光子／CPO"}}]},
+#             {"stock_id": "2454", "name": "聯發科", "chg": -2.02, "foreign": -153.8, "themes": []}, ...,
+#             {"stock_id": "2408", "name": "南亞科", "chg": -4.58, "foreign": 19.3,
+#              "themes": [{"slug": "memory", "name": {"zh": "記憶體", "en": "Memory", "cn": "存储器"}}]}, ... 5 rows]}
 ```
 
 **Notes**
@@ -4189,6 +4207,407 @@ body = requests.get(f"{BASE_URL}/studio/market/twstock/sector/constituents/semic
 - `chg` and `foreign` are `null` when that stock's price or flow for the day is missing. On days
   when market values are not published yet, the 5 stocks fall back to code order.
 - Server cache: 30 minutes.
+
+---
+
+## `GET /studio/market/twstock/theme/overview`
+
+| | |
+|---|---|
+| Name | 台股題材族群 Taiwan Stock Concept Themes |
+| Group | Taiwan Stock › Sectors & Themes |
+| Access | API plan or Blave Agent plan |
+| Rate limit | 500 / 5 min per key + per IP |
+| Data from | Snapshot (latest trading day) |
+| Update | Daily, after the close |
+
+**Parameters**
+
+| Name | In | Type | Required | Default | Allowed / format | Description |
+|---|---|---|---|---|---|---|
+| `window` | query | int | no | `20` | `10`, `20`, `60` | Trading days for the window flow sums |
+
+**Response** — one object (no `data` wrapper): `{"date", "list_ym", "first_ym", "list_age_days", "stale_months", "pctl_includes_backfill", "summary", "themes": [...], "flow_caps"}`.
+
+| Field | Type | Unit | Description |
+|---|---|---|---|
+| `date` | string | — | Latest trading day of the theme indices |
+| `list_ym` | string | — | Month of the newest theme lists, `YYYY-MM` |
+| `first_ym` | string | — | Month of the first list of any theme |
+| `list_age_days` / `stale_months` | int | days / months | Age of the newest lists: days since they took effect, months since their list month |
+| `pctl_includes_backfill` | bool | — | `true` when a percentile's one-year history reaches back before a list took effect |
+| `summary.up` / `summary.down` | int | themes | Themes up / down on `date` |
+| `summary.top` / `summary.bottom` | object | % | `{"slug", "d20"}`: best and worst 20-day return |
+| `summary.foreign_top` | object | TWD 100M (億) | `{"slug", "foreign_win", "foreign_win_ex_top", "top_name"}`: theme with the largest foreign net buy once its largest stock is taken out |
+| `themes[].slug` | string | — | Theme id (used by the other theme endpoints) |
+| `themes[].name` | object | — | `{"zh", "en", "cn"}` |
+| `themes[].count` | int | stocks | Members in the current list (delisted stocks excluded) |
+| `themes[].snapshot_ym` | string | — | Month of the theme's current list |
+| `themes[].indexable` | bool | — | `true` when the theme has at least 5 members and its list is at most 90 days old |
+| `themes[].returns` | object | % | `d1`, `d5`, `d10`, `d20`, `d60`, `ytd` returns of the theme index |
+| `themes[].returns_backfill` | object | — | Same keys, `true` when that return starts before the theme's first list took effect |
+| `themes[].foreign` / `trust` / `dealer` | float | TWD 100M (億) | Estimated net buy of the members on `date`; `null` until that day's flows publish |
+| `themes[].foreign_win` / `trust_win` / `dealer_win` | float | TWD 100M (億) | Same, summed over the last `window` trading days |
+| `themes[].foreign_win_prev` | float | TWD 100M (億) | Foreign sum over the `window` days before that |
+| `themes[].foreign_win_ex_top` | float | TWD 100M (億) | `foreign_win` without the largest member's own foreign flow |
+| `themes[].foreign_buy_members` | int | stocks | Members with a positive foreign sum over the window |
+| `themes[].top` | object | % | `{"stock_id", "name", "mv_share"}`: largest member and its share of the theme's market value, measured on the list's effective date |
+| `themes[].top5` | array | — | `[{"stock_id", "name"}]`: 5 largest members by market value on the list's effective date |
+| `themes[].stats` | object | — | `foreign_streak`, `dealer_streak` (±days), `d5_return_pctl_1y`, `foreign_buy_days_20d`, `foreign_buy_days_pctl_1y` — same meaning as in `sector/overview` |
+| `flow_caps` | object | TWD 100M (億) | `{"foreign", "trust", "dealer"}`: typical size (P90) of a theme's 20-day flow sum, for colour scaling; `null` with less than a year of flow history |
+
+**Errors**
+
+| Status | Body | When |
+|---|---|---|
+| 400 | `{"error": "window must be one of [10, 20, 60]"}` | Bad `window` |
+| 503 | `{"error": "not_yet_effective"}` | No theme list is in effect yet |
+
+**Example**
+
+```python
+body = requests.get(f"{BASE_URL}/studio/market/twstock/theme/overview", headers=headers,
+                    params={"window": 20}, timeout=60).json()
+# Live capture 2026-11-06 (abridged with ...):
+# {"date": "2026-11-06", "list_ym": "2026-10", "first_ym": "2026-10", "list_age_days": 24, "stale_months": 1,
+#  "pctl_includes_backfill": true,
+#  "summary": {"up": 0, "down": 6, "top": {"slug": "ai", "d20": -20.32},
+#              "bottom": {"slug": "pcb-abf-substrate", "d20": -38.51},
+#              "foreign_top": {"slug": "ai", "foreign_win": -70.1, "foreign_win_ex_top": 40.4, "top_name": "鴻海"}},
+#  "themes": [{"slug": "ai", "name": {"zh": "AI", "en": "AI", "cn": "AI"}, "count": 12, "snapshot_ym": "2026-10",
+#              "indexable": true,
+#              "returns": {"d1": -4.84, "d5": -13.88, "d10": -17.83, "d20": -20.32, "d60": -13.27, "ytd": 24.78},
+#              "returns_backfill": {"d1": false, "d5": false, "d10": false, "d20": true, "d60": true, "ytd": true},
+#              "foreign": -43.3, "trust": 20.0, "dealer": 22.7,
+#              "foreign_win": -70.1, "trust_win": -76.2, "dealer_win": 123.3, "foreign_win_prev": -716.1,
+#              "foreign_win_ex_top": 40.4, "foreign_buy_members": 4,
+#              "top": {"stock_id": "2317", "name": "鴻海", "mv_share": 40.0},
+#              "top5": [{"stock_id": "2317", "name": "鴻海"}, {"stock_id": "2382", "name": "廣達"}, ...],
+#              "stats": {"foreign_streak": -4, "dealer_streak": 6, "d5_return_pctl_1y": 0,
+#                        "foreign_buy_days_20d": 8, "foreign_buy_days_pctl_1y": 52}}, ... 6 themes],
+#  "flow_caps": {"foreign": 1480, "trust": 430, "dealer": 180}}
+```
+
+**Notes**
+- Themes are concept-stock lists Blave curates and publishes monthly (上市 + 上櫃), each with a
+  reason and public sources per stock (see `theme/constituents/<slug>`). Current slugs: `ai`,
+  `silicon-photonics-cpo`, `memory`, `pcb-abf-substrate`, `thermal-cooling`, `robotics`.
+- The theme index is equal-weight and dividend-adjusted (total return). Before a theme's first
+  list took effect it is backfilled with that first list, so those returns carry hindsight —
+  `returns_backfill` marks them.
+- Flows are estimates: each member's daily net shares × that day's close, summed. `*_win`, the
+  streaks and `foreign_buy_days_*` end on the latest published flow day, which in the afternoon
+  can be the previous trading day.
+- A theme that is retired drops out of `themes`.
+
+---
+
+## `GET /studio/market/twstock/theme/constituents/<slug>`
+
+| | |
+|---|---|
+| Name | 台股題材成分股 Taiwan Stock Theme Constituents |
+| Group | Taiwan Stock › Sectors & Themes |
+| Access | API plan or Blave Agent plan |
+| Rate limit | 500 / 5 min per key + per IP |
+| Data from | Snapshot (current list) |
+| Update | Daily, after the close; lists monthly |
+
+**Parameters**
+
+| Name | In | Type | Required | Default | Allowed / format | Description |
+|---|---|---|---|---|---|---|
+| `slug` | path | string | yes | — | A theme slug from `theme/overview` | Theme |
+
+**Response** — one object (no `data` wrapper).
+
+| Field | Type | Description |
+|---|---|---|
+| `date` | string | Trading day of the per-stock figures |
+| `slug`, `status` | string | Theme id, `active` |
+| `name` / `intro` | object | `{"zh", "en", "cn"}` theme name / one-paragraph description |
+| `snapshot_ym` | string | Month of the current list |
+| `published_at` / `effective_date` | string | Day the list was published / took effect |
+| `first_ym` | string | Month of the theme's first list |
+| `list_age_days` / `stale_months` | int | Days since the list took effect / months since its list month |
+| `count` | int | Members, delisted stocks excluded |
+| `indexable` | bool | `true` with at least 5 members and a list at most 90 days old |
+| `changes` | object | `{"added", "removed", "prev_ym"}`: stock ids added / removed against the previous list (`prev_ym` `null` for the first list) |
+| `related` | array | `[{"slug", "overlap"}]`: up to 3 other themes sharing members, most shared first |
+| `gated` | bool | Always `false` for API keys |
+| `stocks[].stock_id` / `name` | string | Code, name |
+| `stocks[].market` | string | `twse` or `tpex` |
+| `stocks[].sector_slug` | string | Sector slug as in `sector/overview` by industry category (OTC stocks included); `null` when unmapped |
+| `stocks[].chg` | float | Change % on `date` |
+| `stocks[].foreign` | float | Estimated foreign net buy on `date`, TWD 100M (億); `null` until that day's flows publish |
+| `stocks[].ret20` | float | Dividend-adjusted 20-trading-day return, % |
+| `stocks[].rev_yoy` | float | Latest monthly revenue vs a year earlier, % |
+| `stocks[].roe` | float | Trailing four-quarter ROE, % |
+| `stocks[].foreign_share_chg_20d` | float | Change in foreign shareholding over 20 trading days, percentage points |
+| `stocks[].disposal` | bool | Under disposition today |
+| `stocks[].delisted` / `last_trade_date` | bool / string | Delisted since the list was made, and its last trading day (`null` otherwise) |
+| `stocks[].also` | string[] | Other themes holding the stock |
+| `stocks[].reason` | object | `{"zh", "en", "cn"}` why the stock is in the theme |
+| `stocks[].sources` | array | `[{"kind", "label", "url", "date"}]`: public sources for the reason; `kind` `filing` or `news`, `label` `{"zh", "en", "cn"}` |
+
+**Errors**
+
+| Status | Body | When |
+|---|---|---|
+| 404 | `{"error": "Unknown theme"}` | No such slug |
+| 410 | `{"error": "Theme retired", "retired": true}` | Theme retired |
+| 503 | `{"error": "not_yet_effective"}` | The theme's list is not in effect yet |
+
+**Example**
+
+```python
+body = requests.get(f"{BASE_URL}/studio/market/twstock/theme/constituents/memory", headers=headers,
+                    timeout=60).json()
+# Live capture 2026-11-06 (abridged with ...):
+# {"date": "2026-11-06", "slug": "memory", "status": "active", "snapshot_ym": "2026-10",
+#  "published_at": "2026-10-14", "effective_date": "2026-10-15", "first_ym": "2026-10",
+#  "list_age_days": 24, "stale_months": 1, "count": 9, "indexable": true, "gated": false,
+#  "name": {"zh": "記憶體", "en": "Memory", "cn": "存储器"},
+#  "intro": {"zh": "記憶體概念股是做 DRAM 與 Flash 等記憶體的公司，…", "en": "Memory stocks make DRAM, flash and other memory, …", "cn": "…"},
+#  "changes": {"added": [], "removed": [], "prev_ym": null}, "related": [],
+#  "stocks": [{"stock_id": "2408", "name": "南亞科", "market": "twse", "sector_slug": "semiconductor",
+#              "chg": -4.58, "foreign": 19.32, "ret20": -34.57, "rev_yoy": 487.73, "roe": 61.61,
+#              "foreign_share_chg_20d": -2.39, "disposal": false, "delisted": false, "last_trade_date": null,
+#              "also": [],
+#              "reason": {"zh": "DRAM 製造，產品含 DDR5、LPDDR5／5X 與 DDR4",
+#                         "en": "Manufactures DRAM, including DDR5, LPDDR5/5X and DDR4", "cn": "…"},
+#              "sources": [{"kind": "filing", "date": "2026-10-12",
+#                           "label": {"en": "Nanya Technology investor conference slides, 2026-10-12", ...},
+#                           "url": "https://mopsov.twse.com.tw/nas/STR/240820261012M001.pdf"}, ...]}, ... 9 rows]}
+```
+
+**Notes**
+- Delisted members stay in `stocks` (listed last) with `delisted: true`; `count` leaves them out.
+- `rev_yoy`, `roe` and `foreign_share_chg_20d` can each be `null` on their own when that figure
+  is missing for a stock.
+
+---
+
+## `GET /studio/market/twstock/theme/<slug>/index`
+
+| | |
+|---|---|
+| Name | 台股題材指數 Taiwan Stock Theme Index |
+| Group | Taiwan Stock › Sectors & Themes |
+| Access | API plan or Blave Agent plan |
+| Rate limit | 500 / 5 min per key + per IP |
+| Data from | 2023 (backfilled before each theme's first list) |
+| Update | Daily, after the close |
+
+**Parameters**
+
+| Name | In | Type | Required | Default | Allowed / format | Description |
+|---|---|---|---|---|---|---|
+| `slug` | path | string | yes | — | A theme slug from `theme/overview` | Theme |
+| `range` | query | string | no | `3m` | `3m`, `1y`, `3y` | Calendar window ending on the latest day (92 / 366 / 1,096 days) |
+
+**Response** — one object (no `data` wrapper): `{"slug", "range", "base_date", "first_ym", "points": [...]}`, points oldest first.
+
+| Field | Type | Description |
+|---|---|---|
+| `base_date` | string | Day the index is 100 (the trading day before the theme's first list took effect) |
+| `first_ym` | string | Month of the theme's first list |
+| `points[].date` | string | Trading day |
+| `points[].value` | float | Theme index, 100 on `base_date` |
+| `points[].taiex` / `tpex` | float | TAIEX / TPEx total-return indices rescaled to 100 on `base_date`, for comparison |
+| `points[].is_backfill` | bool | `true` before the theme's first list took effect (members taken from that first list) |
+| `points[].n` | int | Members in the index that day |
+| `points[].snapshot_ym` | string | Month of the list the members came from |
+
+**Errors**
+
+| Status | Body | When |
+|---|---|---|
+| 400 | `{"error": "range must be one of ['3m', '1y', '3y']"}` | Bad `range` |
+| 404 | `{"error": "Unknown theme"}` | No such slug |
+| 410 | `{"error": "Theme retired", "retired": true}` | Theme retired |
+| 503 | `{"error": "not_yet_effective"}` | The theme's list is not in effect yet |
+
+**Example**
+
+```python
+body = requests.get(f"{BASE_URL}/studio/market/twstock/theme/memory/index", headers=headers,
+                    params={"range": "3y"}, timeout=60).json()
+# Live capture 2026-11-06 (abridged with ...):
+# {"slug": "memory", "range": "3y", "base_date": "2026-10-14", "first_ym": "2026-10",
+#  "points": [{"date": "2023-11-06", "value": 19.82, "taiex": 31.86, "tpex": 48.39, "is_backfill": true,
+#              "n": 9, "snapshot_ym": "2026-10"}, ...,
+#             {"date": "2026-10-14", "value": 100.0, "taiex": 100.0, "tpex": 100.0, "is_backfill": true, "n": 9,
+#              "snapshot_ym": "2026-10"}, ...,
+#             {"date": "2026-11-06", "value": 79.89, "taiex": 81.65, "tpex": 72.37, "is_backfill": false,
+#              "n": 9, "snapshot_ym": "2026-10"}]}   # 728 points
+```
+
+**Notes**
+- Equal weight, dividend-adjusted. Members are fixed at the start of each month and on each new
+  list's effective date; a member that stops trading mid-period is frozen until the next reset.
+- The backfilled part uses a list made later, so it reflects stocks known to belong to the theme
+  today — read it as context, not as a backtest.
+- To compare with the market, divide `value` by `taiex` (or `tpex`) at each point.
+
+---
+
+## `GET /studio/market/twstock/chip_breadth/<scope>`
+
+| | |
+|---|---|
+| Name | 法人買超家數比例 Institutional Buying Breadth by Group |
+| Group | Taiwan Stock › Sectors & Themes |
+| Access | API plan or Blave Agent plan |
+| Rate limit | 500 / 5 min per key + per IP |
+| Data from | Snapshot (latest close) |
+| Update | Nightly, after the close |
+
+**Parameters**
+
+| Name | In | Type | Required | Default | Allowed / format | Description |
+|---|---|---|---|---|---|---|
+| `scope` | path | string | yes | — | `theme`, `sector` | Group type |
+| `window` | query | int | no | `20` | `10`, `20`, `60` | Trading days the net buy is summed over |
+| `inst` | query | string | no | `foreign` | `foreign`, `trust` | Investor the groups are ranked by |
+
+**Response** — one object (no `data` wrapper): `{"scope", "window", "inst", "as_of", "min_group", "baseline", "groups": [...], "excluded": [...], "sources"}`.
+
+| Field | Type | Description |
+|---|---|---|
+| `as_of` | string | Last day of the flow window |
+| `min_group` | int | Groups with fewer counted stocks than this are not ranked (`6`) |
+| `baseline.universe` | string | Market the groups are compared with: `twse` for sectors, `twse+tpex` for themes |
+| `baseline.foreign` / `baseline.trust` | object | `{"buy", "total", "ratio"}`: common stocks in that market net bought over the window, all counted, and the share in % |
+| `groups[].slug` / `name` | — | Group id; `name` is a string for sectors and `{"zh", "en", "cn"}` for themes |
+| `groups[].total` | int | Counted stocks in the group |
+| `groups[].foreign` / `groups[].trust` | object | `{"buy", "ratio", "gap", "rank"}`: stocks net bought, their share in %, the share minus the baseline share in percentage points (integer), and the rank by share |
+| `excluded` | array | `[{"slug", "name", "total"}]`: groups under `min_group` |
+| `sources.institutional` | object | `{"zh", "en", "cn"}` name of the exchange(s) behind the flows |
+
+`groups` is ordered by `inst`'s rank; both investors' ranks are always present.
+
+**Errors**
+
+| Status | Body | When |
+|---|---|---|
+| 400 | `{"error": "window must be one of [10, 20, 60]"}` | Bad `window` |
+| 400 | `{"error": "inst must be one of ['foreign', 'trust']"}` | Bad `inst` |
+| 404 | `{"error": "Unknown scope"}` | `scope` is not `theme` / `sector` |
+| 503 | `{"error": "not_yet_effective"}` | `theme`: no theme list in effect yet |
+| 503 | `{"error": "Data temporarily unavailable. Please retry shortly."}` | Upstream quota exhausted or the stock-to-sector map is unavailable |
+
+**Example**
+
+```python
+body = requests.get(f"{BASE_URL}/studio/market/twstock/chip_breadth/sector", headers=headers,
+                    params={"window": 20, "inst": "foreign"}, timeout=60).json()
+# Live capture 2026-11-06 (abridged with ...):
+# {"scope": "sector", "window": 20, "inst": "foreign", "as_of": "2026-11-06", "min_group": 6,
+#  "baseline": {"universe": "twse",
+#               "foreign": {"buy": 648, "total": 1091, "ratio": 59.395050412465636},
+#               "trust": {"buy": 271, "total": 1091, "ratio": 24.839596700274978}},
+#  "groups": [{"slug": "trading_consumer", "name": "貿易百貨", "total": 21,
+#              "foreign": {"buy": 20, "ratio": 95.23809523809523, "gap": 36, "rank": 1},
+#              "trust": {"buy": 4, "ratio": 19.047619047619047, "gap": -6, "rank": 16}},
+#             {"slug": "shipping", "name": "航運", "total": 28,
+#              "foreign": {"buy": 24, "ratio": 85.71428571428571, "gap": 26, "rank": 2},
+#              "trust": {"buy": 7, "ratio": 25.0, "gap": 0, "rank": 12}}, ... 31 groups],
+#  "excluded": [{"slug": "glass_ceramic", "name": "玻璃陶瓷", "total": 5}],
+#  "sources": {"institutional": {"zh": "臺灣證券交易所", "en": "TWSE", "cn": "台湾证券交易所"}}}
+```
+
+**Notes**
+- Counted stocks are common stocks (no ETF, ETN, REIT, preferred share or depositary receipt)
+  with a flow figure for the window. Net bought means the window's estimated net buy (daily net
+  shares × close) is above 0.
+- Sectors are the 32 TWSE sectors of `sector/overview` (上市 only); themes are the lists of
+  `theme/overview` (上市 + 上櫃) — which is why their baselines differ.
+- Ties in share rank the group with more counted stocks first, then by slug.
+- `gap` rounds half away from zero on the exact fraction.
+
+---
+
+## `GET /studio/market/twstock/chip_breadth/<scope>/<slug>`
+
+| | |
+|---|---|
+| Name | 法人買超族群成分股 Institutional Buying Breadth Constituents |
+| Group | Taiwan Stock › Sectors & Themes |
+| Access | API plan or Blave Agent plan |
+| Rate limit | 500 / 5 min per key + per IP |
+| Data from | Snapshot (latest close) |
+| Update | Nightly, after the close |
+
+**Parameters**
+
+| Name | In | Type | Required | Default | Allowed / format | Description |
+|---|---|---|---|---|---|---|
+| `scope` | path | string | yes | — | `theme`, `sector` | Group type |
+| `slug` | path | string | yes | — | A sector slug (`sector/overview`) or theme slug (`theme/overview`) | Group |
+| `window` | query | int | no | `20` | `10`, `20`, `60` | Trading days the net buy is summed over |
+
+**Response** — one object (no `data` wrapper): the ranking's `scope`, `window`, `as_of`, `min_group`
+and `baseline`, plus:
+
+| Field | Type | Description |
+|---|---|---|
+| `price_as_of` | string | Day the prices and returns end on |
+| `slug` | string | Group |
+| `group` | object | The group's row as in the ranking (`rank` missing when it is not ranked) |
+| `ranked` | bool | `false` when the group is under `min_group` |
+| `stocks[].stock_id` / `name` / `market` | string | Code, name, `twse` / `tpex` |
+| `stocks[].foreign` / `trust` | string | `buy`, `sell` or `flat` over the window |
+| `stocks[].foreign_<N>d` | float | Estimated foreign net buy over the window, TWD 100M (億); `<N>` = `window` |
+| `stocks[].market_cap` | float | TWD 100M (億) |
+| `stocks[].ret_<N>d` | float | Return over the window, % (dividend-adjusted where available) |
+| `stocks[].themes` | array | `[{"slug", "name"}]` every theme holding the stock (for `scope` `theme`, the requested theme is left out), `name` = `{"zh", "en", "cn"}` |
+| `stocks[].disposal` / `notice` | bool | Under disposition / attention notice on `as_of`; `null` when that data is unavailable |
+| `excluded_count` | int | Members not counted (non-common or no flow figure) |
+| `alerts_available` | bool | `false` when the disposition / attention data could not be read |
+| `sources` | object | `{"institutional", "alerts"}`, each `{"zh", "en", "cn"}` |
+
+`stocks` holds the counted members only (its length is `group.total`), largest market cap first.
+
+**Errors**
+
+| Status | Body | When |
+|---|---|---|
+| 400 | `{"error": "window must be one of [10, 20, 60]"}` | Bad `window` |
+| 404 | `{"error": "Unknown scope"}` | `scope` is not `theme` / `sector` |
+| 404 | `{"error": "Unknown group"}` | No such slug in that scope |
+| 410 | `{"error": "Theme retired", "retired": true}` | Theme retired |
+| 503 | `{"error": "not_yet_effective"}` | The theme's list is not in effect yet |
+| 503 | `{"error": "Data temporarily unavailable. Please retry shortly."}` | Upstream quota exhausted or the stock-to-sector map is unavailable |
+
+**Example**
+
+```python
+body = requests.get(f"{BASE_URL}/studio/market/twstock/chip_breadth/theme/memory", headers=headers,
+                    params={"window": 20}, timeout=60).json()
+# Live capture 2026-11-06 (abridged with ...):
+# {"scope": "theme", "window": 20, "as_of": "2026-11-06", "price_as_of": "2026-11-06", "min_group": 6,
+#  "baseline": {"universe": "twse+tpex",
+#               "foreign": {"buy": 1106, "total": 1983, "ratio": 55.77407967725668},
+#               "trust": {"buy": 333, "total": 1983, "ratio": 16.792738275340394}},
+#  "slug": "memory", "ranked": true,
+#  "group": {"slug": "memory", "name": {"zh": "記憶體", "en": "Memory", "cn": "存储器"}, "total": 9,
+#            "foreign": {"buy": 1, "ratio": 11.11111111111111, "gap": -45, "rank": 5},
+#            "trust": {"buy": 5, "ratio": 55.55555555555556, "gap": 39, "rank": 4}},
+#  "stocks": [{"stock_id": "2408", "name": "南亞科", "market": "twse", "foreign": "sell", "trust": "sell",
+#              "foreign_20d": -380.2, "market_cap": 11851.46, "ret_20d": -34.57, "themes": [],
+#              "disposal": false, "notice": false},
+#             {"stock_id": "2344", "name": "華邦電", "market": "twse", "foreign": "sell", "trust": "sell",
+#              "foreign_20d": -35.0, "market_cap": 5688.19, "ret_20d": -32.11, "themes": [],
+#              "disposal": false, "notice": false}, ... 9 rows],
+#  "excluded_count": 0, "alerts_available": true,
+#  "sources": {"institutional": {"zh": "臺灣證券交易所、證券櫃檯買賣中心", "en": "TWSE, TPEx", ...},
+#              "alerts": {"zh": "金融監督管理委員會證券期貨局", "en": "Securities and Futures Bureau, FSC", ...}}}
+```
+
+**Notes**
+- `disposal` / `notice` are judged on `as_of`: a disposition period covering that day, an
+  attention notice announced on it.
 
 ---
 
@@ -4288,18 +4707,25 @@ cond = {
 }
 body = requests.post(f"{BASE_URL}/studio/market/twstock/screener/run", headers=headers, json=cond,
                      timeout=60).json()
-# shape of the response (values illustrative; rows abridged to a few numeric keys):
+# Live capture 2026-11-06 (abridged with ...):
 # {"as_of": "2026-11-06",
 #  "dates": {"price": "2026-11-06", "per": "2026-11-06", "market_cap": "2026-11-06", "flows": "2026-11-06"},
-#  "total": 35,
+#  "total": 42,
 #  "columns": [{"key": "close", "name": {"zh": "收盤", "en": "Close"}, "value_format": "twd",
 #               "value_decimals": 2, "signed": false, "colored": false, "family": null, "window": null,
-#               "filtered": false}, ...],
+#               "filtered": false},
+#              {"key": "per", "name": {"zh": "本益比", "en": "P/E"}, "value_format": "x", "value_decimals": 1,
+#               "signed": false, "colored": false, "family": null, "window": null, "filtered": true}, ... 7 columns],
 #  "sort": {"indicator": "dividend_yield", "dir": "desc"},
-#  "rows": [{"stock_id": "2886", "name": "兆豐金", "market": "twse", "sec_type": "common", "industry": "17",
+#  "rows": [{"stock_id": "2542", "name": "興富發", "market": "twse", "sec_type": "common", "industry": "14",
 #            "fin_quarter": "2026Q2", "rev_month": "2026-09", "adj": true, "themes": [],
 #            "disposal": false, "notice": false,
-#            "close": 41.25, "per": 14.2, "pbr": 1.61, "dividend_yield": 5.33, "market_cap": 6180.5, ...}, ...]}
+#            "close": 37.75, "per": 8.74, "pbr": 1.61, "dividend_yield": 10.6, "roe_ttm": 20.583,
+#            "gross_margin_q": 31.8475, "operating_margin_q": 25.3319, "eps_ttm": 4.32, "rev_yoy": 103.7265,
+#            "market_cap": 812.789, "turnover_20d": 3.4225,
+#            "ret_5d": -3.9452, "ret_20d": -1.1936, "ret_60d": -6.5688,
+#            "foreign_5d": 3.2337, "foreign_20d": 25.2619, "foreign_60d": 24.2922,
+#            "trust_5d": 0.3288, "trust_20d": -2.7693, "trust_60d": 16.1917}, ... 42 rows]}
 ids = [r["stock_id"] for r in body["rows"]]
 ```
 
@@ -4503,6 +4929,59 @@ data = requests.get(f"{BASE_URL}/studio/market/twmarket/margin", headers=headers
 
 ---
 
+## `GET /studio/market/twmarket/margin_maintenance`
+
+| | |
+|---|---|
+| Name | 大盤融資維持率 Market Margin Maintenance Ratio |
+| Group | Taiwan Market |
+| Access | API plan or Blave Agent plan |
+| Rate limit | 500 / 5 min per key + per IP |
+| Data from | 2002-11-26 |
+| Update | Daily |
+
+**Parameters**
+
+| Name | In | Type | Required | Default | Allowed / format | Description |
+|---|---|---|---|---|---|---|
+| `start` | query | string | no | `2002-11-26` | `YYYY-MM-DD` | First date |
+| `end` | query | string | no | today | `YYYY-MM-DD` | Last date |
+
+**Response** — `{"data": [...]}`, one row per trading day, oldest first.
+
+| Field | Unit | Description |
+|---|---|---|
+| `date` | — | Trading day |
+| `maintenance_ratio` | % | Whole-market 融資維持率 of TWSE-listed stocks (e.g. `151.93` = 151.93%) |
+
+**Errors**
+
+| Status | Body | When |
+|---|---|---|
+| 400 | `{"error": "Invalid start date, expected YYYY-MM-DD"}` (or `end`) | Malformed date |
+| 400 | `{"error": "start must not be after end"}` | Reversed range |
+| 404 | `{"error": "No margin maintenance data available"}` | No data |
+| 503 | `{"error": "Upstream rate limit. Please retry shortly."}` | Upstream quota exhausted |
+
+**Example**
+
+```python
+data = requests.get(f"{BASE_URL}/studio/market/twmarket/margin_maintenance", headers=headers,
+                    params={"start": "2026-10-01"}, timeout=60).json()["data"]
+# Live capture 2026-11-06 (abridged with ...):
+# [{"date": "2026-10-01", "maintenance_ratio": 195.084}, {"date": "2026-10-02", "maintenance_ratio": 197.024},
+#  ..., {"date": "2026-11-06", "maintenance_ratio": 151.93}]   # 24 trading days
+```
+
+**Notes**
+- Covers TWSE-listed (上市) stocks only; there is no OTC (上櫃) series.
+- The ratio is the market value of the stocks bought on margin over the margin loans, in percent.
+  A single account is called for more margin below 130%, so a whole-market figure falling toward
+  that level means more forced selling is possible.
+- Server cache: 5 minutes.
+
+---
+
 ## `GET /studio/market/twmarket/dividend_points`
 
 | | |
@@ -4665,8 +5144,9 @@ def fetch_txf_chunked(schema, start, end, chunk_days=28):
 **Parameters** — none.
 
 **Response** — `{"data": ["CDF", "DHF", "MXF", "TXF", ...]}` — symbols accepted by `ohlcv`,
-`ohlcv/export`, and `bid_ask_vol`: `TXF`, `MXF`, plus the liquidity-picked subset of stock
-futures with minute-line coverage (most of the 231 stock futures are not covered).
+`ohlcv/export`, and `bid_ask_vol`: `TXF`, `MXF`, plus the stock futures with minute-line coverage.
+Coverage changes over time — check a contract's `minute_line_enabled` in `stock_futures/list`
+rather than assuming a count.
 
 **Errors** — shared errors only.
 
@@ -4873,11 +5353,13 @@ data = requests.get(f"{BASE_URL}/studio/market/twfutures/daily/TX", headers=head
 ```python
 rows = requests.get(f"{BASE_URL}/studio/market/twfutures/stock_futures/list", headers=headers,
                     timeout=30).json()["data"]
-# shape of the response (values illustrative):
-# [{"futures_id": "CDF", "code": "CD", "stock_id": "2330", "stock_name": "台積電",
-#   "stock_full_name": "台灣積體電路製造股份有限公司", "unit": 2000, "minute_line_enabled": true},
+# Live capture 2026-11-06 (abridged with ...):
+# [{"futures_id": "CAF", "code": "CA", "stock_id": "1303", "stock_name": "南亞",
+#   "stock_full_name": "南亞塑膠工業股份有限公司", "unit": 2000, "minute_line_enabled": true}, ...,
+#  {"futures_id": "CDF", "code": "CD", "stock_id": "2330", "stock_name": "台積電",
+#   "stock_full_name": "台灣積體電路製造股份有限公司", "unit": 2000, "minute_line_enabled": true}, ...,
 #  {"futures_id": "QFF", "code": "QF", "stock_id": "2330", "stock_name": "台積電",
-#   "stock_full_name": "台灣積體電路製造股份有限公司", "unit": 100, "minute_line_enabled": false}, ...]
+#   "stock_full_name": "台灣積體電路製造股份有限公司", "unit": 100, "minute_line_enabled": true}, ... 240 rows]
 
 by_stock = {}
 for r in rows:                                    # one stock can have a standard and a mini contract
@@ -4929,10 +5411,13 @@ for r in rows:                                    # one stock can have a standar
 ```python
 rows = requests.get(f"{BASE_URL}/studio/market/twfutures/stock_futures/liquidity_ranking", headers=headers,
                     timeout=120).json()["data"]
-# shape of the response (values illustrative):
-# [{"rank": 1, "futures_id": "CDF", "code": "CD", "stock_id": "2330", "stock_name": "台積電",
-#   "stock_full_name": "台灣積體電路製造股份有限公司", "unit": 2000,
-#   "avg_volume": 9112.35, "avg_open_interest": 30418.6, "minute_line_enabled": true}, ...]
+# Live capture 2026-11-06 (abridged with ...):
+# [{"rank": 1, "futures_id": "CCF", "code": "CC", "stock_id": "2303", "stock_name": "聯電",
+#   "stock_full_name": "聯華電子股份有限公司", "unit": 2000,
+#   "avg_volume": 50357.3, "avg_open_interest": 75444.95, "minute_line_enabled": true},
+#  {"rank": 2, "futures_id": "QFF", "code": "QF", "stock_id": "2330", "stock_name": "台積電",
+#   "stock_full_name": "台灣積體電路製造股份有限公司", "unit": 100,
+#   "avg_volume": 44525.55, "avg_open_interest": 109939.75, "minute_line_enabled": true}, ... 240 rows]
 
 standard = [r for r in rows if r["unit"] == 2000][:20]   # compare lots within one unit only
 ```
@@ -5110,7 +5595,7 @@ data = requests.get(f"{BASE_URL}/studio/market/twfutures/large_traders/TX", head
 
 | Name | In | Type | Required | Default | Allowed / format | Description |
 |---|---|---|---|---|---|---|
-| `futures_id` | path | string | yes | — | Index futures, 2–6 letters, case-insensitive — e.g. `TX`, `MTX`, `TMF` | Product |
+| `futures_id` | path | string | yes | — | Index futures, 2–6 letters, case-insensitive — `TMF` (微型臺指), `MTX` (小型臺指), `TX` (臺股期貨) | Product |
 | `date` | query | string | no | latest settled day | `YYYY-MM-DD` | One trading day |
 
 **Response** — one object for one day (no `data` wrapper).
@@ -5139,13 +5624,14 @@ data = requests.get(f"{BASE_URL}/studio/market/twfutures/large_traders/TX", head
 **Example**
 
 ```python
-row = requests.get(f"{BASE_URL}/studio/market/twfutures/retail_long_short_ratio/TX", headers=headers,
+row = requests.get(f"{BASE_URL}/studio/market/twfutures/retail_long_short_ratio/TMF", headers=headers,
                    timeout=60).json()
-# shape of the response (values illustrative):
-# {"date": "2026-11-06", "futures_id": "TX", "market_open_interest": 86412,
-#  "institutional_long_open_interest": 21534, "institutional_short_open_interest": 48977,
-#  "retail_long_open_interest": 64878, "retail_short_open_interest": 37435,
-#  "retail_long_short_ratio": 31.758320603619865}
+# Live capture 2026-11-06:
+# {"date": "2026-11-06", "futures_id": "TMF", "market_open_interest": 96708,
+#  "institutional_long_open_interest": 6870, "institutional_short_open_interest": 52454,
+#  "retail_long_open_interest": 89838, "retail_short_open_interest": 44254,
+#  "retail_long_short_ratio": 47.13570749059023}
+# Same day: MTX 17.37, TX 5.92 — each product has its own retail share, so never compare across them
 
 # A series = one call per trading day (each day is cached server-side for 5 minutes)
 days = ["2026-11-03", "2026-11-04", "2026-11-05"]
@@ -5161,8 +5647,12 @@ series = [requests.get(f"{BASE_URL}/studio/market/twfutures/retail_long_short_ra
   side is the sum of the three rows of `institutional/<futures_id>` for the same day.
 - A day appears only when both the market OI and the institutional rows for it are published.
   Before about 15:00 Taipei the default is the previous trading day.
-- `MTX` (小台) is the product this ratio is most often quoted for. `TMF` (微台) history starts
-  around 2024-08.
+- The three products give very different numbers and are not comparable with each other:
+  `TMF` (微型臺指, index × 10 per contract) has the highest retail share of the three (its long side is almost all retail), `MTX` (小型臺指,
+  index × 50) sits in between, and `TX` (臺股期貨, index × 200) is mostly institutional, so the
+  residual there is small. On 2026-11-06 the ratio was 47.14 for `TMF`, 17.37 for `MTX` and
+  5.92 for `TX`. Track one product over time and compare it only with itself.
+- `TMF` history starts around 2024-08.
 - The ratio is unrounded — round for display.
 - Server cache: 5 minutes.
 
