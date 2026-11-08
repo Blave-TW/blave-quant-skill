@@ -4396,7 +4396,7 @@ body = requests.get(f"{BASE_URL}/studio/market/twstock/theme/constituents/memory
 | Group | Taiwan Stock › Sectors & Themes |
 | Access | API plan or Blave Agent plan |
 | Rate limit | 500 / 5 min per key + per IP |
-| Data from | 2023 (backfilled before each theme's first list) |
+| Data from | Last 3 years, rolling (backfilled before each theme's first list) |
 | Update | Daily, after the close |
 
 **Parameters**
