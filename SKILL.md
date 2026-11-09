@@ -1,7 +1,7 @@
 ---
 name: blave-quant
 description: "Blave quant data layer and exchange-trading reference for AI agents. Use when the task needs crypto alpha/market data, Taiwan stock, futures or market-wide data, CME/ICE or TXF OHLCV, Hyperliquid top traders, or trading on BitMart, OKX, Bybit, BingX, Bitget, Binance, Bitfinex, KuCoin, Gate.io or StockCoin (US / KR stock perps), including US stock perpetuals on Binance, Bybit, BingX and Bitget."
-version: 1.25.5
+version: 1.25.6
 metadata:
   openclaw:
     emoji: "📊"
@@ -172,7 +172,7 @@ Add to `.env`: `blave_api_key=...` and `blave_secret_key=...`
 | Taiwan Stock › Sectors & Themes | `sector/overview` (板塊輪動), `sector/breadth` (上漲比例), `sector/constituents/<slug>` (成分股), `theme/overview` (題材族群), `theme/constituents/<slug>`, `theme/<slug>/index` (題材指數), `chip_breadth/<theme\|sector>` (法人買超家數比例), `chip_breadth/<scope>/<slug>` |
 | Taiwan Stock › Screener | `POST screener/run` (選股器) |
 | Taiwan Market (大盤) | `studio/market/twmarket/index/TAIEX`, `turnover`, `institutional`, `margin`, `margin_maintenance` (融資維持率), `dividend_points` |
-| Taiwan Futures & Options | `studio/market/twfutures/ohlcv/<symbol>/<schema>`, `ohlcv/symbols`, `ohlcv/<symbol>/export/<year>`, `bid_ask_vol/<symbol>`, `daily/<futures_id>`, `stock_futures/list`, `stock_futures/liquidity_ranking`, `stock_futures/batch/daily`, `institutional/<futures_id>`, `large_traders/<futures_id>`, `retail_long_short_ratio/<futures_id>` (散戶多空比), `option/institutional/<option_id>`, `option/large_traders/<option_id>`, `option/pcr`, `carrying_cost/<identity>` (法人持倉成本) |
+| Taiwan Futures & Options | `studio/market/twfutures/ohlcv/<symbol>/<schema>`, `ohlcv/symbols`, `ohlcv/<symbol>/export/<year>`, `bid_ask_vol/<symbol>`, `daily/<futures_id>`, `stock_futures/list`, `stock_futures/liquidity_ranking`, `stock_futures/batch/daily`, `institutional/<futures_id>`, `large_traders/<futures_id>`, `retail_long_short_ratio/<futures_id>` (散戶多空比) + `/history` (區間), `option/institutional/<option_id>`, `option/large_traders/<option_id>`, `option/pcr`, `carrying_cost/<identity>` (法人持倉成本) |
 | Commodities | `studio/market/db/ohlcv/<dataset>/<symbol>/<schema>` (WTI `CL`, gold `GC`, Brent `BRN`) |
 | Macro | `studio/market/anue/economic_calendar` |
 

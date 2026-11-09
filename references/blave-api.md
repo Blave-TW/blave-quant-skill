@@ -14,108 +14,109 @@ moves lines (command in the comment under the table).
 <!-- index:start -->
 | Line | Endpoint | Category |
 |:-|:-|:-|
-| 253 | `GET /price` | Crypto |
-| 300 | `GET /alpha_table` | Crypto |
-| 358 | `GET /kline` | Crypto |
-| 439 | `GET /market_direction/get_alpha` | Crypto |
-| 486 | `GET /screener/get_saved_conditions` | Crypto |
-| 527 | `GET /screener/get_saved_condition_result` | Crypto |
-| 576 | `GET /holder_concentration/get_symbols` | Crypto |
-| 604 | `GET /holder_concentration/get_alpha` | Crypto |
-| 655 | `GET /funding_rate/get_alpha` | Crypto |
-| 710 | `GET /market_sentiment/get_symbols` | Crypto |
-| 738 | `GET /market_sentiment/get_alpha` | Crypto |
-| 784 | `GET /capital_shortage/get_alpha` | Crypto |
-| 829 | `GET /sector_rotation/get_history_data` | Crypto |
-| 874 | `GET /sector_rotation/get_overview_data` | Crypto |
-| 911 | `GET /oi_imbalance/get_overview_data` | Crypto |
-| 952 | `GET /whale_hunter/get_symbols` | Crypto |
-| 980 | `GET /whale_hunter/get_alpha` | Crypto |
-| 1032 | `GET /taker_intensity/get_symbols` | Crypto |
-| 1060 | `GET /taker_intensity/get_alpha` | Crypto |
-| 1107 | `GET /unusual_movement/get_symbols` | Crypto |
-| 1135 | `GET /unusual_movement/get_alpha` | Crypto |
-| 1184 | `GET /squeeze_momentum/get_symbols` | Crypto |
-| 1212 | `GET /squeeze_momentum/get_alpha` | Crypto |
-| 1263 | `GET /blave_top_trader/get_exposure` | Crypto |
-| 1310 | `GET /liquidation/get_symbols` | Crypto |
-| 1338 | `GET /liquidation/get_alpha` | Crypto |
-| 1388 | `GET /liquidation/get_map` | Crypto |
-| 1433 | `GET /liquidation/get_map_change` | Crypto |
-| 1477 | `GET /liquidation/get_coin` | Crypto |
-| 1566 | `GET /liquidation/get_exchanges` | Crypto |
-| 1650 | `GET /long_short_ratio/get_table` | Crypto |
-| 1747 | `GET /long_short_ratio/get_coin` | Crypto |
-| 1830 | `GET /oi_imbalance/get_table` | Crypto |
-| 1920 | `GET /oi_imbalance/get_coin` | Crypto |
-| 1990 | `GET /oi_imbalance/get_history` | Crypto |
-| 2083 | `GET /taker_intensity/get_cvd_table` | Crypto |
-| 2161 | `GET /taker_intensity/get_cvd_coin` | Crypto |
-| 2224 | `GET /cme_cot/get_latest` | Crypto |
-| 2283 | `GET /cme_cot/get_history` | Crypto |
-| 2390 | `GET /studio/market/twstock/list` | Taiwan Stock |
-| 2433 | `GET /studio/market/twstock/info/<stock_id>` | Taiwan Stock |
-| 2471 | `GET /studio/market/twstock/price/<stock_id>` | Taiwan Stock |
-| 2535 | `GET /studio/market/twstock/price_adj/<stock_id>` | Taiwan Stock |
-| 2569 | `GET /studio/market/twstock/quote/<stock_id>` | Taiwan Stock |
-| 2630 | `GET /studio/market/twstock/quote` | Taiwan Stock |
-| 2672 | `GET /studio/market/twstock/quote/all` | Taiwan Stock |
-| 2704 | `GET /studio/market/twstock/minute/ohlcv/<stock_id>/<schema>` | Taiwan Stock |
-| 2767 | `GET /studio/market/twstock/minute/ohlcv/symbols` | Taiwan Stock |
-| 2793 | `GET /studio/market/twstock/kbar/<stock_id>` | Taiwan Stock |
-| 2844 | `GET /studio/market/twstock/market_value/<stock_id>` | Taiwan Stock |
-| 2879 | `GET /studio/market/twstock/market_value/all` | Taiwan Stock |
-| 2959 | `GET /studio/market/twstock/per/<stock_id>` | Taiwan Stock |
-| 3006 | `GET /studio/market/twstock/financials/<stock_id>` | Taiwan Stock |
-| 3054 | `GET /studio/market/twstock/balance_sheet/<stock_id>` | Taiwan Stock |
-| 3087 | `GET /studio/market/twstock/cashflow/<stock_id>` | Taiwan Stock |
-| 3142 | `GET /studio/market/twstock/monthly_revenue/<stock_id>` | Taiwan Stock |
-| 3194 | `GET /studio/market/twstock/ratios/<stock_id>` | Taiwan Stock |
-| 3283 | `GET /studio/market/twstock/dividend/<stock_id>` | Taiwan Stock |
-| 3347 | `GET /studio/market/twstock/news/<stock_id>` | Taiwan Stock |
-| 3398 | `GET /studio/market/twstock/institutional/<stock_id>` | Taiwan Stock |
-| 3453 | `GET /studio/market/twstock/margin/<stock_id>` | Taiwan Stock |
-| 3508 | `GET /studio/market/twstock/shareholding/<stock_id>` | Taiwan Stock |
-| 3553 | `GET /studio/market/twstock/foreign_shareholding/<stock_id>` | Taiwan Stock |
-| 3601 | `GET /studio/market/twstock/gov_bank/<stock_id>` | Taiwan Stock |
-| 3648 | `GET /studio/market/twstock/lending/<stock_id>` | Taiwan Stock |
-| 3693 | `GET /studio/market/twstock/broker/search` | Taiwan Stock |
-| 3729 | `GET /studio/market/twstock/broker/stock/<stock_id>` | Taiwan Stock |
-| 3784 | `GET /studio/market/twstock/broker/trader/<trader_id>` | Taiwan Stock |
-| 3821 | `GET /studio/market/twstock/alerts` | Taiwan Stock |
-| 3929 | `GET /studio/market/twstock/batch/<data_type>` | Taiwan Stock |
-| 3989 | `GET /studio/market/twstock/sector/overview` | Taiwan Stock |
-| 4101 | `GET /studio/market/twstock/sector/breadth` | Taiwan Stock |
-| 4152 | `GET /studio/market/twstock/sector/constituents/<slug>` | Taiwan Stock |
-| 4213 | `GET /studio/market/twstock/theme/overview` | Taiwan Stock |
-| 4305 | `GET /studio/market/twstock/theme/constituents/<slug>` | Taiwan Stock |
-| 4391 | `GET /studio/market/twstock/theme/<slug>/index` | Taiwan Stock |
-| 4455 | `GET /studio/market/twstock/chip_breadth/<scope>` | Taiwan Stock |
-| 4531 | `GET /studio/market/twstock/chip_breadth/<scope>/<slug>` | Taiwan Stock |
-| 4614 | `POST /studio/market/twstock/screener/run` | Taiwan Stock |
-| 4758 | `GET /studio/market/twmarket/index/<index_id>` | Taiwan Market (大盤) |
-| 4802 | `GET /studio/market/twmarket/turnover` | Taiwan Market (大盤) |
-| 4845 | `GET /studio/market/twmarket/institutional` | Taiwan Market (大盤) |
-| 4889 | `GET /studio/market/twmarket/margin` | Taiwan Market (大盤) |
-| 4932 | `GET /studio/market/twmarket/margin_maintenance` | Taiwan Market (大盤) |
-| 4985 | `GET /studio/market/twmarket/dividend_points` | Taiwan Market (大盤) |
-| 5048 | `GET /studio/market/twfutures/ohlcv/<symbol>/<schema>` | Taiwan Futures & Options |
-| 5133 | `GET /studio/market/twfutures/ohlcv/symbols` | Taiwan Futures & Options |
-| 5161 | `GET /studio/market/twfutures/ohlcv/<symbol>/export/<year>` | Taiwan Futures & Options |
-| 5214 | `GET /studio/market/twfutures/bid_ask_vol/<symbol>` | Taiwan Futures & Options |
-| 5266 | `GET /studio/market/twfutures/daily/<futures_id>` | Taiwan Futures & Options |
-| 5321 | `GET /studio/market/twfutures/stock_futures/list` | Taiwan Futures & Options |
-| 5379 | `GET /studio/market/twfutures/stock_futures/liquidity_ranking` | Taiwan Futures & Options |
-| 5435 | `GET /studio/market/twfutures/stock_futures/batch/daily` | Taiwan Futures & Options |
-| 5475 | `GET /studio/market/twfutures/institutional/<futures_id>` | Taiwan Futures & Options |
-| 5532 | `GET /studio/market/twfutures/large_traders/<futures_id>` | Taiwan Futures & Options |
-| 5583 | `GET /studio/market/twfutures/retail_long_short_ratio/<futures_id>` | Taiwan Futures & Options |
-| 5661 | `GET /studio/market/twfutures/option/institutional/<option_id>` | Taiwan Futures & Options |
-| 5698 | `GET /studio/market/twfutures/option/large_traders/<option_id>` | Taiwan Futures & Options |
-| 5736 | `GET /studio/market/twfutures/option/pcr` | Taiwan Futures & Options |
-| 5784 | `GET /studio/market/twfutures/carrying_cost/<identity>` | Taiwan Futures & Options |
-| 5885 | `GET /studio/market/db/ohlcv/<dataset>/<symbol>/<schema>` | Commodities |
-| 5946 | `GET /studio/market/anue/economic_calendar` | Macro |
+| 254 | `GET /price` | Crypto |
+| 301 | `GET /alpha_table` | Crypto |
+| 359 | `GET /kline` | Crypto |
+| 440 | `GET /market_direction/get_alpha` | Crypto |
+| 487 | `GET /screener/get_saved_conditions` | Crypto |
+| 528 | `GET /screener/get_saved_condition_result` | Crypto |
+| 577 | `GET /holder_concentration/get_symbols` | Crypto |
+| 605 | `GET /holder_concentration/get_alpha` | Crypto |
+| 656 | `GET /funding_rate/get_alpha` | Crypto |
+| 711 | `GET /market_sentiment/get_symbols` | Crypto |
+| 739 | `GET /market_sentiment/get_alpha` | Crypto |
+| 785 | `GET /capital_shortage/get_alpha` | Crypto |
+| 830 | `GET /sector_rotation/get_history_data` | Crypto |
+| 875 | `GET /sector_rotation/get_overview_data` | Crypto |
+| 912 | `GET /oi_imbalance/get_overview_data` | Crypto |
+| 953 | `GET /whale_hunter/get_symbols` | Crypto |
+| 981 | `GET /whale_hunter/get_alpha` | Crypto |
+| 1033 | `GET /taker_intensity/get_symbols` | Crypto |
+| 1061 | `GET /taker_intensity/get_alpha` | Crypto |
+| 1108 | `GET /unusual_movement/get_symbols` | Crypto |
+| 1136 | `GET /unusual_movement/get_alpha` | Crypto |
+| 1185 | `GET /squeeze_momentum/get_symbols` | Crypto |
+| 1213 | `GET /squeeze_momentum/get_alpha` | Crypto |
+| 1264 | `GET /blave_top_trader/get_exposure` | Crypto |
+| 1311 | `GET /liquidation/get_symbols` | Crypto |
+| 1339 | `GET /liquidation/get_alpha` | Crypto |
+| 1389 | `GET /liquidation/get_map` | Crypto |
+| 1434 | `GET /liquidation/get_map_change` | Crypto |
+| 1478 | `GET /liquidation/get_coin` | Crypto |
+| 1567 | `GET /liquidation/get_exchanges` | Crypto |
+| 1651 | `GET /long_short_ratio/get_table` | Crypto |
+| 1748 | `GET /long_short_ratio/get_coin` | Crypto |
+| 1831 | `GET /oi_imbalance/get_table` | Crypto |
+| 1921 | `GET /oi_imbalance/get_coin` | Crypto |
+| 1991 | `GET /oi_imbalance/get_history` | Crypto |
+| 2084 | `GET /taker_intensity/get_cvd_table` | Crypto |
+| 2162 | `GET /taker_intensity/get_cvd_coin` | Crypto |
+| 2225 | `GET /cme_cot/get_latest` | Crypto |
+| 2284 | `GET /cme_cot/get_history` | Crypto |
+| 2391 | `GET /studio/market/twstock/list` | Taiwan Stock |
+| 2434 | `GET /studio/market/twstock/info/<stock_id>` | Taiwan Stock |
+| 2472 | `GET /studio/market/twstock/price/<stock_id>` | Taiwan Stock |
+| 2536 | `GET /studio/market/twstock/price_adj/<stock_id>` | Taiwan Stock |
+| 2570 | `GET /studio/market/twstock/quote/<stock_id>` | Taiwan Stock |
+| 2631 | `GET /studio/market/twstock/quote` | Taiwan Stock |
+| 2673 | `GET /studio/market/twstock/quote/all` | Taiwan Stock |
+| 2705 | `GET /studio/market/twstock/minute/ohlcv/<stock_id>/<schema>` | Taiwan Stock |
+| 2768 | `GET /studio/market/twstock/minute/ohlcv/symbols` | Taiwan Stock |
+| 2794 | `GET /studio/market/twstock/kbar/<stock_id>` | Taiwan Stock |
+| 2845 | `GET /studio/market/twstock/market_value/<stock_id>` | Taiwan Stock |
+| 2880 | `GET /studio/market/twstock/market_value/all` | Taiwan Stock |
+| 2960 | `GET /studio/market/twstock/per/<stock_id>` | Taiwan Stock |
+| 3007 | `GET /studio/market/twstock/financials/<stock_id>` | Taiwan Stock |
+| 3055 | `GET /studio/market/twstock/balance_sheet/<stock_id>` | Taiwan Stock |
+| 3088 | `GET /studio/market/twstock/cashflow/<stock_id>` | Taiwan Stock |
+| 3143 | `GET /studio/market/twstock/monthly_revenue/<stock_id>` | Taiwan Stock |
+| 3195 | `GET /studio/market/twstock/ratios/<stock_id>` | Taiwan Stock |
+| 3284 | `GET /studio/market/twstock/dividend/<stock_id>` | Taiwan Stock |
+| 3348 | `GET /studio/market/twstock/news/<stock_id>` | Taiwan Stock |
+| 3399 | `GET /studio/market/twstock/institutional/<stock_id>` | Taiwan Stock |
+| 3454 | `GET /studio/market/twstock/margin/<stock_id>` | Taiwan Stock |
+| 3509 | `GET /studio/market/twstock/shareholding/<stock_id>` | Taiwan Stock |
+| 3554 | `GET /studio/market/twstock/foreign_shareholding/<stock_id>` | Taiwan Stock |
+| 3602 | `GET /studio/market/twstock/gov_bank/<stock_id>` | Taiwan Stock |
+| 3649 | `GET /studio/market/twstock/lending/<stock_id>` | Taiwan Stock |
+| 3694 | `GET /studio/market/twstock/broker/search` | Taiwan Stock |
+| 3730 | `GET /studio/market/twstock/broker/stock/<stock_id>` | Taiwan Stock |
+| 3785 | `GET /studio/market/twstock/broker/trader/<trader_id>` | Taiwan Stock |
+| 3822 | `GET /studio/market/twstock/alerts` | Taiwan Stock |
+| 3930 | `GET /studio/market/twstock/batch/<data_type>` | Taiwan Stock |
+| 3990 | `GET /studio/market/twstock/sector/overview` | Taiwan Stock |
+| 4102 | `GET /studio/market/twstock/sector/breadth` | Taiwan Stock |
+| 4153 | `GET /studio/market/twstock/sector/constituents/<slug>` | Taiwan Stock |
+| 4214 | `GET /studio/market/twstock/theme/overview` | Taiwan Stock |
+| 4306 | `GET /studio/market/twstock/theme/constituents/<slug>` | Taiwan Stock |
+| 4392 | `GET /studio/market/twstock/theme/<slug>/index` | Taiwan Stock |
+| 4456 | `GET /studio/market/twstock/chip_breadth/<scope>` | Taiwan Stock |
+| 4532 | `GET /studio/market/twstock/chip_breadth/<scope>/<slug>` | Taiwan Stock |
+| 4615 | `POST /studio/market/twstock/screener/run` | Taiwan Stock |
+| 4759 | `GET /studio/market/twmarket/index/<index_id>` | Taiwan Market (大盤) |
+| 4803 | `GET /studio/market/twmarket/turnover` | Taiwan Market (大盤) |
+| 4846 | `GET /studio/market/twmarket/institutional` | Taiwan Market (大盤) |
+| 4890 | `GET /studio/market/twmarket/margin` | Taiwan Market (大盤) |
+| 4933 | `GET /studio/market/twmarket/margin_maintenance` | Taiwan Market (大盤) |
+| 4986 | `GET /studio/market/twmarket/dividend_points` | Taiwan Market (大盤) |
+| 5049 | `GET /studio/market/twfutures/ohlcv/<symbol>/<schema>` | Taiwan Futures & Options |
+| 5134 | `GET /studio/market/twfutures/ohlcv/symbols` | Taiwan Futures & Options |
+| 5162 | `GET /studio/market/twfutures/ohlcv/<symbol>/export/<year>` | Taiwan Futures & Options |
+| 5215 | `GET /studio/market/twfutures/bid_ask_vol/<symbol>` | Taiwan Futures & Options |
+| 5267 | `GET /studio/market/twfutures/daily/<futures_id>` | Taiwan Futures & Options |
+| 5322 | `GET /studio/market/twfutures/stock_futures/list` | Taiwan Futures & Options |
+| 5380 | `GET /studio/market/twfutures/stock_futures/liquidity_ranking` | Taiwan Futures & Options |
+| 5436 | `GET /studio/market/twfutures/stock_futures/batch/daily` | Taiwan Futures & Options |
+| 5476 | `GET /studio/market/twfutures/institutional/<futures_id>` | Taiwan Futures & Options |
+| 5533 | `GET /studio/market/twfutures/large_traders/<futures_id>` | Taiwan Futures & Options |
+| 5584 | `GET /studio/market/twfutures/retail_long_short_ratio/<futures_id>` | Taiwan Futures & Options |
+| 5659 | `GET /studio/market/twfutures/retail_long_short_ratio/<futures_id>/history` | Taiwan Futures & Options |
+| 5720 | `GET /studio/market/twfutures/option/institutional/<option_id>` | Taiwan Futures & Options |
+| 5757 | `GET /studio/market/twfutures/option/large_traders/<option_id>` | Taiwan Futures & Options |
+| 5795 | `GET /studio/market/twfutures/option/pcr` | Taiwan Futures & Options |
+| 5843 | `GET /studio/market/twfutures/carrying_cost/<identity>` | Taiwan Futures & Options |
+| 5944 | `GET /studio/market/db/ohlcv/<dataset>/<symbol>/<schema>` | Commodities |
+| 6005 | `GET /studio/market/anue/economic_calendar` | Macro |
 <!-- index:end -->
 <!-- regenerate (from the repo root): python3 - <<'EOF'
 import re
@@ -5633,10 +5634,7 @@ row = requests.get(f"{BASE_URL}/studio/market/twfutures/retail_long_short_ratio/
 #  "retail_long_short_ratio": 47.13570749059023}
 # Same day: MTX 17.37, TX 5.92 — each product has its own retail share, so never compare across them
 
-# A series = one call per trading day (each day is cached server-side for 5 minutes)
-days = ["2026-11-03", "2026-11-04", "2026-11-05"]
-series = [requests.get(f"{BASE_URL}/studio/market/twfutures/retail_long_short_ratio/MTX", headers=headers,
-                       params={"date": d}, timeout=60).json() for d in days]
+# For a series use /retail_long_short_ratio/<futures_id>/history (one call for a whole range)
 ```
 
 **Notes**
@@ -5654,6 +5652,67 @@ series = [requests.get(f"{BASE_URL}/studio/market/twfutures/retail_long_short_ra
   5.92 for `TX`. Track one product over time and compare it only with itself.
 - `TMF` history starts 2024-07-29, its listing date.
 - The ratio is unrounded — round for display.
+- Server cache: 5 minutes.
+
+---
+
+## `GET /studio/market/twfutures/retail_long_short_ratio/<futures_id>/history`
+
+| | |
+|---|---|
+| Name | 散戶多空比（區間） Taiwan Futures Retail Long/Short Ratio History |
+| Group | Taiwan Futures & Options |
+| Access | API plan or Blave Agent plan |
+| Rate limit | 500 / 5 min per key + per IP |
+| Data from | 2018-06-05 (TMF from 2024-07-29, its listing date) |
+| Update | Daily, after about 15:00 Taipei |
+
+**Parameters**
+
+| Name | In | Type | Required | Default | Allowed / format | Description |
+|---|---|---|---|---|---|---|
+| `futures_id` | path | string | yes | — | Index futures, 2–6 letters, case-insensitive — `TMF` (微型臺指), `MTX` (小型臺指), `TX` (臺股期貨) | Product |
+| `start` | query | string | no | earliest available | `YYYY-MM-DD` | First date |
+| `end` | query | string | no | today | `YYYY-MM-DD` | Last date |
+
+**Response** — `{"futures_id", "data": [...]}`; one row per trading day, oldest first. Each row
+has the same fields as the single-day endpoint above (`date`, `futures_id`,
+`market_open_interest`, `institutional_long_open_interest`, `institutional_short_open_interest`,
+`retail_long_open_interest`, `retail_short_open_interest`, `retail_long_short_ratio`).
+
+**Errors**
+
+| Status | Body | When |
+|---|---|---|
+| 400 | `{"error": "Invalid futures_id"}` | Format check failed |
+| 400 | `{"error": "Invalid start date, expected YYYY-MM-DD"}` (or `end`) | Malformed date |
+| 400 | `{"error": "start must not be after end"}` | Reversed range |
+| 404 | `{"error": "No data found for futures_id: <id>"}` | Product has no data at all |
+| 503 | `{"error": "Upstream rate limit. Please retry shortly."}` | Upstream quota exhausted |
+
+A range with no settled day in it (a weekend, or before the product's history) is `200` with
+`"data": []`, not an error.
+
+**Example**
+
+```python
+import pandas as pd
+
+resp = requests.get(f"{BASE_URL}/studio/market/twfutures/retail_long_short_ratio/TMF/history",
+                    headers=headers, params={"start": "2026-10-27", "end": "2026-11-07"}, timeout=60).json()
+# Live capture 2026-11-09: 9 rows, 2026-10-27 .. 2026-11-06
+# {"futures_id": "TMF", "data": [..., {"date": "2026-11-06", "futures_id": "TMF",
+#   "market_open_interest": 96708, "institutional_long_open_interest": 6870,
+#   "institutional_short_open_interest": 52454, "retail_long_open_interest": 89838,
+#   "retail_short_open_interest": 44254, "retail_long_short_ratio": 47.13570749059023}]}
+df = pd.DataFrame(resp["data"]).set_index("date")
+```
+
+**Notes**
+- Same formula and same caveats as the single-day endpoint: never compare `TMF`, `MTX` and `TX`
+  with each other.
+- Without `start` the whole history comes back (about 2,050 rows for `TX`, 2026-11).
+- Published after the close: in a backtest, act on a day's value from the next trading day on.
 - Server cache: 5 minutes.
 
 ---
