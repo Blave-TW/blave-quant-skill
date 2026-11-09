@@ -5509,7 +5509,7 @@ body = requests.get(f"{BASE_URL}/studio/market/twfutures/stock_futures/batch/dai
 |---|---|---|
 | 400 | `{"error": "Invalid futures_id"}` | Format check failed |
 | 404 | `{"error": "institutional data not available for stock futures (<id>)"}` | Stock future |
-| 404 | error message | No data |
+| 404 | `{"error": "No data found for futures_id: <id>"}` | Product has no data at all. A range with no rows in it is `200` with `"data": []` |
 | 503 | upstream rate limit / symbol list unavailable | Retry later |
 
 **Example**
@@ -5566,7 +5566,7 @@ data = requests.get(f"{BASE_URL}/studio/market/twfutures/institutional/TX", head
 |---|---|---|
 | 400 | `{"error": "Invalid futures_id"}` | Format check failed |
 | 404 | `{"error": "large_traders data not available for stock futures (<id>)"}` | Stock future |
-| 404 | error message | No data |
+| 404 | `{"error": "No data found for futures_id: <id>"}` | Product has no data at all. A range with no rows in it is `200` with `"data": []` |
 | 503 | upstream rate limit / symbol list unavailable | Retry later |
 
 **Example**
@@ -5740,7 +5740,7 @@ df = pd.DataFrame(resp["data"]).set_index("date")
 Fields: `date`, `option_id`, `call_put` (買權 / 賣權), `institutional_investors`, and the same
 `long_*` / `short_*` deal and open-interest volume / amount fields as futures institutional.
 
-**Errors** — `400 {"error": "Invalid option_id"}`; `404` no data; `503` upstream rate limit.
+**Errors** — `400 {"error": "Invalid option_id"}`; `404 {"error": "No data found for option_id: <id>"}` when the product has no data at all (a range with no rows is `200` with `"data": []`); `503` upstream rate limit.
 
 **Example**
 
@@ -5778,7 +5778,7 @@ month / all). Fields: `date`, `option_id`, `name`, `put_call`, `contract_type`, 
 top-5 / top-10 trader and specific-legal-person open-interest fields as futures large traders,
 plus `market_open_interest`.
 
-**Errors** — `400 {"error": "Invalid option_id"}`; `404` no data; `503` upstream rate limit.
+**Errors** — `400 {"error": "Invalid option_id"}`; `404 {"error": "No data found for option_id: <id>"}` when the product has no data at all (a range with no rows is `200` with `"data": []`); `503` upstream rate limit.
 
 **Example**
 
@@ -5821,7 +5821,7 @@ data = requests.get(f"{BASE_URL}/studio/market/twfutures/option/large_traders/TX
 | `oi_pcr` | % | Put/call open-interest ratio (買賣權未平倉量比率) |
 | `pcr` | % | Same as `oi_pcr` (kept for compatibility) |
 
-**Errors** — `404` no data; `503` store not ready or upstream rate limit.
+**Errors** — `503` store not ready or upstream rate limit. A range with no rows is `200` with `"data": []`.
 
 **Example**
 
