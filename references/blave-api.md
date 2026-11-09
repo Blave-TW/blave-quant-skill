@@ -63,42 +63,42 @@ moves lines (command in the comment under the table).
 | 2705 | `GET /studio/market/twstock/minute/ohlcv/<stock_id>/<schema>` | Taiwan Stock |
 | 2768 | `GET /studio/market/twstock/minute/ohlcv/symbols` | Taiwan Stock |
 | 2794 | `GET /studio/market/twstock/kbar/<stock_id>` | Taiwan Stock |
-| 2845 | `GET /studio/market/twstock/market_value/<stock_id>` | Taiwan Stock |
-| 2880 | `GET /studio/market/twstock/market_value/all` | Taiwan Stock |
-| 2960 | `GET /studio/market/twstock/per/<stock_id>` | Taiwan Stock |
-| 3007 | `GET /studio/market/twstock/financials/<stock_id>` | Taiwan Stock |
-| 3055 | `GET /studio/market/twstock/balance_sheet/<stock_id>` | Taiwan Stock |
-| 3088 | `GET /studio/market/twstock/cashflow/<stock_id>` | Taiwan Stock |
-| 3143 | `GET /studio/market/twstock/monthly_revenue/<stock_id>` | Taiwan Stock |
-| 3195 | `GET /studio/market/twstock/ratios/<stock_id>` | Taiwan Stock |
-| 3284 | `GET /studio/market/twstock/dividend/<stock_id>` | Taiwan Stock |
-| 3348 | `GET /studio/market/twstock/news/<stock_id>` | Taiwan Stock |
-| 3399 | `GET /studio/market/twstock/institutional/<stock_id>` | Taiwan Stock |
-| 3454 | `GET /studio/market/twstock/margin/<stock_id>` | Taiwan Stock |
-| 3509 | `GET /studio/market/twstock/shareholding/<stock_id>` | Taiwan Stock |
-| 3554 | `GET /studio/market/twstock/foreign_shareholding/<stock_id>` | Taiwan Stock |
-| 3602 | `GET /studio/market/twstock/gov_bank/<stock_id>` | Taiwan Stock |
-| 3649 | `GET /studio/market/twstock/lending/<stock_id>` | Taiwan Stock |
-| 3694 | `GET /studio/market/twstock/broker/search` | Taiwan Stock |
-| 3730 | `GET /studio/market/twstock/broker/stock/<stock_id>` | Taiwan Stock |
-| 3785 | `GET /studio/market/twstock/broker/trader/<trader_id>` | Taiwan Stock |
-| 3822 | `GET /studio/market/twstock/alerts` | Taiwan Stock |
-| 3930 | `GET /studio/market/twstock/batch/<data_type>` | Taiwan Stock |
-| 3990 | `GET /studio/market/twstock/sector/overview` | Taiwan Stock |
-| 4102 | `GET /studio/market/twstock/sector/breadth` | Taiwan Stock |
-| 4153 | `GET /studio/market/twstock/sector/constituents/<slug>` | Taiwan Stock |
-| 4214 | `GET /studio/market/twstock/theme/overview` | Taiwan Stock |
-| 4306 | `GET /studio/market/twstock/theme/constituents/<slug>` | Taiwan Stock |
-| 4392 | `GET /studio/market/twstock/theme/<slug>/index` | Taiwan Stock |
-| 4456 | `GET /studio/market/twstock/chip_breadth/<scope>` | Taiwan Stock |
-| 4532 | `GET /studio/market/twstock/chip_breadth/<scope>/<slug>` | Taiwan Stock |
-| 4615 | `POST /studio/market/twstock/screener/run` | Taiwan Stock |
-| 4759 | `GET /studio/market/twmarket/index/<index_id>` | Taiwan Market (大盤) |
-| 4803 | `GET /studio/market/twmarket/turnover` | Taiwan Market (大盤) |
-| 4846 | `GET /studio/market/twmarket/institutional` | Taiwan Market (大盤) |
-| 4890 | `GET /studio/market/twmarket/margin` | Taiwan Market (大盤) |
-| 4933 | `GET /studio/market/twmarket/margin_maintenance` | Taiwan Market (大盤) |
-| 4986 | `GET /studio/market/twmarket/dividend_points` | Taiwan Market (大盤) |
+| 2847 | `GET /studio/market/twstock/market_value/<stock_id>` | Taiwan Stock |
+| 2882 | `GET /studio/market/twstock/market_value/all` | Taiwan Stock |
+| 2962 | `GET /studio/market/twstock/per/<stock_id>` | Taiwan Stock |
+| 3009 | `GET /studio/market/twstock/financials/<stock_id>` | Taiwan Stock |
+| 3057 | `GET /studio/market/twstock/balance_sheet/<stock_id>` | Taiwan Stock |
+| 3090 | `GET /studio/market/twstock/cashflow/<stock_id>` | Taiwan Stock |
+| 3145 | `GET /studio/market/twstock/monthly_revenue/<stock_id>` | Taiwan Stock |
+| 3197 | `GET /studio/market/twstock/ratios/<stock_id>` | Taiwan Stock |
+| 3286 | `GET /studio/market/twstock/dividend/<stock_id>` | Taiwan Stock |
+| 3350 | `GET /studio/market/twstock/news/<stock_id>` | Taiwan Stock |
+| 3401 | `GET /studio/market/twstock/institutional/<stock_id>` | Taiwan Stock |
+| 3456 | `GET /studio/market/twstock/margin/<stock_id>` | Taiwan Stock |
+| 3511 | `GET /studio/market/twstock/shareholding/<stock_id>` | Taiwan Stock |
+| 3556 | `GET /studio/market/twstock/foreign_shareholding/<stock_id>` | Taiwan Stock |
+| 3604 | `GET /studio/market/twstock/gov_bank/<stock_id>` | Taiwan Stock |
+| 3651 | `GET /studio/market/twstock/lending/<stock_id>` | Taiwan Stock |
+| 3696 | `GET /studio/market/twstock/broker/search` | Taiwan Stock |
+| 3732 | `GET /studio/market/twstock/broker/stock/<stock_id>` | Taiwan Stock |
+| 3787 | `GET /studio/market/twstock/broker/trader/<trader_id>` | Taiwan Stock |
+| 3824 | `GET /studio/market/twstock/alerts` | Taiwan Stock |
+| 3932 | `GET /studio/market/twstock/batch/<data_type>` | Taiwan Stock |
+| 3992 | `GET /studio/market/twstock/sector/overview` | Taiwan Stock |
+| 4104 | `GET /studio/market/twstock/sector/breadth` | Taiwan Stock |
+| 4155 | `GET /studio/market/twstock/sector/constituents/<slug>` | Taiwan Stock |
+| 4216 | `GET /studio/market/twstock/theme/overview` | Taiwan Stock |
+| 4308 | `GET /studio/market/twstock/theme/constituents/<slug>` | Taiwan Stock |
+| 4394 | `GET /studio/market/twstock/theme/<slug>/index` | Taiwan Stock |
+| 4458 | `GET /studio/market/twstock/chip_breadth/<scope>` | Taiwan Stock |
+| 4534 | `GET /studio/market/twstock/chip_breadth/<scope>/<slug>` | Taiwan Stock |
+| 4617 | `POST /studio/market/twstock/screener/run` | Taiwan Stock |
+| 4761 | `GET /studio/market/twmarket/index/<index_id>` | Taiwan Market (大盤) |
+| 4804 | `GET /studio/market/twmarket/turnover` | Taiwan Market (大盤) |
+| 4847 | `GET /studio/market/twmarket/institutional` | Taiwan Market (大盤) |
+| 4891 | `GET /studio/market/twmarket/margin` | Taiwan Market (大盤) |
+| 4934 | `GET /studio/market/twmarket/margin_maintenance` | Taiwan Market (大盤) |
+| 4987 | `GET /studio/market/twmarket/dividend_points` | Taiwan Market (大盤) |
 | 5049 | `GET /studio/market/twfutures/ohlcv/<symbol>/<schema>` | Taiwan Futures & Options |
 | 5134 | `GET /studio/market/twfutures/ohlcv/symbols` | Taiwan Futures & Options |
 | 5162 | `GET /studio/market/twfutures/ohlcv/<symbol>/export/<year>` | Taiwan Futures & Options |
@@ -2825,7 +2825,9 @@ covered = requests.get(f"{BASE_URL}/studio/market/twstock/minute/ohlcv/symbols",
 | Status | Body | When |
 |---|---|---|
 | 400 | `{"error": "Invalid stock_id (must be a listed TWSE/TPEx security)"}` | Not listed |
-| 400 | `{"error": "Date range exceeds 31 days"}` | Range too long, or malformed date |
+| 400 | `{"error": "Date range exceeds 31 days"}` | Range too long |
+| 400 | `{"error": "Invalid start date, expected YYYY-MM-DD"}` (or `end`) | Malformed date |
+| 400 | `{"error": "start must not be after end"}` | Reversed range |
 
 **Example**
 
@@ -2912,7 +2914,7 @@ data = requests.get(f"{BASE_URL}/studio/market/twstock/market_value/2330", heade
 | Status | Body | When |
 |---|---|---|
 | 400 | `{"error": "top must be an integer between 1 and 3000"}` | Bad `top` |
-| 404 | `{"error": "No recent market value data available"}` (or a listing-incomplete message) | No recent data |
+| 503 | `{"error": "Data temporarily unavailable. Please retry shortly."}` | Recent data or the listing is temporarily unavailable |
 | 503 | `{"error": "Upstream rate limit. Please retry shortly."}` | Upstream quota exhausted |
 
 **Example**
@@ -4783,7 +4785,6 @@ prices in index points. No volume — use `/twmarket/turnover`.
 | Status | Body | When |
 |---|---|---|
 | 400 | `{"error": "Unsupported index"}` | Not `TAIEX` |
-| 404 | error message | No data |
 | 503 | `{"error": "Market data is not ready on this server. Please retry later."}` / upstream rate limit | Store not ready / upstream down |
 
 **Example**
@@ -4827,7 +4828,7 @@ body = requests.get(f"{BASE_URL}/studio/market/twmarket/index/TAIEX", headers=he
 | `value` | TWD | 成交金額 |
 | `trades` | count | 成交筆數 |
 
-**Errors** — `404` no data; `503` store not ready or upstream rate limit.
+**Errors** — `503` store not ready or upstream rate limit. A range with no rows is `200` with `"data": []`.
 
 **Example**
 
@@ -4864,7 +4865,7 @@ data = requests.get(f"{BASE_URL}/studio/market/twmarket/turnover", headers=heade
 **Response** — `{"data": [{"date", "foreign", "investment_trust", "dealer", "total"}]}`; all
 values are **net** (buy − sell) in TWD.
 
-**Errors** — `404` no data; `503` upstream rate limit.
+**Errors** — `503` store not ready or upstream rate limit. A range with no rows is `200` with `"data": []`.
 
 **Example**
 
@@ -4914,7 +4915,7 @@ data = requests.get(f"{BASE_URL}/studio/market/twmarket/institutional", headers=
 | `margin_balance_value` | TWD | 融資餘額金額 |
 | `short_balance` / `short_balance_prev` | lots (張) | 融券餘額 today / previous day |
 
-**Errors** — `404` no data; `503` upstream rate limit.
+**Errors** — `503` store not ready or upstream rate limit. A range with no rows is `200` with `"data": []`.
 
 **Example**
 
@@ -4961,7 +4962,7 @@ data = requests.get(f"{BASE_URL}/studio/market/twmarket/margin", headers=headers
 |---|---|---|
 | 400 | `{"error": "Invalid start date, expected YYYY-MM-DD"}` (or `end`) | Malformed date |
 | 400 | `{"error": "start must not be after end"}` | Reversed range |
-| 404 | `{"error": "No margin maintenance data available"}` | No data |
+| 503 | `{"error": "Market data is not ready on this server. Please retry later."}` | Data store not ready yet |
 | 503 | `{"error": "Upstream rate limit. Please retry shortly."}` | Upstream quota exhausted |
 
 **Example**
@@ -5016,7 +5017,6 @@ data = requests.get(f"{BASE_URL}/studio/market/twmarket/margin_maintenance", hea
 | Status | Body | When |
 |---|---|---|
 | 400 | `{"error": "Invalid start date, expected YYYY-MM-DD"}` (or `end`) | Malformed date |
-| 404 | `{"error": "No TAIEX index data available"}` | Cold store and no upstream data |
 | 503 | error message | Forecast coverage below 90%, store not ready, or upstream rate limit |
 
 **Example**
