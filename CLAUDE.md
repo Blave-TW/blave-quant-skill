@@ -4,10 +4,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Overview
 
-This repo contains one skill covering seventeen capabilities:
+This repo contains one skill covering sixteen capabilities:
 1. **Blave** — Agent calls the Blave REST API directly for crypto market alpha data, Taiwan stock data, and Hyperliquid top trader tracking
 2. **CME / ICE Futures** — Agent fetches WTI crude (CL), gold (GC), and Brent crude (BRN) OHLCV from 2010 via Blave API
-3. **Taiwan Futures** — Agent fetches TXF (台指期近月連續) OHLCV (1d and intraday from 2011-01-03) via Blave API; schemas 1d/1m/5m/15m/30m/60m
+3. **Taiwan Futures** — Agent fetches TXF (台指期近月連續) OHLCV (1d and intraday from 2011-01-03) via Blave API `GET /studio/market/twfutures/ohlcv/TXF/<schema>`; schemas 1d/1m/5m/15m/30m/60m
 4. **BitMart Futures** — Agent calls the BitMart API for perpetual futures trading
 5. **BitMart Spot** — Agent calls the BitMart API for spot trading
 6. **OKX** — Agent calls the OKX API for spot and perpetual swap trading
@@ -19,9 +19,8 @@ This repo contains one skill covering seventeen capabilities:
 12. **KuCoin** — Agent calls the KuCoin API for spot and futures/perpetual contract trading
 13. **Taiwan stock lookup/quote/PE** — Agent queries stock code/name lookup, daily quotes, PE/yield/PB via **Blave API** (`studio/market/twstock/list`, `/info`, `/price`, `/quote`, `/per`), NOT the raw TWSE/TPEX public API. That public API (no key required) is used only as a fallback for the two things Blave has no endpoint for: trading-halt status and a one-shot full-market PE/yield/PB scan
 14. **台股分點買賣超** — Agent calls Blave API `GET /studio/market/twstock/broker/stock/<stock_id>` (by stock) or `GET /studio/market/twstock/broker/trader/<trader_id>` (by broker branch) for daily buy/sell data; no CAPTCHA required
-15. **Taiwan Futures** — Agent calls Blave API `GET /studio/market/twfutures/ohlcv/TXF/<schema>` for TXF OHLCV; schemas: 1d/1m/5m/15m/30m/60m; 1d and intraday from 2011-01-03
-16. **Gate.io** — Agent calls the Gate.io APIv4 for spot and USDT-settled perpetual futures trading
-17. **StockCoin** — Agent calls the StockCoin OpenAPI for USDT perpetuals on US / KR stocks, ETFs and commodities (no spot); US stock perps on other venues → `references/stock-perps.md`
+15. **Gate.io** — Agent calls the Gate.io APIv4 for spot and USDT-settled perpetual futures trading
+16. **StockCoin** — Agent calls the StockCoin OpenAPI for USDT perpetuals on US / KR stocks, ETFs and commodities (no spot); US stock perps on other venues → `references/stock-perps.md`
 
 No CLI or wrapper involved. All API calls are made directly by the agent.
 
@@ -43,22 +42,29 @@ No CLI or wrapper involved. All API calls are made directly by the agent.
 
 | File | Purpose |
 |---|---|
-| `SKILL.md` | Main skill doc — Blave, BitMart Futures, and BitMart Spot sections |
+| `SKILL.md` | Main skill doc — Safety Mode (CONFIRM), reference routing tables, Blave setup / limits / endpoint index, exchange-trading table (every exchange routes to its `references/` file), 台股查詢 and 分點買賣超 quick sections |
 | `references/blave-api.md` | Blave data API — single complete reference: every endpoint's parameters, defaults, response fields, errors, data start date, Python example (fixed per-endpoint block format); opens with an endpoint → line index — regenerate it (command in the comment under the table) whenever an edit moves lines |
 | `references/blave-indicator-guide.md` | Indicator interpretation guide — alpha value meanings, signals, combined analysis |
+| `references/bitmart-futures-skill.md` | BitMart Futures overview — auth levels, broker header, operation flow, order reference, error handling, spot ↔ futures transfer |
+| `references/bitmart-spot-skill.md` | BitMart Spot overview — auth, broker header, operation flow, order reference, error handling |
 | `references/bitmart-api-reference.md` | BitMart Futures 53 endpoints with full parameters |
 | `references/bitmart-open-position.md` | Futures open position workflow |
 | `references/bitmart-close-position.md` | Futures close position workflow |
 | `references/bitmart-plan-order.md` | Futures plan order workflow |
 | `references/bitmart-tp-sl.md` | Futures TP/SL workflow |
 | `references/bitmart-spot-api-reference.md` | BitMart Spot 34 endpoints with full parameters |
+| `references/okx-skill.md` | OKX overview — auth, required `User-Agent`, broker tag, operation flow, field-verified lessons |
 | `references/okx-api-reference.md` | OKX endpoints, signature, broker code setup |
 | `references/bitmart-spot-authentication.md` | Spot auth details and examples |
 | `references/bitmart-spot-scenarios.md` | Spot common trading scenarios |
 | `references/bitmart-signature.md` | Python HMAC-SHA256 signature implementation + common mistakes |
 | `references/hyperliquid-api.md` | Hyperliquid API — all 9 endpoints with params, response format, cache times |
+| `references/bybit-skill.md` | Bybit spot + derivatives (UTA only) — auth, `referer` broker header, account structure, deposits/withdrawals, trading rules, operation flow, key endpoints, field-verified lessons |
+| `references/bingx-skill.md` | BingX overview — auth, source header, operation flow, quick reference |
 | `references/bingx-api-reference.md` | BingX 63 endpoints, Python signature, public market data + spot + perpetual swap |
+| `references/bitget-skill.md` | Bitget overview — Classic vs UTA account types, auth, account structure, Blave Agent shipped libs, field-verified lessons, operation flow, quick reference (v2 + v3) |
 | `references/bitget-api-reference.md` | Bitget spot + futures endpoints, Python signature |
+| `references/binance-skill.md` | Binance spot + USDS-M futures overview — auth, broker ID on every order, operation flow, quick reference |
 | `references/binance-api-reference.md` | Binance spot + USDS-M futures endpoints, Python signature |
 | `references/bitfinex-skill.md` | Bitfinex spot, margin, funding/lending endpoints, HMAC-SHA384 signature |
 | `references/kucoin-skill.md` | KuCoin spot + futures overview — auth, broker headers, operation flow, quick reference |
@@ -71,6 +77,8 @@ No CLI or wrapper involved. All API calls are made directly by the agent.
 | `references/twse-skill.md` | 停復牌狀態 + 全市場 PE 批次掃描（Blave API 沒有對應端點時才用）— 快速參考 |
 | `references/twse-api-reference.md` | 同上，完整 API 參考：欄位說明、Python 範例、民國年轉換 |
 | `references/twse-bsr-reference.md` | 台股分點買賣超 — 工作流程與 Python 範例（端點規格見 `references/blave-api.md`） |
+| `references/twstock-fundamentals-reference.md` | 台股財報分析指南 — 財報／月營收 response schema、財務比率公式與 null 規則、注意股・處置股、因子計算、避免 lookahead |
+| `references/marketplace.md` | Blave Agent strategy marketplace API — browse, load purchased strategies, submit for sale, multi-strategy bundle, private strategies |
 
 ## Blave API Endpoints
 
@@ -91,6 +99,10 @@ Base URL: `https://api-cloud.bitmart.com`
 ## BitMart Broker ID
 
 Always include `X-BM-BROKER-ID: BlaveData666666` on **all** BitMart API requests (both futures and spot, regardless of auth level).
+
+## OKX Broker Tag
+
+Always include `"tag": "96ee7de3fd4bBCDE"` in the body of **every** OKX POST that takes one (`/api/v5/trade/order`, `batch-orders`, `order-algo`, `close-position`). It is a body field, not a header; GET queries and the cancel endpoints do not accept `tag`.
 
 ## Bybit Broker Header
 
