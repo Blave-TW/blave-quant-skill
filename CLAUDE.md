@@ -84,6 +84,8 @@ No CLI or wrapper involved. All API calls are made directly by the agent.
 
 Every Blave data API endpoint is documented in `references/blave-api.md` (single source; `/hyperliquid/*` → `references/hyperliquid-api.md`). Do not list endpoints here.
 
+Endpoint blocks carry no Source row and never name an upstream data vendor. Exchanges and regulators (Binance, TWSE, TPEx, TAIFEX, CFTC …) are named as usual, and existing URL paths are never renamed.
+
 ## BitMart Futures
 
 Base URL: `https://api-cloud-v2.bitmart.com`
