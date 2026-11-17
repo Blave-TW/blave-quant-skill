@@ -159,8 +159,8 @@ Key rules:
   outside Blave Agent) needs an **API plan**, even if the account also has a Blave Agent plan
   or trial.
 - **Keys Blave Agent issues** (the cloud machine's own key, the desktop app's sign-in key) are
-  covered by the card trial, an active Blave Agent plan (every tier includes data) or an API
-  plan.
+  covered by the card trial, an active Blave Agent plan (with or without a cloud machine) or an
+  API plan.
 - Not covered → `403 ERR007`; its `message` and `next_steps` name the way out — follow them, do
   not guess a price.
 
